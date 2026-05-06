@@ -1,100 +1,147 @@
 import { motion } from 'framer-motion'
-import { ArrowDown, ExternalLink, Mail } from 'lucide-react'
+import { ArrowDown, Mail } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
+import { workExperience, caseStudies } from '../../content'
+
+/**
+ * Stats que venden INGENIERÍA, no GitHub metrics
+ *
+ * yearsExp    → calculado desde el trabajo más antiguo en content/experience
+ * systems     → número de case studies (proyectos en producción)
+ * stack       → número de tecnologías únicas en todos los casos + experience
+ */
+function computeStats() {
+  // Años de experiencia desde el trabajo más antiguo
+  const earliest = [...workExperience].sort((a, b) => a.order - b.order)[0]
+  const startYear = earliest
+    ? parseInt(earliest.period.split(/[–\-]/)[0].trim(), 10)
+    : new Date().getFullYear() - 5
+  const yearsExp = new Date().getFullYear() - startYear
+
+  // Sistemas en producción = case studies con NDA (proyectos reales de empresa)
+  const systems = caseStudies.length
+
+  // Stack único: unión de todos los stacks
+  const allTechs = new Set([
+    ...workExperience.flatMap((j) => j.stack),
+    ...caseStudies.flatMap((p) => p.stack),
+  ])
+
+  return { yearsExp, systems, stackCount: allTechs.size }
+}
 
 export function Hero() {
   const { user } = useApp()
   const { t } = useTranslation()
+  const { yearsExp, systems, stackCount } = computeStats()
 
-  const yearsOnGithub = user
-    ? new Date().getFullYear() - new Date(user.created_at).getFullYear()
-    : 0
+  const stats = [
+    { value: `${yearsExp}+`, label: t('hero.stats.yearsExp') },
+    { value: `${systems}`,   label: t('hero.stats.systems') },
+    { value: `${stackCount}`, label: t('hero.stats.stack') },
+  ]
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center grid-bg overflow-hidden">
-      {/* Orbs */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-neon-cyan/5 rounded-full blur-3xl animate-pulse-slow" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-neon-purple/5 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-paper">
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 pt-24 pb-12 text-center">
+      {/* Fondo: líneas tipográficas decorativas (newspaper columns ghost) */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: 'repeating-linear-gradient(90deg, #1A1A1A 0px, #1A1A1A 1px, transparent 1px, transparent calc((100% - 8px) / 12))',
+          backgroundSize: 'calc(100% / 12) 100%',
+        }}
+      />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-6 pt-24 pb-16 w-full">
+
+        {/* Kicker */}
         <FadeIn>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 text-sm text-text-secondary">
-            <span className="w-2 h-2 rounded-full bg-neon-green animate-pulse" />
-            {t('hero.greeting')}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="border-t-4 border-ink flex-1 max-w-12" />
+            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-ink-muted">
+              {t('hero.greeting')}
+            </span>
+            <div className="border-t-4 border-ink flex-1 max-w-12" />
           </div>
         </FadeIn>
 
+        {/* Nombre — el MASTHEAD */}
         <FadeIn delay={0.1}>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-4 tracking-tight">
-            {user?.name || 'Edwin Trigos'}
-          </h1>
+          <div className="border-t-4 border-ink pt-4 mb-2">
+            <h1 className="font-headline font-black leading-none tracking-tight"
+              style={{ fontSize: 'clamp(3rem, 10vw, 7rem)' }}>
+              {user?.name || 'Edwin Trigos'}
+            </h1>
+          </div>
+          <div className="border-t border-ink mb-4" />
         </FadeIn>
 
+        {/* Rol + subtitle en dos columnas estilo periódico */}
         <FadeIn delay={0.2}>
-          <p className="text-2xl md:text-3xl font-medium gradient-text mb-6">
-            {t('hero.role')}
-          </p>
+          <div className="grid md:grid-cols-[1fr_2fr] gap-6 border-b-4 border-ink pb-8 mb-8">
+            <div>
+              <p className="font-headline text-xl md:text-2xl font-bold italic text-accent leading-tight">
+                {t('hero.role')}
+              </p>
+              <p className="font-mono text-xs text-ink-muted mt-2">
+                {user?.location || 'Colombia'}
+              </p>
+            </div>
+            <p className="font-sans text-base text-ink-light leading-relaxed">
+              {t('hero.subtitle')}
+            </p>
+          </div>
         </FadeIn>
 
+        {/* CTAs */}
         <FadeIn delay={0.3}>
-          <p className="text-text-secondary text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-            {t('hero.subtitle')}
-          </p>
-        </FadeIn>
-
-        <FadeIn delay={0.4}>
-          <div className="flex flex-wrap justify-center gap-4 mb-16">
-            <a
-              href="#projects"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-neon-cyan/10 border border-neon-cyan/30 text-neon-cyan font-medium hover:bg-neon-cyan/20 hover:shadow-[0_0_30px_rgba(0,240,255,0.15)] transition-all duration-300"
-            >
-              <ExternalLink size={18} />
+          <div className="flex flex-wrap gap-4 mb-12">
+            <a href="#projects" className="px-btn">
               {t('hero.cta.projects')}
             </a>
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl glass glass-hover text-text-secondary hover:text-text-primary font-medium transition-all duration-300"
-            >
-              <Mail size={18} />
+            <a href="#contact" className="px-btn px-btn-outline">
+              <Mail size={14} />
               {t('hero.cta.contact')}
             </a>
           </div>
         </FadeIn>
 
-        {/* Stats */}
-        <FadeIn delay={0.5}>
-          <div className="flex justify-center gap-8 md:gap-16">
-            {[
-              { value: user?.public_repos || 0, label: t('hero.stats.repos') },
-              { value: user?.followers || 0, label: t('hero.stats.followers') },
-              { value: yearsOnGithub, label: t('hero.stats.years') },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
+        {/* Stats — valores de negocio, no GitHub metrics */}
+        <FadeIn delay={0.4}>
+          <div className="grid grid-cols-3 border-2 border-ink shadow-pixel-sm">
+            {stats.map((stat, i) => (
+              <div
+                key={stat.label}
+                className={`p-5 text-center ${i < stats.length - 1 ? 'border-r-2 border-ink' : ''}`}
+              >
                 <motion.p
-                  className="text-3xl md:text-4xl font-bold neon-text text-neon-cyan font-mono"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
+                  className="font-headline text-3xl md:text-4xl font-black text-ink leading-none"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
                 >
                   {stat.value}
                 </motion.p>
-                <p className="text-text-muted text-sm mt-1">{stat.label}</p>
+                <p className="font-mono text-[11px] text-ink-muted mt-1 uppercase tracking-wide">
+                  {stat.label}
+                </p>
               </div>
             ))}
           </div>
         </FadeIn>
-
-        {/* Scroll indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-        >
-          <ArrowDown className="text-text-muted" size={20} />
-        </motion.div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        animate={{ y: [0, 6, 0] }}
+        transition={{ repeat: Infinity, duration: 2 }}
+      >
+        <ArrowDown className="text-ink-muted" size={20} />
+      </motion.div>
     </section>
   )
 }

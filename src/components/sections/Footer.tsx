@@ -1,4 +1,3 @@
-import { Heart } from 'lucide-react'
 import { GithubIcon } from '../ui/GithubIcon'
 import { useTranslation } from '../../hooks/useTranslation'
 
@@ -6,14 +5,16 @@ export function Footer() {
   const { t } = useTranslation()
 
   return (
-    <footer className="border-t border-surface-700/50 py-8 px-6">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-text-muted">
-        <p className="flex items-center gap-1.5">
-          {t('footer.built')} <Heart size={14} className="text-neon-pink" /> React + Tailwind
+    <footer className="border-t-4 border-ink py-6 px-6 bg-paper-dark">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+
+        <p className="font-mono text-[11px] text-ink-muted uppercase tracking-wide">
+          {t('footer.built')} React 19 + Vite + Tailwind CSS v4
         </p>
-        <p className="flex items-center gap-1.5">
-          <GithubIcon size={14} className="text-neon-cyan" />
-          {t('footer.powered')}
+
+        <p className="flex items-center gap-1.5 font-mono text-[11px] text-ink-muted uppercase tracking-wide">
+          <GithubIcon size={12} />
+          {t('footer.activity')}
         </p>
       </div>
     </footer>
