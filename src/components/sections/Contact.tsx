@@ -1,4 +1,4 @@
-import { Mail, ArrowUpRight } from 'lucide-react'
+import { Mail, ArrowUpRight, MapPin, Linkedin } from 'lucide-react'
 import { GithubIcon } from '../ui/GithubIcon'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
@@ -26,11 +26,18 @@ export function Contact() {
 
           {/* Body */}
           <div className="p-8 md:p-12">
-            <p className="font-headline text-2xl md:text-3xl font-bold italic text-ink mb-10">
+            <p className="font-headline text-2xl md:text-3xl font-bold italic text-ink mb-8">
               {t('contact.cta')}
             </p>
 
-            <div className="flex flex-col sm:flex-row items-start gap-4">
+            {/* Location */}
+            <div className="flex items-center gap-2 font-mono text-xs text-ink-muted mb-8 pb-6 border-b border-rule-light">
+              <MapPin size={12} />
+              {t('contact.location')}
+            </div>
+
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row items-start gap-3 flex-wrap">
               <a
                 href={user?.html_url || 'https://github.com/Ewin24'}
                 target="_blank" rel="noopener noreferrer"
@@ -47,6 +54,16 @@ export function Contact() {
               >
                 <Mail size={16} />
                 {t('contact.email')}
+              </a>
+
+              <a
+                href="https://linkedin.com/in/Ewin24"
+                target="_blank" rel="noopener noreferrer"
+                className="px-btn px-btn-outline flex items-center gap-2"
+              >
+                <Linkedin size={16} />
+                {t('contact.linkedin')}
+                <ArrowUpRight size={14} />
               </a>
             </div>
           </div>

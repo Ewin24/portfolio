@@ -88,7 +88,7 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
           </div>
 
           {/* Impacto */}
-          <div className="border-l-4 border-ink pl-3 mt-auto">
+          <div className="border-l-4 border-ink pl-3">
             <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
               {t('projects.impact')}
             </p>
@@ -96,6 +96,18 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
               {impact}
             </p>
           </div>
+
+          {/* Architecture Diagram (si existe) */}
+          {study.architectureDiagram && (
+            <div className="border border-rule-light p-3 bg-paper-dark">
+              <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink-muted mb-1">
+                {t('projects.architecture')}
+              </p>
+              <p className="font-mono text-[10px] text-ink-light leading-relaxed">
+                {study.architectureDiagram}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Footer: stack + links */}
