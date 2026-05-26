@@ -73,7 +73,7 @@ function BlogRouter() {
         <div className="border-t-4 border-ink mt-4" />
       </div>
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         <motion.div
           key={viewKey}
           initial={{ opacity: 0, y: 10 }}
