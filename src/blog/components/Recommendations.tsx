@@ -16,7 +16,7 @@ interface Props {
  */
 export function Recommendations({ currentPost }: Props) {
   const { lang } = useTranslation()
-  const { posts, setSelectedPost, setCurrentRoute } = useBlogContext()
+  const { posts } = useBlogContext()
 
   const recommendations = useRecommendations(currentPost, posts, 3)
 
@@ -26,8 +26,7 @@ export function Recommendations({ currentPost }: Props) {
   if (recommendations.length === 0) return null
 
   const handleSelect = (post: BlogPost) => {
-    setSelectedPost(post)
-    setCurrentRoute('article')
+    window.location.hash = `#blog/article/${post.slug}`
   }
 
   return (

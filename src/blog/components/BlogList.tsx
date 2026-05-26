@@ -64,7 +64,7 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
 
 export function BlogList() {
   const { lang } = useTranslation()
-  const { filteredPosts, setSelectedPost, setCurrentRoute, page, setPage } = useBlogContext()
+  const { filteredPosts, page, setPage } = useBlogContext()
   const [showAll, setShowAll] = useState(false)
 
   const totalPosts = filteredPosts.length
@@ -80,8 +80,7 @@ export function BlogList() {
   }
 
   const handleRead = (post: BlogPost) => {
-    setSelectedPost(post)
-    setCurrentRoute('article')
+    window.location.hash = `#blog/article/${post.slug}`
   }
 
   if (totalPosts === 0) {
