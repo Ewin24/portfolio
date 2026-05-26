@@ -267,6 +267,35 @@
     color: var(--color-paper);
   }
 
+  /* Blog code block — scoped via .blog- prefix */
+  .blog-code-block {
+    border: 2px solid var(--color-ink);
+    background: var(--color-paper-dark);
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.7;
+    box-shadow: var(--shadow-pixel-sm);
+    max-width: 100%;
+  }
+
+  .blog-code-block code {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Blog drop cap — ::first-letter instead of float for narrow screens */
+  .blog-drop-cap::first-letter {
+    font-family: var(--font-headline);
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-weight: 900;
+    line-height: 0.8;
+    float: left;
+    margin-right: 0.125rem;
+    margin-top: 0.25rem;
+  }
+
   /* Glass → eliminado, reemplazado por px-card */
   /* (mantenemos el alias para compatibilidad temporal) */
   .glass {
