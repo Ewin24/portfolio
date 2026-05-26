@@ -1,4 +1,8 @@
+import { useState, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowLeft } from 'lucide-react'
 import { useApp } from './context/AppContext'
+import { useTranslation } from './hooks/useTranslation'
 import { Header } from './components/Header'
 import { Hero } from './components/sections/Hero'
 import { About } from './components/sections/About'
@@ -10,9 +14,28 @@ import { Blog } from './components/sections/BlogRoot'
 import { Contact } from './components/sections/Contact'
 import { Footer } from './components/sections/Footer'
 import { Loading } from './components/ui/Loading'
+import { BlogRoot } from './blog/BlogRoot'
 
 function App() {
   const { loading, error } = useApp()
+  const { lang } = useTranslation()
+  const [blogMode, setBlogMode] = useState(false)
+
+  // Watch hash changes for blog full-page mode
+  useEffect(() => {
+    const check = () => {
+      const hash = window.location.hash
+      // Enter blog mode when hash is #blog/article/<slug>
+      setBlogMode(hash.startsWith('#blog/article/'))
+    }
+    check()
+    window.addEventListener('hashchange', check)
+    window.addEventListener('popstate', check)
+    return () => {
+      window.removeEventListener('hashchange', check)
+      window.removeEventListener('popstate', check)
+    }
+  }, [])
 
   if (loading) return <Loading />
 
@@ -39,20 +62,59 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-paper">
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <Projects />
-        <Skills />
-        <Experience />
-        <Testimonials />
-        <Blog />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
+    <AnimatePresence mode="wait">
+      {blogMode ? (
+        <motion.div
+          key="blog-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="min-h-screen bg-paper"
+        >
+          {/* Back to portfolio bar */}
+          <div className="sticky top-0 z-50 bg-paper border-b-2 border-ink">
+            <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
+              <button
+                onClick={() => { window.location.hash = '#blog' }}
+                className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors cursor-pointer"
+              >
+                <ArrowLeft size={14} />
+                {lang === 'es' ? 'Volver al portfolio' : 'Back to portfolio'}
+              </button>
+              <span className="font-mono text-[9px] text-ink-muted uppercase tracking-widest">
+                Blog
+              </span>
+            </div>
+          </div>
+
+          {/* Full-page blog content */}
+          <BlogRoot />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="portfolio"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="min-h-screen bg-paper"
+        >
+          <Header />
+          <main>
+            <Hero />
+            <About />
+            <Projects />
+            <Skills />
+            <Experience />
+            <Testimonials />
+            <Blog />
+            <Contact />
+          </main>
+          <Footer />
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 

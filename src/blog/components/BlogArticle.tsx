@@ -34,7 +34,7 @@ export function BlogArticle() {
   }, [post?.id])
 
   const handleBack = () => {
-    window.location.hash = '#blog/list'
+    window.location.hash = '#blog'
   }
 
   const handlePrev = () => {
