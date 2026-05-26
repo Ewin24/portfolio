@@ -37,19 +37,6 @@ function App() {
     }
   }, [])
 
-  // Scroll to #blog when exiting full-page blog mode.
-  // The browser's native hash scroll happens BEFORE React commits the
-  // portfolio DOM, so #blog isn't found. This ensures it scrolls after mount.
-  useEffect(() => {
-    if (!blogMode) {
-      const id = requestAnimationFrame(() => {
-        const el = document.getElementById('blog')
-        if (el) el.scrollIntoView({ behavior: 'smooth' })
-      })
-      return () => cancelAnimationFrame(id)
-    }
-  }, [blogMode])
-
   if (loading) return <Loading />
 
   if (error) {
@@ -75,7 +62,17 @@ function App() {
   }
 
   return (
-    <AnimatePresence mode="sync">
+    <AnimatePresence
+      mode="sync"
+      onExitComplete={() => {
+        // Scroll to #blog only when exiting full-page blog mode,
+        // after the exit animation finishes and the old #blog is gone
+        if (!blogMode) {
+          const el = document.getElementById('blog')
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+        }
+      }}
+    >
       {blogMode ? (
         <motion.div
           key="blog-full"
