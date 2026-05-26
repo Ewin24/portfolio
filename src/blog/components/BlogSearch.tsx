@@ -42,7 +42,7 @@ function useDebounce<T>(value: T, delay: number): T {
 
 export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
   const { lang } = useTranslation()
-  const { posts, setSelectedPost, setCurrentRoute } = useBlogContext()
+  const { posts } = useBlogContext()
   const [query, setQuery] = useState(defaultQuery)
   const [results, setResults] = useState<BlogPost[]>([])
   const [isIndexed, setIsIndexed] = useState(false)
@@ -100,12 +100,11 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
 
   const handleSelect = useCallback(
     (post: BlogPost) => {
-      setSelectedPost(post)
-      setCurrentRoute('article')
+      window.location.hash = `#blog/article/${post.slug}`
       setQuery('')
       setResults([])
     },
-    [setSelectedPost, setCurrentRoute],
+    [],
   )
 
   const hasQuery = query.trim().length > 0
