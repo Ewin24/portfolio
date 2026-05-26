@@ -1,188 +1,66 @@
-# Portfolio
+# Edwin Trigos — Ingeniero de Software Full Stack
 
-Portafolio personal interactivo construido con **React 19**, **Vite**, **TypeScript** y **Tailwind CSS 4**. Una experiencia moderna con temática cyberpunk/neon y animaciones fluidas.
+Arquitecto y desarrollador con experiencia en sistemas empresariales de producción. Especializado en **arquitecturas backend .NET**, **sistemas de originación de crédito (LOS)**, **APIs de integración financiera**, **Clean Architecture** y **UI engineering con React + TypeScript**.
 
-## Características Principales
+## Enfoque
 
-### Integración con GitHub API
+No escribo código porque sí. Construyo sistemas que:
 
-El proyecto se conecta directamente a la API pública de GitHub para mostrar:
+- **Resuelven problemas de negocio reales** — originación de crédito, validación de identidad, integración con burós de riesgo
+- **Reducen costos operativos** — automatización de procesos manuales, eliminación de cuellos de botella
+- **Escalan sin reescribir** — arquitecturas limpias, patrones de diseño, separación de dominios
+- **Son mantenibles** — código que otro ingeniero puede leer sin llamarme a las 2 AM
 
-- **Datos del perfil**: nombre, avatar, seguidores, repositorios públicos
-- **Proyectos en vivo**: los 6 proyectos más relevantes (calculados por estrellas, forks y tamaño)
-- **Stack tecnológico automático**: detecta los lenguajes más usados en tus repositorios y los muestra con barras de progreso
+## Stack Principal
 
-```typescript
-// src/services/github.ts
-const GITHUB_USERNAME = 'Ewin24'
+| Área | Tecnologías |
+|------|------------|
+| Backend | .NET 8+, C#, ASP.NET Core, Dapper, REST APIs, Clean Architecture |
+| Frontend | React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion |
+| Base de Datos | SQL Server, DDL/DML, Stored Procedures, Esquemas lógicos |
+| Infraestructura | Docker, Git, GitHub Actions, SQL Server, Linux |
+| Patrones | DDD, Strategy, Repository, BFF, Circuit Breaker, INSERT-ONLY Audit |
+| Integraciones | Burós de crédito (Datacredito, CIFIN), APIs REST, Infobip, Crystal Reports |
 
-//Fetching user profile + all repos (paginated)
-const [userData, repoData] = await Promise.all([getUser(), getRepos()])
+## Proyectos Relevantes
 
-// Top languages auto-detected from your real repos
-const languages = getLanguageStats(repos) // { "TypeScript": 15, "Python": 8, ... }
-```
+### 🏦 Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC
+Sistema completo de originación de crédito desde cero: base de datos transaccional (DDL, 30+ tablas, 4 esquemas, 23 estados), 27 stored procedures, API REST .NET con Clean Architecture (repositorios por esquema, servicios por dominio, controladores por canal), 114+ endpoints en 6 capas BFF.
 
-### Internacionalización (i18n)
+### 🎙️ SOVI — Sistema Orquestador de Validación de Identidad
+Módulo de verificación de identidad con patrón Strategy: bot de voz + validación manual como plan B de primera clase. Motor de decisiones catalog-driven (sin if/switch hardcodeados). Trazabilidad completa por estudio con diagnósticos categorizados.
 
-Soporte completo para **español** e **inglés**:
+### 🔐 API de Integración con Burós de Crédito (Datacredito)
+API REST en .NET 8 con Dapper + SQL Server. Patrones de resiliencia con Polly (circuit breaker + retry). Autenticación JWT, logging estructurado con Serilog, middleware de request/response logging.
 
-- Detección automática del idioma del navegador
-- Persistencia en `localStorage` para recordar la preferencia
-- Toggle en el Header para cambiar idiomas al instante
+### 📄 Sistema de Gestión de Nóminas (ERP Baguer / Cadena de Franquicias)
+Extensión del sistema de generación de documentos del ERP para 3 nuevos tipos de nómina cliente de franquicias. 21 plantillas Crystal Reports, enrutamiento dinámico, cero impacto en 45+ tipos de nómina legacy.
 
-```typescript
-// src/hooks/useTranslation.ts
-const { t, lang, setLang, toggleLang } = useTranslation()
+### 🖥️ Arquitectura UI para Módulo Administrativo (LOS)
+Reestructuración del módulo Admin en Panel de Control (monitoreo) + Módulo Administrar (configuración CRUD). Separación de responsabilidades alineada con la arquitectura limpia del backend.
 
-t('hero.role') // "Desarrollador Full Stack" | "Full Stack Developer"
-```
+> ℹ️ Varios proyectos contienen información confidencial (NDA). Los casos de estudio completos con detalle de arquitectura, diagramas e impacto están disponibles en el portafolio en vivo.
 
-### Animaciones con Framer Motion
+## Experiencia Profesional
 
-- **FadeIn**: componentes reutilizables con entrada progresiva
-- **Scroll indicators**: animaciones al hacer scroll
-- **Hover effects**: transiciones suaves en botones y tarjetas
-- **Orbs decorativos**: efectos de fondo con blur y pulse
+| Período | Rol | Empresa |
+|---------|-----|---------|
+| 2023 → Presente | Arquitecto de Software / Full Stack Senior | Baguer Software |
+| 2021 → 2023 | Desarrollador Backend .NET | Baguer Software |
+| 2019 → 2021 | Desarrollador Junior | Empresa de Desarrollo |
+| **~7+ años** de experiencia construyendo sistemas en producción |
 
-### Diseño UI/UX
+## Lo que busco
 
-- **Temática cyberpunk/neon**: colores neón sobre fondo oscuro
-- **Glassmorphism**: tarjetas con efecto vidrio (`backdrop-blur`)
-- **Totalmente responsive**: móvil, tablet y desktop
-- **Barra de navegación fija**: con scroll spy y transición de fondo
+Roles donde pueda:
+- Diseñar y liderar arquitecturas de software (no solo implementar tickets)
+- Trabajar en sistemas que resuelvan problemas reales de negocio
+- Mentorizar desarrolladores y establecer estándares técnicos
+- Construir APIs y sistemas que escalen sin dolor
 
-## Estructura del Proyecto
+---
 
-```
-src/
-├── App.tsx                    # Componente raíz + manejo de errores
-├── main.tsx                  # Entry point de React
-├── index.css                 # Estilos globales + custom properties
-├── types.ts                  # TypeScript interfaces
-│
-├── components/
-│   ├── Header.tsx            # Navbar con links + toggle idioma
-│   ├── ui/
-│   │   ├── FadeIn.tsx        # Componente animable
-│   │   ├── Loading.tsx      # Pantalla de carga
-│   │   └── SectionHeader.tsx # Títulos de sección
-│   └── sections/
-│       ├── Hero.tsx         # Landing con stats de GitHub
-│       ├── About.tsx         # Sobre mí
-│       ├── Projects.tsx     # Repo cards desde GitHub
-│       ├── Skills.tsx        # Tech stack auto-detectado
-│       ├── Experience.tsx  # Trayectoria profesional
-│       ├── Contact.tsx       # Links de contacto
-│       └── Footer.tsx        # Credits + datos dinámicos
-│
-├── context/
-│   └── AppContext.tsx        # Estado global (user, repos, lang)
-│
-├── hooks/
-│   └── useTranslation.ts     # Hook de traducciones
-│
-├── i18n/
-│   └── translations.ts      # Todas las strings (ES + EN)
-│
-└── services/
-    └── github.ts           # API calls a GitHub
-```
+**Construyamos algo que importe.**  
+[GitHub](https://github.com/Ewin24) · [LinkedIn](https://linkedin.com/in/Ewin24) · contact@edwintrigos.dev
 
-## Stack Tecnológico
-
-| Categoría | Tecnología |
-|----------|-------------|
-| Framework | React 19 |
-| Build | Vite 8 |
-| Lenguaje | TypeScript 6 |
-| Estilos | Tailwind CSS 4 |
-| Animaciones | Framer Motion 12 |
-| Iconos | Lucide React |
-| Utilidades | clsx, tailwind-merge |
-
-## Scripts
-
-```bash
-npm install     # Instalar dependencias
-npm run dev    # Servidor de desarrollo (http://localhost:5173)
-npm run build  # Compilar para producción
-npm run preview  # Previsualizar build
-npm run lint   # ESLint
-```
-
-## Cómo Funciona
-
-### 1. Carga Inicial
-
-```
-App.tsx → AppProvider (context)
-           ↓
-GitHub API: GET /users/Ewin24
-GitHub API: GET /users/Ewin24/repos?sort=updated
-           ↓
-Loading screen mientras carga
-           ↓
-Render de secciones
-```
-
-### 2. Datos Dinámicos
-
-- **Hero**: muestra tu nombre real (desde GitHub), repos públicos, seguidores, años en GitHub
-- **Projects**: tus 6 proyectos más populares (ordenados por score: `stars*3 + forks*2 + size`)
-- **Skills**: lenguajes detectados automáticamente desde tus repos (top 8)
-
-### 3. Cambio de Idioma
-
-```typescript
-// Toggle instantáneo sin reload
-toggleLang() // ES ↔ EN
-
-// Se persiste en localStorage
-localStorage.setItem('portfolio-lang', 'es'|'en')
-```
-
-## Personalización
-
-### Cambiar el usuario de GitHub
-
-Edita `src/services/github.ts`:
-
-```typescript
-const GITHUB_USERNAME = 'tu-usuario-aqui'
-```
-
-### Modificar textos
-
-Edita `src/i18n/translations.ts` — ambos idiomas:
-
-```typescript
-es: { 'hero.role': 'Desarrollador Full Stack', ... },
-en: { 'hero.role': 'Full Stack Developer', ... }
-```
-
-### Agregar nuevas secciones
-
-1. Crea el componente en `src/components/sections/`
-2. Impórtalo en `App.tsx`
-3. Añádelo al JSX dentro de `<main>`
-
-### Añadir servicios externos
-
-Crea nuevas funciones en `src/services/` y consúmelos desde el contexto.
-
-## Contribuciones
-
-Ideas para mejorar:
-
-- [ ] Tests unitarios con Vitest
-- [ ] Modo claro / oscuro
-- [ ] Más animaciones Framer Motion
-- [ ] Blog o artículos integrados
-- [ ] Sistema de proyectos destacados manual
-- [ ] SEO y meta tags
-- [ ] Mode toggle (light/dark)
-
-## Licencia
-
-MIT — usa este código como quieras.
+*Portfolio construido con React 19 + Vite + TypeScript + Tailwind CSS v4. Casos de estudio extraídos de documentación técnica de proyectos en producción.*
