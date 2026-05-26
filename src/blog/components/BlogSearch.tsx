@@ -40,14 +40,19 @@ function useDebounce<T>(value: T, delay: number): T {
 
 // ─── Component ─────────────────────────────────────────────────────────────
 
-export function BlogSearch() {
+export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
   const { lang } = useTranslation()
   const { posts, setSelectedPost, setCurrentRoute } = useBlogContext()
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(defaultQuery)
   const [results, setResults] = useState<BlogPost[]>([])
   const [isIndexed, setIsIndexed] = useState(false)
   const miniSearchRef = useRef<MiniSearch | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Sync external defaultQuery changes (e.g., from hash route)
+  useEffect(() => {
+    if (defaultQuery) setQuery(defaultQuery)
+  }, [defaultQuery])
 
   const debouncedQuery = useDebounce(query, 200)
 
