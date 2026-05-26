@@ -86,7 +86,10 @@ function App() {
           <div className="sticky top-0 z-50 bg-paper border-b-2 border-ink">
             <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
               <button
-                onClick={() => { window.location.hash = '#blog' }}
+                onClick={() => {
+                  history.pushState(null, '', '#blog')
+                  window.dispatchEvent(new HashChangeEvent('hashchange'))
+                }}
                 className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors cursor-pointer"
               >
                 <ArrowLeft size={14} />
