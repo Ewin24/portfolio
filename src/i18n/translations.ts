@@ -52,6 +52,16 @@ type TranslationKeys = {
   'blog.title': string
   'blog.subtitle': string
   'blog.empty': string
+  'blog.filterAll': string
+  'blog.filterByTag': string
+  'blog.search': string
+  'blog.noResults': string
+  'blog.recommendations': string
+  'blog.loadMore': string
+  'blog.showAll': string
+  'blog.backToList': string
+  'blog.prevArticle': string
+  'blog.nextArticle': string
   // Testimonials
   'testimonials.title': string
   'testimonials.subtitle': string
@@ -132,6 +142,16 @@ const translations: Record<Language, TranslationKeys> = {
     'blog.title': 'Blog Técnico',
     'blog.subtitle': 'Arquitectura, patrones y decisiones de ingeniería explicadas',
     'blog.empty': 'Próximamente — escribiendo el primer artículo',
+    'blog.filterAll': 'Todos los artículos',
+    'blog.filterByTag': 'Filtrar por tema',
+    'blog.search': 'Buscar...',
+    'blog.noResults': 'Sin resultados',
+    'blog.recommendations': 'Artículos relacionados',
+    'blog.loadMore': 'Cargar más',
+    'blog.showAll': 'Mostrar todo',
+    'blog.backToList': 'Volver a artículos',
+    'blog.prevArticle': 'Anterior',
+    'blog.nextArticle': 'Siguiente',
 
     // Testimonials
     'testimonials.title': 'Referencias',
@@ -214,6 +234,16 @@ const translations: Record<Language, TranslationKeys> = {
     'blog.title': 'Technical Blog',
     'blog.subtitle': 'Architecture, patterns, and engineering decisions explained',
     'blog.empty': 'Coming soon — writing the first article',
+    'blog.filterAll': 'All articles',
+    'blog.filterByTag': 'Filter by tag',
+    'blog.search': 'Search...',
+    'blog.noResults': 'No results',
+    'blog.recommendations': 'Related posts',
+    'blog.loadMore': 'Load more',
+    'blog.showAll': 'Show all',
+    'blog.backToList': 'Back to articles',
+    'blog.prevArticle': 'Previous',
+    'blog.nextArticle': 'Next',
 
     // Testimonials
     'testimonials.title': 'References',
