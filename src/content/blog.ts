@@ -113,8 +113,6 @@ Admin and Store can both consume EstudioService without duplicating logic. The d
 114 endpoints organized across 6 BFF layers, 27 stored procedures, 0 logic duplication between channels. When the requirement came to add the Web channel, we only created new controllers — zero changes to existing services or repositories.
 
 Architecture is not a luxury, it's a business decision. Every hour invested in designing layers before writing production code pays back 10x when you avoid having to rewrite everything in the future.`,
-    readingTime: 0,
-    tags: ['architecture', 'dotnet', 'clean-architecture', 'ddd'],
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -246,8 +244,6 @@ The key here is that Plan B is NOT an after-thought fallback. It's a first-class
 - Full traceability: each attempt (automatic or manual) is logged with timestamp, audio URL, and biometric data
 
 If your decision engine has ifs or switches with business logic, you are coupling them to code. The database is not just for transactional data — it's also the best place for your decision rules when the change frequency is high.`,
-    readingTime: 0,
-    tags: ['architecture', 'patterns', 'csharp', 'design-patterns'],
   },
 ]
   .map((post) => ({
