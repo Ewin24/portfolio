@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useLayoutEffect, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from '../hooks/useTranslation'
 import { BlogProvider, useBlogContext } from './context/BlogContext'
@@ -13,23 +13,32 @@ import { BlogSearch } from './components/BlogSearch'
 function BlogRouter() {
   const { t } = useTranslation()
   const nav = useBlogNavigation()
-  const { posts, setSelectedPost, setFilter } = useBlogContext()
+  const { posts, selectedPost, setSelectedPost, setFilter } = useBlogContext()
 
-  // Sync hash navigation → BlogContext state
-  useEffect(() => {
-    if (nav.currentRoute === 'article' && nav.selectedSlug) {
-      const post = posts.find((p) => p.slug === nav.selectedSlug)
-      if (post) {
-        setSelectedPost(post)
-      }
-    } else if (nav.currentRoute === 'tag' && nav.currentParams.tag) {
+  // Find target article during render (no flicker — post resolved before paint)
+  const targetPost =
+    nav.currentRoute === 'article' && nav.selectedSlug
+      ? posts.find((p) => p.slug === nav.selectedSlug) ?? null
+      : null
+
+  // Sync hash → context for non-article routes (tag, list, search)
+  useLayoutEffect(() => {
+    if (nav.currentRoute === 'tag' && nav.currentParams.tag) {
       setFilter({ tags: [nav.currentParams.tag], category: null, dateRange: null })
-      setSelectedPost(null)
-    } else if (nav.currentRoute === 'list') {
-      setSelectedPost(null)
+    } else if (nav.currentRoute === 'list' || nav.currentRoute === 'search') {
       setFilter({ tags: [], category: null, dateRange: null })
     }
+    if (nav.currentRoute !== 'article') {
+      setSelectedPost(null)
+    }
   }, [nav.currentRoute, nav.selectedSlug, nav.currentParams.tag])
+
+  // Sync selectedPost for article route (useLayoutEffect = before paint)
+  useLayoutEffect(() => {
+    if (targetPost && targetPost !== selectedPost) {
+      setSelectedPost(targetPost)
+    }
+  }, [targetPost])
 
   // AnimatePresence key: unique per route so transitions work
   const viewKey =
@@ -37,7 +46,9 @@ function BlogRouter() {
 
   const renderView = (): ReactNode => {
     if (nav.currentRoute === 'article') {
-      return <BlogArticle />
+      // Only render BlogArticle when we have the post resolved
+      // (targetPost is set during render, before first paint)
+      return selectedPost || targetPost ? <BlogArticle /> : null
     }
 
     return (
