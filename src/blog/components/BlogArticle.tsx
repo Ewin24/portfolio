@@ -34,7 +34,10 @@ export function BlogArticle() {
   }, [post?.id])
 
   const handleBack = () => {
-    window.location.hash = '#blog'
+    // Use pushState + manual hashchange to avoid browser's native scroll-to-anchor,
+    // which would scroll to the EXITING blog-full's #blog (still in DOM during transition).
+    history.pushState(null, '', '#blog')
+    window.dispatchEvent(new HashChangeEvent('hashchange'))
   }
 
   const handlePrev = () => {
