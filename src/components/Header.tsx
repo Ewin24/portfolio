@@ -9,6 +9,8 @@ const NAV_ITEMS = [
   { key: 'nav.projects'   as const, href: '#projects' },
   { key: 'nav.skills'     as const, href: '#skills' },
   { key: 'nav.experience' as const, href: '#experience' },
+  { key: 'nav.testimonials' as const, href: '#testimonials' },
+  { key: 'nav.blog'       as const, href: '#blog' },
   { key: 'nav.contact'    as const, href: '#contact' },
 ]
 

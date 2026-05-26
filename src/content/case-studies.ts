@@ -53,6 +53,7 @@ export const caseStudies: CaseStudy[] = [
       '114+ API endpoints across 6 BFF layers (Admin/Core/Store/Web/Handoff/Util). 27 stored procedures in production. 23-state loan lifecycle with full traceability. Automated identity verification via voice bot with manual Plan B as a first-class citizen. Immutable audit trail of all operations.',
 
     stack: ['.NET 8+', 'C#', 'Dapper', 'SQL Server', 'Clean Architecture', 'REST API', 'JWT', 'Strategy Pattern'],
+    architectureDiagram: 'Arquitectura en 3 capas: BFFs (Admin/Tienda/Web/Handoff/Util) → Domain Services (Estudio, Tercero, OTP, Biometría) → Repositories por Schema (cfg/cat/fab/aud). Cada BFF inyecta los mismos servicios de dominio. Sin duplicación entre canales.',
     hasNDA: true,
     tags: ['fintech', 'architecture', 'fullstack', 'los', 'ddd', 'dotnet'],
   },
@@ -94,6 +95,7 @@ export const caseStudies: CaseStudy[] = [
       'Real-time identity validation without human intervention in the standard flow. Manual Plan B as a first-class citizen (not a fallback after-thought). Catalog-driven decision engine: adding new diagnoses requires no code changes. Full traceability per study with 10+ categorized bot diagnoses.',
 
     stack: ['.NET', 'C#', 'SQL Server', 'Strategy Pattern', 'REST API'],
+    architectureDiagram: 'Strategy Pattern: IValidacionStrategy → BotValidacionStrategy + ManualValidacionStrategy. Motor de decisiones catalog-driven: cat.CatalogoDiagnosticosBot.AccionSistema determina el flujo. Cada intento registra timestamp + UrlAudio + biometría en fab.IntentosValidacionBot.',
     hasNDA: true,
     tags: ['identity', 'security', 'architecture', 'fintech', 'strategy-pattern'],
   },

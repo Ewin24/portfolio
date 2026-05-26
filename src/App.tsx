@@ -5,6 +5,8 @@ import { About } from './components/sections/About'
 import { Projects } from './components/sections/Projects'
 import { Skills } from './components/sections/Skills'
 import { Experience } from './components/sections/Experience'
+import { Testimonials } from './components/sections/Testimonials'
+import { Blog } from './components/sections/Blog'
 import { Contact } from './components/sections/Contact'
 import { Footer } from './components/sections/Footer'
 import { Loading } from './components/ui/Loading'
@@ -16,23 +18,28 @@ function App() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-900 grid-bg">
-        <div className="glass rounded-2xl p-8 text-center max-w-md">
-          <p className="text-neon-pink font-mono text-sm mb-2">Error</p>
-          <p className="text-text-secondary">{error}</p>
+      <div className="min-h-screen flex items-center justify-center bg-paper">
+        <div className="border-2 border-ink shadow-pixel p-8 text-center max-w-md bg-paper">
+          <div className="border-t-4 border-ink mb-1" />
+          <div className="border-t border-ink mb-4" />
+          <p className="font-mono text-xs font-bold uppercase tracking-widest text-accent mb-2">
+            Error
+          </p>
+          <p className="font-sans text-sm text-ink-light">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-4 py-2 rounded-xl bg-neon-cyan/10 border border-neon-cyan/30 text-neon-cyan text-sm cursor-pointer"
+            className="mt-6 px-btn px-btn-outline text-xs cursor-pointer"
           >
-            Retry
+            Reintentar
           </button>
+          <div className="border-t-4 border-ink mt-4" />
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-surface-900">
+    <div className="min-h-screen bg-paper">
       <Header />
       <main>
         <Hero />
@@ -40,6 +47,8 @@ function App() {
         <Projects />
         <Skills />
         <Experience />
+        <Testimonials />
+        <Blog />
         <Contact />
       </main>
       <Footer />
