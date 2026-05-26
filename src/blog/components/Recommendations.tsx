@@ -25,8 +25,11 @@ export function Recommendations({ currentPost }: Props) {
 
   if (recommendations.length === 0) return null
 
+  const { setSelectedPost } = useBlogContext()
+
   const handleSelect = (post: BlogPost) => {
-    window.location.hash = `#blog/article/${post.slug}`
+    setSelectedPost(post)
+    history.pushState(null, '', `#blog/article/${post.slug}`)
   }
 
   return (
