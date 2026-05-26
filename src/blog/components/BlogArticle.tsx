@@ -13,7 +13,7 @@ import { Recommendations } from './Recommendations'
  */
 export function BlogArticle() {
   const { lang } = useTranslation()
-  const { filteredPosts, selectedPost } = useBlogContext()
+  const { filteredPosts, selectedPost, setSelectedPost } = useBlogContext()
   const articleRef = useRef<HTMLDivElement>(null)
 
   const post = selectedPost
@@ -39,13 +39,15 @@ export function BlogArticle() {
 
   const handlePrev = () => {
     if (prevPost) {
-      window.location.hash = `#blog/article/${prevPost.slug}`
+      setSelectedPost(prevPost)
+      history.pushState(null, '', `#blog/article/${prevPost.slug}`)
     }
   }
 
   const handleNext = () => {
     if (nextPost) {
-      window.location.hash = `#blog/article/${nextPost.slug}`
+      setSelectedPost(nextPost)
+      history.pushState(null, '', `#blog/article/${nextPost.slug}`)
     }
   }
 
@@ -55,7 +57,7 @@ export function BlogArticle() {
 
   const title = lang === 'es' ? post.title : post.titleEn
   const content = lang === 'es' ? post.content : post.contentEn
-  const backLabel = lang === 'es' ? '← Volver a artículos' : '← Back to articles'
+  const backLabel = lang === 'es' ? 'Volver a artículos' : 'Back to articles'
 
   return (
     <motion.div

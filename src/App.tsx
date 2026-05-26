@@ -62,7 +62,7 @@ function App() {
   }
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="sync">
       {blogMode ? (
         <motion.div
           key="blog-full"
