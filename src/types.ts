@@ -151,16 +151,40 @@ export interface WorkExperience {
 }
 
 /**
- * BlogPost — Para la sección futura de "Publicaciones Técnicas"
- * Puede venir de Dev.to/Hashnode API o ser manual.
+ * BlogPost — Artículo técnico del blog propio.
+ * Todo el contenido vive localmente en TypeScript.
+ * Sin dependencias externas — markdown renderizado inline.
  */
 export interface BlogPost {
   id: string
+  slug: string
   title: string
-  url: string
-  publishedAt: string
-  readingTimeMin: number
+  titleEn: string
+  date: string
   tags: string[]
-  /** Si viene de API externa (Dev.to, Hashnode) */
-  source: 'devto' | 'hashnode' | 'manual'
+  featured: boolean
+
+  excerpt: string
+  excerptEn: string
+
+  /** Cuerpo del artículo en markdown simple (párrafos separados por \n\n) */
+  content: string
+  contentEn: string
+
+  readingTime: number
+  coverImage?: string
+}
+
+/**
+ * Testimonial — Referencia profesional de colegas o clientes.
+ */
+export interface Testimonial {
+  id: string
+  name: string
+  role: string
+  roleEn: string
+  company: string
+  text: string
+  textEn: string
+  avatarUrl?: string
 }

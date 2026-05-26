@@ -6,6 +6,8 @@ type TranslationKeys = {
   'nav.projects': string
   'nav.skills': string
   'nav.experience': string
+  'nav.testimonials': string
+  'nav.blog': string
   'nav.contact': string
   // Hero
   'hero.greeting': string
@@ -28,6 +30,7 @@ type TranslationKeys = {
   'projects.problem': string
   'projects.solution': string
   'projects.impact': string
+  'projects.architecture': string
   'projects.stack': string
   // Skills
   'skills.title': string
@@ -45,11 +48,20 @@ type TranslationKeys = {
   'experience.subtitle': string
   'experience.current': string
   'experience.achievements': string
+  // Blog
+  'blog.title': string
+  'blog.subtitle': string
+  'blog.empty': string
+  // Testimonials
+  'testimonials.title': string
+  'testimonials.subtitle': string
   // Contact
   'contact.title': string
   'contact.subtitle': string
   'contact.github': string
   'contact.email': string
+  'contact.linkedin': string
+  'contact.location': string
   'contact.cta': string
   // Footer
   'footer.built': string
@@ -63,6 +75,8 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.projects': 'Casos de Estudio',
     'nav.skills': 'Stack',
     'nav.experience': 'Experiencia',
+    'nav.testimonials': 'Referencias',
+    'nav.blog': 'Blog',
     'nav.contact': 'Contacto',
 
     // Hero — Copy Senior, vende ingeniería no código
@@ -91,6 +105,7 @@ const translations: Record<Language, TranslationKeys> = {
     'projects.problem': 'El Problema',
     'projects.solution': 'La Solución',
     'projects.impact': 'Impacto',
+    'projects.architecture': 'Arquitectura',
     'projects.stack': 'Stack',
 
     // Skills
@@ -113,11 +128,22 @@ const translations: Record<Language, TranslationKeys> = {
     'experience.current': 'Actual',
     'experience.achievements': 'Logros clave',
 
+    // Blog
+    'blog.title': 'Blog Técnico',
+    'blog.subtitle': 'Arquitectura, patrones y decisiones de ingeniería explicadas',
+    'blog.empty': 'Próximamente — escribiendo el primer artículo',
+
+    // Testimonials
+    'testimonials.title': 'Referencias',
+    'testimonials.subtitle': 'Lo que dicen quienes han trabajado conmigo',
+
     // Contact
     'contact.title': 'Contacto',
     'contact.subtitle': '¿Tienes un reto técnico que resolver?',
-    'contact.github': 'Ver perfil en GitHub',
-    'contact.email': 'Escribir email',
+    'contact.github': 'Perfil en GitHub',
+    'contact.email': 'Enviar correo',
+    'contact.linkedin': 'Conectar en LinkedIn',
+    'contact.location': 'Colombia (Remoto — Disponible para viajar)',
     'contact.cta': 'Construyamos algo que importe',
 
     // Footer
@@ -131,6 +157,8 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.projects': 'Case Studies',
     'nav.skills': 'Stack',
     'nav.experience': 'Experience',
+    'nav.testimonials': 'References',
+    'nav.blog': 'Blog',
     'nav.contact': 'Contact',
 
     // Hero
@@ -159,6 +187,7 @@ const translations: Record<Language, TranslationKeys> = {
     'projects.problem': 'The Problem',
     'projects.solution': 'The Solution',
     'projects.impact': 'Impact',
+    'projects.architecture': 'Architecture',
     'projects.stack': 'Stack',
 
     // Skills
@@ -181,11 +210,22 @@ const translations: Record<Language, TranslationKeys> = {
     'experience.current': 'Current',
     'experience.achievements': 'Key achievements',
 
+    // Blog
+    'blog.title': 'Technical Blog',
+    'blog.subtitle': 'Architecture, patterns, and engineering decisions explained',
+    'blog.empty': 'Coming soon — writing the first article',
+
+    // Testimonials
+    'testimonials.title': 'References',
+    'testimonials.subtitle': 'What people say about working with me',
+
     // Contact
     'contact.title': 'Contact',
     'contact.subtitle': 'Have a technical challenge to solve?',
     'contact.github': 'View GitHub profile',
     'contact.email': 'Send email',
+    'contact.linkedin': 'Connect on LinkedIn',
+    'contact.location': 'Colombia (Remote — Available for travel)',
     'contact.cta': "Let's build something that matters",
 
     // Footer
