@@ -13,7 +13,7 @@ import { Recommendations } from './Recommendations'
  */
 export function BlogArticle() {
   const { lang } = useTranslation()
-  const { filteredPosts, selectedPost, setSelectedPost, setCurrentRoute } = useBlogContext()
+  const { filteredPosts, selectedPost } = useBlogContext()
   const articleRef = useRef<HTMLDivElement>(null)
 
   const post = selectedPost
@@ -34,19 +34,18 @@ export function BlogArticle() {
   }, [post?.id])
 
   const handleBack = () => {
-    setSelectedPost(null)
-    setCurrentRoute('list')
+    window.location.hash = '#blog/list'
   }
 
   const handlePrev = () => {
     if (prevPost) {
-      setSelectedPost(prevPost)
+      window.location.hash = `#blog/article/${prevPost.slug}`
     }
   }
 
   const handleNext = () => {
     if (nextPost) {
-      setSelectedPost(nextPost)
+      window.location.hash = `#blog/article/${nextPost.slug}`
     }
   }
 
