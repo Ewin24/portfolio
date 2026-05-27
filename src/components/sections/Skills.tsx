@@ -1,146 +1,180 @@
-import { useMemo } from 'react'
-import { useApp } from '../../context/AppContext'
+import { useState, useMemo } from 'react'
+import type { ComponentType } from 'react'
+import type { LucideProps } from 'lucide-react'
+import {
+  Code,
+  Terminal,
+  Zap,
+  Database,
+  Package,
+  CircleDot,
+} from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
+import { SkillNodeGrid } from './SkillNodeGrid'
+import { SkillHUD } from './SkillHUD'
 
-const LANG_ICONS: Record<string, { color: string; icon: string }> = {
-  TypeScript:  { color: '#3178c6', icon: 'TS' },
-  JavaScript:  { color: '#b07219', icon: 'JS' },
-  Python:      { color: '#3572A5', icon: 'PY' },
-  'C#':        { color: '#178600', icon: 'C#' },
-  Java:        { color: '#b07219', icon: 'JV' },
-  PHP:         { color: '#4F5D95', icon: 'PH' },
-  HTML:        { color: '#e34c26', icon: 'HT' },
-  CSS:         { color: '#563d7c', icon: 'CS' },
-  Go:          { color: '#00ADD8', icon: 'GO' },
-  Kotlin:      { color: '#A97BFF', icon: 'KT' },
-  Shell:       { color: '#4A4A4A', icon: 'SH' },
-  Dart:        { color: '#00B4AB', icon: 'DT' },
+interface TechData {
+  id: string
+  name: string
+  icon: ComponentType<LucideProps>
+  color: string
+  milestoneKeys: [string, string, string]
+  referenceKey: string
+  referenceUrl: string
 }
 
-const FRAMEWORKS = [
-  'React', 'Spring Boot', '.NET / C#', 'Node.js',
-  'Vite', 'Tailwind CSS', 'TypeScript', 'REST APIs',
+const TECH_DATA: TechData[] = [
+  {
+    id: 'react',
+    name: 'React',
+    icon: Code,
+    color: '#61DAFB',
+    milestoneKeys: [
+      'skills.react.milestone1',
+      'skills.react.milestone2',
+      'skills.react.milestone3',
+    ],
+    referenceKey: 'skills.react.reference',
+    referenceUrl: '/projects#react',
+  },
+  {
+    id: 'nodejs',
+    name: 'Node.js',
+    icon: Terminal,
+    color: '#68A063',
+    milestoneKeys: [
+      'skills.nodejs.milestone1',
+      'skills.nodejs.milestone2',
+      'skills.nodejs.milestone3',
+    ],
+    referenceKey: 'skills.nodejs.reference',
+    referenceUrl: '/projects#nodejs',
+  },
+  {
+    id: 'typescript',
+    name: 'TypeScript',
+    icon: Zap,
+    color: '#3178C6',
+    milestoneKeys: [
+      'skills.typescript.milestone1',
+      'skills.typescript.milestone2',
+      'skills.typescript.milestone3',
+    ],
+    referenceKey: 'skills.typescript.reference',
+    referenceUrl: '/projects#typescript',
+  },
+  {
+    id: 'postgresql',
+    name: 'PostgreSQL',
+    icon: Database,
+    color: '#336791',
+    milestoneKeys: [
+      'skills.postgresql.milestone1',
+      'skills.postgresql.milestone2',
+      'skills.postgresql.milestone3',
+    ],
+    referenceKey: 'skills.postgresql.reference',
+    referenceUrl: '/projects#database',
+  },
+  {
+    id: 'docker',
+    name: 'Docker',
+    icon: Package,
+    color: '#2496ED',
+    milestoneKeys: [
+      'skills.docker.milestone1',
+      'skills.docker.milestone2',
+      'skills.docker.milestone3',
+    ],
+    referenceKey: 'skills.docker.reference',
+    referenceUrl: '/projects#devops',
+  },
+  {
+    id: 'python',
+    name: 'Python',
+    icon: CircleDot,
+    color: '#3572A5',
+    milestoneKeys: [
+      'skills.python.milestone1',
+      'skills.python.milestone2',
+      'skills.python.milestone3',
+    ],
+    referenceKey: 'skills.python.reference',
+    referenceUrl: '/projects#python',
+  },
 ]
 
-const TOOLS = [
-  'Docker', 'Git', 'GitHub Actions', 'SQL Server',
-  'PostgreSQL', 'Redis', 'Azure', 'Linux',
-]
+interface Technology {
+  id: string
+  name: string
+  icon: ComponentType<LucideProps>
+  color: string
+  milestones: string[]
+  reference: {
+    text: string
+    url: string
+  }
+}
 
 export function Skills() {
-  const { repos } = useApp()
   const { t } = useTranslation()
+  const [selectedId, setSelectedId] = useState<string>(TECH_DATA[0].id)
 
-  const languages = useMemo(() => {
-    const langMap = new Map<string, number>()
-    for (const repo of repos) {
-      if (repo.language) {
-        langMap.set(repo.language, (langMap.get(repo.language) || 0) + 1)
-      }
-    }
-    return [...langMap.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 8)
-  }, [repos])
+  const technologies: Technology[] = useMemo(
+    () =>
+      TECH_DATA.map((tech) => ({
+        id: tech.id,
+        name: tech.name,
+        icon: tech.icon,
+        color: tech.color,
+        milestones: tech.milestoneKeys.map((key) => t(key as any)),
+        reference: {
+          text: t(tech.referenceKey as any),
+          url: tech.referenceUrl,
+        },
+      })),
+    [t],
+  )
 
-  const maxCount = languages.length > 0 ? languages[0][1] : 1
+  const selected =
+    technologies.find((tech) => tech.id === selectedId) ?? technologies[0]
 
   return (
     <section id="skills" className="py-20 px-6 max-w-7xl mx-auto">
+      {/* Section header — pixel-art newspaper (Projects.tsx L233-249 verbatim) */}
       <FadeIn>
         <div className="mb-10">
           <div className="border-t-4 border-ink mb-1" />
           <div className="border-t border-ink mb-4" />
-          <h2 className="font-headline text-4xl md:text-5xl font-black text-ink leading-none">
-            {t('skills.title')}
-          </h2>
-          <p className="font-mono text-xs text-ink-muted mt-2">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 className="font-headline text-4xl md:text-5xl font-black text-ink leading-none">
+              {t('skills.title')}
+            </h2>
+            <p className="font-mono text-xs text-ink-muted text-right max-w-xs hidden md:block">
+              {t('skills.subtitle')}
+            </p>
+          </div>
+          <p className="font-mono text-xs text-ink-muted mt-2 md:hidden">
             {t('skills.subtitle')}
           </p>
           <div className="border-t-4 border-ink mt-4" />
         </div>
       </FadeIn>
 
-      <div className="grid md:grid-cols-3 border-2 border-ink shadow-pixel">
+      {/* Grid / HUD — side by side on desktop, stacked on mobile */}
+      <div className="grid md:grid-cols-2 gap-6">
+        <FadeIn>
+          <SkillNodeGrid
+            technologies={technologies}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+          />
+        </FadeIn>
 
-        {/* Columna 1: Lenguajes (desde GitHub) */}
-        <div className="border-b-2 md:border-b-0 md:border-r-2 border-ink p-6">
-          <FadeIn delay={0.1}>
-            <h3 className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-muted mb-4 pb-2 border-b border-rule-light">
-              {t('skills.languages')}
-            </h3>
-            <p className="font-mono text-[9px] text-ink-muted italic mb-4">
-              {t('skills.activity')}
-            </p>
-            <div className="space-y-3">
-              {languages.map(([lang, count], i) => {
-                const info = LANG_ICONS[lang]
-                const pct  = (count / maxCount) * 100
-                return (
-                  <FadeIn key={lang} delay={i * 0.04}>
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-8 h-8 border-2 border-ink flex items-center justify-center shrink-0"
-                        style={{ backgroundColor: `${info?.color || '#888'}18` }}
-                      >
-                        <span
-                          className="font-mono text-[9px] font-bold"
-                          style={{ color: info?.color || '#888' }}
-                        >
-                          {info?.icon || lang.slice(0, 2).toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between mb-1">
-                          <span className="font-mono text-xs font-medium text-ink">{lang}</span>
-                          <span className="font-mono text-[10px] text-ink-muted">{count}</span>
-                        </div>
-                        <div className="h-1.5 border border-ink bg-paper-dark overflow-hidden">
-                          <div
-                            className="h-full transition-all duration-700"
-                            style={{
-                              width: `${pct}%`,
-                              backgroundColor: info?.color || '#1A1A1A',
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </FadeIn>
-                )
-              })}
-            </div>
-          </FadeIn>
-        </div>
-
-        {/* Columna 2: Frameworks */}
-        <div className="border-b-2 md:border-b-0 md:border-r-2 border-ink p-6">
-          <FadeIn delay={0.2}>
-            <h3 className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-muted mb-4 pb-2 border-b border-rule-light">
-              {t('skills.frameworks')}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {FRAMEWORKS.map((fw) => (
-                <span key={fw} className="skill-tag">{fw}</span>
-              ))}
-            </div>
-          </FadeIn>
-        </div>
-
-        {/* Columna 3: Tools */}
-        <div className="p-6">
-          <FadeIn delay={0.3}>
-            <h3 className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-muted mb-4 pb-2 border-b border-rule-light">
-              {t('skills.tools')}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {TOOLS.map((tool) => (
-                <span key={tool} className="skill-tag">{tool}</span>
-              ))}
-            </div>
-          </FadeIn>
-        </div>
+        <FadeIn delay={0.1}>
+          <SkillHUD technology={selected} />
+        </FadeIn>
       </div>
     </section>
   )

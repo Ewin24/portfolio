@@ -39,6 +39,34 @@ type TranslationKeys = {
   'skills.frameworks': string
   'skills.tools': string
   'skills.activity': string
+  'skills.heading': string
+  'skills.milestones': string
+  'skills.detail': string
+  // Tech milestones (content — translatable)
+  'skills.react.milestone1': string
+  'skills.react.milestone2': string
+  'skills.react.milestone3': string
+  'skills.react.reference': string
+  'skills.nodejs.milestone1': string
+  'skills.nodejs.milestone2': string
+  'skills.nodejs.milestone3': string
+  'skills.nodejs.reference': string
+  'skills.typescript.milestone1': string
+  'skills.typescript.milestone2': string
+  'skills.typescript.milestone3': string
+  'skills.typescript.reference': string
+  'skills.postgresql.milestone1': string
+  'skills.postgresql.milestone2': string
+  'skills.postgresql.milestone3': string
+  'skills.postgresql.reference': string
+  'skills.docker.milestone1': string
+  'skills.docker.milestone2': string
+  'skills.docker.milestone3': string
+  'skills.docker.reference': string
+  'skills.python.milestone1': string
+  'skills.python.milestone2': string
+  'skills.python.milestone3': string
+  'skills.python.reference': string
   // About
   'about.title': string
   'about.subtitle': string
@@ -119,12 +147,39 @@ const translations: Record<Language, TranslationKeys> = {
     'projects.stack': 'Stack',
 
     // Skills
-    'skills.title': 'Tech Stack',
+    'skills.title': 'Stack Tecnológico',
     'skills.subtitle': 'Tecnologías con las que construyo sistemas en producción',
     'skills.languages': 'Lenguajes',
     'skills.frameworks': 'Frameworks & Librerías',
     'skills.tools': 'Infraestructura & Herramientas',
     'skills.activity': 'Uso por repositorios públicos',
+    'skills.heading': 'Logros Clave',
+    'skills.milestones': 'Hitos',
+    'skills.detail': 'Detalle técnico',
+    'skills.react.milestone1': 'Dominio de Arquitectura de Componentes',
+    'skills.react.milestone2': 'Optimización de Rendimiento',
+    'skills.react.milestone3': 'Patrones de Manejo de Estado',
+    'skills.react.reference': 'Ver Proyectos del Portafolio',
+    'skills.nodejs.milestone1': 'Diseño de APIs RESTful',
+    'skills.nodejs.milestone2': 'Patrones Async / Await',
+    'skills.nodejs.milestone3': 'Escalabilidad de Backend',
+    'skills.nodejs.reference': 'Explorar Trabajo Backend',
+    'skills.typescript.milestone1': 'Dominio del Sistema de Tipos',
+    'skills.typescript.milestone2': 'Patrones Avanzados con Genéricos',
+    'skills.typescript.milestone3': 'Configuración de Herramientas',
+    'skills.typescript.reference': 'Ver Proyectos TypeScript',
+    'skills.postgresql.milestone1': 'Optimización de Consultas',
+    'skills.postgresql.milestone2': 'Diseño de Esquemas',
+    'skills.postgresql.milestone3': 'Ajuste de Rendimiento',
+    'skills.postgresql.reference': 'Ver Proyectos de Datos',
+    'skills.docker.milestone1': 'Orquestación de Contenedores',
+    'skills.docker.milestone2': 'Automatización de Despliegues',
+    'skills.docker.milestone3': 'Integración CI / CD',
+    'skills.docker.reference': 'Soluciones de Despliegue',
+    'skills.python.milestone1': 'Ciencia de Datos & ML',
+    'skills.python.milestone2': 'Automatización de Scripts',
+    'skills.python.milestone3': 'Administración de Sistemas',
+    'skills.python.reference': 'Explorar Trabajo en Python',
 
     // About
     'about.title': 'Sobre mí',
@@ -217,6 +272,33 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.frameworks': 'Frameworks & Libraries',
     'skills.tools': 'Infrastructure & Tools',
     'skills.activity': 'Usage by public repositories',
+    'skills.heading': 'Key Achievements',
+    'skills.milestones': 'Milestones',
+    'skills.detail': 'Technical Detail',
+    'skills.react.milestone1': 'Component Architecture Mastery',
+    'skills.react.milestone2': 'Performance Optimization',
+    'skills.react.milestone3': 'State Management Patterns',
+    'skills.react.reference': 'View Portfolio Projects',
+    'skills.nodejs.milestone1': 'RESTful API Design',
+    'skills.nodejs.milestone2': 'Async / Await Patterns',
+    'skills.nodejs.milestone3': 'Backend Scalability',
+    'skills.nodejs.reference': 'Explore Backend Work',
+    'skills.typescript.milestone1': 'Type System Mastery',
+    'skills.typescript.milestone2': 'Advanced Generic Patterns',
+    'skills.typescript.milestone3': 'Tooling Configuration',
+    'skills.typescript.reference': 'See TS Projects',
+    'skills.postgresql.milestone1': 'Query Optimization',
+    'skills.postgresql.milestone2': 'Schema Design',
+    'skills.postgresql.milestone3': 'Performance Tuning',
+    'skills.postgresql.reference': 'View Data Projects',
+    'skills.docker.milestone1': 'Container Orchestration',
+    'skills.docker.milestone2': 'Deployment Automation',
+    'skills.docker.milestone3': 'CI / CD Integration',
+    'skills.docker.reference': 'Deployment Solutions',
+    'skills.python.milestone1': 'Data Science & ML',
+    'skills.python.milestone2': 'Script Automation',
+    'skills.python.milestone3': 'System Administration',
+    'skills.python.reference': 'Explore Python Work',
 
     // About
     'about.title': 'About',
