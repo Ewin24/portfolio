@@ -57,7 +57,7 @@ export function Contact() {
               </a>
 
               <a
-                href="https://linkedin.com/in/Ewin24"
+                href="https://www.linkedin.com/in/edwintrigosguevara"
                 target="_blank" rel="noopener noreferrer"
                 className="px-btn px-btn-outline flex items-center gap-2"
               >
