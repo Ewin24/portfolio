@@ -511,7 +511,859 @@ Before the centralized API, debugging a failed delivery took between 30 minutes 
 
 **Two. Traceability isn't a feature, it's a debugging necessity.** The GUID with full request and response payload paid for itself in the first week. Literally the first week we found a case where the provider accepted the message but returned REJECTED status in the response —something that would have gone unnoticed before because no one saved the response. Recovering exactly what was sent, to whom, and what the provider responded transformed debugging from "guesswork" to "look it up." Without that traceability, we'd still be in the same black box.
 
-**Three. Clean Architecture isn't just for complex domains.** Email is pure infrastructure and it benefits JUST AS MUCH as a financial domain. The layers aren't decoration — they're what let you swap an entire implementation without the rest of the system knowing. If someone tells you Clean Architecture is overkill for "just sending emails," don't believe them. Email is the best use case for well-defined layers, because EVERYTHING changes around email: the provider, the templates, the sending policies, the audit requirements. And when something changes, you want to change one file, not five.`,relatedIds:[`clean-architecture-los`]}].map(e=>({...e,readingTime:Bd(e.content)}));Vd.filter(e=>e.featured);function Hd(e,t){return e.filter(e=>{if(t.tags.length>0&&!t.tags.every(t=>e.tags.includes(t))||t.category&&e.category!==t.category)return!1;if(t.dateRange){let n=new Date(e.date),r=new Date(t.dateRange.start),i=new Date(t.dateRange.end);if(n<r||n>i)return!1}return!0})}var Ud={tags:[],category:null,dateRange:null},Wd=(0,b.createContext)(null);function Gd({children:e}){let[t,n]=(0,b.useState)(Ud),[r,i]=(0,b.useState)(``),[a,o]=(0,b.useState)(null),[s,c]=(0,b.useState)(`list`),[l,u]=(0,b.useState)(1),d=(0,b.useCallback)(()=>{n(Ud),i(``),u(1)},[]),f={posts:Vd,filteredPosts:(0,b.useMemo)(()=>Hd([...Vd].sort((e,t)=>new Date(t.date).getTime()-new Date(e.date).getTime()),t),[t]),selectedPost:a,filter:t,searchQuery:r,currentRoute:s,page:l,setFilter:n,setSearchQuery:i,setSelectedPost:o,setCurrentRoute:c,setPage:u,clearFilters:d};return(0,E.jsx)(Wd.Provider,{value:f,children:e})}function Kd(){let e=(0,b.useContext)(Wd);if(!e)throw Error(`useBlogContext must be used within BlogProvider`);return e}function qd(){let e=window.location.hash.slice(1);if(e===`blog/list`||e===`blog`||e===``)return{currentRoute:`list`,selectedSlug:null,currentParams:{}};let t=e.match(/^blog\/article\/(.+)$/);if(t)return{currentRoute:`article`,selectedSlug:t[1],currentParams:{}};let n=e.match(/^blog\/tag\/(.+)$/);if(n)return{currentRoute:`tag`,selectedSlug:n[1],currentParams:{tag:n[1]}};let r=e.match(/^blog\/search\?(.+)$/);if(r){let e=Object.fromEntries(new URLSearchParams(r[1]));return{currentRoute:`search`,selectedSlug:e.q??null,currentParams:e}}return{currentRoute:`list`,selectedSlug:null,currentParams:{}}}function Jd(){let[e,t]=(0,b.useState)(qd);(0,b.useEffect)(()=>{let e=()=>t(qd());return window.addEventListener(`hashchange`,e),window.addEventListener(`popstate`,e),()=>{window.removeEventListener(`hashchange`,e),window.removeEventListener(`popstate`,e)}},[]);let n=(0,b.useCallback)(e=>{window.location.hash=e},[]);return{...e,navigate:n}}function Yd({context:e,searchQuery:t=``}){let{lang:n}=J(),{title:r,description:i}={filters:{title:n===`es`?`Sin resultados`:`No results`,description:n===`es`?`No hay artículos que coincidan con los filtros seleccionados. Probá ajustando los criterios.`:`No posts match your current filters. Try adjusting your criteria.`},search:{title:n===`es`?`Sin resultados para "${t}"`:`No results for "${t}"`,description:n===`es`?`No encontramos artículos con ese término. Probá con otras palabras.`:`We couldn't find posts matching that term. Try different keywords.`},none:{title:n===`es`?`Próximamente`:`Coming soon`,description:n===`es`?`Todavía no hay artículos publicados. Volvé pronto.`:`No articles published yet. Check back soon.`}}[e];return(0,E.jsx)(Sd,{children:(0,E.jsx)(`div`,{className:`border-2 border-ink bg-paper-dark p-8 md:p-12 text-center`,children:(0,E.jsxs)(`div`,{className:`max-w-md mx-auto`,children:[(0,E.jsx)(`h3`,{className:`font-headline text-xl md:text-2xl font-bold text-ink mb-3`,children:r}),(0,E.jsx)(`p`,{className:`font-sans text-sm text-ink-light leading-relaxed`,children:i})]})})})}var Xd=6;function Zd({post:e,index:t,onRead:n}){let{lang:r}=J(),i=r===`es`?e.title:e.titleEn,a=r===`es`?e.excerpt:e.excerptEn;return(0,E.jsx)(Sd,{delay:t*.08,children:(0,E.jsx)(`article`,{className:`border-2 border-ink bg-paper shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-75 flex flex-col h-full`,children:(0,E.jsxs)(`div`,{className:`p-5 flex-1 flex flex-col gap-3`,children:[(0,E.jsx)(`div`,{className:`flex flex-wrap gap-1`,children:e.tags.slice(0,3).map(e=>(0,E.jsxs)(`span`,{className:`skill-tag text-[9px] flex items-center gap-1`,children:[(0,E.jsx)(pd,{size:7}),` `,e]},e))}),(0,E.jsx)(`h3`,{className:`font-headline text-lg font-bold text-ink leading-tight line-clamp-2`,children:i}),(0,E.jsx)(`p`,{className:`font-sans text-xs text-ink-light leading-relaxed line-clamp-3 flex-1`,children:a}),(0,E.jsxs)(`div`,{className:`flex items-center justify-between pt-3 border-t border-rule-light mt-auto`,children:[(0,E.jsxs)(`div`,{className:`flex items-center gap-3`,children:[(0,E.jsx)(`span`,{className:`font-mono text-[10px] text-ink-muted`,children:e.date}),(0,E.jsxs)(`span`,{className:`font-mono text-[10px] text-ink-muted flex items-center gap-1`,children:[(0,E.jsx)(Zu,{size:9}),` `,e.readingTime,` min`]})]}),(0,E.jsxs)(`button`,{onClick:n,className:`font-mono text-[10px] font-bold uppercase tracking-wider text-accent hover:text-accent-dark flex items-center gap-1 transition-colors cursor-pointer`,children:[r===`es`?`Leer`:`Read`,` `,(0,E.jsx)(qu,{size:10})]})]})]})})})}function Qd(){let{lang:e}=J(),{filteredPosts:t,page:n,setPage:r}=Kd(),[i,a]=(0,b.useState)(!1),o=t.length,s=i?o:Math.min(n*Xd,o),c=s<o,l=()=>{r(n+1)},u=()=>{a(!0)},d=e=>{window.location.hash=`#blog/article/${e.slug}`};return o===0?(0,E.jsx)(Yd,{context:`filters`}):(0,E.jsxs)(`div`,{children:[(0,E.jsx)(`div`,{className:`grid md:grid-cols-2 lg:grid-cols-3 gap-5`,children:t.slice(0,s).map((e,t)=>(0,E.jsx)(Fu.div,{initial:{opacity:0,y:20},animate:{opacity:1,y:0},transition:{duration:.3,delay:t%Xd*.05},children:(0,E.jsx)(Zd,{post:e,index:t,onRead:()=>d(e)})},e.id))}),(0,E.jsxs)(`div`,{className:`flex justify-center gap-3 mt-8`,children:[c&&(0,E.jsxs)(E.Fragment,{children:[(0,E.jsx)(`button`,{onClick:l,className:`px-btn`,children:e===`es`?`Cargar más`:`Load more`}),(0,E.jsx)(`button`,{onClick:u,className:`px-btn px-btn-outline`,children:e===`es`?`Mostrar todos`:`Show all`})]}),!c&&o>Xd&&(0,E.jsxs)(`p`,{className:`font-mono text-[10px] text-ink-muted`,children:[o,` `,e===`es`?`artículos`:`articles`]})]})]})}var $d=document.createElement(`i`);function ef(e){let t=`&`+e+`;`;$d.innerHTML=t;let n=$d.textContent;return n.charCodeAt(n.length-1)===59&&e!==`semi`||n===t?!1:n}function tf(e,t,n,r){let i=e.length,a=0,o;if(t=t<0?-t>i?0:i+t:t>i?i:t,n=n>0?n:0,r.length<1e4)o=Array.from(r),o.unshift(t,n),e.splice(...o);else for(n&&e.splice(t,n);a<r.length;)o=r.slice(a,a+1e4),o.unshift(t,0),e.splice(...o),a+=1e4,t+=1e4}function nf(e,t){return e.length>0?(tf(e,e.length,0,t),e):t}var rf={}.hasOwnProperty;function af(e){let t={},n=-1;for(;++n<e.length;)of(t,e[n]);return t}function of(e,t){let n;for(n in t){let r=(rf.call(e,n)?e[n]:void 0)||(e[n]={}),i=t[n],a;if(i)for(a in i){rf.call(r,a)||(r[a]=[]);let e=i[a];sf(r[a],Array.isArray(e)?e:e?[e]:[])}}}function sf(e,t){let n=-1,r=[];for(;++n<t.length;)(t[n].add===`after`?e:r).push(t[n]);tf(e,0,0,r)}function cf(e){let t={},n=-1;for(;++n<e.length;)lf(t,e[n]);return t}function lf(e,t){let n;for(n in t){let r=(rf.call(e,n)?e[n]:void 0)||(e[n]={}),i=t[n],a;if(i)for(a in i)r[a]=i[a]}}function uf(e,t){let n=Number.parseInt(e,t);return n<9||n===11||n>13&&n<32||n>126&&n<160||n>55295&&n<57344||n>64975&&n<65008||(n&65535)==65535||(n&65535)==65534||n>1114111?`�`:String.fromCodePoint(n)}var df={'"':`quot`,"&":`amp`,"<":`lt`,">":`gt`};function ff(e){return e.replace(/["&<>]/g,t);function t(e){return`&`+df[e]+`;`}}function pf(e){return e.replace(/[\t\n\r ]+/g,` `).replace(/^ | $/g,``).toLowerCase().toUpperCase()}var mf=wf(/[A-Za-z]/),hf=wf(/[\dA-Za-z]/),gf=wf(/[#-'*+\--9=?A-Z^-~]/);function _f(e){return e!==null&&(e<32||e===127)}var vf=wf(/\d/),yf=wf(/[\dA-Fa-f]/),bf=wf(/[!-/:-@[-`{-~]/);function Z(e){return e!==null&&e<-2}function xf(e){return e!==null&&(e<0||e===32)}function Q(e){return e===-2||e===-1||e===32}var Sf=wf(/\p{P}|\p{S}/u),Cf=wf(/\s/);function wf(e){return t;function t(t){return t!==null&&t>-1&&e.test(String.fromCharCode(t))}}function Tf(e,t){let n=ff(Ef(e||``));if(!t)return n;let r=n.indexOf(`:`),i=n.indexOf(`?`),a=n.indexOf(`#`),o=n.indexOf(`/`);return r<0||o>-1&&r>o||i>-1&&r>i||a>-1&&r>a||t.test(n.slice(0,r))?n:``}function Ef(e){let t=[],n=-1,r=0,i=0;for(;++n<e.length;){let a=e.charCodeAt(n),o=``;if(a===37&&hf(e.charCodeAt(n+1))&&hf(e.charCodeAt(n+2)))i=2;else if(a<128)/[!#$&-;=?-Z_a-z~]/.test(String.fromCharCode(a))||(o=String.fromCharCode(a));else if(a>55295&&a<57344){let t=e.charCodeAt(n+1);a<56320&&t>56319&&t<57344?(o=String.fromCharCode(a,t),i=1):o=`�`}else o=String.fromCharCode(a);o&&=(t.push(e.slice(r,n),encodeURIComponent(o)),r=n+i+1,``),i&&=(n+=i,0)}return t.join(``)+e.slice(r)}var Df={}.hasOwnProperty,Of=/^(https?|ircs?|mailto|xmpp)$/i,kf=/^https?$/i;function Af(e){let t=e||{},n=!0,r={},i=[[]],a=[],o=[],s=cf([{enter:{blockQuote:re,codeFenced:se,codeFencedFenceInfo:h,codeFencedFenceMeta:h,codeIndented:O,codeText:Ve,content:Te,definition:ye,definitionDestinationString:xe,definitionLabelString:h,definitionTitleString:h,emphasis:ze,htmlFlow:Ie,htmlText:Re,image:ue,label:h,link:de,listItemMarker:te,listItemValue:ee,listOrdered:C,listUnordered:w,paragraph:ae,reference:h,resource:me,resourceDestinationString:he,resourceTitleString:h,setextHeading:De,strong:Be},exit:{atxHeading:ke,atxHeadingSequence:Ee,autolinkEmail:Ye,autolinkProtocol:Je,blockQuote:ie,characterEscapeValue:Me,characterReferenceMarkerHexadecimal:Ke,characterReferenceMarkerNumeric:Ke,characterReferenceValue:qe,codeFenced:le,codeFencedFence:D,codeFencedFenceInfo:ce,codeFencedFenceMeta:S,codeFlowValue:Pe,codeIndented:le,codeText:He,codeTextData:Me,data:Me,definition:we,definitionDestinationString:Se,definitionLabelString:be,definitionTitleString:Ce,emphasis:Ue,hardBreakEscape:Fe,hardBreakTrailing:Fe,htmlFlow:Le,htmlFlowData:Me,htmlText:Le,htmlTextData:Me,image:ve,label:pe,labelText:fe,lineEnding:Ne,link:ve,listOrdered:ne,listUnordered:T,paragraph:oe,reference:S,referenceString:k,resource:S,resourceDestinationString:ge,resourceTitleString:_e,setextHeading:je,setextHeadingLineSequence:Ae,setextHeadingText:Oe,strong:We,thematicBreak:Ge}},...t.htmlExtensions||[]]),c={definitions:r,tightStack:o},l={buffer:h,encode:x,getData:m,lineEndingIfNeeded:b,options:t,raw:v,resume:g,setData:p,tag:_},u=t.defaultLineEnding;return d;function d(e){let t=-1,n=0,r=[],a=[],o=[];for(;++t<e.length;)!u&&(e[t][1].type===`lineEnding`||e[t][1].type===`lineEndingBlank`)&&(u=e[t][2].sliceSerialize(e[t][1])),(e[t][1].type===`listOrdered`||e[t][1].type===`listUnordered`)&&(e[t][0]===`enter`?r.push(t):f(e.slice(r.pop(),t))),e[t][1].type===`definition`&&(e[t][0]===`enter`?(o=nf(o,e.slice(n,t)),n=t):(a=nf(a,e.slice(n,t+1)),n=t+1));a=nf(a,o),a=nf(a,e.slice(n)),t=-1;let c=a;for(s.enter.null&&s.enter.null.call(l);++t<e.length;){let e=s[c[t][0]],n=c[t][1].type,r=e[n];Df.call(e,n)&&r&&r.call({sliceSerialize:c[t][2].sliceSerialize,...l},c[t][1])}return s.exit.null&&s.exit.null.call(l),i[0].join(``)}function f(e){let t=e.length,n=0,r=0,i=!1,a;for(;++n<t;){let t=e[n];if(t[1]._container)a=void 0,t[0]===`enter`?r++:r--;else switch(t[1].type){case`listItemPrefix`:t[0]===`exit`&&(a=!0);break;case`linePrefix`:break;case`lineEndingBlank`:t[0]===`enter`&&!r&&(a?a=void 0:i=!0);break;default:a=void 0}}e[0][1]._loose=i}function p(e,t){c[e]=t}function m(e){return c[e]}function h(){i.push([])}function g(){return i.pop().join(``)}function _(e){n&&(p(`lastWasTag`,!0),i[i.length-1].push(e))}function v(e){p(`lastWasTag`),i[i.length-1].push(e)}function y(){v(u||`
+**Three. Clean Architecture isn't just for complex domains.** Email is pure infrastructure and it benefits JUST AS MUCH as a financial domain. The layers aren't decoration — they're what let you swap an entire implementation without the rest of the system knowing. If someone tells you Clean Architecture is overkill for "just sending emails," don't believe them. Email is the best use case for well-defined layers, because EVERYTHING changes around email: the provider, the templates, the sending policies, the audit requirements. And when something changes, you want to change one file, not five.`,relatedIds:[`clean-architecture-los`]},{id:`dual-frontend-clean-architecture-dotnet-10`,slug:`dual-frontend-clean-architecture-dotnet-10`,title:`Diseñé un ERP donde la capa de presentación (Blazor) y la REST API son intercambiables gracias a Clean Architecture`,titleEn:`I Designed an ERP Where the Presentation Layer (Blazor) and REST API Are Interchangeable Thanks to Clean Architecture`,date:`2026-07-01`,tags:[`.NET`,`clean architecture`,`Blazor`,`ASP.NET Core`,`C#`],category:`arquitectura`,featured:!0,excerpt:`Cómo logré que Blazor y la API compartieran exactamente la misma lógica de negocio en un ERP de producción mediante inyección de dependencias en Clean Architecture, eliminando duplicación y acelerando el desarrollo de características.`,excerptEn:`How I made Blazor and the API share identical business logic in a production ERP through dependency injection in Clean Architecture, eliminating duplication and accelerating feature development.`,content:`**El problema: dos frontends para el mismo ERP**
+
+En Baguer SAS necesitábamos un ERP que atendiera dos tipos de consumidores: sistemas externos mediante REST API para integraciones con bancos y logística, y usuarios internos mediante una interfaz web rica con MudBlazor. La tentación inicial fue hacer que Blazor llamara a la API para reutilizar lógica, pero eso generaba sobrecarga de red innecesaria para operaciones internas y duplicación de manejo de autenticación (cookies vs JWT). Más crítico aún: cualquier cambio en reglas de negocio requería actualizar tanto la API como el cliente Blazor, con riesgo de inconsistencias y doble testing.
+
+**El approach equivocado**
+
+Primero intentamos que las páginas Blazor fueran meros consumidores de la API. Cada acción del usuario implicaba una ronda HTTP adicional, incluso para operaciones triviales como validar un campo. Luego probamos crear servicios separados por frontend: uno para API y otro para Blazor. Esto resultó en mantenimiento dual: cada nueva regla de negocio (como cálculo de impuestos regionales) debía implementarse dos veces. La autenticación también se duplicó: validación de cookies en Blazor y validación de tokens en API, con riesgo de desincronización en políticas de expiración.
+
+**La solución: Application Services compartidos**
+
+Aplicamos Clean Architecture con seis proyectos .NET 10: Domain (entidades), Contracts (DTOs compartidos), Application (casos de uso), Infrastructure (Dapper, repositorios), API (controladores REST) y Bg360.Web (Blazor Server). La clave: tanto la API como Blazor inyectan los mismos Application Services directamente desde un contenedor DI compartido. No hay llamadas HTTP entre capas de presentación — ambas acceden a la lógica de negocio mediante inyección directa.
+
+\`\`\`
++----------------+     +---------------------+     +------------------+
+|    Blazor UI   |     |   Application        |     |   Domain Model   |
+| (Bg360.Web)    |<----|   Services (shared)  |<----|   (Bg360.Domain) |
++----------------+     +---------------------+     +------------------+
+         ^                        ^
+         |                        |
++----------------+     +---------------------+
+|  REST API      |     |   Infrastructure    |
+| (Controllers)  |<----|   (Bg360.Infra)     |
++----------------+     +---------------------+
+\`\`\`
+
+La interfaz del servicio de aplicación es simple:
+
+\`\`\`csharp
+public interface IOrdenService
+{
+    Task<OrdenDto> CrearOrdenAsync(CrearOrdenCommand comando);
+    Task<IEnumerable<OrdenDto>> ObtenerOrdenesPendientesAsync();
+    Task<bool> AprobarOrdenAsync(int ordenId, string usuario);
+}
+\`\`\`
+
+El registro DI es idéntico para ambos entry points:
+
+\`\`\`csharp
+builder.Services.AddScoped<IOrdenService, OrdenService>();
+builder.Services.AddScoped<IOrdenRepository, OrdenRepository>();
+\`\`\`
+
+En Blazor se inyecta con \`@inject\`:
+
+\`\`\`csharp
+@inject IOrdenService OrdenService
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        Ordenes = await OrdenService.ObtenerOrdenesPendientesAsync();
+    }
+}
+\`\`\`
+
+Y en el controller de la API, exactamente el mismo patrón:
+
+\`\`\`csharp
+[ApiController]
+[Route("api/[controller]")]
+public class OrdenController : ControllerBase
+{
+    private readonly IOrdenService _ordenService;
+
+    public OrdenController(IOrdenService ordenService)
+        => _ordenService = ordenService;
+
+    [HttpPost]
+    public async Task<ActionResult<OrdenDto>> Crear(
+        [FromBody] CrearOrdenCommand comando)
+    {
+        var orden = await _ordenService.CrearOrdenAsync(comando);
+        return CreatedAtAction(nameof(Obtener), new { id = orden.Id }, orden);
+    }
+}
+\`\`\`
+
+**El impacto**
+
+Al compartir Application Services entre Blazor y API, logramos cero duplicación de lógica de negocio. Cada nueva regla se implementa una sola vez y está disponible inmediatamente en ambos frontends. Los DTOs definidos en Contracts se reutilizan sin transformación en Blazor pages y en respuestas de API. El tiempo para implementar una característica que afecta ambos frontends se redujo aproximadamente un sesenta por ciento comparado con el enfoque de doble implementación. Las pruebas unitarias de Application Services validan el comportamiento para ambas capas de presentación simultáneamente.
+
+**Lecciones aprendidas**
+
+El verdadero valor de Clean Architecture no reside principalmente en la testabilidad (aunque es un beneficio importante), sino en su capacidad para hacer que la lógica de negocio sea verdaderamente compartible entre múltiples consumidores. Cuando diseñamos pensando en múltiples puntos de entrada (web, API, workers) desde el inicio, evitamos el costo oculto de la duplicación que surge cuando se añaden nuevos canales después. La clave técnica fue reconocer que la capa de aplicación no debe conocer nada sobre el mecanismo de entrega (HTTP, SignalR, cola) sino enfocarse exclusivamente en orquestar reglas de dominio. Esta separación permitió que Blazor operara con latencia interna mínima mientras la API mantenía su contrato externo estable, todo usando exactamente el mismo código de negocio.`,contentEn:`**The problem: two frontends for the same ERP**
+
+At Baguer SAS we needed an ERP serving two consumer types: external systems via REST API for bank and logistics integrations, and internal users via a rich MudBlazor web interface. The initial temptation was making Blazor call the API to reuse logic, but this introduced unnecessary network overhead for internal operations and duplicated authentication handling (cookies vs JWT). More critically: any business rule change required updates in both API and Blazor clients, risking inconsistencies and double testing.
+
+**The wrong approach**
+
+First we tried making Blazor pages mere API consumers. Each user action triggered an extra HTTP roundtrip, even for trivial operations like field validation. Then we attempted creating frontend-specific services: one for the API, another for Blazor. This resulted in dual maintenance: every new business rule had to be implemented twice. Authentication also duplicated: cookie validation in Blazor versus token validation in the API, risking desynchronization in expiration policies.
+
+**The solution: shared Application Services**
+
+We applied Clean Architecture with six .NET 10 projects: Domain (entities), Contracts (shared DTOs), Application (use cases), Infrastructure (Dapper, repositories), API (REST controllers), and Bg360.Web (Blazor Server). The key: both API and Blazor inject the same Application Services directly from a shared DI container. No HTTP calls between presentation layers — both access business logic via direct injection.
+
+\`\`\`
++----------------+     +---------------------+     +------------------+
+|    Blazor UI   |     |   Application        |     |   Domain Model   |
+| (Bg360.Web)    |<----|   Services (shared)  |<----|   (Bg360.Domain) |
++----------------+     +---------------------+     +------------------+
+         ^                        ^
+         |                        |
++----------------+     +---------------------+
+|  REST API      |     |   Infrastructure    |
+| (Controllers)  |<----|   (Bg360.Infra)     |
++----------------+     +---------------------+
+\`\`\`
+
+The application service interface is simple:
+
+\`\`\`csharp
+public interface IOrdenService
+{
+    Task<OrdenDto> CrearOrdenAsync(CrearOrdenCommand comando);
+    Task<IEnumerable<OrdenDto>> ObtenerOrdenesPendientesAsync();
+    Task<bool> AprobarOrdenAsync(int ordenId, string usuario);
+}
+\`\`\`
+
+The DI registration is identical for both entry points:
+
+\`\`\`csharp
+builder.Services.AddScoped<IOrdenService, OrdenService>();
+builder.Services.AddScoped<IOrdenRepository, OrdenRepository>();
+\`\`\`
+
+In Blazor it's injected with \`@inject\`:
+
+\`\`\`csharp
+@inject IOrdenService OrdenService
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        Ordenes = await OrdenService.ObtenerOrdenesPendientesAsync();
+    }
+}
+\`\`\`
+
+And in the API controller, the exact same pattern:
+
+\`\`\`csharp
+[ApiController]
+[Route("api/[controller]")]
+public class OrdenController : ControllerBase
+{
+    private readonly IOrdenService _ordenService;
+
+    public OrdenController(IOrdenService ordenService)
+        => _ordenService = ordenService;
+
+    [HttpPost]
+    public async Task<ActionResult<OrdenDto>> Crear(
+        [FromBody] CrearOrdenCommand comando)
+    {
+        var orden = await _ordenService.CrearOrdenAsync(comando);
+        return CreatedAtAction(nameof(Obtener), new { id = orden.Id }, orden);
+    }
+}
+\`\`\`
+
+**The impact**
+
+By sharing Application Services between Blazor and API, we achieved zero duplication of business logic. Each new rule is implemented once and immediately available in both frontends. Contracts-defined DTOs are reused without transformation in Blazor pages and API responses. Feature implementation time affecting both frontends dropped approximately sixty percent compared to dual implementation. Application Services unit tests validate behavior for both presentation layers simultaneously.
+
+**Lessons learned**
+
+Clean Architecture's true value isn't primarily testability (though it's an important benefit) but its ability to make business logic genuinely shareable across multiple consumers. When designing for multiple entry points (web, API, workers) from the outset, we avoid the hidden cost of duplication that arises when adding channels later. The technical key was recognizing that the application layer must know nothing about the delivery mechanism (HTTP, SignalR, queue) and focus solely on orchestrating domain rules. This separation allowed Blazor to operate with minimal internal latency while the API maintained its external contract stable, using identical business logic.`,relatedIds:[`clean-architecture-los`]},{id:`domain-exception-problemdetails-pipeline`,slug:`error-handling-middleware-pipeline`,title:`Todo el error handling de mi API se reduce a dos archivos: así eliminé los try-catch de mis controladores`,titleEn:`My entire API error handling lives in two files: how I eliminated try-catch from my controllers`,date:`2026-07-15`,tags:[`arquitectura`,`.NET`,`ASP.NET Core`,`patrones`,`C#`],category:`arquitectura`,featured:!0,excerpt:`Cada controller tenía su propio try-catch, cada error devolvía un formato distinto, y los mensajes mezclaban detalles técnicos con reglas de negocio. Unificarlo todo en dos archivos — DomainExceptions.cs + ExceptionHandlingMiddleware — cambió la forma en que pensamos los errores.`,excerptEn:`Every controller had its own try-catch, each error returned a different format, and messages mixed technical details with business rules. Unifying it all in two files — DomainExceptions.cs + ExceptionHandlingMiddleware — changed how we think about errors.`,content:`**El problema: error handling en cada esquina**
+
+Cuando heredé el código del ERP Bg360, cada controller manejaba errores a su manera. Algunos tenían try-catch que devolvían 200 con un flag "success: false". Otros lanzaban excepciones genéricas Exception que terminaban en 500. Y algunos directamente no manejaban nada — si el service fallaba, el usuario veía una página amarilla de error de ASP.NET. No había consistencia. Cada tres meses aparecía un bug donde un endpoint devolvía "Error: Object reference not set to an instance of an object" al cliente, filtrando detalles internos de infraestructura.
+
+El problema raíz era que los errores de negocio (cliente no encontrado, crédito insuficiente) y los errores técnicos (timeout de base de datos, serialización JSON) se trataban exactamente igual: como excepciones sin tipo en el catch del controller.
+
+**El approach equivocado**
+
+Intentamos estandarizar con un helper estático \`ErrorResponseHelper\` que todos los controllers llamarían. El helper crecía sin control: cada nuevo caso de error agregaba un método más. Pronto teníamos treinta métodos estáticos, algunos con lógica de negocio hardcodeada, otros con traducciones de mensajes mezcladas con HTTP status codes. Era un cajón de sastre con dependencias de infrastructure y dominio al mismo tiempo.
+
+**La solución: excepciones tipadas + middleware**
+
+Reduje todo el error handling a dos archivos. El primero es DomainExceptions.cs, que contiene TODAS las excepciones de negocio como clases selladas tipadas:
+
+\`\`\`csharp
+public abstract class DomainException : Exception
+{
+    protected DomainException(string message) : base(message) { }
+}
+
+public sealed class CredencialesInvalidasException()
+    : DomainException("Credenciales inválidas") { }
+
+public sealed class NotFoundException(string message)
+    : DomainException(message) { }
+
+public sealed class ValidacionNegocioException(string message)
+    : DomainException(message) { }
+
+public sealed class IpNoAutorizadaException()
+    : DomainException("IP no autorizada") { }
+\`\`\`
+
+El segundo archivo es ExceptionHandlingMiddleware, el único lugar donde las excepciones de dominio se convierten en respuestas HTTP:
+
+\`\`\`csharp
+public class ExceptionHandlingMiddleware
+{
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (DomainException ex)
+        {
+            context.Response.StatusCode = ex switch
+            {
+                CredencialesInvalidasException => 401,
+                IpNoAutorizadaException => 403,
+                NotFoundException => 404,
+                ValidacionNegocioException => 400,
+                _ => 500
+            };
+
+            await context.Response.WriteAsJsonAsync(new ProblemDetails
+            {
+                Title = ex.GetType().Name.Replace("Exception", ""),
+                Status = context.Response.StatusCode,
+                Detail = _env.IsDevelopment() ? ex.Message : null
+            });
+        }
+    }
+}
+\`\`\`
+
+El patrón es simple: los servicios lanzan excepciones tipadas de dominio. El middleware las atrapa y las transforma a RFC 7807 ProblemDetails. Los controllers no tienen ni un solo try-catch:
+
+\`\`\`csharp
+[HttpPost("login")]
+public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+{
+    var usuario = await _authService.ValidarLoginAsync(request.User, request.Password);
+    var token = await _authService.GenerarTokenAsync(usuario);
+    return Ok(token);
+}
+\`\`\`
+
+Flujo completo:
+
+\`\`\`
+AuthService.ValidarLoginAsync()
+    throws CredencialesInvalidasException
+        ↓
+ExceptionHandlingMiddleware catches
+        ↓
+Switch expression → 401 + ProblemDetails
+        ↓
+Cliente recibe: {"title":"CredencialesInvalidas","status":401}
+\`\`\`
+
+**El impacto**
+
+El cambio fue inmediato: cero try-catch en todos los controllers del ERP. Cualquier desarrollador nuevo entiende el error handling en cinco minutos abriendo dos archivos. Cuando el negocio pidió un nuevo tipo de error (ej: "cuenta bloqueada"), agregamos una clase de tres líneas en DomainExceptions.cs y su mapeo en el middleware — cero controllers modificados. En producción, los errores de dominio devuelven un título genérico sin detalles técnicos, pero en desarrollo el mensaje completo ayuda al debugging. El formato ProblemDetails (RFC 7807) es un estándar, no inventamos nada.
+
+**Lecciones aprendidas**
+
+El error handling no es responsabilidad de los controllers. Es un concern transversal que pertenece al middleware. Cada vez que veo un try-catch en un controller, sé que hay una abstracción faltante. Las excepciones de dominio tipadas son la mejor documentación viva de "qué puede salir mal" en el sistema: abrís DomainExceptions.cs y ves todos los casos de error de negocio en una pantalla. El patrón middleware + excepciones tipadas es tan simple que cuesta creer que funcionó tan bien. Pero funcionó porque respeta la separación de capas: dominio define qué puede fallar, infraestructura decide cómo se expresa HTTP.`,contentEn:`**The problem: error handling everywhere**
+
+When I inherited the Bg360 ERP codebase, every controller handled errors differently. Some had try-catch blocks returning 200 with a "success: false" flag. Others threw generic Exception that ended up as 500. And some handled nothing at all — if the service failed, the user saw ASP.NET's yellow error page. There was no consistency. Every few months a bug surfaced where an endpoint returned "Error: Object reference not set to an instance of an object" to the client, leaking internal infrastructure details.
+
+The root problem was that business errors (client not found, insufficient credit) and technical errors (database timeout, JSON serialization) were treated identically: as untyped exceptions in the controller's catch block.
+
+**The wrong approach**
+
+We tried standardizing with a static ErrorResponseHelper that all controllers would call. The helper grew uncontrollably: each new error case added another method. Soon we had thirty static methods, some with hardcoded business logic, others with message translations mixed with HTTP status codes. It was a catch-all with infrastructure and domain dependencies at the same time.
+
+**The solution: typed exceptions + middleware**
+
+I reduced all error handling to two files. The first is DomainExceptions.cs, containing ALL business exceptions as typed sealed classes:
+
+\`\`\`csharp
+public abstract class DomainException : Exception
+{
+    protected DomainException(string message) : base(message) { }
+}
+
+public sealed class CredencialesInvalidasException()
+    : DomainException("Invalid credentials") { }
+
+public sealed class NotFoundException(string message)
+    : DomainException(message) { }
+
+public sealed class ValidacionNegocioException(string message)
+    : DomainException(message) { }
+
+public sealed class IpNoAutorizadaException()
+    : DomainException("Unauthorized IP") { }
+\`\`\`
+
+The second file is ExceptionHandlingMiddleware, the only place where domain exceptions become HTTP responses:
+
+\`\`\`csharp
+public class ExceptionHandlingMiddleware
+{
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (DomainException ex)
+        {
+            context.Response.StatusCode = ex switch
+            {
+                CredencialesInvalidasException => 401,
+                IpNoAutorizadaException => 403,
+                NotFoundException => 404,
+                ValidacionNegocioException => 400,
+                _ => 500
+            };
+
+            await context.Response.WriteAsJsonAsync(new ProblemDetails
+            {
+                Title = ex.GetType().Name.Replace("Exception", ""),
+                Status = context.Response.StatusCode,
+                Detail = _env.IsDevelopment() ? ex.Message : null
+            });
+        }
+    }
+}
+\`\`\`
+
+The pattern is simple: services throw typed domain exceptions. The middleware catches them and transforms them into RFC 7807 ProblemDetails. Controllers have zero try-catch blocks:
+
+\`\`\`csharp
+[HttpPost("login")]
+public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+{
+    var usuario = await _authService.ValidarLoginAsync(request.User, request.Password);
+    var token = await _authService.GenerarTokenAsync(usuario);
+    return Ok(token);
+}
+\`\`\`
+
+Complete flow:
+
+\`\`\`
+AuthService.ValidarLoginAsync()
+    throws CredencialesInvalidasException
+        ↓
+ExceptionHandlingMiddleware catches
+        ↓
+Switch expression → 401 + ProblemDetails
+        ↓
+Client receives: {"title":"CredencialesInvalidas","status":401}
+\`\`\`
+
+**The impact**
+
+The change was immediate: zero try-catch across all ERP controllers. Any new developer understands error handling in five minutes by opening two files. When the business requested a new error type ("account locked"), we added a three-line class in DomainExceptions.cs and its mapping in the middleware — zero controllers modified. In production, domain errors return a generic title without technical details, but in development the full message aids debugging. The ProblemDetails format (RFC 7807) is a standard — we didn't invent anything.
+
+**Lessons learned**
+
+Error handling is not a controller responsibility. It's a cross-cutting concern that belongs in middleware. Every time I see a try-catch in a controller, I know there's a missing abstraction. Typed domain exceptions are the best living documentation of "what can go wrong" in the system: open DomainExceptions.cs and see every business error case on one screen. The middleware-plus-typed-exceptions pattern is so simple it's hard to believe it worked this well. But it worked because it respects layer separation: domain defines what can fail, infrastructure decides how it's expressed over HTTP.`,relatedIds:[`dual-frontend-clean-architecture-dotnet-10`]},{id:`dapper-stored-procedures-why-how`,slug:`dapper-stored-procedures-en-lugar-de-ef-core`,title:`No uso Entity Framework. En 3 años de ERP, cero migraciones, cero N+1, cero sorpresas en producción`,titleEn:`I don't use Entity Framework. In 3 years of ERP development, zero migrations, zero N+1, zero production surprises`,date:`2026-08-01`,tags:[`Dapper`,`arquitectura`,`.NET`,`performance`,`patrones`],category:`arquitectura`,featured:!0,excerpt:`Cada vez que alguien dice "usa EF Core, es el estándar", me pregunto si su base de datos tiene 200 stored procedures legacy y un equipo de DBA. Te cuento por qué elegimos Dapper puro y cómo vivimos para contarlo.`,excerptEn:`Every time someone says "use EF Core, it's the standard", I wonder if their database has 200 legacy stored procedures and a DBA team. Here's why we chose pure Dapper and lived to tell the tale.`,content:`**El problema: 200 stored procedures no se migran a EF Core**
+
+En nuestro ERP Bg360 heredamos una base de datos con más de 200 stored procedures. Algunos con lógica compleja de varios resultsets, otros con parámetros de salida para códigos de estado, y varios con inserciones masivas mediante SqlBulkCopy. La base de datos no era un accesorio del código — era el activo principal, gestionado por un equipo de DBA que versionaba los SPs en control de fuentes independientemente del código C#.
+
+El equipo de desarrollo propuso EF Core porque "es lo que usa todo el mundo". El problema: adoptar EF Core significaba elegir entre dos males: o code-first (ignorando 200 SPs existentes y pelearnos con los DBAs por cada migration), o database-first (generando un EDMX monstruoso que replicaba lo que ya teníamos en SQL).
+
+**El approach equivocado**
+
+Probamos database-first con EF Core. El modelo generado era enorme, las consultas que producía eran ineficientes para nuestros SPs existentes, y cada vez que un DBA modificaba un SP teníamos que regenerar el modelo. Además, varios SPs devolvían múltiples resultsets (ej: orden de trabajo + detalles + histórico), y mapear eso con EF Core requería hacks con \`SqlQuery\` raw que anulaban el propósito del ORM.
+
+**La solución: Dapper puro con stored procedures**
+
+Reemplazamos todo con Dapper, siguiendo un patrón consistente en cada repositorio. La pieza clave es la fábrica de conexiones:
+
+\`\`\`csharp
+public class SqlConnectionFactory : ISqlConnectionFactory
+{
+    private readonly string _connectionString;
+
+    public SqlConnectionFactory(IConfiguration config)
+    {
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
+        _connectionString = config.GetConnectionString("DatabaseConnection");
+    }
+
+    public async Task<DbConnection> CreateConnectionAsync()
+        => new SqlConnection(_connectionString);
+}
+\`\`\`
+
+Cada repositorio sigue el mismo patrón: \`using var connection\`, stored procedure, Dapper mapea:
+
+\`\`\`csharp
+public async Task<ClienteDto> ObtenerPorIdAsync(int id)
+{
+    using var connection = await _connectionFactory.CreateConnectionAsync();
+    return await connection.QueryFirstOrDefaultAsync<ClienteDto>(
+        "BERP_ObtenerCliente",
+        new { Id = id },
+        commandType: CommandType.StoredProcedure
+    );
+}
+\`\`\`
+
+Para consultas complejas con múltiples resultsets:
+
+\`\`\`csharp
+public async Task<OrdenDto> ObtenerOrdenConDetallesAsync(int ordenId)
+{
+    using var connection = await _connectionFactory.CreateConnectionAsync();
+    using var multi = await connection.QueryMultipleAsync(
+        "prod.GetOrdenCompleta",
+        new { OrdenId = ordenId },
+        commandType: CommandType.StoredProcedure
+    );
+
+    var orden = await multi.ReadFirstOrDefaultAsync<OrdenDto>();
+    if (orden is null) return null;
+
+    orden.Detalles = (await multi.ReadAsync<DetalleDto>()).ToList();
+    return orden;
+}
+\`\`\`
+
+Los parámetros de salida se manejan con DynamicParameters:
+
+\`\`\`csharp
+var parameters = new DynamicParameters();
+parameters.Add("@Id", ordenId);
+parameters.Add("@CodigoEstado", dbType: DbType.Int32,
+    direction: ParameterDirection.Output);
+await connection.ExecuteAsync("prod.MarcarEnviado", parameters,
+    commandType: CommandType.StoredProcedure);
+var estado = parameters.Get<int>("@CodigoEstado");
+\`\`\`
+
+Y el registro DI es mínimo:
+
+\`\`\`csharp
+services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+services.AddScoped<IOrdenRepository, OrdenRepository>();
+\`\`\`
+
+**El impacto**
+
+Cero migraciones en tres años. Cero N+1 queries. Cero sorpresas en producción donde el ORM generara SQL inesperado. Los DBAs pueden auditar cada llamada porque todo pasa por SPs con nombres predecibles. El overhead de Dapper es consistentemente inferior al milisegundo por operación. Las inserciones masivas (Formulario 220 DIAN) usan SqlBulkCopy y procesan miles de registros en segundos.
+
+**Lecciones aprendidas**
+
+Dapper no es una alternativa "menos capaz" a EF Core. Es la herramienta correcta cuando tu capa de datos está dominada por stored procedures y el rendimiento importa. EF Core brilla en aplicaciones code-first donde el ORM es dueño del esquema. En sistemas ERP donde la base de datos es un activo legacy gestionado por DBAs, forzar un ORM crea más fricción que valor. La clave está en preguntarse: ¿quién es dueño de la base de datos? Si es el equipo de desarrollo con code-first, EF Core. Si es un equipo de DBA con SPs versionados, Dapper.`,contentEn:`**The problem: 200 stored procedures don't migrate to EF Core**
+
+In our Bg360 ERP we inherited a database with over 200 stored procedures. Some with complex multi-resultset logic, others with output parameters for status codes, and several with bulk inserts using SqlBulkCopy. The database wasn't an accessory to the code — it was the primary asset, managed by a DBA team that versioned SPs in source control independently from the C# code.
+
+The development team proposed EF Core because "that's what everyone uses." The problem: adopting EF Core meant choosing between two evils: either code-first (ignoring 200 existing SPs and fighting DBAs over every migration) or database-first (generating a monstrous EDMX that replicated what we already had in SQL).
+
+**The wrong approach**
+
+We tried database-first with EF Core. The generated model was enormous, the queries it produced were inefficient for our existing SPs, and every time a DBA modified an SP we had to regenerate the model. Plus, several SPs returned multiple resultsets (e.g., work order + details + history), and mapping that with EF Core required raw SqlQuery hacks that defeated the ORM's purpose.
+
+**The solution: pure Dapper with stored procedures**
+
+We replaced everything with Dapper, following a consistent pattern in every repository. The key piece is the connection factory:
+
+\`\`\`csharp
+public class SqlConnectionFactory : ISqlConnectionFactory
+{
+    private readonly string _connectionString;
+
+    public SqlConnectionFactory(IConfiguration config)
+    {
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
+        _connectionString = config.GetConnectionString("DatabaseConnection");
+    }
+
+    public async Task<DbConnection> CreateConnectionAsync()
+        => new SqlConnection(_connectionString);
+}
+\`\`\`
+
+Every repository follows the same pattern: \`using var connection\`, stored procedure, Dapper maps:
+
+\`\`\`csharp
+public async Task<ClienteDto> ObtenerPorIdAsync(int id)
+{
+    using var connection = await _connectionFactory.CreateConnectionAsync();
+    return await connection.QueryFirstOrDefaultAsync<ClienteDto>(
+        "BERP_ObtenerCliente",
+        new { Id = id },
+        commandType: CommandType.StoredProcedure
+    );
+}
+\`\`\`
+
+For complex queries with multiple resultsets:
+
+\`\`\`csharp
+public async Task<OrdenDto> ObtenerOrdenConDetallesAsync(int ordenId)
+{
+    using var connection = await _connectionFactory.CreateConnectionAsync();
+    using var multi = await connection.QueryMultipleAsync(
+        "prod.GetOrdenCompleta",
+        new { OrdenId = ordenId },
+        commandType: CommandType.StoredProcedure
+    );
+
+    var orden = await multi.ReadFirstOrDefaultAsync<OrdenDto>();
+    if (orden is null) return null;
+
+    orden.Detalles = (await multi.ReadAsync<DetalleDto>()).ToList();
+    return orden;
+}
+\`\`\`
+
+Output parameters are handled with DynamicParameters:
+
+\`\`\`csharp
+var parameters = new DynamicParameters();
+parameters.Add("@Id", ordenId);
+parameters.Add("@CodigoEstado", dbType: DbType.Int32,
+    direction: ParameterDirection.Output);
+await connection.ExecuteAsync("prod.MarcarEnviado", parameters,
+    commandType: CommandType.StoredProcedure);
+var estado = parameters.Get<int>("@CodigoEstado");
+\`\`\`
+
+And the DI registration is minimal:
+
+\`\`\`csharp
+services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+services.AddScoped<IOrdenRepository, OrdenRepository>();
+\`\`\`
+
+**The impact**
+
+Zero migrations in three years. Zero N+1 queries. Zero production surprises where the ORM generated unexpected SQL. DBAs can audit every call because everything goes through predictably named SPs. Dapper overhead is consistently sub-millisecond per operation. Bulk inserts (DIAN Form 220) use SqlBulkCopy and process thousands of records in seconds.
+
+**Lessons learned**
+
+Dapper isn't a "less capable" alternative to EF Core. It's the right tool when your data layer is dominated by stored procedures and performance matters. EF Core excels in code-first applications where the ORM owns the schema. In ERP systems where the database is a legacy asset managed by DBAs, forcing an ORM creates more friction than value. The key question is: who owns the database? If it's the dev team with code-first, use EF Core. If it's a DBA team with versioned SPs, use Dapper.`,relatedIds:[`clean-architecture-los`]},{id:`api-versioning-transparent-contract-evolution`,slug:`versionado-api-transparente-sin-romper-clientes`,title:`Versioné 24 controladores de una API en producción sin cambiar ni una sola URL existente`,titleEn:`I versioned 24 production API controllers without changing a single existing URL`,date:`2026-08-15`,tags:[`API`,`arquitectura`,`.NET`,`ASP.NET Core`,`patrones`],category:`arquitectura`,featured:!0,excerpt:`Cuando 24 controladores están en producción y los clientes no pueden actualizarse todos al mismo tiempo, romper URLs no es una opción. Así implementé versionado transparente con rutas duales sin que ningún consumidor legacy se enterara.`,excerptEn:`When 24 controllers are in production and clients can't all update simultaneously, breaking URLs is not an option. Here's how I implemented transparent versioning with dual routes without any legacy consumer noticing.`,content:`**El problema: evolucionar sin romper**
+
+Nuestra API QuacWebApi tenía 24 controladores en producción cuando llegó la necesidad de agregar funcionalidades nuevas: filtros avanzados, campos calculados, nuevos endpoints. Pero los consumidores eran heterogéneos: apps móviles que actualizaban cada dos semanas, apps web que actualizaban mensualmente, e integraciones legacy que no podían actualizarse por restricciones del cliente. Un flag day no era viable romper veinticuatro endpoints simultáneamente habría sido un desastre de soporte.
+
+**El approach equivocado**
+
+Consideramos tres opciones: (1) un flag day donde todos los clientes actualizaran al mismo tiempo — inviable por la diversidad de ciclos de release. (2) congelar la API para siempre — el negocio necesitaba nuevas features. (3) HATEOAS como mecanismo completo de descubrimiento — sobreingeniería que agregaba complejidad innecesaria para equipos frontend acostumbrados a contratos explícitos.
+
+**La solución: Asp.Versioning.Mvc con rutas duales**
+
+Usé Asp.Versioning.Mvc con versionado por segmento de URL. La clave fue mantener las rutas legacy funcionando mientras se agregaban las nuevas rutas versionadas:
+
+\`\`\`csharp
+// Program.cs
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
+\`\`\`
+
+Cada controlador existente recibió dos atributos de ruta — la legacy y la versionada:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+[Route("api/v{version}/[controller]")]
+[Route("api/[controller]")]
+public class ClienteController : ControllerBase
+{
+    // El código no cambia — solo los atributos
+}
+\`\`\`
+
+Aprovechamos que MyBaseController cubría 5 controladores. Un solo atributo \`[ApiVersion("1.0")]\` en la base cubrió 5 endpoints a la vez:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+public class MyBaseController : ControllerBase
+{
+    // Lógica compartida para 5 controladores
+}
+\`\`\`
+
+El outlier de autenticación usaba una ruta no estándar (\`[Route("[controller]")]\` sin \`api/\`). Lo manejamos explícitamente:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+[Route("[controller]")]
+[Route("api/v{version}/[controller]")]
+public class AutenticacionController : ControllerBase { }
+\`\`\`
+
+Arquitectura de rutas:
+
+\`\`\`
+Clientes legacy:  GET /api/Cliente/{nit}     → V1 (sin cambios)
+Clientes nuevos:  GET /api/v2/Cliente/{nit}   → V2 (nuevas features)
+                  GET /api/v1/Cliente/{nit}   → V1 (mismo que legacy)
+\`\`\`
+
+**El impacto**
+
+Cero cambios en clientes existentes. Las apps legacy siguen llamando exactamente a los mismos endpoints y reciben las mismas respuestas. Los clientes nuevos usan rutas versionadas para acceder a funcionalidades adicionales. Swagger muestra documentos separados por versión. Cuando necesitamos agregar un controller V2, lo creamos en \`Controllers/V2/\` con \`[ApiVersion("2.0")]\` y funciona. En total fueron veintisiete tareas implementadas y verificadas. Desde el deployment, cero incidentes atribuibles al versionado.
+
+**Lecciones aprendidas**
+
+El versionado de API exitoso no se trata de crear nuevas URLs, sino de dar tiempo a los consumidores para migrar. Un contrato transparente evoluciona respetando tanto la necesidad del producto de avanzar como la estabilidad que requieren los clientes. Identificar puntos de leverage como un base controller reduce drásticamente el trabajo mecánico. Y encontrar outliers temprano (como el controlador de autenticación con ruta no estándar) evita sorpresas en producción.`,contentEn:`**The problem: evolve without breaking**
+
+Our QuacWebApi had 24 controllers in production when we needed to add new functionality: advanced filters, calculated fields, new endpoints. But our consumers were heterogeneous: mobile apps updating every two weeks, web apps updating monthly, and legacy integrations that couldn't be updated due to client restrictions. A flag day wasn't viable — breaking twenty-four endpoints simultaneously would have been a support disaster.
+
+**The wrong approach**
+
+We considered three options: (1) a flag day forcing all clients to update simultaneously — unworkable given diverse release cycles. (2) freezing the API forever — the business needed new features. (3) HATEOAS as a full discovery mechanism — overengineering that added unnecessary complexity for frontend teams accustomed to explicit contracts.
+
+**The solution: Asp.Versioning.Mvc with dual routes**
+
+I used Asp.Versioning.Mvc with URL-segment versioning. The key was keeping legacy routes working while adding new versioned routes:
+
+\`\`\`csharp
+// Program.cs
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
+\`\`\`
+
+Each existing controller received two route attributes — the legacy and the versioned one:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+[Route("api/v{version}/[controller]")]
+[Route("api/[controller]")]
+public class ClienteController : ControllerBase
+{
+    // Code doesn't change — only the attributes
+}
+\`\`\`
+
+We leveraged MyBaseController covering 5 controllers. A single \`[ApiVersion("1.0")]\` attribute on the base covered 5 endpoints at once:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+public class MyBaseController : ControllerBase
+{
+    // Shared logic for 5 controllers
+}
+\`\`\`
+
+The authentication outlier used a non-standard route (\`[Route("[controller]")]\` without \`api/\`). We handled it explicitly:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+[Route("[controller]")]
+[Route("api/v{version}/[controller]")]
+public class AutenticacionController : ControllerBase { }
+\`\`\`
+
+Route architecture:
+
+\`\`\`
+Legacy clients:  GET /api/Cliente/{nit}     → V1 (unchanged)
+New clients:     GET /api/v2/Cliente/{nit}   → V2 (new features)
+                 GET /api/v1/Cliente/{nit}   → V1 (same as legacy)
+\`\`\`
+
+**The impact**
+
+Zero changes to existing clients. Legacy apps continue calling exactly the same endpoints and receiving the same responses. New clients use versioned routes for additional functionality. Swagger shows separate documents per version. When we needed to add a V2 controller, we created it in \`Controllers/V2/\` with \`[ApiVersion("2.0")]\` and it worked. Twenty-seven tasks were implemented and verified. Since deployment, zero incidents attributable to versioning.
+
+**Lessons learned**
+
+Successful API versioning isn't about creating new URLs — it's about giving consumers time to migrate. A transparent contract evolves respecting both the product's need to advance and the stability clients require. Identifying leverage points like a base controller drastically reduces mechanical work. And finding outliers early (like the authentication controller with a non-standard route) prevents production surprises.`,relatedIds:[`dual-frontend-clean-architecture-dotnet-10`]},{id:`cross-system-orchestration-without-coupling`,slug:`orquestacion-cross-system-sin-acoplamiento`,title:`Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio`,titleEn:`A work order travels through 3 systems without any coupling to each other: the orchestrator is a method, not a microservice`,date:`2026-09-01`,tags:[`arquitectura`,`.NET`,`patrones`,`orquestación`,`integraciones`],category:`arquitectura`,featured:!0,excerpt:`Cuando una orden de producción necesita notificar por email, guardar PDFs en la nube y actualizar el estado en otro sistema, la tentación es crear un orquestador. Pero a veces el orquestador correcto es un método de 30 líneas.`,excerptEn:`When a production order needs to notify by email, save PDFs to the cloud, and update status in another system, the temptation is to build an orchestrator service. But sometimes the right orchestrator is a 30-line method.`,content:`**El problema: una orden que no vive en un solo sistema**
+
+En el flujo de producción de Baguer, una orden de trabajo sigue este ciclo: el ERP Bg360 la gestiona, ErpBaguer notifica al proveedor via email con PDFs adjuntos, Azure Blob Storage guarda la documentación, y BG360 marca la orden como enviada. Son tres sistemas diferentes, cada uno con su propia base de datos, su propio equipo, su propio ciclo de deploy. El desafío: coordinar todo esto sin crear un monstruo distribuido.
+
+El síntoma más visible era que cuando un proveedor llamaba diciendo "no recibí la orden", nadie podía responder rápido. ¿Falló el email? ¿El PDF no se generó? ¿El sistema de almacenamiento devolvió error? Empezaba una ronda de revisiones en tres sistemas diferentes.
+
+**El approach equivocado**
+
+La primera idea fue construir un servicio orquestador dedicado, un nuevo proyecto con su propio deploy, su propia base de datos, su propio pipeline CI/CD. Un microservicio para "orquestar órdenes". Esto implicaba: (1) agregar latencia de red entre el orquestador y cada sistema, (2) duplicar lógica de negocio porque el orquestador necesitaba saber demasiado sobre cada sistema, (3) un nuevo punto de fallo en la cadena.
+
+**La solución: orquestación en un service method**
+
+En lugar de un nuevo servicio, implementé la orquestación dentro del Application Service existente. El método \`NotificarDespachoOrdenTrabajo\` encadena tres operaciones secuenciales usando interfaces desacopladas:
+
+\`\`\`csharp
+public async Task<ResultadoNotificacion> NotificarDespachoOrdenTrabajoAsync(
+    NotificarDespachoRequest request)
+{
+    // 1. Enviar email con PDFs via Infobip
+    var emailResult = await _emailService.EnviarCorreoConAdjuntosAsync(
+        request.ToEmail, request.Subject, request.HtmlContent,
+        request.Adjuntos);
+
+    if (!emailResult.Exitoso) return Fallo(emailResult.Error);
+
+    // 2. Subir PDFs a Azure Blob Storage
+    foreach (var adjunto in request.Adjuntos)
+    {
+        adjunto.Contenido.Position = 0; // resetear stream
+        await _azureStorage.GuardarAsync(
+            $"ordenes/{request.OrdenId}/{adjunto.Nombre}",
+            adjunto.Contenido);
+    }
+
+    // 3. Marcar orden como enviada en BG360
+    var codigoEstado = await _bg360Service.MarcarEnvioFormatoAsync(
+        request.OrdenId);
+
+    return Exito(codigoEstado);
+}
+\`\`\`
+
+Cada integración se define como una interfaz independiente:
+
+\`\`\`csharp
+public interface IEmailService
+{
+    Task<EmailResult> EnviarCorreoConAdjuntosAsync(
+        string to, string subject, string html,
+        List<AttachmentDto> attachments);
+}
+
+public interface IAzureStorageService
+{
+    Task GuardarAsync(string blobName, Stream content);
+}
+
+public interface IBg360Service
+{
+    Task<int> MarcarEnvioFormatoAsync(int ordenId);
+}
+\`\`\`
+
+Los responsables del envío se cargan dinámicamente desde la API Atlas de BG360, en lugar de estar hardcodeados:
+
+\`\`\`csharp
+var responsables = await _bg360Api.ObtenerResponsablesProcesoAsync(
+    request.ProcesoId);
+\`\`\`
+
+Flujo completo:
+
+\`\`\`
+UI Submit → [ErpBaguer Service]
+                ↓
+         [Infobip Email] → notificar proveedor con PDFs
+                ↓
+         [Azure Blob] → almacenar documentos
+                ↓
+         [BG360 API] → MarcarEnvioFormato
+\`\`\`
+
+**El impacto**
+
+Cero servicios nuevos que deployar. Cero archivos temporales en disco (los streams de PDF se resetean con Position = 0 en vez de guardarse). Trazabilidad completa porque cada paso se loguea con el mismo TransactionId del email. Si el paso 3 falla, el paso 2 puede revertirse. Los interfaces permiten mockear cada integración en tests unitarios. El método completo tiene menos de cuarenta líneas.
+
+**Lecciones aprendidas**
+
+Orquestación no requiere un microservicio dedicado ni una cola de mensajes. Un Application Service bien diseñado puede encadenar operaciones cross-system sin acoplar los sistemas entre sí. La clave está en los límites de interfaz, no en los límites físicos de servicio. Cada sistema expone una interfaz, el service method las orquesta. Los PDFs en memoria sin archivos temporales son un detalle que parece menor pero elimina toda una categoría de bugs (archivos huérfanos, permisos, limpieza). Y cargar dinámicamente los responsables desde la API en lugar de hardcodearlos significa que el negocio puede cambiar quién recibe cada notificación sin tocar una línea de código.`,contentEn:`**The problem: an order that lives in no single system**
+
+In Baguer's production workflow, a work order follows this cycle: the Bg360 ERP manages it, ErpBaguer notifies the supplier via email with attached PDFs, Azure Blob Storage stores the documentation, and BG360 marks the order as sent. Three different systems, each with its own database, its own team, its own deployment cycle. The challenge: coordinate all this without creating a distributed monster.
+
+The most visible symptom was that when a supplier called saying "I didn't receive the order," no one could answer quickly. Did the email fail? Was the PDF not generated? Did the storage system return an error? A round of cross-system investigation would begin.
+
+**The wrong approach**
+
+The first idea was building a dedicated orchestrator service: a new project with its own deploy, its own database, its own CI/CD pipeline. A microservice to "orchestrate orders." This meant: (1) adding network latency between the orchestrator and each system, (2) duplicating business logic because the orchestrator needed to know too much about each system, (3) a new point of failure in the chain.
+
+**The solution: orchestration in a service method**
+
+Instead of a new service, I implemented orchestration inside the existing Application Service. The \`NotificarDespachoOrdenTrabajo\` method chains three sequential operations using decoupled interfaces:
+
+\`\`\`csharp
+public async Task<ResultadoNotificacion> NotificarDespachoOrdenTrabajoAsync(
+    NotificarDespachoRequest request)
+{
+    // 1. Send email with PDFs via Infobip
+    var emailResult = await _emailService.EnviarCorreoConAdjuntosAsync(
+        request.ToEmail, request.Subject, request.HtmlContent,
+        request.Adjuntos);
+
+    if (!emailResult.Exitoso) return Fallo(emailResult.Error);
+
+    // 2. Upload PDFs to Azure Blob Storage
+    foreach (var adjunto in request.Adjuntos)
+    {
+        adjunto.Contenido.Position = 0; // reset stream position
+        await _azureStorage.GuardarAsync(
+            $"ordenes/{request.OrdenId}/{adjunto.Nombre}",
+            adjunto.Contenido);
+    }
+
+    // 3. Mark order as sent in BG360
+    var codigoEstado = await _bg360Service.MarcarEnvioFormatoAsync(
+        request.OrdenId);
+
+    return Exito(codigoEstado);
+}
+\`\`\`
+
+Each integration is defined as its own interface:
+
+\`\`\`csharp
+public interface IEmailService
+{
+    Task<EmailResult> EnviarCorreoConAdjuntosAsync(
+        string to, string subject, string html,
+        List<AttachmentDto> attachments);
+}
+
+public interface IAzureStorageService
+{
+    Task GuardarAsync(string blobName, Stream content);
+}
+
+public interface IBg360Service
+{
+    Task<int> MarcarEnvioFormatoAsync(int ordenId);
+}
+\`\`\`
+
+The notification responsables are loaded dynamically from the BG360 Atlas API, rather than being hardcoded:
+
+\`\`\`csharp
+var responsables = await _bg360Api.ObtenerResponsablesProcesoAsync(
+    request.ProcesoId);
+\`\`\`
+
+Complete flow:
+
+\`\`\`
+UI Submit → [ErpBaguer Service]
+                ↓
+         [Infobip Email] → notify supplier with PDFs
+                ↓
+         [Azure Blob] → store documents
+                ↓
+         [BG360 API] → MarcarEnvioFormato
+\`\`\`
+
+**The impact**
+
+Zero new services to deploy. Zero temporary files on disk (PDF streams are reset with Position = 0 instead of being saved). Full traceability because each step is logged with the same TransactionId from the email. If step 3 fails, step 2 can be rolled back. Interfaces allow mocking each integration for unit tests. The complete method is under forty lines.
+
+**Lessons learned**
+
+Orchestration doesn't require a dedicated microservice or a message queue. A well-designed Application Service method can chain cross-system operations without coupling the systems to each other. The key is interface boundaries, not physical service boundaries. Each system exposes an interface, the service method orchestrates them. PDFs in memory without temp files is a detail that seems minor but eliminates an entire category of bugs (orphan files, permissions, cleanup). And loading responsables dynamically from the API instead of hardcoding them means the business can change who receives each notification without touching a single line of code.`,relatedIds:[`comunicaciones-api-centralizada`]}].map(e=>({...e,readingTime:Bd(e.content)}));Vd.filter(e=>e.featured);function Hd(e,t){return e.filter(e=>{if(t.tags.length>0&&!t.tags.every(t=>e.tags.includes(t))||t.category&&e.category!==t.category)return!1;if(t.dateRange){let n=new Date(e.date),r=new Date(t.dateRange.start),i=new Date(t.dateRange.end);if(n<r||n>i)return!1}return!0})}var Ud={tags:[],category:null,dateRange:null},Wd=(0,b.createContext)(null);function Gd({children:e}){let[t,n]=(0,b.useState)(Ud),[r,i]=(0,b.useState)(``),[a,o]=(0,b.useState)(null),[s,c]=(0,b.useState)(`list`),[l,u]=(0,b.useState)(1),d=(0,b.useCallback)(()=>{n(Ud),i(``),u(1)},[]),f={posts:Vd,filteredPosts:(0,b.useMemo)(()=>Hd([...Vd].sort((e,t)=>new Date(t.date).getTime()-new Date(e.date).getTime()),t),[t]),selectedPost:a,filter:t,searchQuery:r,currentRoute:s,page:l,setFilter:n,setSearchQuery:i,setSelectedPost:o,setCurrentRoute:c,setPage:u,clearFilters:d};return(0,E.jsx)(Wd.Provider,{value:f,children:e})}function Kd(){let e=(0,b.useContext)(Wd);if(!e)throw Error(`useBlogContext must be used within BlogProvider`);return e}function qd(){let e=window.location.hash.slice(1);if(e===`blog/list`||e===`blog`||e===``)return{currentRoute:`list`,selectedSlug:null,currentParams:{}};let t=e.match(/^blog\/article\/(.+)$/);if(t)return{currentRoute:`article`,selectedSlug:t[1],currentParams:{}};let n=e.match(/^blog\/tag\/(.+)$/);if(n)return{currentRoute:`tag`,selectedSlug:n[1],currentParams:{tag:n[1]}};let r=e.match(/^blog\/search\?(.+)$/);if(r){let e=Object.fromEntries(new URLSearchParams(r[1]));return{currentRoute:`search`,selectedSlug:e.q??null,currentParams:e}}return{currentRoute:`list`,selectedSlug:null,currentParams:{}}}function Jd(){let[e,t]=(0,b.useState)(qd);(0,b.useEffect)(()=>{let e=()=>t(qd());return window.addEventListener(`hashchange`,e),window.addEventListener(`popstate`,e),()=>{window.removeEventListener(`hashchange`,e),window.removeEventListener(`popstate`,e)}},[]);let n=(0,b.useCallback)(e=>{window.location.hash=e},[]);return{...e,navigate:n}}function Yd({context:e,searchQuery:t=``}){let{lang:n}=J(),{title:r,description:i}={filters:{title:n===`es`?`Sin resultados`:`No results`,description:n===`es`?`No hay artículos que coincidan con los filtros seleccionados. Probá ajustando los criterios.`:`No posts match your current filters. Try adjusting your criteria.`},search:{title:n===`es`?`Sin resultados para "${t}"`:`No results for "${t}"`,description:n===`es`?`No encontramos artículos con ese término. Probá con otras palabras.`:`We couldn't find posts matching that term. Try different keywords.`},none:{title:n===`es`?`Próximamente`:`Coming soon`,description:n===`es`?`Todavía no hay artículos publicados. Volvé pronto.`:`No articles published yet. Check back soon.`}}[e];return(0,E.jsx)(Sd,{children:(0,E.jsx)(`div`,{className:`border-2 border-ink bg-paper-dark p-8 md:p-12 text-center`,children:(0,E.jsxs)(`div`,{className:`max-w-md mx-auto`,children:[(0,E.jsx)(`h3`,{className:`font-headline text-xl md:text-2xl font-bold text-ink mb-3`,children:r}),(0,E.jsx)(`p`,{className:`font-sans text-sm text-ink-light leading-relaxed`,children:i})]})})})}var Xd=6;function Zd({post:e,index:t,onRead:n}){let{lang:r}=J(),i=r===`es`?e.title:e.titleEn,a=r===`es`?e.excerpt:e.excerptEn;return(0,E.jsx)(Sd,{delay:t*.08,children:(0,E.jsx)(`article`,{className:`border-2 border-ink bg-paper shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-75 flex flex-col h-full`,children:(0,E.jsxs)(`div`,{className:`p-5 flex-1 flex flex-col gap-3`,children:[(0,E.jsx)(`div`,{className:`flex flex-wrap gap-1`,children:e.tags.slice(0,3).map(e=>(0,E.jsxs)(`span`,{className:`skill-tag text-[9px] flex items-center gap-1`,children:[(0,E.jsx)(pd,{size:7}),` `,e]},e))}),(0,E.jsx)(`h3`,{className:`font-headline text-lg font-bold text-ink leading-tight line-clamp-2`,children:i}),(0,E.jsx)(`p`,{className:`font-sans text-xs text-ink-light leading-relaxed line-clamp-3 flex-1`,children:a}),(0,E.jsxs)(`div`,{className:`flex items-center justify-between pt-3 border-t border-rule-light mt-auto`,children:[(0,E.jsxs)(`div`,{className:`flex items-center gap-3`,children:[(0,E.jsx)(`span`,{className:`font-mono text-[10px] text-ink-muted`,children:e.date}),(0,E.jsxs)(`span`,{className:`font-mono text-[10px] text-ink-muted flex items-center gap-1`,children:[(0,E.jsx)(Zu,{size:9}),` `,e.readingTime,` min`]})]}),(0,E.jsxs)(`button`,{onClick:n,className:`font-mono text-[10px] font-bold uppercase tracking-wider text-accent hover:text-accent-dark flex items-center gap-1 transition-colors cursor-pointer`,children:[r===`es`?`Leer`:`Read`,` `,(0,E.jsx)(qu,{size:10})]})]})]})})})}function Qd(){let{lang:e}=J(),{filteredPosts:t,page:n,setPage:r}=Kd(),[i,a]=(0,b.useState)(!1),o=t.length,s=i?o:Math.min(n*Xd,o),c=s<o,l=()=>{r(n+1)},u=()=>{a(!0)},d=e=>{window.location.hash=`#blog/article/${e.slug}`};return o===0?(0,E.jsx)(Yd,{context:`filters`}):(0,E.jsxs)(`div`,{children:[(0,E.jsx)(`div`,{className:`grid md:grid-cols-2 lg:grid-cols-3 gap-5`,children:t.slice(0,s).map((e,t)=>(0,E.jsx)(Fu.div,{initial:{opacity:0,y:20},animate:{opacity:1,y:0},transition:{duration:.3,delay:t%Xd*.05},children:(0,E.jsx)(Zd,{post:e,index:t,onRead:()=>d(e)})},e.id))}),(0,E.jsxs)(`div`,{className:`flex justify-center gap-3 mt-8`,children:[c&&(0,E.jsxs)(E.Fragment,{children:[(0,E.jsx)(`button`,{onClick:l,className:`px-btn`,children:e===`es`?`Cargar más`:`Load more`}),(0,E.jsx)(`button`,{onClick:u,className:`px-btn px-btn-outline`,children:e===`es`?`Mostrar todos`:`Show all`})]}),!c&&o>Xd&&(0,E.jsxs)(`p`,{className:`font-mono text-[10px] text-ink-muted`,children:[o,` `,e===`es`?`artículos`:`articles`]})]})]})}var $d=document.createElement(`i`);function ef(e){let t=`&`+e+`;`;$d.innerHTML=t;let n=$d.textContent;return n.charCodeAt(n.length-1)===59&&e!==`semi`||n===t?!1:n}function tf(e,t,n,r){let i=e.length,a=0,o;if(t=t<0?-t>i?0:i+t:t>i?i:t,n=n>0?n:0,r.length<1e4)o=Array.from(r),o.unshift(t,n),e.splice(...o);else for(n&&e.splice(t,n);a<r.length;)o=r.slice(a,a+1e4),o.unshift(t,0),e.splice(...o),a+=1e4,t+=1e4}function nf(e,t){return e.length>0?(tf(e,e.length,0,t),e):t}var rf={}.hasOwnProperty;function af(e){let t={},n=-1;for(;++n<e.length;)of(t,e[n]);return t}function of(e,t){let n;for(n in t){let r=(rf.call(e,n)?e[n]:void 0)||(e[n]={}),i=t[n],a;if(i)for(a in i){rf.call(r,a)||(r[a]=[]);let e=i[a];sf(r[a],Array.isArray(e)?e:e?[e]:[])}}}function sf(e,t){let n=-1,r=[];for(;++n<t.length;)(t[n].add===`after`?e:r).push(t[n]);tf(e,0,0,r)}function cf(e){let t={},n=-1;for(;++n<e.length;)lf(t,e[n]);return t}function lf(e,t){let n;for(n in t){let r=(rf.call(e,n)?e[n]:void 0)||(e[n]={}),i=t[n],a;if(i)for(a in i)r[a]=i[a]}}function uf(e,t){let n=Number.parseInt(e,t);return n<9||n===11||n>13&&n<32||n>126&&n<160||n>55295&&n<57344||n>64975&&n<65008||(n&65535)==65535||(n&65535)==65534||n>1114111?`�`:String.fromCodePoint(n)}var df={'"':`quot`,"&":`amp`,"<":`lt`,">":`gt`};function ff(e){return e.replace(/["&<>]/g,t);function t(e){return`&`+df[e]+`;`}}function pf(e){return e.replace(/[\t\n\r ]+/g,` `).replace(/^ | $/g,``).toLowerCase().toUpperCase()}var mf=wf(/[A-Za-z]/),hf=wf(/[\dA-Za-z]/),gf=wf(/[#-'*+\--9=?A-Z^-~]/);function _f(e){return e!==null&&(e<32||e===127)}var vf=wf(/\d/),yf=wf(/[\dA-Fa-f]/),bf=wf(/[!-/:-@[-`{-~]/);function Z(e){return e!==null&&e<-2}function xf(e){return e!==null&&(e<0||e===32)}function Q(e){return e===-2||e===-1||e===32}var Sf=wf(/\p{P}|\p{S}/u),Cf=wf(/\s/);function wf(e){return t;function t(t){return t!==null&&t>-1&&e.test(String.fromCharCode(t))}}function Tf(e,t){let n=ff(Ef(e||``));if(!t)return n;let r=n.indexOf(`:`),i=n.indexOf(`?`),a=n.indexOf(`#`),o=n.indexOf(`/`);return r<0||o>-1&&r>o||i>-1&&r>i||a>-1&&r>a||t.test(n.slice(0,r))?n:``}function Ef(e){let t=[],n=-1,r=0,i=0;for(;++n<e.length;){let a=e.charCodeAt(n),o=``;if(a===37&&hf(e.charCodeAt(n+1))&&hf(e.charCodeAt(n+2)))i=2;else if(a<128)/[!#$&-;=?-Z_a-z~]/.test(String.fromCharCode(a))||(o=String.fromCharCode(a));else if(a>55295&&a<57344){let t=e.charCodeAt(n+1);a<56320&&t>56319&&t<57344?(o=String.fromCharCode(a,t),i=1):o=`�`}else o=String.fromCharCode(a);o&&=(t.push(e.slice(r,n),encodeURIComponent(o)),r=n+i+1,``),i&&=(n+=i,0)}return t.join(``)+e.slice(r)}var Df={}.hasOwnProperty,Of=/^(https?|ircs?|mailto|xmpp)$/i,kf=/^https?$/i;function Af(e){let t=e||{},n=!0,r={},i=[[]],a=[],o=[],s=cf([{enter:{blockQuote:re,codeFenced:se,codeFencedFenceInfo:h,codeFencedFenceMeta:h,codeIndented:O,codeText:Ve,content:Te,definition:ye,definitionDestinationString:xe,definitionLabelString:h,definitionTitleString:h,emphasis:ze,htmlFlow:Ie,htmlText:Re,image:ue,label:h,link:de,listItemMarker:te,listItemValue:ee,listOrdered:C,listUnordered:w,paragraph:ae,reference:h,resource:me,resourceDestinationString:he,resourceTitleString:h,setextHeading:De,strong:Be},exit:{atxHeading:ke,atxHeadingSequence:Ee,autolinkEmail:Ye,autolinkProtocol:Je,blockQuote:ie,characterEscapeValue:Me,characterReferenceMarkerHexadecimal:Ke,characterReferenceMarkerNumeric:Ke,characterReferenceValue:qe,codeFenced:le,codeFencedFence:D,codeFencedFenceInfo:ce,codeFencedFenceMeta:S,codeFlowValue:Pe,codeIndented:le,codeText:He,codeTextData:Me,data:Me,definition:we,definitionDestinationString:Se,definitionLabelString:be,definitionTitleString:Ce,emphasis:Ue,hardBreakEscape:Fe,hardBreakTrailing:Fe,htmlFlow:Le,htmlFlowData:Me,htmlText:Le,htmlTextData:Me,image:ve,label:pe,labelText:fe,lineEnding:Ne,link:ve,listOrdered:ne,listUnordered:T,paragraph:oe,reference:S,referenceString:k,resource:S,resourceDestinationString:ge,resourceTitleString:_e,setextHeading:je,setextHeadingLineSequence:Ae,setextHeadingText:Oe,strong:We,thematicBreak:Ge}},...t.htmlExtensions||[]]),c={definitions:r,tightStack:o},l={buffer:h,encode:x,getData:m,lineEndingIfNeeded:b,options:t,raw:v,resume:g,setData:p,tag:_},u=t.defaultLineEnding;return d;function d(e){let t=-1,n=0,r=[],a=[],o=[];for(;++t<e.length;)!u&&(e[t][1].type===`lineEnding`||e[t][1].type===`lineEndingBlank`)&&(u=e[t][2].sliceSerialize(e[t][1])),(e[t][1].type===`listOrdered`||e[t][1].type===`listUnordered`)&&(e[t][0]===`enter`?r.push(t):f(e.slice(r.pop(),t))),e[t][1].type===`definition`&&(e[t][0]===`enter`?(o=nf(o,e.slice(n,t)),n=t):(a=nf(a,e.slice(n,t+1)),n=t+1));a=nf(a,o),a=nf(a,e.slice(n)),t=-1;let c=a;for(s.enter.null&&s.enter.null.call(l);++t<e.length;){let e=s[c[t][0]],n=c[t][1].type,r=e[n];Df.call(e,n)&&r&&r.call({sliceSerialize:c[t][2].sliceSerialize,...l},c[t][1])}return s.exit.null&&s.exit.null.call(l),i[0].join(``)}function f(e){let t=e.length,n=0,r=0,i=!1,a;for(;++n<t;){let t=e[n];if(t[1]._container)a=void 0,t[0]===`enter`?r++:r--;else switch(t[1].type){case`listItemPrefix`:t[0]===`exit`&&(a=!0);break;case`linePrefix`:break;case`lineEndingBlank`:t[0]===`enter`&&!r&&(a?a=void 0:i=!0);break;default:a=void 0}}e[0][1]._loose=i}function p(e,t){c[e]=t}function m(e){return c[e]}function h(){i.push([])}function g(){return i.pop().join(``)}function _(e){n&&(p(`lastWasTag`,!0),i[i.length-1].push(e))}function v(e){p(`lastWasTag`),i[i.length-1].push(e)}function y(){v(u||`
 `)}function b(){let e=i[i.length-1],t=e[e.length-1],n=t?t.charCodeAt(t.length-1):null;n===10||n===13||n===null||y()}function x(e){return m(`ignoreEncode`)?e:ff(e)}function S(){g()}function C(e){o.push(!e._loose),b(),_(`<ol`),p(`expectFirstItem`,!0)}function w(e){o.push(!e._loose),b(),_(`<ul`),p(`expectFirstItem`,!0)}function ee(e){if(m(`expectFirstItem`)){let t=Number.parseInt(this.sliceSerialize(e),10);t!==1&&_(` start="`+x(String(t))+`"`)}}function te(){m(`expectFirstItem`)?_(`>`):E(),b(),_(`<li>`),p(`expectFirstItem`),p(`lastWasTag`)}function ne(){E(),o.pop(),y(),_(`</ol>`)}function T(){E(),o.pop(),y(),_(`</ul>`)}function E(){m(`lastWasTag`)&&!m(`slurpAllLineEndings`)&&b(),_(`</li>`),p(`slurpAllLineEndings`)}function re(){o.push(!1),b(),_(`<blockquote>`)}function ie(){o.pop(),b(),_(`</blockquote>`),p(`slurpAllLineEndings`)}function ae(){o[o.length-1]||(b(),_(`<p>`)),p(`slurpAllLineEndings`)}function oe(){o[o.length-1]?p(`slurpAllLineEndings`,!0):_(`</p>`)}function se(){b(),_(`<pre><code`),p(`fencesCount`,0)}function ce(){_(` class="language-`+g()+`"`)}function D(){let e=m(`fencesCount`)||0;e||(_(`>`),p(`slurpOneLineEnding`,!0)),p(`fencesCount`,e+1)}function O(){b(),_(`<pre><code>`)}function le(){let e=m(`fencesCount`);e!==void 0&&e<2&&c.tightStack.length>0&&!m(`lastWasTag`)&&y(),m(`flowCodeSeenData`)&&b(),_(`</code></pre>`),e!==void 0&&e<2&&b(),p(`flowCodeSeenData`),p(`fencesCount`),p(`slurpOneLineEnding`)}function ue(){a.push({image:!0}),n=void 0}function de(){a.push({})}function fe(e){a[a.length-1].labelId=this.sliceSerialize(e)}function pe(){a[a.length-1].label=g()}function k(e){a[a.length-1].referenceId=this.sliceSerialize(e)}function me(){h(),a[a.length-1].destination=``}function he(){h(),p(`ignoreEncode`,!0)}function ge(){a[a.length-1].destination=g(),p(`ignoreEncode`)}function _e(){a[a.length-1].title=g()}function ve(){let e=a.length-1,i=a[e],o=i.referenceId||i.labelId,s=i.destination===void 0?r[pf(o)]:i;for(n=!0;e--;)if(a[e].image){n=void 0;break}i.image?(_(`<img src="`+Tf(s.destination,t.allowDangerousProtocol?void 0:kf)+`" alt="`),v(i.label),_(`"`)):_(`<a href="`+Tf(s.destination,t.allowDangerousProtocol?void 0:Of)+`"`),_(s.title?` title="`+s.title+`"`:``),i.image?_(` />`):(_(`>`),v(i.label),_(`</a>`)),a.pop()}function ye(){h(),a.push({})}function be(e){g(),a[a.length-1].labelId=this.sliceSerialize(e)}function xe(){h(),p(`ignoreEncode`,!0)}function Se(){a[a.length-1].destination=g(),p(`ignoreEncode`)}function Ce(){a[a.length-1].title=g()}function we(){let e=a[a.length-1],t=pf(e.labelId);g(),Df.call(r,t)||(r[t]=a[a.length-1]),a.pop()}function Te(){p(`slurpAllLineEndings`,!0)}function Ee(e){m(`headingRank`)||(p(`headingRank`,this.sliceSerialize(e).length),b(),_(`<h`+m(`headingRank`)+`>`))}function De(){h(),p(`slurpAllLineEndings`)}function Oe(){p(`slurpAllLineEndings`,!0)}function ke(){_(`</h`+m(`headingRank`)+`>`),p(`headingRank`)}function Ae(e){p(`headingRank`,this.sliceSerialize(e).charCodeAt(0)===61?1:2)}function je(){let e=g();b(),_(`<h`+m(`headingRank`)+`>`),v(e),_(`</h`+m(`headingRank`)+`>`),p(`slurpAllLineEndings`),p(`headingRank`)}function Me(e){v(x(this.sliceSerialize(e)))}function Ne(e){if(!m(`slurpAllLineEndings`)){if(m(`slurpOneLineEnding`)){p(`slurpOneLineEnding`);return}if(m(`inCodeText`)){v(` `);return}v(x(this.sliceSerialize(e)))}}function Pe(e){v(x(this.sliceSerialize(e))),p(`flowCodeSeenData`,!0)}function Fe(){_(`<br />`)}function Ie(){b(),Re()}function Le(){p(`ignoreEncode`)}function Re(){t.allowDangerousHtml&&p(`ignoreEncode`,!0)}function ze(){_(`<em>`)}function Be(){_(`<strong>`)}function Ve(){p(`inCodeText`,!0),_(`<code>`)}function He(){p(`inCodeText`),_(`</code>`)}function Ue(){_(`</em>`)}function We(){_(`</strong>`)}function Ge(){b(),_(`<hr />`)}function Ke(e){p(`characterReferenceType`,e.type)}function qe(e){let t=this.sliceSerialize(e);v(x(m(`characterReferenceType`)?uf(t,m(`characterReferenceType`)===`characterReferenceMarkerNumeric`?10:16):ef(t))),p(`characterReferenceType`)}function Je(e){let n=this.sliceSerialize(e);_(`<a href="`+Tf(n,t.allowDangerousProtocol?void 0:Of)+`">`),v(x(n)),_(`</a>`)}function Ye(e){let t=this.sliceSerialize(e);_(`<a href="`+Tf(`mailto:`+t)+`">`),v(x(t)),_(`</a>`)}}function $(e,t,n,r){let i=r?r-1:1/0,a=0;return o;function o(r){return Q(r)?(e.enter(n),s(r)):t(r)}function s(r){return Q(r)&&a++<i?(e.consume(r),s):(e.exit(n),t(r))}}var jf={tokenize:Mf};function Mf(e){let t=e.attempt(this.parser.constructs.contentInitial,r,i),n;return t;function r(n){if(n===null){e.consume(n);return}return e.enter(`lineEnding`),e.consume(n),e.exit(`lineEnding`),$(e,t,`linePrefix`)}function i(t){return e.enter(`paragraph`),a(t)}function a(t){let r=e.enter(`chunkText`,{contentType:`text`,previous:n});return n&&(n.next=r),n=r,o(t)}function o(t){if(t===null){e.exit(`chunkText`),e.exit(`paragraph`),e.consume(t);return}return Z(t)?(e.consume(t),e.exit(`chunkText`),a):(e.consume(t),o)}}var Nf={tokenize:Ff},Pf={tokenize:If};function Ff(e){let t=this,n=[],r=0,i,a,o;return s;function s(i){if(r<n.length){let a=n[r];return t.containerState=a[1],e.attempt(a[0].continuation,c,l)(i)}return l(i)}function c(e){if(r++,t.containerState._closeFlow){t.containerState._closeFlow=void 0,i&&v();let n=t.events.length,a=n,o;for(;a--;)if(t.events[a][0]===`exit`&&t.events[a][1].type===`chunkFlow`){o=t.events[a][1].end;break}_(r);let s=n;for(;s<t.events.length;)t.events[s][1].end={...o},s++;return tf(t.events,a+1,0,t.events.slice(n)),t.events.length=s,l(e)}return s(e)}function l(a){if(r===n.length){if(!i)return f(a);if(i.currentConstruct&&i.currentConstruct.concrete)return m(a);t.interrupt=!!(i.currentConstruct&&!i._gfmTableDynamicInterruptHack)}return t.containerState={},e.check(Pf,u,d)(a)}function u(e){return i&&v(),_(r),f(e)}function d(e){return t.parser.lazy[t.now().line]=r!==n.length,o=t.now().offset,m(e)}function f(n){return t.containerState={},e.attempt(Pf,p,m)(n)}function p(e){return r++,n.push([t.currentConstruct,t.containerState]),f(e)}function m(n){if(n===null){i&&v(),_(0),e.consume(n);return}return i||=t.parser.flow(t.now()),e.enter(`chunkFlow`,{_tokenizer:i,contentType:`flow`,previous:a}),h(n)}function h(n){if(n===null){g(e.exit(`chunkFlow`),!0),_(0),e.consume(n);return}return Z(n)?(e.consume(n),g(e.exit(`chunkFlow`)),r=0,t.interrupt=void 0,s):(e.consume(n),h)}function g(e,n){let s=t.sliceStream(e);if(n&&s.push(null),e.previous=a,a&&(a.next=e),a=e,i.defineSkip(e.start),i.write(s),t.parser.lazy[e.start.line]){let e=i.events.length;for(;e--;)if(i.events[e][1].start.offset<o&&(!i.events[e][1].end||i.events[e][1].end.offset>o))return;let n=t.events.length,a=n,s,c;for(;a--;)if(t.events[a][0]===`exit`&&t.events[a][1].type===`chunkFlow`){if(s){c=t.events[a][1].end;break}s=!0}for(_(r),e=n;e<t.events.length;)t.events[e][1].end={...c},e++;tf(t.events,a+1,0,t.events.slice(n)),t.events.length=e}}function _(r){let i=n.length;for(;i-- >r;){let r=n[i];t.containerState=r[1],r[0].exit.call(t,e)}n.length=r}function v(){i.write([null]),a=void 0,i=void 0,t.containerState._closeFlow=void 0}}function If(e,t,n){return $(e,e.attempt(this.parser.constructs.document,t,n),`linePrefix`,this.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)}function Lf(e){if(e===null||xf(e)||Cf(e))return 1;if(Sf(e))return 2}function Rf(e,t,n){let r=[],i=-1;for(;++i<e.length;){let a=e[i].resolveAll;a&&!r.includes(a)&&(t=a(t,n),r.push(a))}return t}var zf={name:`attention`,resolveAll:Bf,tokenize:Vf};function Bf(e,t){let n=-1,r,i,a,o,s,c,l,u;for(;++n<e.length;)if(e[n][0]===`enter`&&e[n][1].type===`attentionSequence`&&e[n][1]._close){for(r=n;r--;)if(e[r][0]===`exit`&&e[r][1].type===`attentionSequence`&&e[r][1]._open&&t.sliceSerialize(e[r][1]).charCodeAt(0)===t.sliceSerialize(e[n][1]).charCodeAt(0)){if((e[r][1]._close||e[n][1]._open)&&(e[n][1].end.offset-e[n][1].start.offset)%3&&!((e[r][1].end.offset-e[r][1].start.offset+e[n][1].end.offset-e[n][1].start.offset)%3))continue;c=e[r][1].end.offset-e[r][1].start.offset>1&&e[n][1].end.offset-e[n][1].start.offset>1?2:1;let d={...e[r][1].end},f={...e[n][1].start};Hf(d,-c),Hf(f,c),o={type:c>1?`strongSequence`:`emphasisSequence`,start:d,end:{...e[r][1].end}},s={type:c>1?`strongSequence`:`emphasisSequence`,start:{...e[n][1].start},end:f},a={type:c>1?`strongText`:`emphasisText`,start:{...e[r][1].end},end:{...e[n][1].start}},i={type:c>1?`strong`:`emphasis`,start:{...o.start},end:{...s.end}},e[r][1].end={...o.start},e[n][1].start={...s.end},l=[],e[r][1].end.offset-e[r][1].start.offset&&(l=nf(l,[[`enter`,e[r][1],t],[`exit`,e[r][1],t]])),l=nf(l,[[`enter`,i,t],[`enter`,o,t],[`exit`,o,t],[`enter`,a,t]]),l=nf(l,Rf(t.parser.constructs.insideSpan.null,e.slice(r+1,n),t)),l=nf(l,[[`exit`,a,t],[`enter`,s,t],[`exit`,s,t],[`exit`,i,t]]),e[n][1].end.offset-e[n][1].start.offset?(u=2,l=nf(l,[[`enter`,e[n][1],t],[`exit`,e[n][1],t]])):u=0,tf(e,r-1,n-r+3,l),n=r+l.length-u-2;break}}for(n=-1;++n<e.length;)e[n][1].type===`attentionSequence`&&(e[n][1].type=`data`);return e}function Vf(e,t){let n=this.parser.constructs.attentionMarkers.null,r=this.previous,i=Lf(r),a;return o;function o(t){return a=t,e.enter(`attentionSequence`),s(t)}function s(o){if(o===a)return e.consume(o),s;let c=e.exit(`attentionSequence`),l=Lf(o),u=!l||l===2&&i||n.includes(o),d=!i||i===2&&l||n.includes(r);return c._open=!!(a===42?u:u&&(i||!d)),c._close=!!(a===42?d:d&&(l||!u)),t(o)}}function Hf(e,t){e.column+=t,e.offset+=t,e._bufferIndex+=t}var Uf={name:`autolink`,tokenize:Wf};function Wf(e,t,n){let r=0;return i;function i(t){return e.enter(`autolink`),e.enter(`autolinkMarker`),e.consume(t),e.exit(`autolinkMarker`),e.enter(`autolinkProtocol`),a}function a(t){return mf(t)?(e.consume(t),o):t===64?n(t):l(t)}function o(e){return e===43||e===45||e===46||hf(e)?(r=1,s(e)):l(e)}function s(t){return t===58?(e.consume(t),r=0,c):(t===43||t===45||t===46||hf(t))&&r++<32?(e.consume(t),s):(r=0,l(t))}function c(r){return r===62?(e.exit(`autolinkProtocol`),e.enter(`autolinkMarker`),e.consume(r),e.exit(`autolinkMarker`),e.exit(`autolink`),t):r===null||r===32||r===60||_f(r)?n(r):(e.consume(r),c)}function l(t){return t===64?(e.consume(t),u):gf(t)?(e.consume(t),l):n(t)}function u(e){return hf(e)?d(e):n(e)}function d(n){return n===46?(e.consume(n),r=0,u):n===62?(e.exit(`autolinkProtocol`).type=`autolinkEmail`,e.enter(`autolinkMarker`),e.consume(n),e.exit(`autolinkMarker`),e.exit(`autolink`),t):f(n)}function f(t){if((t===45||hf(t))&&r++<63){let n=t===45?f:d;return e.consume(t),n}return n(t)}}var Gf={partial:!0,tokenize:Kf};function Kf(e,t,n){return r;function r(t){return Q(t)?$(e,i,`linePrefix`)(t):i(t)}function i(e){return e===null||Z(e)?t(e):n(e)}}var qf={continuation:{tokenize:Yf},exit:Xf,name:`blockQuote`,tokenize:Jf};function Jf(e,t,n){let r=this;return i;function i(t){if(t===62){let n=r.containerState;return n.open||=(e.enter(`blockQuote`,{_container:!0}),!0),e.enter(`blockQuotePrefix`),e.enter(`blockQuoteMarker`),e.consume(t),e.exit(`blockQuoteMarker`),a}return n(t)}function a(n){return Q(n)?(e.enter(`blockQuotePrefixWhitespace`),e.consume(n),e.exit(`blockQuotePrefixWhitespace`),e.exit(`blockQuotePrefix`),t):(e.exit(`blockQuotePrefix`),t(n))}}function Yf(e,t,n){let r=this;return i;function i(t){return Q(t)?$(e,a,`linePrefix`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)(t):a(t)}function a(r){return e.attempt(qf,t,n)(r)}}function Xf(e){e.exit(`blockQuote`)}var Zf={name:`characterEscape`,tokenize:Qf};function Qf(e,t,n){return r;function r(t){return e.enter(`characterEscape`),e.enter(`escapeMarker`),e.consume(t),e.exit(`escapeMarker`),i}function i(r){return bf(r)?(e.enter(`characterEscapeValue`),e.consume(r),e.exit(`characterEscapeValue`),e.exit(`characterEscape`),t):n(r)}}var $f={name:`characterReference`,tokenize:ep};function ep(e,t,n){let r=this,i=0,a,o;return s;function s(t){return e.enter(`characterReference`),e.enter(`characterReferenceMarker`),e.consume(t),e.exit(`characterReferenceMarker`),c}function c(t){return t===35?(e.enter(`characterReferenceMarkerNumeric`),e.consume(t),e.exit(`characterReferenceMarkerNumeric`),l):(e.enter(`characterReferenceValue`),a=31,o=hf,u(t))}function l(t){return t===88||t===120?(e.enter(`characterReferenceMarkerHexadecimal`),e.consume(t),e.exit(`characterReferenceMarkerHexadecimal`),e.enter(`characterReferenceValue`),a=6,o=yf,u):(e.enter(`characterReferenceValue`),a=7,o=vf,u(t))}function u(s){if(s===59&&i){let i=e.exit(`characterReferenceValue`);return o===hf&&!ef(r.sliceSerialize(i))?n(s):(e.enter(`characterReferenceMarker`),e.consume(s),e.exit(`characterReferenceMarker`),e.exit(`characterReference`),t)}return o(s)&&i++<a?(e.consume(s),u):n(s)}}var tp={partial:!0,tokenize:ip},np={concrete:!0,name:`codeFenced`,tokenize:rp};function rp(e,t,n){let r=this,i={partial:!0,tokenize:x},a=0,o=0,s;return c;function c(e){return l(e)}function l(t){let n=r.events[r.events.length-1];return a=n&&n[1].type===`linePrefix`?n[2].sliceSerialize(n[1],!0).length:0,s=t,e.enter(`codeFenced`),e.enter(`codeFencedFence`),e.enter(`codeFencedFenceSequence`),u(t)}function u(t){return t===s?(o++,e.consume(t),u):o<3?n(t):(e.exit(`codeFencedFenceSequence`),Q(t)?$(e,d,`whitespace`)(t):d(t))}function d(n){return n===null||Z(n)?(e.exit(`codeFencedFence`),r.interrupt?t(n):e.check(tp,h,b)(n)):(e.enter(`codeFencedFenceInfo`),e.enter(`chunkString`,{contentType:`string`}),f(n))}function f(t){return t===null||Z(t)?(e.exit(`chunkString`),e.exit(`codeFencedFenceInfo`),d(t)):Q(t)?(e.exit(`chunkString`),e.exit(`codeFencedFenceInfo`),$(e,p,`whitespace`)(t)):t===96&&t===s?n(t):(e.consume(t),f)}function p(t){return t===null||Z(t)?d(t):(e.enter(`codeFencedFenceMeta`),e.enter(`chunkString`,{contentType:`string`}),m(t))}function m(t){return t===null||Z(t)?(e.exit(`chunkString`),e.exit(`codeFencedFenceMeta`),d(t)):t===96&&t===s?n(t):(e.consume(t),m)}function h(t){return e.attempt(i,b,g)(t)}function g(t){return e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),_}function _(t){return a>0&&Q(t)?$(e,v,`linePrefix`,a+1)(t):v(t)}function v(t){return t===null||Z(t)?e.check(tp,h,b)(t):(e.enter(`codeFlowValue`),y(t))}function y(t){return t===null||Z(t)?(e.exit(`codeFlowValue`),v(t)):(e.consume(t),y)}function b(n){return e.exit(`codeFenced`),t(n)}function x(e,t,n){let i=0;return a;function a(t){return e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),c}function c(t){return e.enter(`codeFencedFence`),Q(t)?$(e,l,`linePrefix`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)(t):l(t)}function l(t){return t===s?(e.enter(`codeFencedFenceSequence`),u(t)):n(t)}function u(t){return t===s?(i++,e.consume(t),u):i>=o?(e.exit(`codeFencedFenceSequence`),Q(t)?$(e,d,`whitespace`)(t):d(t)):n(t)}function d(r){return r===null||Z(r)?(e.exit(`codeFencedFence`),t(r)):n(r)}}}function ip(e,t,n){let r=this;return i;function i(t){return t===null?n(t):(e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),a)}function a(e){return r.parser.lazy[r.now().line]?n(e):t(e)}}var ap={name:`codeIndented`,tokenize:sp},op={partial:!0,tokenize:cp};function sp(e,t,n){let r=this;return i;function i(t){return e.enter(`codeIndented`),$(e,a,`linePrefix`,5)(t)}function a(e){let t=r.events[r.events.length-1];return t&&t[1].type===`linePrefix`&&t[2].sliceSerialize(t[1],!0).length>=4?o(e):n(e)}function o(t){return t===null?c(t):Z(t)?e.attempt(op,o,c)(t):(e.enter(`codeFlowValue`),s(t))}function s(t){return t===null||Z(t)?(e.exit(`codeFlowValue`),o(t)):(e.consume(t),s)}function c(n){return e.exit(`codeIndented`),t(n)}}function cp(e,t,n){let r=this;return i;function i(t){return r.parser.lazy[r.now().line]?n(t):Z(t)?(e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),i):$(e,a,`linePrefix`,5)(t)}function a(e){let a=r.events[r.events.length-1];return a&&a[1].type===`linePrefix`&&a[2].sliceSerialize(a[1],!0).length>=4?t(e):Z(e)?i(e):n(e)}}var lp={name:`codeText`,previous:dp,resolve:up,tokenize:fp};function up(e){let t=e.length-4,n=3,r,i;if((e[n][1].type===`lineEnding`||e[n][1].type===`space`)&&(e[t][1].type===`lineEnding`||e[t][1].type===`space`)){for(r=n;++r<t;)if(e[r][1].type===`codeTextData`){e[n][1].type=`codeTextPadding`,e[t][1].type=`codeTextPadding`,n+=2,t-=2;break}}for(r=n-1,t++;++r<=t;)i===void 0?r!==t&&e[r][1].type!==`lineEnding`&&(i=r):(r===t||e[r][1].type===`lineEnding`)&&(e[i][1].type=`codeTextData`,r!==i+2&&(e[i][1].end=e[r-1][1].end,e.splice(i+2,r-i-2),t-=r-i-2,r=i+2),i=void 0);return e}function dp(e){return e!==96||this.events[this.events.length-1][1].type===`characterEscape`}function fp(e,t,n){let r=0,i,a;return o;function o(t){return e.enter(`codeText`),e.enter(`codeTextSequence`),s(t)}function s(t){return t===96?(e.consume(t),r++,s):(e.exit(`codeTextSequence`),c(t))}function c(t){return t===null?n(t):t===32?(e.enter(`space`),e.consume(t),e.exit(`space`),c):t===96?(a=e.enter(`codeTextSequence`),i=0,u(t)):Z(t)?(e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),c):(e.enter(`codeTextData`),l(t))}function l(t){return t===null||t===32||t===96||Z(t)?(e.exit(`codeTextData`),c(t)):(e.consume(t),l)}function u(n){return n===96?(e.consume(n),i++,u):i===r?(e.exit(`codeTextSequence`),e.exit(`codeText`),t(n)):(a.type=`codeTextData`,l(n))}}var pp=class{constructor(e){this.left=e?[...e]:[],this.right=[]}get(e){if(e<0||e>=this.left.length+this.right.length)throw RangeError("Cannot access index `"+e+"` in a splice buffer of size `"+(this.left.length+this.right.length)+"`");return e<this.left.length?this.left[e]:this.right[this.right.length-e+this.left.length-1]}get length(){return this.left.length+this.right.length}shift(){return this.setCursor(0),this.right.pop()}slice(e,t){let n=t??1/0;return n<this.left.length?this.left.slice(e,n):e>this.left.length?this.right.slice(this.right.length-n+this.left.length,this.right.length-e+this.left.length).reverse():this.left.slice(e).concat(this.right.slice(this.right.length-n+this.left.length).reverse())}splice(e,t,n){let r=t||0;this.setCursor(Math.trunc(e));let i=this.right.splice(this.right.length-r,1/0);return n&&mp(this.left,n),i.reverse()}pop(){return this.setCursor(1/0),this.left.pop()}push(e){this.setCursor(1/0),this.left.push(e)}pushMany(e){this.setCursor(1/0),mp(this.left,e)}unshift(e){this.setCursor(0),this.right.push(e)}unshiftMany(e){this.setCursor(0),mp(this.right,e.reverse())}setCursor(e){if(!(e===this.left.length||e>this.left.length&&this.right.length===0||e<0&&this.left.length===0))if(e<this.left.length){let t=this.left.splice(e,1/0);mp(this.right,t.reverse())}else{let t=this.right.splice(this.left.length+this.right.length-e,1/0);mp(this.left,t.reverse())}}};function mp(e,t){let n=0;if(t.length<1e4)e.push(...t);else for(;n<t.length;)e.push(...t.slice(n,n+1e4)),n+=1e4}function hp(e){let t={},n=-1,r,i,a,o,s,c,l,u=new pp(e);for(;++n<u.length;){for(;n in t;)n=t[n];if(r=u.get(n),n&&r[1].type===`chunkFlow`&&u.get(n-1)[1].type===`listItemPrefix`&&(c=r[1]._tokenizer.events,a=0,a<c.length&&c[a][1].type===`lineEndingBlank`&&(a+=2),a<c.length&&c[a][1].type===`content`))for(;++a<c.length&&c[a][1].type!==`content`;)c[a][1].type===`chunkText`&&(c[a][1]._isInFirstContentOfListItem=!0,a++);if(r[0]===`enter`)r[1].contentType&&(Object.assign(t,gp(u,n)),n=t[n],l=!0);else if(r[1]._container){for(a=n,i=void 0;a--;)if(o=u.get(a),o[1].type===`lineEnding`||o[1].type===`lineEndingBlank`)o[0]===`enter`&&(i&&(u.get(i)[1].type=`lineEndingBlank`),o[1].type=`lineEnding`,i=a);else if(!(o[1].type===`linePrefix`||o[1].type===`listItemIndent`))break;i&&(r[1].end={...u.get(i)[1].start},s=u.slice(i,n),s.unshift(r),u.splice(i,n-i+1,s))}}return tf(e,0,1/0,u.slice(0)),!l}function gp(e,t){let n=e.get(t)[1],r=e.get(t)[2],i=t-1,a=[],o=n._tokenizer;o||(o=r.parser[n.contentType](n.start),n._contentTypeTextTrailing&&(o._contentTypeTextTrailing=!0));let s=o.events,c=[],l={},u,d,f=-1,p=n,m=0,h=0,g=[h];for(;p;){for(;e.get(++i)[1]!==p;);a.push(i),p._tokenizer||(u=r.sliceStream(p),p.next||u.push(null),d&&o.defineSkip(p.start),p._isInFirstContentOfListItem&&(o._gfmTasklistFirstContentOfListItem=!0),o.write(u),p._isInFirstContentOfListItem&&(o._gfmTasklistFirstContentOfListItem=void 0)),d=p,p=p.next}for(p=n;++f<s.length;)s[f][0]===`exit`&&s[f-1][0]===`enter`&&s[f][1].type===s[f-1][1].type&&s[f][1].start.line!==s[f][1].end.line&&(h=f+1,g.push(h),p._tokenizer=void 0,p.previous=void 0,p=p.next);for(o.events=[],p?(p._tokenizer=void 0,p.previous=void 0):g.pop(),f=g.length;f--;){let t=s.slice(g[f],g[f+1]),n=a.pop();c.push([n,n+t.length-1]),e.splice(n,2,t)}for(c.reverse(),f=-1;++f<c.length;)l[m+c[f][0]]=m+c[f][1],m+=c[f][1]-c[f][0]-1;return l}var _p={resolve:yp,tokenize:bp},vp={partial:!0,tokenize:xp};function yp(e){return hp(e),e}function bp(e,t){let n;return r;function r(t){return e.enter(`content`),n=e.enter(`chunkContent`,{contentType:`content`}),i(t)}function i(t){return t===null?a(t):Z(t)?e.check(vp,o,a)(t):(e.consume(t),i)}function a(n){return e.exit(`chunkContent`),e.exit(`content`),t(n)}function o(t){return e.consume(t),e.exit(`chunkContent`),n.next=e.enter(`chunkContent`,{contentType:`content`,previous:n}),n=n.next,i}}function xp(e,t,n){let r=this;return i;function i(t){return e.exit(`chunkContent`),e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),$(e,a,`linePrefix`)}function a(i){if(i===null||Z(i))return n(i);let a=r.events[r.events.length-1];return!r.parser.constructs.disable.null.includes(`codeIndented`)&&a&&a[1].type===`linePrefix`&&a[2].sliceSerialize(a[1],!0).length>=4?t(i):e.interrupt(r.parser.constructs.flow,n,t)(i)}}function Sp(e,t,n,r,i,a,o,s,c){let l=c||1/0,u=0;return d;function d(t){return t===60?(e.enter(r),e.enter(i),e.enter(a),e.consume(t),e.exit(a),f):t===null||t===32||t===41||_f(t)?n(t):(e.enter(r),e.enter(o),e.enter(s),e.enter(`chunkString`,{contentType:`string`}),h(t))}function f(n){return n===62?(e.enter(a),e.consume(n),e.exit(a),e.exit(i),e.exit(r),t):(e.enter(s),e.enter(`chunkString`,{contentType:`string`}),p(n))}function p(t){return t===62?(e.exit(`chunkString`),e.exit(s),f(t)):t===null||t===60||Z(t)?n(t):(e.consume(t),t===92?m:p)}function m(t){return t===60||t===62||t===92?(e.consume(t),p):p(t)}function h(i){return!u&&(i===null||i===41||xf(i))?(e.exit(`chunkString`),e.exit(s),e.exit(o),e.exit(r),t(i)):u<l&&i===40?(e.consume(i),u++,h):i===41?(e.consume(i),u--,h):i===null||i===32||i===40||_f(i)?n(i):(e.consume(i),i===92?g:h)}function g(t){return t===40||t===41||t===92?(e.consume(t),h):h(t)}}function Cp(e,t,n,r,i,a){let o=this,s=0,c;return l;function l(t){return e.enter(r),e.enter(i),e.consume(t),e.exit(i),e.enter(a),u}function u(l){return s>999||l===null||l===91||l===93&&!c||l===94&&!s&&`_hiddenFootnoteSupport`in o.parser.constructs?n(l):l===93?(e.exit(a),e.enter(i),e.consume(l),e.exit(i),e.exit(r),t):Z(l)?(e.enter(`lineEnding`),e.consume(l),e.exit(`lineEnding`),u):(e.enter(`chunkString`,{contentType:`string`}),d(l))}function d(t){return t===null||t===91||t===93||Z(t)||s++>999?(e.exit(`chunkString`),u(t)):(e.consume(t),c||=!Q(t),t===92?f:d)}function f(t){return t===91||t===92||t===93?(e.consume(t),s++,d):d(t)}}function wp(e,t,n,r,i,a){let o;return s;function s(t){return t===34||t===39||t===40?(e.enter(r),e.enter(i),e.consume(t),e.exit(i),o=t===40?41:t,c):n(t)}function c(n){return n===o?(e.enter(i),e.consume(n),e.exit(i),e.exit(r),t):(e.enter(a),l(n))}function l(t){return t===o?(e.exit(a),c(o)):t===null?n(t):Z(t)?(e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),$(e,l,`linePrefix`)):(e.enter(`chunkString`,{contentType:`string`}),u(t))}function u(t){return t===o||t===null||Z(t)?(e.exit(`chunkString`),l(t)):(e.consume(t),t===92?d:u)}function d(t){return t===o||t===92?(e.consume(t),u):u(t)}}function Tp(e,t){let n;return r;function r(i){return Z(i)?(e.enter(`lineEnding`),e.consume(i),e.exit(`lineEnding`),n=!0,r):Q(i)?$(e,r,n?`linePrefix`:`lineSuffix`)(i):t(i)}}var Ep={name:`definition`,tokenize:Op},Dp={partial:!0,tokenize:kp};function Op(e,t,n){let r=this,i;return a;function a(t){return e.enter(`definition`),o(t)}function o(t){return Cp.call(r,e,s,n,`definitionLabel`,`definitionLabelMarker`,`definitionLabelString`)(t)}function s(t){return i=pf(r.sliceSerialize(r.events[r.events.length-1][1]).slice(1,-1)),t===58?(e.enter(`definitionMarker`),e.consume(t),e.exit(`definitionMarker`),c):n(t)}function c(t){return xf(t)?Tp(e,l)(t):l(t)}function l(t){return Sp(e,u,n,`definitionDestination`,`definitionDestinationLiteral`,`definitionDestinationLiteralMarker`,`definitionDestinationRaw`,`definitionDestinationString`)(t)}function u(t){return e.attempt(Dp,d,d)(t)}function d(t){return Q(t)?$(e,f,`whitespace`)(t):f(t)}function f(a){return a===null||Z(a)?(e.exit(`definition`),r.parser.defined.push(i),t(a)):n(a)}}function kp(e,t,n){return r;function r(t){return xf(t)?Tp(e,i)(t):n(t)}function i(t){return wp(e,a,n,`definitionTitle`,`definitionTitleMarker`,`definitionTitleString`)(t)}function a(t){return Q(t)?$(e,o,`whitespace`)(t):o(t)}function o(e){return e===null||Z(e)?t(e):n(e)}}var Ap={name:`hardBreakEscape`,tokenize:jp};function jp(e,t,n){return r;function r(t){return e.enter(`hardBreakEscape`),e.consume(t),i}function i(r){return Z(r)?(e.exit(`hardBreakEscape`),t(r)):n(r)}}var Mp={name:`headingAtx`,resolve:Np,tokenize:Pp};function Np(e,t){let n=e.length-2,r=3,i,a;return e[r][1].type===`whitespace`&&(r+=2),n-2>r&&e[n][1].type===`whitespace`&&(n-=2),e[n][1].type===`atxHeadingSequence`&&(r===n-1||n-4>r&&e[n-2][1].type===`whitespace`)&&(n-=r+1===n?2:4),n>r&&(i={type:`atxHeadingText`,start:e[r][1].start,end:e[n][1].end},a={type:`chunkText`,start:e[r][1].start,end:e[n][1].end,contentType:`text`},tf(e,r,n-r+1,[[`enter`,i,t],[`enter`,a,t],[`exit`,a,t],[`exit`,i,t]])),e}function Pp(e,t,n){let r=0;return i;function i(t){return e.enter(`atxHeading`),a(t)}function a(t){return e.enter(`atxHeadingSequence`),o(t)}function o(t){return t===35&&r++<6?(e.consume(t),o):t===null||xf(t)?(e.exit(`atxHeadingSequence`),s(t)):n(t)}function s(n){return n===35?(e.enter(`atxHeadingSequence`),c(n)):n===null||Z(n)?(e.exit(`atxHeading`),t(n)):Q(n)?$(e,s,`whitespace`)(n):(e.enter(`atxHeadingText`),l(n))}function c(t){return t===35?(e.consume(t),c):(e.exit(`atxHeadingSequence`),s(t))}function l(t){return t===null||t===35||xf(t)?(e.exit(`atxHeadingText`),s(t)):(e.consume(t),l)}}var Fp=`address.article.aside.base.basefont.blockquote.body.caption.center.col.colgroup.dd.details.dialog.dir.div.dl.dt.fieldset.figcaption.figure.footer.form.frame.frameset.h1.h2.h3.h4.h5.h6.head.header.hr.html.iframe.legend.li.link.main.menu.menuitem.nav.noframes.ol.optgroup.option.p.param.search.section.summary.table.tbody.td.tfoot.th.thead.title.tr.track.ul`.split(`.`),Ip=[`pre`,`script`,`style`,`textarea`],Lp={concrete:!0,name:`htmlFlow`,resolveTo:Bp,tokenize:Vp},Rp={partial:!0,tokenize:Up},zp={partial:!0,tokenize:Hp};function Bp(e){let t=e.length;for(;t--&&!(e[t][0]===`enter`&&e[t][1].type===`htmlFlow`););return t>1&&e[t-2][1].type===`linePrefix`&&(e[t][1].start=e[t-2][1].start,e[t+1][1].start=e[t-2][1].start,e.splice(t-2,2)),e}function Vp(e,t,n){let r=this,i,a,o,s,c;return l;function l(e){return u(e)}function u(t){return e.enter(`htmlFlow`),e.enter(`htmlFlowData`),e.consume(t),d}function d(s){return s===33?(e.consume(s),f):s===47?(e.consume(s),a=!0,h):s===63?(e.consume(s),i=3,r.interrupt?t:D):mf(s)?(e.consume(s),o=String.fromCharCode(s),g):n(s)}function f(a){return a===45?(e.consume(a),i=2,p):a===91?(e.consume(a),i=5,s=0,m):mf(a)?(e.consume(a),i=4,r.interrupt?t:D):n(a)}function p(i){return i===45?(e.consume(i),r.interrupt?t:D):n(i)}function m(i){return i===`CDATA[`.charCodeAt(s++)?(e.consume(i),s===6?r.interrupt?t:T:m):n(i)}function h(t){return mf(t)?(e.consume(t),o=String.fromCharCode(t),g):n(t)}function g(s){if(s===null||s===47||s===62||xf(s)){let c=s===47,l=o.toLowerCase();return!c&&!a&&Ip.includes(l)?(i=1,r.interrupt?t(s):T(s)):Fp.includes(o.toLowerCase())?(i=6,c?(e.consume(s),_):r.interrupt?t(s):T(s)):(i=7,r.interrupt&&!r.parser.lazy[r.now().line]?n(s):a?v(s):y(s))}return s===45||hf(s)?(e.consume(s),o+=String.fromCharCode(s),g):n(s)}function _(i){return i===62?(e.consume(i),r.interrupt?t:T):n(i)}function v(t){return Q(t)?(e.consume(t),v):te(t)}function y(t){return t===47?(e.consume(t),te):t===58||t===95||mf(t)?(e.consume(t),b):Q(t)?(e.consume(t),y):te(t)}function b(t){return t===45||t===46||t===58||t===95||hf(t)?(e.consume(t),b):x(t)}function x(t){return t===61?(e.consume(t),S):Q(t)?(e.consume(t),x):y(t)}function S(t){return t===null||t===60||t===61||t===62||t===96?n(t):t===34||t===39?(e.consume(t),c=t,C):Q(t)?(e.consume(t),S):w(t)}function C(t){return t===c?(e.consume(t),c=null,ee):t===null||Z(t)?n(t):(e.consume(t),C)}function w(t){return t===null||t===34||t===39||t===47||t===60||t===61||t===62||t===96||xf(t)?x(t):(e.consume(t),w)}function ee(e){return e===47||e===62||Q(e)?y(e):n(e)}function te(t){return t===62?(e.consume(t),ne):n(t)}function ne(t){return t===null||Z(t)?T(t):Q(t)?(e.consume(t),ne):n(t)}function T(t){return t===45&&i===2?(e.consume(t),ae):t===60&&i===1?(e.consume(t),oe):t===62&&i===4?(e.consume(t),O):t===63&&i===3?(e.consume(t),D):t===93&&i===5?(e.consume(t),ce):Z(t)&&(i===6||i===7)?(e.exit(`htmlFlowData`),e.check(Rp,le,E)(t)):t===null||Z(t)?(e.exit(`htmlFlowData`),E(t)):(e.consume(t),T)}function E(t){return e.check(zp,re,le)(t)}function re(t){return e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),ie}function ie(t){return t===null||Z(t)?E(t):(e.enter(`htmlFlowData`),T(t))}function ae(t){return t===45?(e.consume(t),D):T(t)}function oe(t){return t===47?(e.consume(t),o=``,se):T(t)}function se(t){if(t===62){let n=o.toLowerCase();return Ip.includes(n)?(e.consume(t),O):T(t)}return mf(t)&&o.length<8?(e.consume(t),o+=String.fromCharCode(t),se):T(t)}function ce(t){return t===93?(e.consume(t),D):T(t)}function D(t){return t===62?(e.consume(t),O):t===45&&i===2?(e.consume(t),D):T(t)}function O(t){return t===null||Z(t)?(e.exit(`htmlFlowData`),le(t)):(e.consume(t),O)}function le(n){return e.exit(`htmlFlow`),t(n)}}function Hp(e,t,n){let r=this;return i;function i(t){return Z(t)?(e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),a):n(t)}function a(e){return r.parser.lazy[r.now().line]?n(e):t(e)}}function Up(e,t,n){return r;function r(r){return e.enter(`lineEnding`),e.consume(r),e.exit(`lineEnding`),e.attempt(Gf,t,n)}}var Wp={name:`htmlText`,tokenize:Gp};function Gp(e,t,n){let r=this,i,a,o;return s;function s(t){return e.enter(`htmlText`),e.enter(`htmlTextData`),e.consume(t),c}function c(t){return t===33?(e.consume(t),l):t===47?(e.consume(t),x):t===63?(e.consume(t),y):mf(t)?(e.consume(t),w):n(t)}function l(t){return t===45?(e.consume(t),u):t===91?(e.consume(t),a=0,m):mf(t)?(e.consume(t),v):n(t)}function u(t){return t===45?(e.consume(t),p):n(t)}function d(t){return t===null?n(t):t===45?(e.consume(t),f):Z(t)?(o=d,oe(t)):(e.consume(t),d)}function f(t){return t===45?(e.consume(t),p):d(t)}function p(e){return e===62?ae(e):e===45?f(e):d(e)}function m(t){return t===`CDATA[`.charCodeAt(a++)?(e.consume(t),a===6?h:m):n(t)}function h(t){return t===null?n(t):t===93?(e.consume(t),g):Z(t)?(o=h,oe(t)):(e.consume(t),h)}function g(t){return t===93?(e.consume(t),_):h(t)}function _(t){return t===62?ae(t):t===93?(e.consume(t),_):h(t)}function v(t){return t===null||t===62?ae(t):Z(t)?(o=v,oe(t)):(e.consume(t),v)}function y(t){return t===null?n(t):t===63?(e.consume(t),b):Z(t)?(o=y,oe(t)):(e.consume(t),y)}function b(e){return e===62?ae(e):y(e)}function x(t){return mf(t)?(e.consume(t),S):n(t)}function S(t){return t===45||hf(t)?(e.consume(t),S):C(t)}function C(t){return Z(t)?(o=C,oe(t)):Q(t)?(e.consume(t),C):ae(t)}function w(t){return t===45||hf(t)?(e.consume(t),w):t===47||t===62||xf(t)?ee(t):n(t)}function ee(t){return t===47?(e.consume(t),ae):t===58||t===95||mf(t)?(e.consume(t),te):Z(t)?(o=ee,oe(t)):Q(t)?(e.consume(t),ee):ae(t)}function te(t){return t===45||t===46||t===58||t===95||hf(t)?(e.consume(t),te):ne(t)}function ne(t){return t===61?(e.consume(t),T):Z(t)?(o=ne,oe(t)):Q(t)?(e.consume(t),ne):ee(t)}function T(t){return t===null||t===60||t===61||t===62||t===96?n(t):t===34||t===39?(e.consume(t),i=t,E):Z(t)?(o=T,oe(t)):Q(t)?(e.consume(t),T):(e.consume(t),re)}function E(t){return t===i?(e.consume(t),i=void 0,ie):t===null?n(t):Z(t)?(o=E,oe(t)):(e.consume(t),E)}function re(t){return t===null||t===34||t===39||t===60||t===61||t===96?n(t):t===47||t===62||xf(t)?ee(t):(e.consume(t),re)}function ie(e){return e===47||e===62||xf(e)?ee(e):n(e)}function ae(r){return r===62?(e.consume(r),e.exit(`htmlTextData`),e.exit(`htmlText`),t):n(r)}function oe(t){return e.exit(`htmlTextData`),e.enter(`lineEnding`),e.consume(t),e.exit(`lineEnding`),se}function se(t){return Q(t)?$(e,ce,`linePrefix`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)(t):ce(t)}function ce(t){return e.enter(`htmlTextData`),o(t)}}var Kp={name:`labelEnd`,resolveAll:Xp,resolveTo:Zp,tokenize:Qp},qp={tokenize:$p},Jp={tokenize:em},Yp={tokenize:tm};function Xp(e){let t=-1,n=[];for(;++t<e.length;){let r=e[t][1];if(n.push(e[t]),r.type===`labelImage`||r.type===`labelLink`||r.type===`labelEnd`){let e=r.type===`labelImage`?4:2;r.type=`data`,t+=e}}return e.length!==n.length&&tf(e,0,e.length,n),e}function Zp(e,t){let n=e.length,r=0,i,a,o,s;for(;n--;)if(i=e[n][1],a){if(i.type===`link`||i.type===`labelLink`&&i._inactive)break;e[n][0]===`enter`&&i.type===`labelLink`&&(i._inactive=!0)}else if(o){if(e[n][0]===`enter`&&(i.type===`labelImage`||i.type===`labelLink`)&&!i._balanced&&(a=n,i.type!==`labelLink`)){r=2;break}}else i.type===`labelEnd`&&(o=n);let c={type:e[a][1].type===`labelLink`?`link`:`image`,start:{...e[a][1].start},end:{...e[e.length-1][1].end}},l={type:`label`,start:{...e[a][1].start},end:{...e[o][1].end}},u={type:`labelText`,start:{...e[a+r+2][1].end},end:{...e[o-2][1].start}};return s=[[`enter`,c,t],[`enter`,l,t]],s=nf(s,e.slice(a+1,a+r+3)),s=nf(s,[[`enter`,u,t]]),s=nf(s,Rf(t.parser.constructs.insideSpan.null,e.slice(a+r+4,o-3),t)),s=nf(s,[[`exit`,u,t],e[o-2],e[o-1],[`exit`,l,t]]),s=nf(s,e.slice(o+1)),s=nf(s,[[`exit`,c,t]]),tf(e,a,e.length,s),e}function Qp(e,t,n){let r=this,i=r.events.length,a,o;for(;i--;)if((r.events[i][1].type===`labelImage`||r.events[i][1].type===`labelLink`)&&!r.events[i][1]._balanced){a=r.events[i][1];break}return s;function s(t){return a?a._inactive?d(t):(o=r.parser.defined.includes(pf(r.sliceSerialize({start:a.end,end:r.now()}))),e.enter(`labelEnd`),e.enter(`labelMarker`),e.consume(t),e.exit(`labelMarker`),e.exit(`labelEnd`),c):n(t)}function c(t){return t===40?e.attempt(qp,u,o?u:d)(t):t===91?e.attempt(Jp,u,o?l:d)(t):o?u(t):d(t)}function l(t){return e.attempt(Yp,u,d)(t)}function u(e){return t(e)}function d(e){return a._balanced=!0,n(e)}}function $p(e,t,n){return r;function r(t){return e.enter(`resource`),e.enter(`resourceMarker`),e.consume(t),e.exit(`resourceMarker`),i}function i(t){return xf(t)?Tp(e,a)(t):a(t)}function a(t){return t===41?u(t):Sp(e,o,s,`resourceDestination`,`resourceDestinationLiteral`,`resourceDestinationLiteralMarker`,`resourceDestinationRaw`,`resourceDestinationString`,32)(t)}function o(t){return xf(t)?Tp(e,c)(t):u(t)}function s(e){return n(e)}function c(t){return t===34||t===39||t===40?wp(e,l,n,`resourceTitle`,`resourceTitleMarker`,`resourceTitleString`)(t):u(t)}function l(t){return xf(t)?Tp(e,u)(t):u(t)}function u(r){return r===41?(e.enter(`resourceMarker`),e.consume(r),e.exit(`resourceMarker`),e.exit(`resource`),t):n(r)}}function em(e,t,n){let r=this;return i;function i(t){return Cp.call(r,e,a,o,`reference`,`referenceMarker`,`referenceString`)(t)}function a(e){return r.parser.defined.includes(pf(r.sliceSerialize(r.events[r.events.length-1][1]).slice(1,-1)))?t(e):n(e)}function o(e){return n(e)}}function tm(e,t,n){return r;function r(t){return e.enter(`reference`),e.enter(`referenceMarker`),e.consume(t),e.exit(`referenceMarker`),i}function i(r){return r===93?(e.enter(`referenceMarker`),e.consume(r),e.exit(`referenceMarker`),e.exit(`reference`),t):n(r)}}var nm={name:`labelStartImage`,resolveAll:Kp.resolveAll,tokenize:rm};function rm(e,t,n){let r=this;return i;function i(t){return e.enter(`labelImage`),e.enter(`labelImageMarker`),e.consume(t),e.exit(`labelImageMarker`),a}function a(t){return t===91?(e.enter(`labelMarker`),e.consume(t),e.exit(`labelMarker`),e.exit(`labelImage`),o):n(t)}function o(e){return e===94&&`_hiddenFootnoteSupport`in r.parser.constructs?n(e):t(e)}}var im={name:`labelStartLink`,resolveAll:Kp.resolveAll,tokenize:am};function am(e,t,n){let r=this;return i;function i(t){return e.enter(`labelLink`),e.enter(`labelMarker`),e.consume(t),e.exit(`labelMarker`),e.exit(`labelLink`),a}function a(e){return e===94&&`_hiddenFootnoteSupport`in r.parser.constructs?n(e):t(e)}}var om={name:`lineEnding`,tokenize:sm};function sm(e,t){return n;function n(n){return e.enter(`lineEnding`),e.consume(n),e.exit(`lineEnding`),$(e,t,`linePrefix`)}}var cm={name:`thematicBreak`,tokenize:lm};function lm(e,t,n){let r=0,i;return a;function a(t){return e.enter(`thematicBreak`),o(t)}function o(e){return i=e,s(e)}function s(a){return a===i?(e.enter(`thematicBreakSequence`),c(a)):r>=3&&(a===null||Z(a))?(e.exit(`thematicBreak`),t(a)):n(a)}function c(t){return t===i?(e.consume(t),r++,c):(e.exit(`thematicBreakSequence`),Q(t)?$(e,s,`whitespace`)(t):s(t))}}var um={continuation:{tokenize:mm},exit:gm,name:`list`,tokenize:pm},dm={partial:!0,tokenize:_m},fm={partial:!0,tokenize:hm};function pm(e,t,n){let r=this,i=r.events[r.events.length-1],a=i&&i[1].type===`linePrefix`?i[2].sliceSerialize(i[1],!0).length:0,o=0;return s;function s(t){let i=r.containerState.type||(t===42||t===43||t===45?`listUnordered`:`listOrdered`);if(i===`listUnordered`?!r.containerState.marker||t===r.containerState.marker:vf(t)){if(r.containerState.type||(r.containerState.type=i,e.enter(i,{_container:!0})),i===`listUnordered`)return e.enter(`listItemPrefix`),t===42||t===45?e.check(cm,n,l)(t):l(t);if(!r.interrupt||t===49)return e.enter(`listItemPrefix`),e.enter(`listItemValue`),c(t)}return n(t)}function c(t){return vf(t)&&++o<10?(e.consume(t),c):(!r.interrupt||o<2)&&(r.containerState.marker?t===r.containerState.marker:t===41||t===46)?(e.exit(`listItemValue`),l(t)):n(t)}function l(t){return e.enter(`listItemMarker`),e.consume(t),e.exit(`listItemMarker`),r.containerState.marker=r.containerState.marker||t,e.check(Gf,r.interrupt?n:u,e.attempt(dm,f,d))}function u(e){return r.containerState.initialBlankLine=!0,a++,f(e)}function d(t){return Q(t)?(e.enter(`listItemPrefixWhitespace`),e.consume(t),e.exit(`listItemPrefixWhitespace`),f):n(t)}function f(n){return r.containerState.size=a+r.sliceSerialize(e.exit(`listItemPrefix`),!0).length,t(n)}}function mm(e,t,n){let r=this;return r.containerState._closeFlow=void 0,e.check(Gf,i,a);function i(n){return r.containerState.furtherBlankLines=r.containerState.furtherBlankLines||r.containerState.initialBlankLine,$(e,t,`listItemIndent`,r.containerState.size+1)(n)}function a(n){return r.containerState.furtherBlankLines||!Q(n)?(r.containerState.furtherBlankLines=void 0,r.containerState.initialBlankLine=void 0,o(n)):(r.containerState.furtherBlankLines=void 0,r.containerState.initialBlankLine=void 0,e.attempt(fm,t,o)(n))}function o(i){return r.containerState._closeFlow=!0,r.interrupt=void 0,$(e,e.attempt(um,t,n),`linePrefix`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:4)(i)}}function hm(e,t,n){let r=this;return $(e,i,`listItemIndent`,r.containerState.size+1);function i(e){let i=r.events[r.events.length-1];return i&&i[1].type===`listItemIndent`&&i[2].sliceSerialize(i[1],!0).length===r.containerState.size?t(e):n(e)}}function gm(e){e.exit(this.containerState.type)}function _m(e,t,n){let r=this;return $(e,i,`listItemPrefixWhitespace`,r.parser.constructs.disable.null.includes(`codeIndented`)?void 0:5);function i(e){let i=r.events[r.events.length-1];return!Q(e)&&i&&i[1].type===`listItemPrefixWhitespace`?t(e):n(e)}}var vm={name:`setextUnderline`,resolveTo:ym,tokenize:bm};function ym(e,t){let n=e.length,r,i,a;for(;n--;)if(e[n][0]===`enter`){if(e[n][1].type===`content`){r=n;break}e[n][1].type===`paragraph`&&(i=n)}else e[n][1].type===`content`&&e.splice(n,1),!a&&e[n][1].type===`definition`&&(a=n);let o={type:`setextHeading`,start:{...e[r][1].start},end:{...e[e.length-1][1].end}};return e[i][1].type=`setextHeadingText`,a?(e.splice(i,0,[`enter`,o,t]),e.splice(a+1,0,[`exit`,e[r][1],t]),e[r][1].end={...e[a][1].end}):e[r][1]=o,e.push([`exit`,o,t]),e}function bm(e,t,n){let r=this,i;return a;function a(t){let a=r.events.length,s;for(;a--;)if(r.events[a][1].type!==`lineEnding`&&r.events[a][1].type!==`linePrefix`&&r.events[a][1].type!==`content`){s=r.events[a][1].type===`paragraph`;break}return!r.parser.lazy[r.now().line]&&(r.interrupt||s)?(e.enter(`setextHeadingLine`),i=t,o(t)):n(t)}function o(t){return e.enter(`setextHeadingLineSequence`),s(t)}function s(t){return t===i?(e.consume(t),s):(e.exit(`setextHeadingLineSequence`),Q(t)?$(e,c,`lineSuffix`)(t):c(t))}function c(r){return r===null||Z(r)?(e.exit(`setextHeadingLine`),t(r)):n(r)}}var xm={tokenize:Sm};function Sm(e){let t=this,n=e.attempt(Gf,r,e.attempt(this.parser.constructs.flowInitial,i,$(e,e.attempt(this.parser.constructs.flow,i,e.attempt(_p,i)),`linePrefix`)));return n;function r(r){if(r===null){e.consume(r);return}return e.enter(`lineEndingBlank`),e.consume(r),e.exit(`lineEndingBlank`),t.currentConstruct=void 0,n}function i(r){if(r===null){e.consume(r);return}return e.enter(`lineEnding`),e.consume(r),e.exit(`lineEnding`),t.currentConstruct=void 0,n}}var Cm={resolveAll:Dm()},wm=Em(`string`),Tm=Em(`text`);function Em(e){return{resolveAll:Dm(e===`text`?Om:void 0),tokenize:t};function t(t){let n=this,r=this.parser.constructs[e],i=t.attempt(r,a,o);return a;function a(e){return c(e)?i(e):o(e)}function o(e){if(e===null){t.consume(e);return}return t.enter(`data`),t.consume(e),s}function s(e){return c(e)?(t.exit(`data`),i(e)):(t.consume(e),s)}function c(e){if(e===null)return!0;let t=r[e],i=-1;if(t)for(;++i<t.length;){let e=t[i];if(!e.previous||e.previous.call(n,n.previous))return!0}return!1}}}function Dm(e){return t;function t(t,n){let r=-1,i;for(;++r<=t.length;)i===void 0?t[r]&&t[r][1].type===`data`&&(i=r,r++):(!t[r]||t[r][1].type!==`data`)&&(r!==i+2&&(t[i][1].end=t[r-1][1].end,t.splice(i+2,r-i-2),r=i+2),i=void 0);return e?e(t,n):t}}function Om(e,t){let n=0;for(;++n<=e.length;)if((n===e.length||e[n][1].type===`lineEnding`)&&e[n-1][1].type===`data`){let r=e[n-1][1],i=t.sliceStream(r),a=i.length,o=-1,s=0,c;for(;a--;){let e=i[a];if(typeof e==`string`){for(o=e.length;e.charCodeAt(o-1)===32;)s++,o--;if(o)break;o=-1}else if(e===-2)c=!0,s++;else if(e!==-1){a++;break}}if(t._contentTypeTextTrailing&&n===e.length&&(s=0),s){let i={type:n===e.length||c||s<2?`lineSuffix`:`hardBreakTrailing`,start:{_bufferIndex:a?o:r.start._bufferIndex+o,_index:r.start._index+a,line:r.end.line,column:r.end.column-s,offset:r.end.offset-s},end:{...r.end}};r.end={...i.start},r.start.offset===r.end.offset?Object.assign(r,i):(e.splice(n,0,[`enter`,i,t],[`exit`,i,t]),n+=2)}n++}return e}var km=c({attentionMarkers:()=>Lm,contentInitial:()=>jm,disable:()=>Rm,document:()=>Am,flow:()=>Nm,flowInitial:()=>Mm,insideSpan:()=>Im,string:()=>Pm,text:()=>Fm}),Am={42:um,43:um,45:um,48:um,49:um,50:um,51:um,52:um,53:um,54:um,55:um,56:um,57:um,62:qf},jm={91:Ep},Mm={[-2]:ap,[-1]:ap,32:ap},Nm={35:Mp,42:cm,45:[vm,cm],60:Lp,61:vm,95:cm,96:np,126:np},Pm={38:$f,92:Zf},Fm={[-5]:om,[-4]:om,[-3]:om,33:nm,38:$f,42:zf,60:[Uf,Wp],91:im,92:[Ap,Zf],93:Kp,95:zf,96:lp},Im={null:[zf,Cm]},Lm={null:[42,95]},Rm={null:[]};function zm(e,t,n){let r={_bufferIndex:-1,_index:0,line:n&&n.line||1,column:n&&n.column||1,offset:n&&n.offset||0},i={},a=[],o=[],s=[],c={attempt:C(x),check:C(S),consume:v,enter:y,exit:b,interrupt:C(S,{interrupt:!0})},l={code:null,containerState:{},defineSkip:h,events:[],now:m,parser:e,previous:null,sliceSerialize:f,sliceStream:p,write:d},u=t.tokenize.call(l,c);return t.resolveAll&&a.push(t),l;function d(e){return o=nf(o,e),g(),o[o.length-1]===null?(w(t,0),l.events=Rf(a,l.events,l),l.events):[]}function f(e,t){return Vm(p(e),t)}function p(e){return Bm(o,e)}function m(){let{_bufferIndex:e,_index:t,line:n,column:i,offset:a}=r;return{_bufferIndex:e,_index:t,line:n,column:i,offset:a}}function h(e){i[e.line]=e.column,te()}function g(){let e;for(;r._index<o.length;){let t=o[r._index];if(typeof t==`string`)for(e=r._index,r._bufferIndex<0&&(r._bufferIndex=0);r._index===e&&r._bufferIndex<t.length;)_(t.charCodeAt(r._bufferIndex));else _(t)}}function _(e){u=u(e)}function v(e){Z(e)?(r.line++,r.column=1,r.offset+=e===-3?2:1,te()):e!==-1&&(r.column++,r.offset++),r._bufferIndex<0?r._index++:(r._bufferIndex++,r._bufferIndex===o[r._index].length&&(r._bufferIndex=-1,r._index++)),l.previous=e}function y(e,t){let n=t||{};return n.type=e,n.start=m(),l.events.push([`enter`,n,l]),s.push(n),n}function b(e){let t=s.pop();return t.end=m(),l.events.push([`exit`,t,l]),t}function x(e,t){w(e,t.from)}function S(e,t){t.restore()}function C(e,t){return n;function n(n,r,i){let a,o,s,u;return Array.isArray(n)?f(n):`tokenize`in n?f([n]):d(n);function d(e){return t;function t(t){let n=t!==null&&e[t],r=t!==null&&e.null;return f([...Array.isArray(n)?n:n?[n]:[],...Array.isArray(r)?r:r?[r]:[]])(t)}}function f(e){return a=e,o=0,e.length===0?i:p(e[o])}function p(e){return n;function n(n){return u=ee(),s=e,e.partial||(l.currentConstruct=e),e.name&&l.parser.constructs.disable.null.includes(e.name)?h(n):e.tokenize.call(t?Object.assign(Object.create(l),t):l,c,m,h)(n)}}function m(t){return e(s,u),r}function h(e){return u.restore(),++o<a.length?p(a[o]):i}}}function w(e,t){e.resolveAll&&!a.includes(e)&&a.push(e),e.resolve&&tf(l.events,t,l.events.length-t,e.resolve(l.events.slice(t),l)),e.resolveTo&&(l.events=e.resolveTo(l.events,l))}function ee(){let e=m(),t=l.previous,n=l.currentConstruct,i=l.events.length,a=Array.from(s);return{from:i,restore:o};function o(){r=e,l.previous=t,l.currentConstruct=n,l.events.length=i,s=a,te()}}function te(){r.line in i&&r.column<2&&(r.column=i[r.line],r.offset+=i[r.line]-1)}}function Bm(e,t){let n=t.start._index,r=t.start._bufferIndex,i=t.end._index,a=t.end._bufferIndex,o;if(n===i)o=[e[n].slice(r,a)];else{if(o=e.slice(n,i),r>-1){let e=o[0];typeof e==`string`?o[0]=e.slice(r):o.shift()}a>0&&o.push(e[i].slice(0,a))}return o}function Vm(e,t){let n=-1,r=[],i;for(;++n<e.length;){let a=e[n],o;if(typeof a==`string`)o=a;else switch(a){case-5:o=`\r`;break;case-4:o=`
 `;break;case-3:o=`\r
 `;break;case-2:o=t?` `:`	`;break;case-1:if(!t&&i)continue;o=` `;break;default:o=String.fromCharCode(a)}i=a===-2,r.push(o)}return r.join(``)}function Hm(e){let t={constructs:af([km,...(e||{}).extensions||[]]),content:n(jf),defined:[],document:n(Nf),flow:n(xm),lazy:{},string:n(wm),text:n(Tm)};return t;function n(e){return n;function n(n){return zm(t,e,n)}}}function Um(e){for(;!hp(e););return e}var Wm=/[\0\t\n\r]/g;function Gm(){let e=1,t=``,n=!0,r;return i;function i(i,a,o){let s=[],c,l,u,d,f;for(i=t+(typeof i==`string`?i.toString():new TextDecoder(a||void 0).decode(i)),u=0,t=``,n&&=(i.charCodeAt(0)===65279&&u++,void 0);u<i.length;){if(Wm.lastIndex=u,c=Wm.exec(i),d=c&&c.index!==void 0?c.index:i.length,f=i.charCodeAt(d),!c){t=i.slice(u);break}if(f===10&&u===d&&r)s.push(-3),r=void 0;else switch(r&&=(s.push(-5),void 0),u<d&&(s.push(i.slice(u,d)),e+=d-u),f){case 0:s.push(65533),e++;break;case 9:for(l=Math.ceil(e/4)*4,s.push(-2);e++<l;)s.push(-1);break;case 10:s.push(-4),e=1;break;default:r=!0,e=1}u=d+1}return o&&(r&&s.push(-5),t&&s.push(t),s.push(null)),s}}function Km(e,t,n){return typeof t!=`string`&&(n=t,t=void 0),Af(n)(Um(Hm(n).document().write(Gm()(e,t,!0))))}function qm(e){return Km(e,{allowDangerousHtml:!1})}function Jm(e,t,n=3){let r=t.filter(t=>t.id!==e.id).map(t=>{let n=t.tags.filter(t=>e.tags.includes(t)).length,r=(Date.now()-new Date(t.date).getTime())/(1e3*60*60*24),i=Math.max(0,14-r)*.1;return{...t,score:n+i}});return r.sort((e,t)=>t.score-e.score),r.slice(0,n)}function Ym(e,t,n=3){return(0,b.useMemo)(()=>Jm(e,t,n),[e,t,n])}function Xm({currentPost:e}){let{lang:t}=J(),{posts:n}=Kd(),r=Ym(e,n,3);if(n.length<2||r.length===0)return null;let{setSelectedPost:i}=Kd(),a=e=>{i(e),history.pushState(null,``,`#blog/article/${e.slug}`)};return(0,E.jsx)(Sd,{children:(0,E.jsxs)(`div`,{className:`border-t-4 border-ink pt-6 mt-10 mb-8`,children:[(0,E.jsx)(`h3`,{className:`font-headline text-xl md:text-2xl font-bold text-ink mb-5`,children:t===`es`?`Artículos relacionados`:`Related posts`}),(0,E.jsx)(`div`,{className:`grid md:grid-cols-3 gap-4`,children:r.map((e,n)=>{let r=t===`es`?e.title:e.titleEn,i=t===`es`?e.excerpt:e.excerptEn;return(0,E.jsx)(Fu.article,{initial:{opacity:0,y:12},animate:{opacity:1,y:0},transition:{duration:.25,delay:n*.08},className:`border-2 border-ink bg-paper shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-75 flex flex-col`,children:(0,E.jsxs)(`button`,{onClick:()=>a(e),className:`flex flex-col h-full text-left cursor-pointer p-4 gap-2`,children:[(0,E.jsx)(`div`,{className:`flex flex-wrap gap-1`,children:e.tags.slice(0,2).map(e=>(0,E.jsxs)(`span`,{className:`skill-tag text-[8px] flex items-center gap-1`,children:[(0,E.jsx)(pd,{size:6}),` `,e]},e))}),(0,E.jsx)(`h4`,{className:`font-headline text-sm font-bold text-ink leading-tight line-clamp-2`,children:r}),(0,E.jsx)(`p`,{className:`font-sans text-[11px] text-ink-light leading-relaxed line-clamp-2 flex-1`,children:i}),(0,E.jsxs)(`span`,{className:`font-mono text-[9px] font-bold uppercase tracking-wider text-accent hover:text-accent-dark flex items-center gap-1 mt-auto pt-2 transition-colors`,children:[t===`es`?`Leer`:`Read`,` `,(0,E.jsx)(qu,{size:9})]})]})},e.id)})})]})})}function Zm(){let{lang:e}=J(),{filteredPosts:t,selectedPost:n,setSelectedPost:r}=Kd(),i=(0,b.useRef)(null),a=n,o=t.findIndex(e=>e.id===a?.id),s=o>0?t[o-1]:null,c=o>=0&&o<t.length-1?t[o+1]:null;(0,b.useEffect)(()=>{i.current&&i.current.scrollIntoView({block:`start`,behavior:`smooth`}),window.scrollTo({top:0,behavior:`smooth`})},[a?.id]);let l=()=>{history.pushState(null,``,`#blog`),window.dispatchEvent(new HashChangeEvent(`hashchange`))},u=()=>{s&&(r(s),history.pushState(null,``,`#blog/article/${s.slug}`))},d=()=>{c&&(r(c),history.pushState(null,``,`#blog/article/${c.slug}`))};if(!a)return null;let f=e===`es`?a.title:a.titleEn,p=e===`es`?a.content:a.contentEn,m=e===`es`?`Volver a artículos`:`Back to articles`;return(0,E.jsx)(Fu.div,{initial:{opacity:0,y:20},animate:{opacity:1,y:0},exit:{opacity:0,y:-20},transition:{duration:.25},ref:i,children:(0,E.jsxs)(`article`,{className:`max-w-4xl mx-auto`,children:[(0,E.jsxs)(`button`,{onClick:l,className:`flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors mb-6 cursor-pointer`,children:[(0,E.jsx)(Ku,{size:14}),m]}),(0,E.jsx)(`div`,{className:`border-t-4 border-ink mb-1`}),(0,E.jsx)(`div`,{className:`border-t border-ink mb-6`}),(0,E.jsx)(`h1`,{className:`font-headline text-3xl md:text-5xl lg:text-6xl font-black text-ink leading-[1.05] tracking-tight mb-4`,children:f}),(0,E.jsxs)(`div`,{className:`flex flex-wrap items-center gap-x-4 gap-y-1 mb-6 pb-4 border-b border-rule-light`,children:[(0,E.jsxs)(`span`,{className:`font-mono text-xs text-ink-muted flex items-center gap-1.5`,children:[(0,E.jsx)(q,{size:12}),a.date]}),(0,E.jsxs)(`span`,{className:`font-mono text-xs text-ink-muted flex items-center gap-1.5`,children:[(0,E.jsx)(Zu,{size:12}),a.readingTime,` min `,e===`es`?`de lectura`:`read`]}),(0,E.jsx)(`span`,{className:`hidden md:inline font-mono text-[10px] text-ink-muted uppercase tracking-wider`,children:`Por Edwin Trigos`})]}),(0,E.jsx)(`div`,{className:`flex flex-wrap gap-1.5 mb-8`,children:a.tags.map(e=>(0,E.jsx)(`span`,{className:`skill-tag text-[10px]`,children:e},e))}),(0,E.jsx)(`div`,{className:`
