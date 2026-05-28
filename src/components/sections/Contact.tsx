@@ -49,7 +49,7 @@ export function Contact() {
               </a>
 
               <a
-                href="mailto:contact@edwintrigos.dev"
+                href="mailto:edwintrigos24@gmail.com"
                 className="px-btn flex items-center gap-2"
               >
                 <Mail size={16} />
