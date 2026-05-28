@@ -43,30 +43,30 @@ type TranslationKeys = {
   'skills.milestones': string
   'skills.detail': string
   // Tech milestones (content — translatable)
+  'skills.dotnet.milestone1': string
+  'skills.dotnet.milestone2': string
+  'skills.dotnet.milestone3': string
+  'skills.dotnet.reference': string
+  'skills.sqlserver.milestone1': string
+  'skills.sqlserver.milestone2': string
+  'skills.sqlserver.milestone3': string
+  'skills.sqlserver.reference': string
   'skills.react.milestone1': string
   'skills.react.milestone2': string
   'skills.react.milestone3': string
   'skills.react.reference': string
-  'skills.nodejs.milestone1': string
-  'skills.nodejs.milestone2': string
-  'skills.nodejs.milestone3': string
-  'skills.nodejs.reference': string
   'skills.typescript.milestone1': string
   'skills.typescript.milestone2': string
   'skills.typescript.milestone3': string
   'skills.typescript.reference': string
-  'skills.postgresql.milestone1': string
-  'skills.postgresql.milestone2': string
-  'skills.postgresql.milestone3': string
-  'skills.postgresql.reference': string
+  'skills.cleanarch.milestone1': string
+  'skills.cleanarch.milestone2': string
+  'skills.cleanarch.milestone3': string
+  'skills.cleanarch.reference': string
   'skills.docker.milestone1': string
   'skills.docker.milestone2': string
   'skills.docker.milestone3': string
   'skills.docker.reference': string
-  'skills.python.milestone1': string
-  'skills.python.milestone2': string
-  'skills.python.milestone3': string
-  'skills.python.reference': string
   // About
   'about.title': string
   'about.subtitle': string
@@ -156,30 +156,30 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.heading': 'Logros Clave',
     'skills.milestones': 'Hitos',
     'skills.detail': 'Detalle técnico',
-    'skills.react.milestone1': 'Dominio de Arquitectura de Componentes',
-    'skills.react.milestone2': 'Optimización de Rendimiento',
-    'skills.react.milestone3': 'Patrones de Manejo de Estado',
-    'skills.react.reference': 'Ver Proyectos del Portafolio',
-    'skills.nodejs.milestone1': 'Diseño de APIs RESTful',
-    'skills.nodejs.milestone2': 'Patrones Async / Await',
-    'skills.nodejs.milestone3': 'Escalabilidad de Backend',
-    'skills.nodejs.reference': 'Explorar Trabajo Backend',
-    'skills.typescript.milestone1': 'Dominio del Sistema de Tipos',
-    'skills.typescript.milestone2': 'Patrones Avanzados con Genéricos',
-    'skills.typescript.milestone3': 'Configuración de Herramientas',
-    'skills.typescript.reference': 'Ver Proyectos TypeScript',
-    'skills.postgresql.milestone1': 'Optimización de Consultas',
-    'skills.postgresql.milestone2': 'Diseño de Esquemas',
-    'skills.postgresql.milestone3': 'Ajuste de Rendimiento',
-    'skills.postgresql.reference': 'Ver Proyectos de Datos',
-    'skills.docker.milestone1': 'Orquestación de Contenedores',
-    'skills.docker.milestone2': 'Automatización de Despliegues',
-    'skills.docker.milestone3': 'Integración CI / CD',
-    'skills.docker.reference': 'Soluciones de Despliegue',
-    'skills.python.milestone1': 'Ciencia de Datos & ML',
-    'skills.python.milestone2': 'Automatización de Scripts',
-    'skills.python.milestone3': 'Administración de Sistemas',
-    'skills.python.reference': 'Explorar Trabajo en Python',
+    'skills.dotnet.milestone1': 'Clean Architecture en sistemas de producción',
+    'skills.dotnet.milestone2': 'Migración de .NET Framework a .NET Core',
+    'skills.dotnet.milestone3': 'APIs REST con patrones de resiliencia',
+    'skills.dotnet.reference': 'Ver artículo: Clean Architecture en LOS',
+    'skills.sqlserver.milestone1': 'DDL con 4 esquemas lógicos y 30+ tablas',
+    'skills.sqlserver.milestone2': 'Optimización de consultas: 3s → 400ms',
+    'skills.sqlserver.milestone3': 'Stored procedures y máquina de estados',
+    'skills.sqlserver.reference': 'Ver artículo: Dapper sin Entity Framework',
+    'skills.react.milestone1': 'Arquitectura de componentes con TypeScript',
+    'skills.react.milestone2': 'Integración con APIs REST empresariales',
+    'skills.react.milestone3': 'Tailwind CSS v4 + Design Systems',
+    'skills.react.reference': 'Ver Casos de Estudio',
+    'skills.typescript.milestone1': 'Tipado estricto en frontend de producción',
+    'skills.typescript.milestone2': 'Type-safe APIs y contratos de datos',
+    'skills.typescript.milestone3': 'Tooling moderno con Vite + React 19',
+    'skills.typescript.reference': 'Ver Casos de Estudio',
+    'skills.cleanarch.milestone1': 'Separación en capas con repositorios por esquema',
+    'skills.cleanarch.milestone2': '6 BFF sin duplicación de lógica entre canales',
+    'skills.cleanarch.milestone3': 'Inyección de dependencias + Strategy Pattern',
+    'skills.cleanarch.reference': 'Ver artículo: Orquestación sin acoplamiento',
+    'skills.docker.milestone1': 'Contenerización de APIs .NET',
+    'skills.docker.milestone2': 'CI/CD con GitHub Actions',
+    'skills.docker.milestone3': 'Despliegue en entornos productivos',
+    'skills.docker.reference': 'Ver Casos de Estudio',
 
     // About
     'about.title': 'Sobre mí',
@@ -275,30 +275,30 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.heading': 'Key Achievements',
     'skills.milestones': 'Milestones',
     'skills.detail': 'Technical Detail',
-    'skills.react.milestone1': 'Component Architecture Mastery',
-    'skills.react.milestone2': 'Performance Optimization',
-    'skills.react.milestone3': 'State Management Patterns',
-    'skills.react.reference': 'View Portfolio Projects',
-    'skills.nodejs.milestone1': 'RESTful API Design',
-    'skills.nodejs.milestone2': 'Async / Await Patterns',
-    'skills.nodejs.milestone3': 'Backend Scalability',
-    'skills.nodejs.reference': 'Explore Backend Work',
-    'skills.typescript.milestone1': 'Type System Mastery',
-    'skills.typescript.milestone2': 'Advanced Generic Patterns',
-    'skills.typescript.milestone3': 'Tooling Configuration',
-    'skills.typescript.reference': 'See TS Projects',
-    'skills.postgresql.milestone1': 'Query Optimization',
-    'skills.postgresql.milestone2': 'Schema Design',
-    'skills.postgresql.milestone3': 'Performance Tuning',
-    'skills.postgresql.reference': 'View Data Projects',
-    'skills.docker.milestone1': 'Container Orchestration',
-    'skills.docker.milestone2': 'Deployment Automation',
-    'skills.docker.milestone3': 'CI / CD Integration',
-    'skills.docker.reference': 'Deployment Solutions',
-    'skills.python.milestone1': 'Data Science & ML',
-    'skills.python.milestone2': 'Script Automation',
-    'skills.python.milestone3': 'System Administration',
-    'skills.python.reference': 'Explore Python Work',
+    'skills.dotnet.milestone1': 'Clean Architecture in production systems',
+    'skills.dotnet.milestone2': 'Migration from .NET Framework to .NET Core',
+    'skills.dotnet.milestone3': 'REST APIs with resilience patterns',
+    'skills.dotnet.reference': 'Read: Clean Architecture in LOS',
+    'skills.sqlserver.milestone1': 'DDL with 4 logical schemas and 30+ tables',
+    'skills.sqlserver.milestone2': 'Query optimization: 3s → 400ms',
+    'skills.sqlserver.milestone3': 'Stored procedures and state machine',
+    'skills.sqlserver.reference': 'Read: Dapper without EF Core',
+    'skills.react.milestone1': 'Component architecture with TypeScript',
+    'skills.react.milestone2': 'Enterprise REST API integration',
+    'skills.react.milestone3': 'Tailwind CSS v4 + Design Systems',
+    'skills.react.reference': 'View Case Studies',
+    'skills.typescript.milestone1': 'Strict typing in production frontends',
+    'skills.typescript.milestone2': 'Type-safe APIs and data contracts',
+    'skills.typescript.milestone3': 'Modern tooling with Vite + React 19',
+    'skills.typescript.reference': 'View Case Studies',
+    'skills.cleanarch.milestone1': 'Layer separation with per-schema repositories',
+    'skills.cleanarch.milestone2': '6 BFF layers without logic duplication',
+    'skills.cleanarch.milestone3': 'Dependency injection + Strategy Pattern',
+    'skills.cleanarch.reference': 'Read: Cross-system orchestration',
+    'skills.docker.milestone1': 'Containerization of .NET APIs',
+    'skills.docker.milestone2': 'CI/CD with GitHub Actions',
+    'skills.docker.milestone3': 'Production environment deployment',
+    'skills.docker.reference': 'View Case Studies',
 
     // About
     'about.title': 'About',
