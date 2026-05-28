@@ -556,6 +556,963 @@ Before the centralized API, debugging a failed delivery took between 30 minutes 
 **Three. Clean Architecture isn't just for complex domains.** Email is pure infrastructure and it benefits JUST AS MUCH as a financial domain. The layers aren't decoration — they're what let you swap an entire implementation without the rest of the system knowing. If someone tells you Clean Architecture is overkill for "just sending emails," don't believe them. Email is the best use case for well-defined layers, because EVERYTHING changes around email: the provider, the templates, the sending policies, the audit requirements. And when something changes, you want to change one file, not five.`,
     relatedIds: ['clean-architecture-los'],
   },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 4 — Dual-frontend Clean Architecture (.NET 10 + Blazor)
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'dual-frontend-clean-architecture-dotnet-10',
+    slug: 'dual-frontend-clean-architecture-dotnet-10',
+    title: 'Diseñé un ERP donde la capa de presentación (Blazor) y la REST API son intercambiables gracias a Clean Architecture',
+    titleEn: 'I Designed an ERP Where the Presentation Layer (Blazor) and REST API Are Interchangeable Thanks to Clean Architecture',
+    date: '2026-07-01',
+    tags: ['.NET', 'clean architecture', 'Blazor', 'ASP.NET Core', 'C#'],
+    category: 'arquitectura',
+    featured: true,
+    excerpt:
+      'Cómo logré que Blazor y la API compartieran exactamente la misma lógica de negocio en un ERP de producción mediante inyección de dependencias en Clean Architecture, eliminando duplicación y acelerando el desarrollo de características.',
+    excerptEn:
+      'How I made Blazor and the API share identical business logic in a production ERP through dependency injection in Clean Architecture, eliminating duplication and accelerating feature development.',
+    content: `**El problema: dos frontends para el mismo ERP**
+
+En Baguer SAS necesitábamos un ERP que atendiera dos tipos de consumidores: sistemas externos mediante REST API para integraciones con bancos y logística, y usuarios internos mediante una interfaz web rica con MudBlazor. La tentación inicial fue hacer que Blazor llamara a la API para reutilizar lógica, pero eso generaba sobrecarga de red innecesaria para operaciones internas y duplicación de manejo de autenticación (cookies vs JWT). Más crítico aún: cualquier cambio en reglas de negocio requería actualizar tanto la API como el cliente Blazor, con riesgo de inconsistencias y doble testing.
+
+**El approach equivocado**
+
+Primero intentamos que las páginas Blazor fueran meros consumidores de la API. Cada acción del usuario implicaba una ronda HTTP adicional, incluso para operaciones triviales como validar un campo. Luego probamos crear servicios separados por frontend: uno para API y otro para Blazor. Esto resultó en mantenimiento dual: cada nueva regla de negocio (como cálculo de impuestos regionales) debía implementarse dos veces. La autenticación también se duplicó: validación de cookies en Blazor y validación de tokens en API, con riesgo de desincronización en políticas de expiración.
+
+**La solución: Application Services compartidos**
+
+Aplicamos Clean Architecture con seis proyectos .NET 10: Domain (entidades), Contracts (DTOs compartidos), Application (casos de uso), Infrastructure (Dapper, repositorios), API (controladores REST) y Bg360.Web (Blazor Server). La clave: tanto la API como Blazor inyectan los mismos Application Services directamente desde un contenedor DI compartido. No hay llamadas HTTP entre capas de presentación — ambas acceden a la lógica de negocio mediante inyección directa.
+
+\`\`\`
++----------------+     +---------------------+     +------------------+
+|    Blazor UI   |     |   Application        |     |   Domain Model   |
+| (Bg360.Web)    |<----|   Services (shared)  |<----|   (Bg360.Domain) |
++----------------+     +---------------------+     +------------------+
+         ^                        ^
+         |                        |
++----------------+     +---------------------+
+|  REST API      |     |   Infrastructure    |
+| (Controllers)  |<----|   (Bg360.Infra)     |
++----------------+     +---------------------+
+\`\`\`
+
+La interfaz del servicio de aplicación es simple:
+
+\`\`\`csharp
+public interface IOrdenService
+{
+    Task<OrdenDto> CrearOrdenAsync(CrearOrdenCommand comando);
+    Task<IEnumerable<OrdenDto>> ObtenerOrdenesPendientesAsync();
+    Task<bool> AprobarOrdenAsync(int ordenId, string usuario);
+}
+\`\`\`
+
+El registro DI es idéntico para ambos entry points:
+
+\`\`\`csharp
+builder.Services.AddScoped<IOrdenService, OrdenService>();
+builder.Services.AddScoped<IOrdenRepository, OrdenRepository>();
+\`\`\`
+
+En Blazor se inyecta con \`@inject\`:
+
+\`\`\`csharp
+@inject IOrdenService OrdenService
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        Ordenes = await OrdenService.ObtenerOrdenesPendientesAsync();
+    }
+}
+\`\`\`
+
+Y en el controller de la API, exactamente el mismo patrón:
+
+\`\`\`csharp
+[ApiController]
+[Route("api/[controller]")]
+public class OrdenController : ControllerBase
+{
+    private readonly IOrdenService _ordenService;
+
+    public OrdenController(IOrdenService ordenService)
+        => _ordenService = ordenService;
+
+    [HttpPost]
+    public async Task<ActionResult<OrdenDto>> Crear(
+        [FromBody] CrearOrdenCommand comando)
+    {
+        var orden = await _ordenService.CrearOrdenAsync(comando);
+        return CreatedAtAction(nameof(Obtener), new { id = orden.Id }, orden);
+    }
+}
+\`\`\`
+
+**El impacto**
+
+Al compartir Application Services entre Blazor y API, logramos cero duplicación de lógica de negocio. Cada nueva regla se implementa una sola vez y está disponible inmediatamente en ambos frontends. Los DTOs definidos en Contracts se reutilizan sin transformación en Blazor pages y en respuestas de API. El tiempo para implementar una característica que afecta ambos frontends se redujo aproximadamente un sesenta por ciento comparado con el enfoque de doble implementación. Las pruebas unitarias de Application Services validan el comportamiento para ambas capas de presentación simultáneamente.
+
+**Lecciones aprendidas**
+
+El verdadero valor de Clean Architecture no reside principalmente en la testabilidad (aunque es un beneficio importante), sino en su capacidad para hacer que la lógica de negocio sea verdaderamente compartible entre múltiples consumidores. Cuando diseñamos pensando en múltiples puntos de entrada (web, API, workers) desde el inicio, evitamos el costo oculto de la duplicación que surge cuando se añaden nuevos canales después. La clave técnica fue reconocer que la capa de aplicación no debe conocer nada sobre el mecanismo de entrega (HTTP, SignalR, cola) sino enfocarse exclusivamente en orquestar reglas de dominio. Esta separación permitió que Blazor operara con latencia interna mínima mientras la API mantenía su contrato externo estable, todo usando exactamente el mismo código de negocio.`,
+    contentEn: `**The problem: two frontends for the same ERP**
+
+At Baguer SAS we needed an ERP serving two consumer types: external systems via REST API for bank and logistics integrations, and internal users via a rich MudBlazor web interface. The initial temptation was making Blazor call the API to reuse logic, but this introduced unnecessary network overhead for internal operations and duplicated authentication handling (cookies vs JWT). More critically: any business rule change required updates in both API and Blazor clients, risking inconsistencies and double testing.
+
+**The wrong approach**
+
+First we tried making Blazor pages mere API consumers. Each user action triggered an extra HTTP roundtrip, even for trivial operations like field validation. Then we attempted creating frontend-specific services: one for the API, another for Blazor. This resulted in dual maintenance: every new business rule had to be implemented twice. Authentication also duplicated: cookie validation in Blazor versus token validation in the API, risking desynchronization in expiration policies.
+
+**The solution: shared Application Services**
+
+We applied Clean Architecture with six .NET 10 projects: Domain (entities), Contracts (shared DTOs), Application (use cases), Infrastructure (Dapper, repositories), API (REST controllers), and Bg360.Web (Blazor Server). The key: both API and Blazor inject the same Application Services directly from a shared DI container. No HTTP calls between presentation layers — both access business logic via direct injection.
+
+\`\`\`
++----------------+     +---------------------+     +------------------+
+|    Blazor UI   |     |   Application        |     |   Domain Model   |
+| (Bg360.Web)    |<----|   Services (shared)  |<----|   (Bg360.Domain) |
++----------------+     +---------------------+     +------------------+
+         ^                        ^
+         |                        |
++----------------+     +---------------------+
+|  REST API      |     |   Infrastructure    |
+| (Controllers)  |<----|   (Bg360.Infra)     |
++----------------+     +---------------------+
+\`\`\`
+
+The application service interface is simple:
+
+\`\`\`csharp
+public interface IOrdenService
+{
+    Task<OrdenDto> CrearOrdenAsync(CrearOrdenCommand comando);
+    Task<IEnumerable<OrdenDto>> ObtenerOrdenesPendientesAsync();
+    Task<bool> AprobarOrdenAsync(int ordenId, string usuario);
+}
+\`\`\`
+
+The DI registration is identical for both entry points:
+
+\`\`\`csharp
+builder.Services.AddScoped<IOrdenService, OrdenService>();
+builder.Services.AddScoped<IOrdenRepository, OrdenRepository>();
+\`\`\`
+
+In Blazor it's injected with \`@inject\`:
+
+\`\`\`csharp
+@inject IOrdenService OrdenService
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        Ordenes = await OrdenService.ObtenerOrdenesPendientesAsync();
+    }
+}
+\`\`\`
+
+And in the API controller, the exact same pattern:
+
+\`\`\`csharp
+[ApiController]
+[Route("api/[controller]")]
+public class OrdenController : ControllerBase
+{
+    private readonly IOrdenService _ordenService;
+
+    public OrdenController(IOrdenService ordenService)
+        => _ordenService = ordenService;
+
+    [HttpPost]
+    public async Task<ActionResult<OrdenDto>> Crear(
+        [FromBody] CrearOrdenCommand comando)
+    {
+        var orden = await _ordenService.CrearOrdenAsync(comando);
+        return CreatedAtAction(nameof(Obtener), new { id = orden.Id }, orden);
+    }
+}
+\`\`\`
+
+**The impact**
+
+By sharing Application Services between Blazor and API, we achieved zero duplication of business logic. Each new rule is implemented once and immediately available in both frontends. Contracts-defined DTOs are reused without transformation in Blazor pages and API responses. Feature implementation time affecting both frontends dropped approximately sixty percent compared to dual implementation. Application Services unit tests validate behavior for both presentation layers simultaneously.
+
+**Lessons learned**
+
+Clean Architecture's true value isn't primarily testability (though it's an important benefit) but its ability to make business logic genuinely shareable across multiple consumers. When designing for multiple entry points (web, API, workers) from the outset, we avoid the hidden cost of duplication that arises when adding channels later. The technical key was recognizing that the application layer must know nothing about the delivery mechanism (HTTP, SignalR, queue) and focus solely on orchestrating domain rules. This separation allowed Blazor to operate with minimal internal latency while the API maintained its external contract stable, using identical business logic.`,
+    relatedIds: ['clean-architecture-los'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 5 — Domain Exception → ProblemDetails Pipeline
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'domain-exception-problemdetails-pipeline',
+    slug: 'error-handling-middleware-pipeline',
+    title: 'Todo el error handling de mi API se reduce a dos archivos: así eliminé los try-catch de mis controladores',
+    titleEn: 'My entire API error handling lives in two files: how I eliminated try-catch from my controllers',
+    date: '2026-07-15',
+    tags: ['arquitectura', '.NET', 'ASP.NET Core', 'patrones', 'C#'],
+    category: 'arquitectura',
+    featured: true,
+    excerpt:
+      'Cada controller tenía su propio try-catch, cada error devolvía un formato distinto, y los mensajes mezclaban detalles técnicos con reglas de negocio. Unificarlo todo en dos archivos — DomainExceptions.cs + ExceptionHandlingMiddleware — cambió la forma en que pensamos los errores.',
+    excerptEn:
+      'Every controller had its own try-catch, each error returned a different format, and messages mixed technical details with business rules. Unifying it all in two files — DomainExceptions.cs + ExceptionHandlingMiddleware — changed how we think about errors.',
+    content: `**El problema: error handling en cada esquina**
+
+Cuando heredé el código del ERP Bg360, cada controller manejaba errores a su manera. Algunos tenían try-catch que devolvían 200 con un flag "success: false". Otros lanzaban excepciones genéricas Exception que terminaban en 500. Y algunos directamente no manejaban nada — si el service fallaba, el usuario veía una página amarilla de error de ASP.NET. No había consistencia. Cada tres meses aparecía un bug donde un endpoint devolvía "Error: Object reference not set to an instance of an object" al cliente, filtrando detalles internos de infraestructura.
+
+El problema raíz era que los errores de negocio (cliente no encontrado, crédito insuficiente) y los errores técnicos (timeout de base de datos, serialización JSON) se trataban exactamente igual: como excepciones sin tipo en el catch del controller.
+
+**El approach equivocado**
+
+Intentamos estandarizar con un helper estático \`ErrorResponseHelper\` que todos los controllers llamarían. El helper crecía sin control: cada nuevo caso de error agregaba un método más. Pronto teníamos treinta métodos estáticos, algunos con lógica de negocio hardcodeada, otros con traducciones de mensajes mezcladas con HTTP status codes. Era un cajón de sastre con dependencias de infrastructure y dominio al mismo tiempo.
+
+**La solución: excepciones tipadas + middleware**
+
+Reduje todo el error handling a dos archivos. El primero es DomainExceptions.cs, que contiene TODAS las excepciones de negocio como clases selladas tipadas:
+
+\`\`\`csharp
+public abstract class DomainException : Exception
+{
+    protected DomainException(string message) : base(message) { }
+}
+
+public sealed class CredencialesInvalidasException()
+    : DomainException("Credenciales inválidas") { }
+
+public sealed class NotFoundException(string message)
+    : DomainException(message) { }
+
+public sealed class ValidacionNegocioException(string message)
+    : DomainException(message) { }
+
+public sealed class IpNoAutorizadaException()
+    : DomainException("IP no autorizada") { }
+\`\`\`
+
+El segundo archivo es ExceptionHandlingMiddleware, el único lugar donde las excepciones de dominio se convierten en respuestas HTTP:
+
+\`\`\`csharp
+public class ExceptionHandlingMiddleware
+{
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (DomainException ex)
+        {
+            context.Response.StatusCode = ex switch
+            {
+                CredencialesInvalidasException => 401,
+                IpNoAutorizadaException => 403,
+                NotFoundException => 404,
+                ValidacionNegocioException => 400,
+                _ => 500
+            };
+
+            await context.Response.WriteAsJsonAsync(new ProblemDetails
+            {
+                Title = ex.GetType().Name.Replace("Exception", ""),
+                Status = context.Response.StatusCode,
+                Detail = _env.IsDevelopment() ? ex.Message : null
+            });
+        }
+    }
+}
+\`\`\`
+
+El patrón es simple: los servicios lanzan excepciones tipadas de dominio. El middleware las atrapa y las transforma a RFC 7807 ProblemDetails. Los controllers no tienen ni un solo try-catch:
+
+\`\`\`csharp
+[HttpPost("login")]
+public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+{
+    var usuario = await _authService.ValidarLoginAsync(request.User, request.Password);
+    var token = await _authService.GenerarTokenAsync(usuario);
+    return Ok(token);
+}
+\`\`\`
+
+Flujo completo:
+
+\`\`\`
+AuthService.ValidarLoginAsync()
+    throws CredencialesInvalidasException
+        ↓
+ExceptionHandlingMiddleware catches
+        ↓
+Switch expression → 401 + ProblemDetails
+        ↓
+Cliente recibe: {"title":"CredencialesInvalidas","status":401}
+\`\`\`
+
+**El impacto**
+
+El cambio fue inmediato: cero try-catch en todos los controllers del ERP. Cualquier desarrollador nuevo entiende el error handling en cinco minutos abriendo dos archivos. Cuando el negocio pidió un nuevo tipo de error (ej: "cuenta bloqueada"), agregamos una clase de tres líneas en DomainExceptions.cs y su mapeo en el middleware — cero controllers modificados. En producción, los errores de dominio devuelven un título genérico sin detalles técnicos, pero en desarrollo el mensaje completo ayuda al debugging. El formato ProblemDetails (RFC 7807) es un estándar, no inventamos nada.
+
+**Lecciones aprendidas**
+
+El error handling no es responsabilidad de los controllers. Es un concern transversal que pertenece al middleware. Cada vez que veo un try-catch en un controller, sé que hay una abstracción faltante. Las excepciones de dominio tipadas son la mejor documentación viva de "qué puede salir mal" en el sistema: abrís DomainExceptions.cs y ves todos los casos de error de negocio en una pantalla. El patrón middleware + excepciones tipadas es tan simple que cuesta creer que funcionó tan bien. Pero funcionó porque respeta la separación de capas: dominio define qué puede fallar, infraestructura decide cómo se expresa HTTP.`,
+    contentEn: `**The problem: error handling everywhere**
+
+When I inherited the Bg360 ERP codebase, every controller handled errors differently. Some had try-catch blocks returning 200 with a "success: false" flag. Others threw generic Exception that ended up as 500. And some handled nothing at all — if the service failed, the user saw ASP.NET's yellow error page. There was no consistency. Every few months a bug surfaced where an endpoint returned "Error: Object reference not set to an instance of an object" to the client, leaking internal infrastructure details.
+
+The root problem was that business errors (client not found, insufficient credit) and technical errors (database timeout, JSON serialization) were treated identically: as untyped exceptions in the controller's catch block.
+
+**The wrong approach**
+
+We tried standardizing with a static ErrorResponseHelper that all controllers would call. The helper grew uncontrollably: each new error case added another method. Soon we had thirty static methods, some with hardcoded business logic, others with message translations mixed with HTTP status codes. It was a catch-all with infrastructure and domain dependencies at the same time.
+
+**The solution: typed exceptions + middleware**
+
+I reduced all error handling to two files. The first is DomainExceptions.cs, containing ALL business exceptions as typed sealed classes:
+
+\`\`\`csharp
+public abstract class DomainException : Exception
+{
+    protected DomainException(string message) : base(message) { }
+}
+
+public sealed class CredencialesInvalidasException()
+    : DomainException("Invalid credentials") { }
+
+public sealed class NotFoundException(string message)
+    : DomainException(message) { }
+
+public sealed class ValidacionNegocioException(string message)
+    : DomainException(message) { }
+
+public sealed class IpNoAutorizadaException()
+    : DomainException("Unauthorized IP") { }
+\`\`\`
+
+The second file is ExceptionHandlingMiddleware, the only place where domain exceptions become HTTP responses:
+
+\`\`\`csharp
+public class ExceptionHandlingMiddleware
+{
+    public async Task InvokeAsync(HttpContext context)
+    {
+        try
+        {
+            await _next(context);
+        }
+        catch (DomainException ex)
+        {
+            context.Response.StatusCode = ex switch
+            {
+                CredencialesInvalidasException => 401,
+                IpNoAutorizadaException => 403,
+                NotFoundException => 404,
+                ValidacionNegocioException => 400,
+                _ => 500
+            };
+
+            await context.Response.WriteAsJsonAsync(new ProblemDetails
+            {
+                Title = ex.GetType().Name.Replace("Exception", ""),
+                Status = context.Response.StatusCode,
+                Detail = _env.IsDevelopment() ? ex.Message : null
+            });
+        }
+    }
+}
+\`\`\`
+
+The pattern is simple: services throw typed domain exceptions. The middleware catches them and transforms them into RFC 7807 ProblemDetails. Controllers have zero try-catch blocks:
+
+\`\`\`csharp
+[HttpPost("login")]
+public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+{
+    var usuario = await _authService.ValidarLoginAsync(request.User, request.Password);
+    var token = await _authService.GenerarTokenAsync(usuario);
+    return Ok(token);
+}
+\`\`\`
+
+Complete flow:
+
+\`\`\`
+AuthService.ValidarLoginAsync()
+    throws CredencialesInvalidasException
+        ↓
+ExceptionHandlingMiddleware catches
+        ↓
+Switch expression → 401 + ProblemDetails
+        ↓
+Client receives: {"title":"CredencialesInvalidas","status":401}
+\`\`\`
+
+**The impact**
+
+The change was immediate: zero try-catch across all ERP controllers. Any new developer understands error handling in five minutes by opening two files. When the business requested a new error type ("account locked"), we added a three-line class in DomainExceptions.cs and its mapping in the middleware — zero controllers modified. In production, domain errors return a generic title without technical details, but in development the full message aids debugging. The ProblemDetails format (RFC 7807) is a standard — we didn't invent anything.
+
+**Lessons learned**
+
+Error handling is not a controller responsibility. It's a cross-cutting concern that belongs in middleware. Every time I see a try-catch in a controller, I know there's a missing abstraction. Typed domain exceptions are the best living documentation of "what can go wrong" in the system: open DomainExceptions.cs and see every business error case on one screen. The middleware-plus-typed-exceptions pattern is so simple it's hard to believe it worked this well. But it worked because it respects layer separation: domain defines what can fail, infrastructure decides how it's expressed over HTTP.`,
+    relatedIds: ['dual-frontend-clean-architecture-dotnet-10'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 6 — Dapper + Stored Procedures
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'dapper-stored-procedures-why-how',
+    slug: 'dapper-stored-procedures-en-lugar-de-ef-core',
+    title: 'No uso Entity Framework. En 3 años de ERP, cero migraciones, cero N+1, cero sorpresas en producción',
+    titleEn: 'I don\'t use Entity Framework. In 3 years of ERP development, zero migrations, zero N+1, zero production surprises',
+    date: '2026-08-01',
+    tags: ['Dapper', 'arquitectura', '.NET', 'performance', 'patrones'],
+    category: 'arquitectura',
+    featured: true,
+    excerpt:
+      'Cada vez que alguien dice "usa EF Core, es el estándar", me pregunto si su base de datos tiene 200 stored procedures legacy y un equipo de DBA. Te cuento por qué elegimos Dapper puro y cómo vivimos para contarlo.',
+    excerptEn:
+      'Every time someone says "use EF Core, it\'s the standard", I wonder if their database has 200 legacy stored procedures and a DBA team. Here\'s why we chose pure Dapper and lived to tell the tale.',
+    content: `**El problema: 200 stored procedures no se migran a EF Core**
+
+En nuestro ERP Bg360 heredamos una base de datos con más de 200 stored procedures. Algunos con lógica compleja de varios resultsets, otros con parámetros de salida para códigos de estado, y varios con inserciones masivas mediante SqlBulkCopy. La base de datos no era un accesorio del código — era el activo principal, gestionado por un equipo de DBA que versionaba los SPs en control de fuentes independientemente del código C#.
+
+El equipo de desarrollo propuso EF Core porque "es lo que usa todo el mundo". El problema: adoptar EF Core significaba elegir entre dos males: o code-first (ignorando 200 SPs existentes y pelearnos con los DBAs por cada migration), o database-first (generando un EDMX monstruoso que replicaba lo que ya teníamos en SQL).
+
+**El approach equivocado**
+
+Probamos database-first con EF Core. El modelo generado era enorme, las consultas que producía eran ineficientes para nuestros SPs existentes, y cada vez que un DBA modificaba un SP teníamos que regenerar el modelo. Además, varios SPs devolvían múltiples resultsets (ej: orden de trabajo + detalles + histórico), y mapear eso con EF Core requería hacks con \`SqlQuery\` raw que anulaban el propósito del ORM.
+
+**La solución: Dapper puro con stored procedures**
+
+Reemplazamos todo con Dapper, siguiendo un patrón consistente en cada repositorio. La pieza clave es la fábrica de conexiones:
+
+\`\`\`csharp
+public class SqlConnectionFactory : ISqlConnectionFactory
+{
+    private readonly string _connectionString;
+
+    public SqlConnectionFactory(IConfiguration config)
+    {
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
+        _connectionString = config.GetConnectionString("DatabaseConnection");
+    }
+
+    public async Task<DbConnection> CreateConnectionAsync()
+        => new SqlConnection(_connectionString);
+}
+\`\`\`
+
+Cada repositorio sigue el mismo patrón: \`using var connection\`, stored procedure, Dapper mapea:
+
+\`\`\`csharp
+public async Task<ClienteDto> ObtenerPorIdAsync(int id)
+{
+    using var connection = await _connectionFactory.CreateConnectionAsync();
+    return await connection.QueryFirstOrDefaultAsync<ClienteDto>(
+        "BERP_ObtenerCliente",
+        new { Id = id },
+        commandType: CommandType.StoredProcedure
+    );
+}
+\`\`\`
+
+Para consultas complejas con múltiples resultsets:
+
+\`\`\`csharp
+public async Task<OrdenDto> ObtenerOrdenConDetallesAsync(int ordenId)
+{
+    using var connection = await _connectionFactory.CreateConnectionAsync();
+    using var multi = await connection.QueryMultipleAsync(
+        "prod.GetOrdenCompleta",
+        new { OrdenId = ordenId },
+        commandType: CommandType.StoredProcedure
+    );
+
+    var orden = await multi.ReadFirstOrDefaultAsync<OrdenDto>();
+    if (orden is null) return null;
+
+    orden.Detalles = (await multi.ReadAsync<DetalleDto>()).ToList();
+    return orden;
+}
+\`\`\`
+
+Los parámetros de salida se manejan con DynamicParameters:
+
+\`\`\`csharp
+var parameters = new DynamicParameters();
+parameters.Add("@Id", ordenId);
+parameters.Add("@CodigoEstado", dbType: DbType.Int32,
+    direction: ParameterDirection.Output);
+await connection.ExecuteAsync("prod.MarcarEnviado", parameters,
+    commandType: CommandType.StoredProcedure);
+var estado = parameters.Get<int>("@CodigoEstado");
+\`\`\`
+
+Y el registro DI es mínimo:
+
+\`\`\`csharp
+services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+services.AddScoped<IOrdenRepository, OrdenRepository>();
+\`\`\`
+
+**El impacto**
+
+Cero migraciones en tres años. Cero N+1 queries. Cero sorpresas en producción donde el ORM generara SQL inesperado. Los DBAs pueden auditar cada llamada porque todo pasa por SPs con nombres predecibles. El overhead de Dapper es consistentemente inferior al milisegundo por operación. Las inserciones masivas (Formulario 220 DIAN) usan SqlBulkCopy y procesan miles de registros en segundos.
+
+**Lecciones aprendidas**
+
+Dapper no es una alternativa "menos capaz" a EF Core. Es la herramienta correcta cuando tu capa de datos está dominada por stored procedures y el rendimiento importa. EF Core brilla en aplicaciones code-first donde el ORM es dueño del esquema. En sistemas ERP donde la base de datos es un activo legacy gestionado por DBAs, forzar un ORM crea más fricción que valor. La clave está en preguntarse: ¿quién es dueño de la base de datos? Si es el equipo de desarrollo con code-first, EF Core. Si es un equipo de DBA con SPs versionados, Dapper.`,
+    contentEn: `**The problem: 200 stored procedures don't migrate to EF Core**
+
+In our Bg360 ERP we inherited a database with over 200 stored procedures. Some with complex multi-resultset logic, others with output parameters for status codes, and several with bulk inserts using SqlBulkCopy. The database wasn't an accessory to the code — it was the primary asset, managed by a DBA team that versioned SPs in source control independently from the C# code.
+
+The development team proposed EF Core because "that's what everyone uses." The problem: adopting EF Core meant choosing between two evils: either code-first (ignoring 200 existing SPs and fighting DBAs over every migration) or database-first (generating a monstrous EDMX that replicated what we already had in SQL).
+
+**The wrong approach**
+
+We tried database-first with EF Core. The generated model was enormous, the queries it produced were inefficient for our existing SPs, and every time a DBA modified an SP we had to regenerate the model. Plus, several SPs returned multiple resultsets (e.g., work order + details + history), and mapping that with EF Core required raw SqlQuery hacks that defeated the ORM's purpose.
+
+**The solution: pure Dapper with stored procedures**
+
+We replaced everything with Dapper, following a consistent pattern in every repository. The key piece is the connection factory:
+
+\`\`\`csharp
+public class SqlConnectionFactory : ISqlConnectionFactory
+{
+    private readonly string _connectionString;
+
+    public SqlConnectionFactory(IConfiguration config)
+    {
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
+        _connectionString = config.GetConnectionString("DatabaseConnection");
+    }
+
+    public async Task<DbConnection> CreateConnectionAsync()
+        => new SqlConnection(_connectionString);
+}
+\`\`\`
+
+Every repository follows the same pattern: \`using var connection\`, stored procedure, Dapper maps:
+
+\`\`\`csharp
+public async Task<ClienteDto> ObtenerPorIdAsync(int id)
+{
+    using var connection = await _connectionFactory.CreateConnectionAsync();
+    return await connection.QueryFirstOrDefaultAsync<ClienteDto>(
+        "BERP_ObtenerCliente",
+        new { Id = id },
+        commandType: CommandType.StoredProcedure
+    );
+}
+\`\`\`
+
+For complex queries with multiple resultsets:
+
+\`\`\`csharp
+public async Task<OrdenDto> ObtenerOrdenConDetallesAsync(int ordenId)
+{
+    using var connection = await _connectionFactory.CreateConnectionAsync();
+    using var multi = await connection.QueryMultipleAsync(
+        "prod.GetOrdenCompleta",
+        new { OrdenId = ordenId },
+        commandType: CommandType.StoredProcedure
+    );
+
+    var orden = await multi.ReadFirstOrDefaultAsync<OrdenDto>();
+    if (orden is null) return null;
+
+    orden.Detalles = (await multi.ReadAsync<DetalleDto>()).ToList();
+    return orden;
+}
+\`\`\`
+
+Output parameters are handled with DynamicParameters:
+
+\`\`\`csharp
+var parameters = new DynamicParameters();
+parameters.Add("@Id", ordenId);
+parameters.Add("@CodigoEstado", dbType: DbType.Int32,
+    direction: ParameterDirection.Output);
+await connection.ExecuteAsync("prod.MarcarEnviado", parameters,
+    commandType: CommandType.StoredProcedure);
+var estado = parameters.Get<int>("@CodigoEstado");
+\`\`\`
+
+And the DI registration is minimal:
+
+\`\`\`csharp
+services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+services.AddScoped<IOrdenRepository, OrdenRepository>();
+\`\`\`
+
+**The impact**
+
+Zero migrations in three years. Zero N+1 queries. Zero production surprises where the ORM generated unexpected SQL. DBAs can audit every call because everything goes through predictably named SPs. Dapper overhead is consistently sub-millisecond per operation. Bulk inserts (DIAN Form 220) use SqlBulkCopy and process thousands of records in seconds.
+
+**Lessons learned**
+
+Dapper isn't a "less capable" alternative to EF Core. It's the right tool when your data layer is dominated by stored procedures and performance matters. EF Core excels in code-first applications where the ORM owns the schema. In ERP systems where the database is a legacy asset managed by DBAs, forcing an ORM creates more friction than value. The key question is: who owns the database? If it's the dev team with code-first, use EF Core. If it's a DBA team with versioned SPs, use Dapper.`,
+    relatedIds: ['clean-architecture-los'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 7 — API Versioning Transparent Contract Evolution
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'api-versioning-transparent-contract-evolution',
+    slug: 'versionado-api-transparente-sin-romper-clientes',
+    title: 'Versioné 24 controladores de una API en producción sin cambiar ni una sola URL existente',
+    titleEn: 'I versioned 24 production API controllers without changing a single existing URL',
+    date: '2026-08-15',
+    tags: ['API', 'arquitectura', '.NET', 'ASP.NET Core', 'patrones'],
+    category: 'arquitectura',
+    featured: true,
+    excerpt:
+      'Cuando 24 controladores están en producción y los clientes no pueden actualizarse todos al mismo tiempo, romper URLs no es una opción. Así implementé versionado transparente con rutas duales sin que ningún consumidor legacy se enterara.',
+    excerptEn:
+      'When 24 controllers are in production and clients can\'t all update simultaneously, breaking URLs is not an option. Here\'s how I implemented transparent versioning with dual routes without any legacy consumer noticing.',
+    content: `**El problema: evolucionar sin romper**
+
+Nuestra API QuacWebApi tenía 24 controladores en producción cuando llegó la necesidad de agregar funcionalidades nuevas: filtros avanzados, campos calculados, nuevos endpoints. Pero los consumidores eran heterogéneos: apps móviles que actualizaban cada dos semanas, apps web que actualizaban mensualmente, e integraciones legacy que no podían actualizarse por restricciones del cliente. Un flag day no era viable romper veinticuatro endpoints simultáneamente habría sido un desastre de soporte.
+
+**El approach equivocado**
+
+Consideramos tres opciones: (1) un flag day donde todos los clientes actualizaran al mismo tiempo — inviable por la diversidad de ciclos de release. (2) congelar la API para siempre — el negocio necesitaba nuevas features. (3) HATEOAS como mecanismo completo de descubrimiento — sobreingeniería que agregaba complejidad innecesaria para equipos frontend acostumbrados a contratos explícitos.
+
+**La solución: Asp.Versioning.Mvc con rutas duales**
+
+Usé Asp.Versioning.Mvc con versionado por segmento de URL. La clave fue mantener las rutas legacy funcionando mientras se agregaban las nuevas rutas versionadas:
+
+\`\`\`csharp
+// Program.cs
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
+\`\`\`
+
+Cada controlador existente recibió dos atributos de ruta — la legacy y la versionada:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+[Route("api/v{version}/[controller]")]
+[Route("api/[controller]")]
+public class ClienteController : ControllerBase
+{
+    // El código no cambia — solo los atributos
+}
+\`\`\`
+
+Aprovechamos que MyBaseController cubría 5 controladores. Un solo atributo \`[ApiVersion("1.0")]\` en la base cubrió 5 endpoints a la vez:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+public class MyBaseController : ControllerBase
+{
+    // Lógica compartida para 5 controladores
+}
+\`\`\`
+
+El outlier de autenticación usaba una ruta no estándar (\`[Route("[controller]")]\` sin \`api/\`). Lo manejamos explícitamente:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+[Route("[controller]")]
+[Route("api/v{version}/[controller]")]
+public class AutenticacionController : ControllerBase { }
+\`\`\`
+
+Arquitectura de rutas:
+
+\`\`\`
+Clientes legacy:  GET /api/Cliente/{nit}     → V1 (sin cambios)
+Clientes nuevos:  GET /api/v2/Cliente/{nit}   → V2 (nuevas features)
+                  GET /api/v1/Cliente/{nit}   → V1 (mismo que legacy)
+\`\`\`
+
+**El impacto**
+
+Cero cambios en clientes existentes. Las apps legacy siguen llamando exactamente a los mismos endpoints y reciben las mismas respuestas. Los clientes nuevos usan rutas versionadas para acceder a funcionalidades adicionales. Swagger muestra documentos separados por versión. Cuando necesitamos agregar un controller V2, lo creamos en \`Controllers/V2/\` con \`[ApiVersion("2.0")]\` y funciona. En total fueron veintisiete tareas implementadas y verificadas. Desde el deployment, cero incidentes atribuibles al versionado.
+
+**Lecciones aprendidas**
+
+El versionado de API exitoso no se trata de crear nuevas URLs, sino de dar tiempo a los consumidores para migrar. Un contrato transparente evoluciona respetando tanto la necesidad del producto de avanzar como la estabilidad que requieren los clientes. Identificar puntos de leverage como un base controller reduce drásticamente el trabajo mecánico. Y encontrar outliers temprano (como el controlador de autenticación con ruta no estándar) evita sorpresas en producción.`,
+    contentEn: `**The problem: evolve without breaking**
+
+Our QuacWebApi had 24 controllers in production when we needed to add new functionality: advanced filters, calculated fields, new endpoints. But our consumers were heterogeneous: mobile apps updating every two weeks, web apps updating monthly, and legacy integrations that couldn't be updated due to client restrictions. A flag day wasn't viable — breaking twenty-four endpoints simultaneously would have been a support disaster.
+
+**The wrong approach**
+
+We considered three options: (1) a flag day forcing all clients to update simultaneously — unworkable given diverse release cycles. (2) freezing the API forever — the business needed new features. (3) HATEOAS as a full discovery mechanism — overengineering that added unnecessary complexity for frontend teams accustomed to explicit contracts.
+
+**The solution: Asp.Versioning.Mvc with dual routes**
+
+I used Asp.Versioning.Mvc with URL-segment versioning. The key was keeping legacy routes working while adding new versioned routes:
+
+\`\`\`csharp
+// Program.cs
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
+\`\`\`
+
+Each existing controller received two route attributes — the legacy and the versioned one:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+[Route("api/v{version}/[controller]")]
+[Route("api/[controller]")]
+public class ClienteController : ControllerBase
+{
+    // Code doesn't change — only the attributes
+}
+\`\`\`
+
+We leveraged MyBaseController covering 5 controllers. A single \`[ApiVersion("1.0")]\` attribute on the base covered 5 endpoints at once:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+public class MyBaseController : ControllerBase
+{
+    // Shared logic for 5 controllers
+}
+\`\`\`
+
+The authentication outlier used a non-standard route (\`[Route("[controller]")]\` without \`api/\`). We handled it explicitly:
+
+\`\`\`csharp
+[ApiVersion("1.0")]
+[Route("[controller]")]
+[Route("api/v{version}/[controller]")]
+public class AutenticacionController : ControllerBase { }
+\`\`\`
+
+Route architecture:
+
+\`\`\`
+Legacy clients:  GET /api/Cliente/{nit}     → V1 (unchanged)
+New clients:     GET /api/v2/Cliente/{nit}   → V2 (new features)
+                 GET /api/v1/Cliente/{nit}   → V1 (same as legacy)
+\`\`\`
+
+**The impact**
+
+Zero changes to existing clients. Legacy apps continue calling exactly the same endpoints and receiving the same responses. New clients use versioned routes for additional functionality. Swagger shows separate documents per version. When we needed to add a V2 controller, we created it in \`Controllers/V2/\` with \`[ApiVersion("2.0")]\` and it worked. Twenty-seven tasks were implemented and verified. Since deployment, zero incidents attributable to versioning.
+
+**Lessons learned**
+
+Successful API versioning isn't about creating new URLs — it's about giving consumers time to migrate. A transparent contract evolves respecting both the product's need to advance and the stability clients require. Identifying leverage points like a base controller drastically reduces mechanical work. And finding outliers early (like the authentication controller with a non-standard route) prevents production surprises.`,
+    relatedIds: ['dual-frontend-clean-architecture-dotnet-10'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 8 — Cross-system orchestration without coupling
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'cross-system-orchestration-without-coupling',
+    slug: 'orquestacion-cross-system-sin-acoplamiento',
+    title: 'Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio',
+    titleEn: 'A work order travels through 3 systems without any coupling to each other: the orchestrator is a method, not a microservice',
+    date: '2026-09-01',
+    tags: ['arquitectura', '.NET', 'patrones', 'orquestación', 'integraciones'],
+    category: 'arquitectura',
+    featured: true,
+    excerpt:
+      'Cuando una orden de producción necesita notificar por email, guardar PDFs en la nube y actualizar el estado en otro sistema, la tentación es crear un orquestador. Pero a veces el orquestador correcto es un método de 30 líneas.',
+    excerptEn:
+      'When a production order needs to notify by email, save PDFs to the cloud, and update status in another system, the temptation is to build an orchestrator service. But sometimes the right orchestrator is a 30-line method.',
+    content: `**El problema: una orden que no vive en un solo sistema**
+
+En el flujo de producción de Baguer, una orden de trabajo sigue este ciclo: el ERP Bg360 la gestiona, ErpBaguer notifica al proveedor via email con PDFs adjuntos, Azure Blob Storage guarda la documentación, y BG360 marca la orden como enviada. Son tres sistemas diferentes, cada uno con su propia base de datos, su propio equipo, su propio ciclo de deploy. El desafío: coordinar todo esto sin crear un monstruo distribuido.
+
+El síntoma más visible era que cuando un proveedor llamaba diciendo "no recibí la orden", nadie podía responder rápido. ¿Falló el email? ¿El PDF no se generó? ¿El sistema de almacenamiento devolvió error? Empezaba una ronda de revisiones en tres sistemas diferentes.
+
+**El approach equivocado**
+
+La primera idea fue construir un servicio orquestador dedicado, un nuevo proyecto con su propio deploy, su propia base de datos, su propio pipeline CI/CD. Un microservicio para "orquestar órdenes". Esto implicaba: (1) agregar latencia de red entre el orquestador y cada sistema, (2) duplicar lógica de negocio porque el orquestador necesitaba saber demasiado sobre cada sistema, (3) un nuevo punto de fallo en la cadena.
+
+**La solución: orquestación en un service method**
+
+En lugar de un nuevo servicio, implementé la orquestación dentro del Application Service existente. El método \`NotificarDespachoOrdenTrabajo\` encadena tres operaciones secuenciales usando interfaces desacopladas:
+
+\`\`\`csharp
+public async Task<ResultadoNotificacion> NotificarDespachoOrdenTrabajoAsync(
+    NotificarDespachoRequest request)
+{
+    // 1. Enviar email con PDFs via Infobip
+    var emailResult = await _emailService.EnviarCorreoConAdjuntosAsync(
+        request.ToEmail, request.Subject, request.HtmlContent,
+        request.Adjuntos);
+
+    if (!emailResult.Exitoso) return Fallo(emailResult.Error);
+
+    // 2. Subir PDFs a Azure Blob Storage
+    foreach (var adjunto in request.Adjuntos)
+    {
+        adjunto.Contenido.Position = 0; // resetear stream
+        await _azureStorage.GuardarAsync(
+            $"ordenes/{request.OrdenId}/{adjunto.Nombre}",
+            adjunto.Contenido);
+    }
+
+    // 3. Marcar orden como enviada en BG360
+    var codigoEstado = await _bg360Service.MarcarEnvioFormatoAsync(
+        request.OrdenId);
+
+    return Exito(codigoEstado);
+}
+\`\`\`
+
+Cada integración se define como una interfaz independiente:
+
+\`\`\`csharp
+public interface IEmailService
+{
+    Task<EmailResult> EnviarCorreoConAdjuntosAsync(
+        string to, string subject, string html,
+        List<AttachmentDto> attachments);
+}
+
+public interface IAzureStorageService
+{
+    Task GuardarAsync(string blobName, Stream content);
+}
+
+public interface IBg360Service
+{
+    Task<int> MarcarEnvioFormatoAsync(int ordenId);
+}
+\`\`\`
+
+Los responsables del envío se cargan dinámicamente desde la API Atlas de BG360, en lugar de estar hardcodeados:
+
+\`\`\`csharp
+var responsables = await _bg360Api.ObtenerResponsablesProcesoAsync(
+    request.ProcesoId);
+\`\`\`
+
+Flujo completo:
+
+\`\`\`
+UI Submit → [ErpBaguer Service]
+                ↓
+         [Infobip Email] → notificar proveedor con PDFs
+                ↓
+         [Azure Blob] → almacenar documentos
+                ↓
+         [BG360 API] → MarcarEnvioFormato
+\`\`\`
+
+**El impacto**
+
+Cero servicios nuevos que deployar. Cero archivos temporales en disco (los streams de PDF se resetean con Position = 0 en vez de guardarse). Trazabilidad completa porque cada paso se loguea con el mismo TransactionId del email. Si el paso 3 falla, el paso 2 puede revertirse. Los interfaces permiten mockear cada integración en tests unitarios. El método completo tiene menos de cuarenta líneas.
+
+**Lecciones aprendidas**
+
+Orquestación no requiere un microservicio dedicado ni una cola de mensajes. Un Application Service bien diseñado puede encadenar operaciones cross-system sin acoplar los sistemas entre sí. La clave está en los límites de interfaz, no en los límites físicos de servicio. Cada sistema expone una interfaz, el service method las orquesta. Los PDFs en memoria sin archivos temporales son un detalle que parece menor pero elimina toda una categoría de bugs (archivos huérfanos, permisos, limpieza). Y cargar dinámicamente los responsables desde la API en lugar de hardcodearlos significa que el negocio puede cambiar quién recibe cada notificación sin tocar una línea de código.`,
+    contentEn: `**The problem: an order that lives in no single system**
+
+In Baguer's production workflow, a work order follows this cycle: the Bg360 ERP manages it, ErpBaguer notifies the supplier via email with attached PDFs, Azure Blob Storage stores the documentation, and BG360 marks the order as sent. Three different systems, each with its own database, its own team, its own deployment cycle. The challenge: coordinate all this without creating a distributed monster.
+
+The most visible symptom was that when a supplier called saying "I didn't receive the order," no one could answer quickly. Did the email fail? Was the PDF not generated? Did the storage system return an error? A round of cross-system investigation would begin.
+
+**The wrong approach**
+
+The first idea was building a dedicated orchestrator service: a new project with its own deploy, its own database, its own CI/CD pipeline. A microservice to "orchestrate orders." This meant: (1) adding network latency between the orchestrator and each system, (2) duplicating business logic because the orchestrator needed to know too much about each system, (3) a new point of failure in the chain.
+
+**The solution: orchestration in a service method**
+
+Instead of a new service, I implemented orchestration inside the existing Application Service. The \`NotificarDespachoOrdenTrabajo\` method chains three sequential operations using decoupled interfaces:
+
+\`\`\`csharp
+public async Task<ResultadoNotificacion> NotificarDespachoOrdenTrabajoAsync(
+    NotificarDespachoRequest request)
+{
+    // 1. Send email with PDFs via Infobip
+    var emailResult = await _emailService.EnviarCorreoConAdjuntosAsync(
+        request.ToEmail, request.Subject, request.HtmlContent,
+        request.Adjuntos);
+
+    if (!emailResult.Exitoso) return Fallo(emailResult.Error);
+
+    // 2. Upload PDFs to Azure Blob Storage
+    foreach (var adjunto in request.Adjuntos)
+    {
+        adjunto.Contenido.Position = 0; // reset stream position
+        await _azureStorage.GuardarAsync(
+            $"ordenes/{request.OrdenId}/{adjunto.Nombre}",
+            adjunto.Contenido);
+    }
+
+    // 3. Mark order as sent in BG360
+    var codigoEstado = await _bg360Service.MarcarEnvioFormatoAsync(
+        request.OrdenId);
+
+    return Exito(codigoEstado);
+}
+\`\`\`
+
+Each integration is defined as its own interface:
+
+\`\`\`csharp
+public interface IEmailService
+{
+    Task<EmailResult> EnviarCorreoConAdjuntosAsync(
+        string to, string subject, string html,
+        List<AttachmentDto> attachments);
+}
+
+public interface IAzureStorageService
+{
+    Task GuardarAsync(string blobName, Stream content);
+}
+
+public interface IBg360Service
+{
+    Task<int> MarcarEnvioFormatoAsync(int ordenId);
+}
+\`\`\`
+
+The notification responsables are loaded dynamically from the BG360 Atlas API, rather than being hardcoded:
+
+\`\`\`csharp
+var responsables = await _bg360Api.ObtenerResponsablesProcesoAsync(
+    request.ProcesoId);
+\`\`\`
+
+Complete flow:
+
+\`\`\`
+UI Submit → [ErpBaguer Service]
+                ↓
+         [Infobip Email] → notify supplier with PDFs
+                ↓
+         [Azure Blob] → store documents
+                ↓
+         [BG360 API] → MarcarEnvioFormato
+\`\`\`
+
+**The impact**
+
+Zero new services to deploy. Zero temporary files on disk (PDF streams are reset with Position = 0 instead of being saved). Full traceability because each step is logged with the same TransactionId from the email. If step 3 fails, step 2 can be rolled back. Interfaces allow mocking each integration for unit tests. The complete method is under forty lines.
+
+**Lessons learned**
+
+Orchestration doesn't require a dedicated microservice or a message queue. A well-designed Application Service method can chain cross-system operations without coupling the systems to each other. The key is interface boundaries, not physical service boundaries. Each system exposes an interface, the service method orchestrates them. PDFs in memory without temp files is a detail that seems minor but eliminates an entire category of bugs (orphan files, permissions, cleanup). And loading responsables dynamically from the API instead of hardcoding them means the business can change who receives each notification without touching a single line of code.`,
+    relatedIds: ['comunicaciones-api-centralizada'],
+  },
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
