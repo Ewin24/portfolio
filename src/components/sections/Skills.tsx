@@ -7,7 +7,7 @@ import {
   Zap,
   Database,
   Package,
-  CircleDot,
+  Layout,
 } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
@@ -26,6 +26,32 @@ interface TechData {
 
 const TECH_DATA: TechData[] = [
   {
+    id: 'dotnet',
+    name: '.NET / C#',
+    icon: Terminal,
+    color: '#512BD4',
+    milestoneKeys: [
+      'skills.dotnet.milestone1',
+      'skills.dotnet.milestone2',
+      'skills.dotnet.milestone3',
+    ],
+    referenceKey: 'skills.dotnet.reference',
+    referenceUrl: '#blog/article/arquitectura-limpa-sistema-originacion-credito',
+  },
+  {
+    id: 'sqlserver',
+    name: 'SQL Server',
+    icon: Database,
+    color: '#CC2927',
+    milestoneKeys: [
+      'skills.sqlserver.milestone1',
+      'skills.sqlserver.milestone2',
+      'skills.sqlserver.milestone3',
+    ],
+    referenceKey: 'skills.sqlserver.reference',
+    referenceUrl: '#blog/article/dapper-stored-procedures-en-lugar-de-ef-core',
+  },
+  {
     id: 'react',
     name: 'React',
     icon: Code,
@@ -36,20 +62,7 @@ const TECH_DATA: TechData[] = [
       'skills.react.milestone3',
     ],
     referenceKey: 'skills.react.reference',
-    referenceUrl: '/projects#react',
-  },
-  {
-    id: 'nodejs',
-    name: 'Node.js',
-    icon: Terminal,
-    color: '#68A063',
-    milestoneKeys: [
-      'skills.nodejs.milestone1',
-      'skills.nodejs.milestone2',
-      'skills.nodejs.milestone3',
-    ],
-    referenceKey: 'skills.nodejs.reference',
-    referenceUrl: '/projects#nodejs',
+    referenceUrl: '#projects',
   },
   {
     id: 'typescript',
@@ -62,20 +75,20 @@ const TECH_DATA: TechData[] = [
       'skills.typescript.milestone3',
     ],
     referenceKey: 'skills.typescript.reference',
-    referenceUrl: '/projects#typescript',
+    referenceUrl: '#projects',
   },
   {
-    id: 'postgresql',
-    name: 'PostgreSQL',
-    icon: Database,
-    color: '#336791',
+    id: 'cleanarch',
+    name: 'Clean Architecture',
+    icon: Layout,
+    color: '#6C5CE7',
     milestoneKeys: [
-      'skills.postgresql.milestone1',
-      'skills.postgresql.milestone2',
-      'skills.postgresql.milestone3',
+      'skills.cleanarch.milestone1',
+      'skills.cleanarch.milestone2',
+      'skills.cleanarch.milestone3',
     ],
-    referenceKey: 'skills.postgresql.reference',
-    referenceUrl: '/projects#database',
+    referenceKey: 'skills.cleanarch.reference',
+    referenceUrl: '#blog/article/orquestacion-cross-system-sin-acoplamiento',
   },
   {
     id: 'docker',
@@ -88,20 +101,7 @@ const TECH_DATA: TechData[] = [
       'skills.docker.milestone3',
     ],
     referenceKey: 'skills.docker.reference',
-    referenceUrl: '/projects#devops',
-  },
-  {
-    id: 'python',
-    name: 'Python',
-    icon: CircleDot,
-    color: '#3572A5',
-    milestoneKeys: [
-      'skills.python.milestone1',
-      'skills.python.milestone2',
-      'skills.python.milestone3',
-    ],
-    referenceKey: 'skills.python.reference',
-    referenceUrl: '/projects#python',
+    referenceUrl: '#projects',
   },
 ]
 
