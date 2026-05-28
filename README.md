@@ -61,6 +61,6 @@ Roles donde pueda:
 ---
 
 **Construyamos algo que importe.**  
-[GitHub](https://github.com/Ewin24) · [LinkedIn](https://linkedin.com/in/Ewin24) · contact@edwintrigos.dev
+[GitHub](https://github.com/Ewin24) · [LinkedIn](https://linkedin.com/in/Ewin24) · edwintrigos24@gmail.com
 
 *Portfolio construido con React 19 + Vite + TypeScript + Tailwind CSS v4. Casos de estudio extraídos de documentación técnica de proyectos en producción.*
