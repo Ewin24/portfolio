@@ -8,6 +8,8 @@ import {
   Database,
   Package,
   Layout,
+  Cloud,
+  Smartphone,
 } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
@@ -37,6 +39,19 @@ const TECH_DATA: TechData[] = [
     ],
     referenceKey: 'skills.dotnet.reference',
     referenceUrl: '#blog/article/arquitectura-limpa-sistema-originacion-credito',
+  },
+  {
+    id: 'php',
+    name: 'PHP / Laravel',
+    icon: Terminal,
+    color: '#FF2D20',
+    milestoneKeys: [
+      'skills.php.milestone1',
+      'skills.php.milestone2',
+      'skills.php.milestone3',
+    ],
+    referenceKey: 'skills.php.reference',
+    referenceUrl: '#projects',
   },
   {
     id: 'sqlserver',
@@ -75,6 +90,32 @@ const TECH_DATA: TechData[] = [
       'skills.typescript.milestone3',
     ],
     referenceKey: 'skills.typescript.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'aws',
+    name: 'AWS',
+    icon: Cloud,
+    color: '#FF9900',
+    milestoneKeys: [
+      'skills.aws.milestone1',
+      'skills.aws.milestone2',
+      'skills.aws.milestone3',
+    ],
+    referenceKey: 'skills.aws.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'flutter',
+    name: 'Flutter',
+    icon: Smartphone,
+    color: '#02569B',
+    milestoneKeys: [
+      'skills.flutter.milestone1',
+      'skills.flutter.milestone2',
+      'skills.flutter.milestone3',
+    ],
+    referenceKey: 'skills.flutter.reference',
     referenceUrl: '#projects',
   },
   {
