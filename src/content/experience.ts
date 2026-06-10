@@ -26,8 +26,7 @@ export const workExperience: WorkExperience[] = [
     location: 'Colombia (Remoto)',
     achievements: [
       'Lideré el diseño arquitectónico, desarrollo end-to-end y despliegue en la nube de STARSOL, una plataforma SaaS B2B para el sector solidario que gestiona el Sistema Integral de Administración de Riesgos (SARLAFT, SARC, SIAR), digitalizando y automatizando flujos complejos de originación de crédito y monitoreo normativo',
-      'Diseñé una arquitectura asíncrona con 3 background workers procesando jobs simultáneamente para desacoplar tareas pesadas del hilo principal del servidor web (PHP/Laravel), eliminando cuellos de botella en el procesamiento de archivos financieros',
-      'Desarrollé una aplicación cliente en .NET MAUI para la gestión y carga avanzada de archivos integrada al ecosistema STARSOL, permitiendo el procesamiento offline y la sincronización con el backend en la nube',
+      'Diseñé una arquitectura asíncrona con 3 background workers procesando jobs simultáneamente para desacoplar tareas pesadas del hilo principal del servidor web (PHP/Laravel), eliminando cuellos de botella en el procesamiento de archivos financieros',      
       'Orquesté el aprovisionamiento de entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad y seguridad para el procesamiento de datos financieros sensibles',
     ],
     achievementsEn: [
