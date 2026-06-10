@@ -151,6 +151,21 @@ export interface WorkExperience {
 }
 
 /**
+ * Education — Formación académica y bootcamps.
+ */
+export interface Education {
+  id: string
+  institution: string
+  degree: string
+  degreeEn: string
+  period: string
+  current?: boolean
+  description?: string
+  descriptionEn?: string
+  order: number
+}
+
+/**
  * Testimonial — Referencia profesional de colegas o clientes.
  */
 export interface Testimonial {

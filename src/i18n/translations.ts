@@ -7,6 +7,7 @@ type TranslationKeys = {
   'nav.skills': string
   'nav.experience': string
   'nav.testimonials': string
+  'nav.education': string
   'nav.blog': string
   'nav.contact': string
   // Hero
@@ -95,6 +96,9 @@ type TranslationKeys = {
   'about.title': string
   'about.subtitle': string
   'about.description': string
+  // Education
+  'education.title': string
+  'education.subtitle': string
   // Experience
   'experience.title': string
   'experience.subtitle': string
@@ -138,6 +142,7 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.skills': 'Stack',
     'nav.experience': 'Experiencia',
     'nav.testimonials': 'Referencias',
+    'nav.education': 'Formación',
     'nav.blog': 'Blog',
     'nav.contact': 'Contacto',
 
@@ -235,6 +240,10 @@ const translations: Record<Language, TranslationKeys> = {
     'about.description':
       'Ingeniero de Software y Desarrollador Full-Stack especializado en la construcción de sistemas distribuidos, microservicios y plataformas SaaS de alto rendimiento. Experiencia comprobable en la modernización de arquitecturas empresariales (ERPs), integración de soluciones financieras (Fintech) y despliegues Cloud. Apasionado por el Clean Code, la optimización de bases de datos y el diseño de arquitecturas resilientes orientadas a resolver cuellos de botella y aportar valor directo al negocio.',
 
+    // Education
+    'education.title': 'Formación',
+    'education.subtitle': 'Académica y bootcamps',
+
     // Experience
     'experience.title': 'Trayectoria',
     'experience.subtitle': 'Experiencia profesional con impacto medible',
@@ -281,6 +290,7 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.skills': 'Stack',
     'nav.experience': 'Experience',
     'nav.testimonials': 'References',
+    'nav.education': 'Education',
     'nav.blog': 'Blog',
     'nav.contact': 'Contact',
 
@@ -377,6 +387,10 @@ const translations: Record<Language, TranslationKeys> = {
     'about.subtitle': 'Full Stack Software Engineer',
     'about.description':
       'Software Engineer and Full-Stack Developer specialized in building distributed systems, microservices, and high-performance SaaS platforms. Proven experience in enterprise architecture modernization (ERPs), financial solutions integration (Fintech), and Cloud deployments. Passionate about Clean Code, database optimization, and designing resilient architectures that solve bottlenecks and deliver direct business value.',
+
+    // Education
+    'education.title': 'Education',
+    'education.subtitle': 'Academic background & bootcamps',
 
     // Experience
     'experience.title': 'Experience',
