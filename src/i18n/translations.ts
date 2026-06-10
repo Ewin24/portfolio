@@ -47,6 +47,10 @@ type TranslationKeys = {
   'skills.dotnet.milestone2': string
   'skills.dotnet.milestone3': string
   'skills.dotnet.reference': string
+  'skills.php.milestone1': string
+  'skills.php.milestone2': string
+  'skills.php.milestone3': string
+  'skills.php.reference': string
   'skills.sqlserver.milestone1': string
   'skills.sqlserver.milestone2': string
   'skills.sqlserver.milestone3': string
@@ -59,6 +63,14 @@ type TranslationKeys = {
   'skills.typescript.milestone2': string
   'skills.typescript.milestone3': string
   'skills.typescript.reference': string
+  'skills.aws.milestone1': string
+  'skills.aws.milestone2': string
+  'skills.aws.milestone3': string
+  'skills.aws.reference': string
+  'skills.flutter.milestone1': string
+  'skills.flutter.milestone2': string
+  'skills.flutter.milestone3': string
+  'skills.flutter.reference': string
   'skills.cleanarch.milestone1': string
   'skills.cleanarch.milestone2': string
   'skills.cleanarch.milestone3': string
@@ -180,6 +192,18 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.docker.milestone2': 'CI/CD con GitHub Actions',
     'skills.docker.milestone3': 'Despliegue en entornos productivos',
     'skills.docker.reference': 'Ver Casos de Estudio',
+    'skills.php.milestone1': 'Laravel con workers asíncronos y jobs',
+    'skills.php.milestone2': 'SaaS B2B completo para sector solidario',
+    'skills.php.milestone3': 'Procesamiento de archivos financieros en segundo plano',
+    'skills.php.reference': 'Ver Casos de Estudio',
+    'skills.aws.milestone1': 'Infraestructura cloud con alta disponibilidad',
+    'skills.aws.milestone2': 'CI/CD en entornos multi-ambiente',
+    'skills.aws.milestone3': 'Entornos de producción y staging',
+    'skills.aws.reference': 'Ver Casos de Estudio',
+    'skills.flutter.milestone1': 'Aplicación cliente con sincronización offline',
+    'skills.flutter.milestone2': 'Conexión con API REST empresarial',
+    'skills.flutter.milestone3': 'UI nativa multiplataforma',
+    'skills.flutter.reference': 'Ver Casos de Estudio',
 
     // About
     'about.title': 'Sobre mí',
@@ -299,6 +323,18 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.docker.milestone2': 'CI/CD with GitHub Actions',
     'skills.docker.milestone3': 'Production environment deployment',
     'skills.docker.reference': 'View Case Studies',
+    'skills.php.milestone1': 'Laravel with async workers and jobs',
+    'skills.php.milestone2': 'Complete B2B SaaS for solidarity sector',
+    'skills.php.milestone3': 'Background processing of financial files',
+    'skills.php.reference': 'View Case Studies',
+    'skills.aws.milestone1': 'Cloud infrastructure with high availability',
+    'skills.aws.milestone2': 'CI/CD across multi-environment setups',
+    'skills.aws.milestone3': 'Production and staging environments',
+    'skills.aws.reference': 'View Case Studies',
+    'skills.flutter.milestone1': 'Client app with offline sync',
+    'skills.flutter.milestone2': 'Enterprise REST API integration',
+    'skills.flutter.milestone3': 'Native cross-platform UI',
+    'skills.flutter.reference': 'View Case Studies',
 
     // About
     'about.title': 'About',
