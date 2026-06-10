@@ -263,9 +263,52 @@ export const caseStudies: CaseStudy[] = [
     hasNDA: false,
     tags: ['frontend', 'portfolio', 'architecture', 'react'],
   },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // PROYECTO 7 — STARSOL (SaaS Riesgos Financieros)
+  // Plataforma B2B para el sector solidario
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'starsol-saas',
+    slug: 'starsol-saas-riesgos-financieros',
+    featured: true,
+    order: 0,
+
+    title: 'STARSOL — Plataforma SaaS para Gestión Integral de Riesgos',
+    titleEn: 'STARSOL — SaaS Platform for Integrated Risk Management',
+
+    company: 'STARSOL',
+    companyAnon: false,
+    industry: 'Fintech / Riesgos',
+
+    period: '2024 – Presente',
+    role: 'Arquitecto de Software Cloud & Desarrollador Independiente',
+    roleEn: 'Cloud Software Architect & Independent Developer',
+
+    problem:
+      'Las entidades del sector solidario (cooperativas, fondos de empleados) enfrentaban procesos manuales para la gestión de riesgos SARLAFT, SARC y SIAR, con flujos de originación de crédito y monitoreo normativo sin digitalizar. El servidor web monolítico se convertía en cuello de botella al procesar archivos financieros pesados de forma sincrónica, degradando la experiencia del usuario.',
+    problemEn:
+      'Entities in the solidarity sector (cooperatives, employee funds) faced manual processes for SARLAFT, SARC, and SIAR risk management, with undigitized loan origination flows and regulatory monitoring. The monolithic web server became a bottleneck when processing heavy financial files synchronously, degrading the user experience.',
+
+    solution:
+      'Diseñé y construí STARSOL desde cero como plataforma SaaS B2B en PHP con Laravel, implementando una arquitectura asíncrona con 3 background workers que procesan jobs simultáneamente, desacoplando completamente la carga de archivos del hilo principal del servidor web. Para la gestión avanzada de archivos, desarrollé una aplicación cliente en .NET MAUI con capacidad offline que se sincroniza con el backend en la nube. A nivel de infraestructura, aprovisioné entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad para el procesamiento de datos financieros sensibles.',
+    solutionEn:
+      'Designed and built STARSOL from scratch as a B2B SaaS platform in PHP with Laravel, implementing an asynchronous architecture with 3 background workers processing jobs simultaneously, completely decoupling file uploads from the main web server thread. For advanced file management, developed a .NET MAUI client application with offline capability that syncs with the cloud backend. At the infrastructure level, provisioned high-availability environments on AWS with CI/CD practices, ensuring scalability for sensitive financial data processing.',
+
+    impact:
+      'Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR.',
+    impactEn:
+      'Asynchronous architecture eliminated web server bottlenecks through 3 simultaneous workers. .NET MAUI client application with offline sync for financial file management. AWS cloud infrastructure with high availability and CI/CD. Complete B2B SaaS platform for the solidarity sector covering SARLAFT, SARC, and SIAR.',
+
+    stack: ['PHP', 'Laravel', 'AWS', '.NET MAUI', 'MySQL', 'Docker', 'CI/CD'],
+    hasNDA: false,
+    tags: ['saas', 'fintech', 'architecture', 'cloud', 'laravel'],
+  },
 ]
 
 /** Solo proyectos destacados, ordenados por prioridad */
-export const featuredCaseStudies = caseStudies
+export const featuredCaseStudies = [...caseStudies].sort(
+  (a, b) => a.order - b.order
+)
   .filter((p) => p.featured)
   .sort((a, b) => a.order - b.order)
