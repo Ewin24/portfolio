@@ -10,6 +10,9 @@ import {
   Layout,
   Cloud,
   Smartphone,
+  Coffee,
+  Globe,
+  Server,
 } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
@@ -142,6 +145,45 @@ const TECH_DATA: TechData[] = [
       'skills.docker.milestone3',
     ],
     referenceKey: 'skills.docker.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'java',
+    name: 'Java / Spring Boot',
+    icon: Coffee,
+    color: '#007396',
+    milestoneKeys: [
+      'skills.java.milestone1',
+      'skills.java.milestone2',
+      'skills.java.milestone3',
+    ],
+    referenceKey: 'skills.java.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'postgresql',
+    name: 'PostgreSQL',
+    icon: Server,
+    color: '#336791',
+    milestoneKeys: [
+      'skills.postgresql.milestone1',
+      'skills.postgresql.milestone2',
+      'skills.postgresql.milestone3',
+    ],
+    referenceKey: 'skills.postgresql.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'azure',
+    name: 'Azure',
+    icon: Globe,
+    color: '#0078D4',
+    milestoneKeys: [
+      'skills.azure.milestone1',
+      'skills.azure.milestone2',
+      'skills.azure.milestone3',
+    ],
+    referenceKey: 'skills.azure.reference',
     referenceUrl: '#projects',
   },
 ]
