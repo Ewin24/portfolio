@@ -97,31 +97,83 @@ export const workExperience: WorkExperience[] = [
   },
 
   // ═════════════════════════════════════════════════════════════════════════
-  // Primer rol
+  // CAMPUSLANDS — Full Stack
   // ═════════════════════════════════════════════════════════════════════════
   {
-    id: 'desarrollador-junior',
-    company: 'Empresa de Desarrollo de Software',
+    id: 'campuslands',
+    company: 'CAMPUSLANDS',
     companyUrl: undefined,
-    role: 'Desarrollador Junior',
-    roleEn: 'Junior Developer',
-    period: '2019 – 2021',
+    role: 'Desarrollador Full Stack (.NET & JavaScript)',
+    roleEn: 'Full Stack Developer (.NET & JavaScript)',
+    period: 'Feb 2023 – Ene 2024',
     current: false,
     location: 'Colombia',
     achievements: [
-      'Desarrollé y mantuve módulos de sistemas empresariales (nómina, facturación, inventario) usados por equipos internos',
-      'Implementé consultas SQL optimizadas y stored procedures para reportes financieros',
-      'Participé en la migración de aplicaciones web de ASP.NET Web Forms a ASP.NET Core MVC',
-      'Implementé pruebas unitarias que alcanzaron 70%+ de cobertura en módulos críticos del sistema',
+      'Desarrollé una solución de software integral bajo metodología ágil Scrum para la gestión operativa de un modelo logístico',
+      'Diseñé un backend altamente escalable en .NET fundamentado en principios SOLID con Fluent API para mapeo de datos',
+      'Orquesté el diseño, normalización y administración de la base de datos relacional en MySQL',
+      'Consumí los servicios backend a través de un frontend dinámico e interactivo construido con JavaScript, asegurando calidad y mantenibilidad del código a largo plazo',
     ],
     achievementsEn: [
-      'Developed and maintained enterprise system modules (payroll, billing, inventory) used by internal teams',
-      'Implemented optimized SQL queries and stored procedures for financial reporting',
-      'Participated in migration from ASP.NET Web Forms to ASP.NET Core MVC',
-      'Implemented unit tests reaching 70%+ coverage on critical system modules',
+      'Developed a comprehensive software solution under Scrum agile methodology for operational management of a logistics model',
+      'Designed a highly scalable backend in .NET grounded in SOLID principles with Fluent API for data mapping',
+      'Orchestrated the design, normalization, and administration of the MySQL relational database',
+      'Consumed backend services through a dynamic and interactive frontend built with JavaScript, ensuring long-term code quality and maintainability',
     ],
-    stack: ['C#', 'ASP.NET', 'SQL Server', 'JavaScript', 'HTML/CSS'],
+    stack: ['C#', '.NET', 'MySQL', 'JavaScript', 'HTML/CSS', 'Scrum'],
+    order: 2,
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // BAGUER S.A.S — Rol Backend previo
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'baguer-software-backend',
+    company: 'BAGUER S.A.S',
+    companyUrl: undefined,
+    role: 'Desarrollador Backend .NET',
+    roleEn: '.NET Backend Developer',
+    period: '2021 – 2023',
+    current: false,
+    location: 'Colombia (Remoto)',
+    achievements: [
+      'Desarrollé y mantuve integraciones con APIs de terceros (burós de crédito CIFIN, pasarelas de pago, servicios de mensajería Infobip) procesando miles de transacciones diarias',
+      'Implementé APIs REST en .NET con Dapper y SQL Server, optimizando consultas mediante índices y caching que redujeron tiempos de respuesta de 3s a 400ms',
+      'Construí sistemas de reportes automatizados con Crystal Reports integrados al ERP, eliminando horas de trabajo manual del equipo de análisis',
+      'Participé en la migración de aplicaciones .NET Framework a .NET Core, aplicando inyección de dependencias y patrones modernos de arquitectura',
+    ],
+    achievementsEn: [
+      'Developed and maintained third-party API integrations (CIFIN credit bureaus, payment gateways, Infobip messaging services) processing thousands of daily transactions',
+      'Implemented REST APIs in .NET with Dapper and SQL Server, optimizing queries through indexes and caching that reduced response times from 3s to 400ms',
+      'Built automated reporting systems with Crystal Reports integrated into the ERP, eliminating hours of manual work from the analytics team',
+      'Participated in migration from .NET Framework to .NET Core applications, applying dependency injection and modern architecture patterns',
+    ],
+    stack: ['C#', '.NET Core', 'Dapper', 'SQL Server', 'REST API', 'Crystal Reports'],
     order: 1,
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // ESPEJOS GLAM — Web Developer
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'espejos-glam',
+    company: 'ESPEJOS GLAM',
+    companyUrl: undefined,
+    role: 'Programador Web',
+    roleEn: 'Web Developer',
+    period: 'Ene 2022 – Ene 2023',
+    current: false,
+    location: 'Colombia',
+    achievements: [
+      'Fui responsable del desarrollo end-to-end de la plataforma web comercial, gestionando todo el ciclo de vida del producto: desde la toma de requerimientos y diseño de interfaces (UI/UX) mediante mockups, hasta la implementación técnica utilizando PHP, JavaScript, HTML y CSS',
+      'Ejecuté la integración de la lógica de negocio, la optimización de contenidos y el despliegue automatizado en servidores de producción, garantizando la estabilidad del sitio',
+    ],
+    achievementsEn: [
+      'Responsible for end-to-end development of the commercial web platform, managing the full product lifecycle: from requirements gathering and UI/UX mockup design to technical implementation using PHP, JavaScript, HTML, and CSS',
+      'Executed business logic integration, content optimization, and automated deployment to production servers, ensuring site stability',
+    ],
+    stack: ['PHP', 'JavaScript', 'HTML', 'CSS', 'UI/UX', 'Deployment'],
+    order: 0,
   },
 ]
 
