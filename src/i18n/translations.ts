@@ -7,6 +7,7 @@ type TranslationKeys = {
   'nav.skills': string
   'nav.experience': string
   'nav.testimonials': string
+  'nav.education': string
   'nav.blog': string
   'nav.contact': string
   // Hero
@@ -79,10 +80,25 @@ type TranslationKeys = {
   'skills.docker.milestone2': string
   'skills.docker.milestone3': string
   'skills.docker.reference': string
+  'skills.java.milestone1': string
+  'skills.java.milestone2': string
+  'skills.java.milestone3': string
+  'skills.java.reference': string
+  'skills.postgresql.milestone1': string
+  'skills.postgresql.milestone2': string
+  'skills.postgresql.milestone3': string
+  'skills.postgresql.reference': string
+  'skills.azure.milestone1': string
+  'skills.azure.milestone2': string
+  'skills.azure.milestone3': string
+  'skills.azure.reference': string
   // About
   'about.title': string
   'about.subtitle': string
   'about.description': string
+  // Education
+  'education.title': string
+  'education.subtitle': string
   // Experience
   'experience.title': string
   'experience.subtitle': string
@@ -126,6 +142,7 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.skills': 'Stack',
     'nav.experience': 'Experiencia',
     'nav.testimonials': 'Referencias',
+    'nav.education': 'Formación',
     'nav.blog': 'Blog',
     'nav.contact': 'Contacto',
 
@@ -133,7 +150,7 @@ const translations: Record<Language, TranslationKeys> = {
     'hero.greeting': 'Soluciones de',
     'hero.role': 'Ingeniería de Software',
     'hero.subtitle':
-      'Diseño y construyo sistemas que resuelven problemas reales de negocio. Especializado en arquitecturas escalables, APIs de alto rendimiento e interfaces que los usuarios realmente disfrutan usar.',
+      'Ingeniero de Software y Desarrollador Full-Stack especializado en sistemas distribuidos, microservicios y plataformas SaaS. Experiencia comprobable modernizando ERPs, integrando soluciones Fintech y desplegando en la nube. Apasionado por el Clean Code, la optimización de bases de datos y las arquitecturas resilientes orientadas a resolver cuellos de botella.',
     'hero.cta.projects': 'Ver Casos de Estudio',
     'hero.cta.contact': 'Hablemos',
 
@@ -192,6 +209,18 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.docker.milestone2': 'CI/CD con GitHub Actions',
     'skills.docker.milestone3': 'Despliegue en entornos productivos',
     'skills.docker.reference': 'Ver Casos de Estudio',
+    'skills.java.milestone1': 'APIs reactivas con Spring WebFlux y Project Reactor',
+    'skills.java.milestone2': 'Microservicios con Spring Boot y Spring Cloud',
+    'skills.java.milestone3': 'Arquitecturas resilientes con patrones de tolerancia a fallos',
+    'skills.java.reference': 'Ver Casos de Estudio',
+    'skills.postgresql.milestone1': 'Modelado relacional con índices y constraints',
+    'skills.postgresql.milestone2': 'Consultas optimizadas con EXPLAIN ANALYZE y CTEs',
+    'skills.postgresql.milestone3': 'Integración con APIs REST y ORMs',
+    'skills.postgresql.reference': 'Ver Casos de Estudio',
+    'skills.azure.milestone1': 'Aprovisionamiento de recursos cloud con Azure Portal',
+    'skills.azure.milestone2': 'CI/CD con Azure DevOps',
+    'skills.azure.milestone3': 'Contenedores y orquestación en Azure Kubernetes',
+    'skills.azure.reference': 'Ver Casos de Estudio',
     'skills.php.milestone1': 'Laravel con workers asíncronos y jobs',
     'skills.php.milestone2': 'SaaS B2B completo para sector solidario',
     'skills.php.milestone3': 'Procesamiento de archivos financieros en segundo plano',
@@ -209,7 +238,11 @@ const translations: Record<Language, TranslationKeys> = {
     'about.title': 'Sobre mí',
     'about.subtitle': 'Ingeniero de Software Full Stack',
     'about.description':
-      'Construyo sistemas que escalan. Con años de experiencia en proyectos empresariales reales, me especializo en diseñar arquitecturas que resuelven cuellos de botella, integrar sistemas complejos y liderar la transición de soluciones legacy a tecnología moderna. Me importa el impacto de negocio, no solo el código.',
+      'Ingeniero de Software y Desarrollador Full-Stack especializado en la construcción de sistemas distribuidos, microservicios y plataformas SaaS de alto rendimiento. Experiencia comprobable en la modernización de arquitecturas empresariales (ERPs), integración de soluciones financieras (Fintech) y despliegues Cloud. Apasionado por el Clean Code, la optimización de bases de datos y el diseño de arquitecturas resilientes orientadas a resolver cuellos de botella y aportar valor directo al negocio.',
+
+    // Education
+    'education.title': 'Formación',
+    'education.subtitle': 'Académica y bootcamps',
 
     // Experience
     'experience.title': 'Trayectoria',
@@ -257,6 +290,7 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.skills': 'Stack',
     'nav.experience': 'Experience',
     'nav.testimonials': 'References',
+    'nav.education': 'Education',
     'nav.blog': 'Blog',
     'nav.contact': 'Contact',
 
@@ -264,7 +298,7 @@ const translations: Record<Language, TranslationKeys> = {
     'hero.greeting': 'Software',
     'hero.role': 'Engineering Solutions',
     'hero.subtitle':
-      'I design and build systems that solve real business problems. Specialized in scalable architectures, high-performance APIs, and interfaces users actually enjoy.',
+      'Software Engineer and Full-Stack Developer specialized in distributed systems, microservices, and high-performance SaaS platforms. Proven track record modernizing enterprise ERPs, integrating Fintech solutions, and deploying to the cloud. Passionate about Clean Code, database optimization, and resilient architectures that solve bottlenecks and deliver direct business value.',
     'hero.cta.projects': 'View Case Studies',
     'hero.cta.contact': "Let's Talk",
 
@@ -323,6 +357,18 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.docker.milestone2': 'CI/CD with GitHub Actions',
     'skills.docker.milestone3': 'Production environment deployment',
     'skills.docker.reference': 'View Case Studies',
+    'skills.java.milestone1': 'Reactive APIs with Spring WebFlux and Project Reactor',
+    'skills.java.milestone2': 'Microservices with Spring Boot and Spring Cloud',
+    'skills.java.milestone3': 'Resilient architectures with fault tolerance patterns',
+    'skills.java.reference': 'View Case Studies',
+    'skills.postgresql.milestone1': 'Relational modeling with indexes and constraints',
+    'skills.postgresql.milestone2': 'Query optimization with EXPLAIN ANALYZE and CTEs',
+    'skills.postgresql.milestone3': 'Integration with REST APIs and ORMs',
+    'skills.postgresql.reference': 'View Case Studies',
+    'skills.azure.milestone1': 'Cloud resource provisioning with Azure Portal',
+    'skills.azure.milestone2': 'CI/CD with Azure DevOps',
+    'skills.azure.milestone3': 'Containers and orchestration in Azure Kubernetes',
+    'skills.azure.reference': 'View Case Studies',
     'skills.php.milestone1': 'Laravel with async workers and jobs',
     'skills.php.milestone2': 'Complete B2B SaaS for solidarity sector',
     'skills.php.milestone3': 'Background processing of financial files',
@@ -340,7 +386,11 @@ const translations: Record<Language, TranslationKeys> = {
     'about.title': 'About',
     'about.subtitle': 'Full Stack Software Engineer',
     'about.description':
-      'I build systems that scale. With years of experience in real enterprise projects, I specialize in designing architectures that solve bottlenecks, integrating complex systems, and leading legacy-to-modern transitions. I care about business impact, not just code.',
+      'Software Engineer and Full-Stack Developer specialized in building distributed systems, microservices, and high-performance SaaS platforms. Proven experience in enterprise architecture modernization (ERPs), financial solutions integration (Fintech), and Cloud deployments. Passionate about Clean Code, database optimization, and designing resilient architectures that solve bottlenecks and deliver direct business value.',
+
+    // Education
+    'education.title': 'Education',
+    'education.subtitle': 'Academic background & bootcamps',
 
     // Experience
     'experience.title': 'Experience',
