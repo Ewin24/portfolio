@@ -272,7 +272,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'starsol-saas',
     slug: 'starsol-saas-riesgos-financieros',
     featured: true,
-    order: 1,
+    order: 0,
 
     title: 'STARSOL — Plataforma SaaS para Gestión Integral de Riesgos',
     titleEn: 'STARSOL — SaaS Platform for Integrated Risk Management',
@@ -307,6 +307,8 @@ export const caseStudies: CaseStudy[] = [
 ]
 
 /** Solo proyectos destacados, ordenados por prioridad */
-export const featuredCaseStudies = caseStudies
+export const featuredCaseStudies = [...caseStudies].sort(
+  (a, b) => a.order - b.order
+)
   .filter((p) => p.featured)
   .sort((a, b) => a.order - b.order)
