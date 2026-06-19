@@ -2,20 +2,191 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/portfolio/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Edwin Trigos - Full Stack Developer Portfolio. Projects, skills, and experience pulled automatically from GitHub." />
-    <meta property="og:title" content="Edwin Trigos | Full Stack Developer" />
-    <meta property="og:description" content="Personal portfolio with live GitHub integration" />
+    <meta name="description" content="Edwin Trigos — Software Architect and Full Stack Developer. 5+ years building production systems in .NET, Clean Architecture, fintech, and cloud. Case studies, technical blog, and live GitHub integration." />
+    <meta name="author" content="Edwin Trigos" />
+    <meta name="keywords" content="Edwin Trigos, Full Stack Developer, Software Architect, .NET, C#, Clean Architecture, React, TypeScript, PHP, Laravel, AWS, Flutter, SQL Server, Dapper, Fintech, Loan Origination System" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://ewin24.github.io/portfolio/" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Edwin Trigos | Software Architect & Full Stack Developer" />
+    <meta property="og:description" content="5+ years building production systems in .NET, Clean Architecture, fintech, and cloud. Real case studies, technical blog, and live GitHub integration." />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ewin24.github.io/portfolio/" />
+    <meta property="og:image" content="https://avatars.githubusercontent.com/Ewin24" />
+    <meta property="og:image:alt" content="Edwin Trigos — Software Architect & Full Stack Developer" />
+    <meta property="og:image:width" content="460" />
+    <meta property="og:image:height" content="460" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:site_name" content="Edwin Trigos Portfolio" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Edwin Trigos | Software Architect & Full Stack Developer" />
+    <meta name="twitter:description" content="5+ years building production systems in .NET, Clean Architecture, fintech, and cloud." />
+    <meta name="twitter:image" content="https://avatars.githubusercontent.com/Ewin24" />
+    <meta name="twitter:creator" content="@Ewin24" />
+
+    <!-- Theme -->
     <meta name="theme-color" content="#0a0a0f" />
+
+    <!-- Hreflang -->
+    <link rel="alternate" hreflang="en" href="https://ewin24.github.io/portfolio/?lang=en" />
+    <link rel="alternate" hreflang="es" href="https://ewin24.github.io/portfolio/?lang=es" />
+    <link rel="alternate" hreflang="x-default" href="https://ewin24.github.io/portfolio/" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <title>Edwin Trigos | Full Stack Developer</title>
+
+    <!-- JSON-LD: Person + WebSite + BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://ewin24.github.io/portfolio/#person",
+          "name": "Edwin Trigos",
+          "givenName": "Edwin",
+          "familyName": "Trigos",
+          "jobTitle": "Software Architect & Full Stack Developer",
+          "description": "Arquitecto de Software y Full Stack Developer con 5+ años de experiencia en .NET, Clean Architecture, sistemas financieros, y desarrollo cloud. Especializado en sistemas de originación de crédito, integraciones con burós de crédito, y plataformas SaaS B2B.",
+          "url": "https://ewin24.github.io/portfolio/",
+          "image": "https://avatars.githubusercontent.com/Ewin24",
+          "sameAs": [
+            "https://github.com/Ewin24",
+            "https://www.linkedin.com/in/edwintrigosguevara"
+          ],
+          "knowsAbout": [
+            ".NET",
+            "C#",
+            "Clean Architecture",
+            "SQL Server",
+            "Dapper",
+            "React",
+            "TypeScript",
+            "PHP",
+            "Laravel",
+            "AWS",
+            "Flutter",
+            "Docker",
+            "Java",
+            "Spring Boot",
+            "PostgreSQL",
+            "Azure",
+            "System Design",
+            "API Design",
+            "Fintech",
+            "Domain-Driven Design"
+          ],
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Bucaramanga",
+            "addressCountry": "CO"
+          },
+          "email": "edwintrigos24@gmail.com",
+          "alumniOf": {
+            "@type": "EducationalOrganization",
+            "name": "Universidad"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://ewin24.github.io/portfolio/#website",
+          "url": "https://ewin24.github.io/portfolio/",
+          "name": "Edwin Trigos | Software Architect & Full Stack Developer",
+          "description": "Personal portfolio of Edwin Trigos — Software Architect and Full Stack Developer. Case studies, technical blog, and live GitHub integration.",
+          "inLanguage": ["en", "es"],
+          "author": { "@id": "https://ewin24.github.io/portfolio/#person" },
+          "copyrightYear": 2026,
+          "dateCreated": "2024",
+          "dateModified": "2026-06-19"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://ewin24.github.io/portfolio/"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <title>Edwin Trigos | Software Architect & Full Stack Developer</title>
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- noscript content for non-JS crawlers (SEO, accessibility, AI discovery) -->
+    <noscript>
+      <div style="max-width:900px;margin:0 auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;">
+        <h1>Edwin Trigos — Software Architect &amp; Full Stack Developer</h1>
+        <p>
+          Software Architect and Full Stack Developer with 5+ years building production systems
+          in .NET, Clean Architecture, fintech, and cloud infrastructure. Based in Bucaramanga, Colombia.
+          Remote-ready.
+        </p>
+        <h2>About</h2>
+        <p>
+          I design and build production-grade systems end-to-end: from clean architecture
+          foundations to cloud deployment. My current focus is on financial systems (loan
+          origination, credit bureaus, risk management) and B2B SaaS platforms. I write
+          detailed case studies documenting the real architecture decisions, metrics, and
+          tradeoffs from systems I've shipped.
+        </p>
+        <h2>Production Case Studies</h2>
+        <ul>
+          <li><strong>STARSOL</strong> — B2B SaaS for risk management (SARLAFT, SARC, SIAR). Async architecture with 3 background workers, .NET MAUI client, AWS infrastructure.</li>
+          <li><strong>Loan Origination System (LOS)</strong> — 114+ API endpoints in 6 BFF layers, 27 stored procedures, 23-state lifecycle, biometric verification, INSERT-ONLY audit trail. Clean Architecture with .NET 8, Dapper, SQL Server.</li>
+          <li><strong>SOVI (Identity Validation Orchestrator)</strong> — Strategy pattern with voice bot + manual fallback. Catalog-driven decision engine with no hardcoded if/switch.</li>
+          <li><strong>Datacredito API</strong> — Credit bureau integration with Polly circuit breaker + retry. Query times reduced from 3s to 400ms. JWT auth, Serilog structured logging.</li>
+          <li><strong>Kampot Payroll</strong> — Extended CRM routing for 48 payroll types. 21 Crystal Reports templates, zero breaks in legacy payroll.</li>
+          <li><strong>Admin Module UI</strong> — Separated monitoring dashboard from CRUD configuration. Navigation reflects clean backend architecture.</li>
+        </ul>
+        <h2>Technical Blog</h2>
+        <ul>
+          <li><strong>Clean Architecture in a Loan Origination System</strong> — How I designed 114 endpoints in 6 BFF layers with zero logic duplication.</li>
+          <li><strong>Catalog-Driven Decision Engine (no if/switch)</strong> — Strategy pattern with database catalog. 0 code changes when business rules change.</li>
+          <li><strong>Centralized Communications API</strong> — From 5 systems with separate API keys to 1 multi-tenant API. Provider-agnostic, full audit trail.</li>
+          <li><strong>Dual-Frontend Clean Architecture</strong> — Blazor + REST API sharing the same Application Services via shared DI container.</li>
+          <li><strong>Dapper vs EF Core</strong> — When to choose raw SQL performance over change tracking convenience. (Forthcoming)</li>
+        </ul>
+        <h2>Technologies</h2>
+        <p>
+          .NET 8+, C#, Clean Architecture, SQL Server, Dapper, React 19, TypeScript, Vite,
+          Tailwind CSS, PHP, Laravel, AWS, .NET MAUI, Flutter, Docker, CI/CD, Java, Spring Boot,
+          PostgreSQL, Azure, Domain-Driven Design, Strategy Pattern, BFF Pattern.
+        </p>
+        <h2>Work Experience</h2>
+        <ul>
+          <li><strong>STARSOL</strong> — Cloud Software Architect &amp; Independent Developer (2024–Present)</li>
+          <li><strong>BAGUER S.A.S</strong> — Full Stack C# .NET &amp; Mobile Developer (2024–Present)</li>
+          <li><strong>CAMPUSLANDS</strong> — Full Stack Developer .NET &amp; JavaScript (2023–2024)</li>
+          <li><strong>BAGUER S.A.S</strong> — .NET Backend Developer (2021–2023)</li>
+          <li><strong>ESPEJOS GLAM</strong> — Web Developer (2022–2023)</li>
+        </ul>
+        <h2>Contact</h2>
+        <ul>
+          <li>Email: <a href="mailto:edwintrigos24@gmail.com">edwintrigos24@gmail.com</a></li>
+          <li>GitHub: <a href="https://github.com/Ewin24">github.com/Ewin24</a></li>
+          <li>LinkedIn: <a href="https://www.linkedin.com/in/edwintrigosguevara">linkedin.com/in/edwintrigosguevara</a></li>
+          <li>Location: Bucaramanga, Colombia (Remote)</li>
+        </ul>
+        <p><em>To see the full interactive portfolio, please enable JavaScript. Visit <a href="https://ewin24.github.io/portfolio/">ewin24.github.io/portfolio/</a>.</em></p>
+      </div>
+    </noscript>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
