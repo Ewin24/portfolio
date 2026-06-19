@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/portfolio/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Edwin Trigos — Software Architect and Full Stack Developer. 5+ years building production systems in .NET, Clean Architecture, fintech, and cloud. Case studies, technical blog, and live GitHub integration." />
+    <meta name="description" content="Edwin Trigos — Software Architect & Full Stack Developer. 5+ years building .NET systems, Clean Architecture, and fintech SaaS. Case studies + bilingual technical blog." />
     <meta name="author" content="Edwin Trigos" />
     <meta name="keywords" content="Edwin Trigos, Full Stack Developer, Software Architect, .NET, C#, Clean Architecture, React, TypeScript, PHP, Laravel, AWS, Flutter, SQL Server, Dapper, Fintech, Loan Origination System" />
 
@@ -44,7 +44,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 
-    <!-- JSON-LD: Person + WebSite + BreadcrumbList -->
+    <!-- JSON-LD: Person + WebSite + BreadcrumbList + Service + ProfessionalService -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -58,7 +58,19 @@
           "jobTitle": "Software Architect & Full Stack Developer",
           "description": "Arquitecto de Software y Full Stack Developer con 5+ años de experiencia en .NET, Clean Architecture, sistemas financieros, y desarrollo cloud. Especializado en sistemas de originación de crédito, integraciones con burós de crédito, y plataformas SaaS B2B.",
           "url": "https://ewin24.github.io/portfolio/",
-          "image": "https://avatars.githubusercontent.com/Ewin24",
+          "image": {
+            "@type": "ImageObject",
+            "url": "https://avatars.githubusercontent.com/Ewin24",
+            "width": 460,
+            "height": 460,
+            "caption": "Edwin Trigos — Software Architect & Full Stack Developer"
+          },
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://avatars.githubusercontent.com/Ewin24",
+            "width": 460,
+            "height": 460
+          },
           "sameAs": [
             "https://github.com/Ewin24",
             "https://www.linkedin.com/in/edwintrigosguevara"
@@ -94,6 +106,10 @@
           "alumniOf": {
             "@type": "EducationalOrganization",
             "name": "Universidad"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", ".hero h1", "h2", "h3", ".article-summary"]
           }
         },
         {
@@ -106,7 +122,42 @@
           "author": { "@id": "https://ewin24.github.io/portfolio/#person" },
           "copyrightYear": 2026,
           "dateCreated": "2024",
-          "dateModified": "2026-06-19"
+          "dateModified": "2026-06-19",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://ewin24.github.io/portfolio/?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "ProfessionalService",
+          "@id": "https://ewin24.github.io/portfolio/#service",
+          "name": "Edwin Trigos — Software Architecture Consulting",
+          "description": "Independent software architect specializing in .NET, Clean Architecture, fintech systems, and cloud-native SaaS platforms. Available for contract and consulting work.",
+          "url": "https://ewin24.github.io/portfolio/",
+          "image": "https://avatars.githubusercontent.com/Ewin24",
+          "priceRange": "$$",
+          "areaServed": [
+            {
+              "@type": "Country",
+              "name": "Colombia"
+            },
+            {
+              "@type": "Place",
+              "name": "Remote (Worldwide)"
+            }
+          ],
+          "serviceType": [
+            "Software Architecture",
+            "Full Stack Development",
+            "Cloud Migration",
+            "Code Review",
+            "Technical Mentoring"
+          ],
+          "provider": { "@id": "https://ewin24.github.io/portfolio/#person" }
         },
         {
           "@type": "BreadcrumbList",
@@ -126,9 +177,473 @@
     <title>Edwin Trigos | Software Architect & Full Stack Developer</title>
     <script type="module" crossorigin src="/portfolio/assets/index-C-s-ICYQ.js"></script>
     <link rel="stylesheet" crossorigin href="/portfolio/assets/index-cuoKVj85.css">
-  </head>
+  <script type="application/ld+json">
+[
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-clean-architecture-los",
+    "headline": "Clean Architecture en un Sistema de Originación de Crédito: Cómo evité el caos antes de escribir la primera línea de código",
+    "description": "Cuando te dan un proyecto desde cero, la tentación es abrir Visual Studio y empezar a escribir controladores. Pero sin una estructura clara, en 3 meses tienes un Big Ball of Mud. Así diseñé la arquitectura del LOS antes de escribir una línea de código de producción.",
+    "inLanguage": "es",
+    "datePublished": "2026-01-15T08:00:00-05:00",
+    "dateModified": "2026-01-15T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "arquitectura, .NET, clean architecture, DDD",
+    "articleSection": "arquitectura",
+    "wordCount": 600,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/arquitectura-limpa-sistema-originacion-credito",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-catalog-driven-decision-engine",
+    "headline": "Eliminé todos los if/switch de mi motor de decisiones (y por qué deberías hacer lo mismo)",
+    "description": "Cuando construyes un sistema que toma decisiones basadas en diagnósticos externos (un bot de voz, un servicio de validación), la tentación es escribir switch(mensaje) { case \"ERROR\": ... }. Eso es deuda técnica inmediata. Te cuento cómo lo evité con un motor catalog-driven.",
+    "inLanguage": "es",
+    "datePublished": "2026-03-20T08:00:00-05:00",
+    "dateModified": "2026-03-20T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "arquitectura, patrones, C#, design patterns",
+    "articleSection": "arquitectura",
+    "wordCount": 600,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/motor-decisiones-catalog-driven-sin-if",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-comunicaciones-api-centralizada",
+    "headline": "Centralicé todos los correos de la empresa en una API con Clean Architecture (y dejé de preguntarle al proveedor qué pasó)",
+    "description": "Cada área de la empresa gestionaba el correo por su cuenta, con su propia implementación, su propia clave API, y su propia definición de \"éxito\". Hasta que el proveedor decía \"no me llegó el comprobante\" y nadie sabía qué pasó. Así diseñé una API centralizada que eliminó el black box de las comunicaciones empresariales.",
+    "inLanguage": "es",
+    "datePublished": "2026-06-15T08:00:00-05:00",
+    "dateModified": "2026-06-15T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "arquitectura, .NET, clean architecture, API, patrones",
+    "articleSection": "arquitectura",
+    "wordCount": 2000,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/api-centralizada-comunicaciones",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-dual-frontend-clean-architecture-dotnet-10",
+    "headline": "Diseñé un ERP donde la capa de presentación (Blazor) y la REST API son intercambiables gracias a Clean Architecture",
+    "description": "Cómo logré que Blazor y la API compartieran exactamente la misma lógica de negocio en un ERP de producción mediante inyección de dependencias en Clean Architecture, eliminando duplicación y acelerando el desarrollo de características.",
+    "inLanguage": "es",
+    "datePublished": "2026-07-01T08:00:00-05:00",
+    "dateModified": "2026-07-01T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": ".NET, clean architecture, Blazor, ASP.NET Core, C#",
+    "articleSection": "arquitectura",
+    "wordCount": 800,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/dual-frontend-clean-architecture-dotnet-10",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-domain-exception-problemdetails-pipeline",
+    "headline": "Todo el error handling de mi API se reduce a dos archivos: así eliminé los try-catch de mis controladores",
+    "description": "Cada controller tenía su propio try-catch, cada error devolvía un formato distinto, y los mensajes mezclaban detalles técnicos con reglas de negocio. Unificarlo todo en dos archivos — DomainExceptions.cs + ExceptionHandlingMiddleware — cambió la forma en que pensamos los errores.",
+    "inLanguage": "es",
+    "datePublished": "2026-07-15T08:00:00-05:00",
+    "dateModified": "2026-07-15T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "arquitectura, .NET, ASP.NET Core, patrones, C#",
+    "articleSection": "arquitectura",
+    "wordCount": 800,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/error-handling-middleware-pipeline",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-dapper-stored-procedures-why-how",
+    "headline": "No uso Entity Framework. En 3 años de ERP, cero migraciones, cero N+1, cero sorpresas en producción",
+    "description": "Cada vez que alguien dice \"usa EF Core, es el estándar\", me pregunto si su base de datos tiene 200 stored procedures legacy y un equipo de DBA. Te cuento por qué elegimos Dapper puro y cómo vivimos para contarlo.",
+    "inLanguage": "es",
+    "datePublished": "2026-08-01T08:00:00-05:00",
+    "dateModified": "2026-08-01T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "Dapper, arquitectura, .NET, performance, patrones",
+    "articleSection": "arquitectura",
+    "wordCount": 600,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/dapper-stored-procedures-en-lugar-de-ef-core",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-api-versioning-transparent-contract-evolution",
+    "headline": "Versioné 24 controladores de una API en producción sin cambiar ni una sola URL existente",
+    "description": "Cuando 24 controladores están en producción y los clientes no pueden actualizarse todos al mismo tiempo, romper URLs no es una opción. Así implementé versionado transparente con rutas duales sin que ningún consumidor legacy se enterara.",
+    "inLanguage": "es",
+    "datePublished": "2026-08-15T08:00:00-05:00",
+    "dateModified": "2026-08-15T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "API, arquitectura, .NET, ASP.NET Core, patrones",
+    "articleSection": "arquitectura",
+    "wordCount": 600,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/versionado-api-transparente-sin-romper-clientes",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-cross-system-orchestration-without-coupling",
+    "headline": "Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio",
+    "description": "Cuando una orden de producción necesita notificar por email, guardar PDFs en la nube y actualizar el estado en otro sistema, la tentación es crear un orquestador. Pero a veces el orquestador correcto es un método de 30 líneas.",
+    "inLanguage": "es",
+    "datePublished": "2026-09-01T08:00:00-05:00",
+    "dateModified": "2026-09-01T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "arquitectura, .NET, patrones, orquestación, integraciones",
+    "articleSection": "arquitectura",
+    "wordCount": 600,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/orquestacion-cross-system-sin-acoplamiento",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  }
+]
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Qué es Clean Architecture y cómo se aplica en sistemas .NET?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Clean Architecture organiza el código en capas concéntricas con dependencias hacia adentro: Domain (entidades), Application (casos de uso), Infrastructure (persistencia, APIs externas), y Presentation (API, UI). En .NET se implementa con proyectos separados por capa, inyección de dependencias, y repositorios por dominio funcional — no por tabla. La regla clave: la capa de dominio no conoce nada externo. En el LOS de Fábricas de Crédito, esto se traduce en 114 endpoints en 6 capas BFF con cero duplicación de lógica entre canales."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cuándo usar Dapper en lugar de Entity Framework Core?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dapper es preferible cuando necesitás control total sobre el SQL, máximo rendimiento en consultas, o trabajás con stored procedures existentes. EF Core es mejor cuando necesitás change tracking, migraciones automáticas, y navegación de objetos. En sistemas financieros con queries complejas y procedimientos almacenados optimizados, Dapper ofrece mejor performance y menor overhead. En BAGUER: 200 stored procedures legacy, cero migraciones, cero N+1, cero sorpresas en producción — query times reducidas de 3s a 400ms con Dapper."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué es el patrón Strategy y cómo se usa en motores de decisión?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "El patrón Strategy define una familia de algoritmos intercambiables. En motores de decisión, cada estrategia implementa una interfaz común (ej: IValidacionStrategy) con implementaciones concretas (BotValidacionStrategy, ManualValidacionStrategy). El motor resuelve la estrategia adecuada en runtime sin if/switch hardcodeados. Combinado con un catálogo en base de datos, permite modificar reglas de decisión sin tocar código. Implementado en SOVI: 10+ diagnósticos del bot con acciones configurables sin redeploy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo manejar integraciones con APIs externas de forma resiliente en .NET?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tres patrones clave: (1) Polly para circuit breaker y retry policies con backoff exponencial; (2) Interfaz provider-agnostic (ej: IEmailProvider) para poder cambiar de proveedor sin modificar sistemas consumidores; (3) Logging estructurado con Serilog con tres pipelines separados: consola para runtime, archivo general para errores, archivo dedicado para trazabilidad de transacciones (Request/Response/Template). En la API de comunicaciones: cambio de Sendinblue a Infobip en horas, no días, gracias al desacople por interfaz."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué es un sistema BFF (Backend for Frontend) y cuándo usarlo?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BFF es un patrón donde cada canal de consumo (web, mobile, admin, tienda física) tiene su propia capa de API adaptada a sus necesidades específicas, pero todos comparten los mismos servicios de dominio. En el LOS implementado: 6 capas BFF (Admin, Core, Tienda, Web, Handoff, Util) inyectan los mismos servicios de dominio (EstudioService, TerceroService, OtpService, BiometriaService) — cero duplicación de lógica entre canales, solo cambia la forma del request. Cuando se agrega un nuevo canal, solo se crean controladores nuevos sin tocar servicios."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo diseñar una base de datos para un sistema de originación de crédito?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tres reglas: (1) Organizar en esquemas lógicos por responsabilidad: cfg (configuración), cat (catálogos), fab (fábrica/producción), aud (auditoría); (2) Usar stored procedures para operaciones transaccionales complejas — son el contrato entre la app y la BD; (3) Auditoría INSERT-ONLY — nunca updates ni deletes en tablas de auditoría, cada cambio es un nuevo registro. En el LOS QUAC: 4 esquemas, 30+ tablas, 27 stored procedures, 23 estados de ciclo de vida, trazabilidad completa desde solicitud hasta desembolso."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "Cómo diseñar Clean Architecture en un sistema .NET con 6 capas BFF",
+  "description": "Paso a paso para organizar código .NET en capas con propósito único: repositorios por esquema, servicios por dominio, controladores por canal.",
+  "totalTime": "PT2H",
+  "estimatedCost": {
+    "@type": "MonetaryAmount",
+    "currency": "USD",
+    "value": "0"
+  },
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Organizar la base de datos en esquemas lógicos",
+      "text": "Dividir la BD en cfg (config), cat (catálogos), fab (factory/producción), aud (auditoría). Cada esquema tiene un propósito claro y una responsabilidad única."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Crear un repositorio por esquema, no por tabla",
+      "text": "Anti-patrón: un repositorio por tabla. Patrón correcto: ICfgRepository, ICatRepository, IFabRepository, IAudRepository. La regla mental: si la tabla está en fab.EstudiosCredito, va en IFabRepository. No hay ambigüedad."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Definir servicios por dominio funcional",
+      "text": "No usar una carpeta genérica Services/. En su lugar: EstudioService (apertura, riesgo, aprobación), TerceroService (datos del cliente), OtpService (validación), BiometriaService (verificación facial). Cada servicio contiene toda la lógica de su dominio."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Crear controladores por canal de consumo",
+      "text": "Cada canal (Tienda BFF, Web, Handoff, Admin) tiene sus propios controladores, pero TODOS inyectan los mismos servicios de dominio. La diferencia está en la forma del request, no en la lógica de negocio."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Verificar con un test de canal nuevo",
+      "text": "Cuando se requiera agregar un nuevo canal (ej: mobile), crear los controladores nuevos e inyectar los mismos servicios existentes. Resultado: cero cambios en servicios o repositorios. Si no se cumple esto, volver al paso 2."
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+[
+  {
+    "@type": "CreativeWork",
+    "@id": "https://ewin24.github.io/portfolio/#case-fabricas-credit-los",
+    "name": "Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC",
+    "description": "114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones.",
+    "inLanguage": "es",
+    "dateCreated": "2025",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "fintech, architecture, fullstack, los, ddd, dotnet",
+    "about": {
+      "@type": "Thing",
+      "name": "Fintech / Crédito"
+    },
+    "creativeWorkStatus": "Published"
+  },
+  {
+    "@type": "CreativeWork",
+    "@id": "https://ewin24.github.io/portfolio/#case-sovi-identity-verification",
+    "name": "SOVI — Sistema Orquestador de Validación de Identidad",
+    "description": "Validación de identidad en tiempo real sin intervención humana en el flujo estándar. Plan B manual como ciudadano de primera clase (no un fallback after-thought). Motor de decisiones catalog-driven: agregar nuevos diagnósticos no requiere cambios de código. Trazabilidad completa por estudio con 10+ diagnósticos de bot categorizados.",
+    "inLanguage": "es",
+    "dateCreated": "2026",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "identity, security, architecture, fintech, strategy-pattern",
+    "about": {
+      "@type": "Thing",
+      "name": "Fintech / Seguridad"
+    },
+    "creativeWorkStatus": "Published"
+  },
+  {
+    "@type": "CreativeWork",
+    "@id": "https://ewin24.github.io/portfolio/#case-datacredito-api",
+    "name": "API de Integración con Burós de Crédito — Datacredito",
+    "description": "Consultas automatizadas al 100%. Resiliencia ante fallos del proveedor externo con circuit breaker y retry policy. Trazabilidad completa via Serilog. Arquitectura preparada para migración a .NET 10 sin cambios estructurales.",
+    "inLanguage": "es",
+    "dateCreated": "2024",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "fintech, api, backend, resilience, dotnet",
+    "about": {
+      "@type": "Thing",
+      "name": "Fintech / Riesgo Crediticio"
+    },
+    "creativeWorkStatus": "Published"
+  },
+  {
+    "@type": "CreativeWork",
+    "@id": "https://ewin24.github.io/portfolio/#case-kampot-nominas",
+    "name": "Sistema de Nómina Kampot — Generación de Documentos ERP",
+    "description": "Extensión no-invasiva: 0 breaks en nóminas legacy. 21 plantillas Crystal Reports organizadas por tipo de nómina. Patrón reusable para futuros tipos de contrato. Sistema de enrutamiento dinámico probado con 48 tipos de nómina.",
+    "inLanguage": "es",
+    "dateCreated": "2025",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "erp, crm, reports, dotnet, payroll",
+    "about": {
+      "@type": "Thing",
+      "name": "ERP / RRHH"
+    },
+    "creativeWorkStatus": "Published"
+  },
+  {
+    "@type": "CreativeWork",
+    "@id": "https://ewin24.github.io/portfolio/#case-apiquac-admin-ui",
+    "name": "Arquitectura UI para Módulo Administrativo de LOS",
+    "description": "Separación clara de responsabilidades UI (monitoreo vs. configuración). Arquitectura escalable: agregar nuevas capacidades solo requiere crear un nuevo tab en el macro-módulo correspondiente. Sin duplicación de lógica de permisos. Consistencia con la arquitectura limpia del backend.",
+    "inLanguage": "es",
+    "dateCreated": "2026",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "frontend, architecture, ui, fintech",
+    "about": {
+      "@type": "Thing",
+      "name": "Fintech / SaaS"
+    },
+    "creativeWorkStatus": "Published"
+  },
+  {
+    "@type": "CreativeWork",
+    "@id": "https://ewin24.github.io/portfolio/#case-portfolio-hybrid",
+    "name": "Portfolio con Arquitectura Híbrida (React 19 + Vite)",
+    "description": "Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript.",
+    "inLanguage": "es",
+    "dateCreated": "2024",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "frontend, portfolio, architecture, react",
+    "about": {
+      "@type": "Thing",
+      "name": "Desarrollo Web"
+    },
+    "creativeWorkStatus": "Published"
+  },
+  {
+    "@type": "CreativeWork",
+    "@id": "https://ewin24.github.io/portfolio/#case-starsol-saas",
+    "name": "STARSOL — Plataforma SaaS para Gestión Integral de Riesgos",
+    "description": "Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR.",
+    "inLanguage": "es",
+    "dateCreated": "2024",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "saas, fintech, architecture, cloud, laravel",
+    "about": {
+      "@type": "Thing",
+      "name": "Fintech / Riesgos"
+    },
+    "creativeWorkStatus": "Published"
+  }
+]
+</script>
+</head>
   <body>
     <div id="root"></div>
+
+    <!-- Pre-rendered avatar with alt text for crawlers (hidden visually) -->
+    <img
+      src="https://avatars.githubusercontent.com/Ewin24"
+      alt="Edwin Trigos — Software Architect and Full Stack Developer based in Bucaramanga, Colombia. Specialist in .NET, Clean Architecture, and fintech systems."
+      title="Edwin Trigos — Software Architect & Full Stack Developer"
+      width="460"
+      height="460"
+      style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"
+      loading="lazy"
+    />
 
     <!-- noscript content for non-JS crawlers (SEO, accessibility, AI discovery) -->
     <noscript>
@@ -188,45 +703,45 @@
 <p><strong>Impact</strong>: Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR.</p>
 </article>
 <h2>Technical Blog</h2>
-<article>
-<h3>Clean Architecture en un Sistema de Originación de Crédito: Cómo evité el caos antes de escribir la primera línea de código</h3>
-<p><strong>Published</strong>: 2026-01-15. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: arquitectura, .NET, clean architecture, DDD.</p>
-<p>Cuando te dan un proyecto desde cero, la tentación es abrir Visual Studio y empezar a escribir controladores. Pero sin una estructura clara, en 3 meses tienes un Big Ball of Mud. Así diseñé la arquitectura del LOS antes de escribir una línea de código de producción.</p>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Clean Architecture en un Sistema de Originación de Crédito: Cómo evité el caos antes de escribir la primera línea de código</h3>
+<p><time itemprop="datePublished" datetime="2026-01-15">2026-01-15</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: arquitectura, .NET, clean architecture, DDD.</p>
+<p itemprop="description">Cuando te dan un proyecto desde cero, la tentación es abrir Visual Studio y empezar a escribir controladores. Pero sin una estructura clara, en 3 meses tienes un Big Ball of Mud. Así diseñé la arquitectura del LOS antes de escribir una línea de código de producción.</p>
 </article>
-<article>
-<h3>Eliminé todos los if/switch de mi motor de decisiones (y por qué deberías hacer lo mismo)</h3>
-<p><strong>Published</strong>: 2026-03-20. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: arquitectura, patrones, C#, design patterns.</p>
-<p>Cuando construyes un sistema que toma decisiones basadas en diagnósticos externos (un bot de voz, un servicio de validación), la tentación es escribir switch(mensaje) { case &quot;ERROR&quot;: ... }. Eso es deuda técnica inmediata. Te cuento cómo lo evité con un motor catalog-driven.</p>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Eliminé todos los if/switch de mi motor de decisiones (y por qué deberías hacer lo mismo)</h3>
+<p><time itemprop="datePublished" datetime="2026-03-20">2026-03-20</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: arquitectura, patrones, C#, design patterns.</p>
+<p itemprop="description">Cuando construyes un sistema que toma decisiones basadas en diagnósticos externos (un bot de voz, un servicio de validación), la tentación es escribir switch(mensaje) { case &quot;ERROR&quot;: ... }. Eso es deuda técnica inmediata. Te cuento cómo lo evité con un motor catalog-driven.</p>
 </article>
-<article>
-<h3>Centralicé todos los correos de la empresa en una API con Clean Architecture (y dejé de preguntarle al proveedor qué pasó)</h3>
-<p><strong>Published</strong>: 2026-06-15. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: arquitectura, .NET, clean architecture, API, patrones.</p>
-<p>Cada área de la empresa gestionaba el correo por su cuenta, con su propia implementación, su propia clave API, y su propia definición de &quot;éxito&quot;. Hasta que el proveedor decía &quot;no me llegó el comprobante&quot; y nadie sabía qué pasó. Así diseñé una API centralizada que eliminó el black box de las comunicaciones empresariales.</p>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Centralicé todos los correos de la empresa en una API con Clean Architecture (y dejé de preguntarle al proveedor qué pasó)</h3>
+<p><time itemprop="datePublished" datetime="2026-06-15">2026-06-15</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: arquitectura, .NET, clean architecture, API, patrones.</p>
+<p itemprop="description">Cada área de la empresa gestionaba el correo por su cuenta, con su propia implementación, su propia clave API, y su propia definición de &quot;éxito&quot;. Hasta que el proveedor decía &quot;no me llegó el comprobante&quot; y nadie sabía qué pasó. Así diseñé una API centralizada que eliminó el black box de las comunicaciones empresariales.</p>
 </article>
-<article>
-<h3>Diseñé un ERP donde la capa de presentación (Blazor) y la REST API son intercambiables gracias a Clean Architecture</h3>
-<p><strong>Published</strong>: 2026-07-01. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: .NET, clean architecture, Blazor, ASP.NET Core, C#.</p>
-<p>Cómo logré que Blazor y la API compartieran exactamente la misma lógica de negocio en un ERP de producción mediante inyección de dependencias en Clean Architecture, eliminando duplicación y acelerando el desarrollo de características.</p>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Diseñé un ERP donde la capa de presentación (Blazor) y la REST API son intercambiables gracias a Clean Architecture</h3>
+<p><time itemprop="datePublished" datetime="2026-07-01">2026-07-01</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: .NET, clean architecture, Blazor, ASP.NET Core, C#.</p>
+<p itemprop="description">Cómo logré que Blazor y la API compartieran exactamente la misma lógica de negocio en un ERP de producción mediante inyección de dependencias en Clean Architecture, eliminando duplicación y acelerando el desarrollo de características.</p>
 </article>
-<article>
-<h3>Todo el error handling de mi API se reduce a dos archivos: así eliminé los try-catch de mis controladores</h3>
-<p><strong>Published</strong>: 2026-07-15. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: arquitectura, .NET, ASP.NET Core, patrones, C#.</p>
-<p>Cada controller tenía su propio try-catch, cada error devolvía un formato distinto, y los mensajes mezclaban detalles técnicos con reglas de negocio. Unificarlo todo en dos archivos — DomainExceptions.cs + ExceptionHandlingMiddleware — cambió la forma en que pensamos los errores.</p>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Todo el error handling de mi API se reduce a dos archivos: así eliminé los try-catch de mis controladores</h3>
+<p><time itemprop="datePublished" datetime="2026-07-15">2026-07-15</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: arquitectura, .NET, ASP.NET Core, patrones, C#.</p>
+<p itemprop="description">Cada controller tenía su propio try-catch, cada error devolvía un formato distinto, y los mensajes mezclaban detalles técnicos con reglas de negocio. Unificarlo todo en dos archivos — DomainExceptions.cs + ExceptionHandlingMiddleware — cambió la forma en que pensamos los errores.</p>
 </article>
-<article>
-<h3>No uso Entity Framework. En 3 años de ERP, cero migraciones, cero N+1, cero sorpresas en producción</h3>
-<p><strong>Published</strong>: 2026-08-01. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: Dapper, arquitectura, .NET, performance, patrones.</p>
-<p>Cada vez que alguien dice &quot;usa EF Core, es el estándar&quot;, me pregunto si su base de datos tiene 200 stored procedures legacy y un equipo de DBA. Te cuento por qué elegimos Dapper puro y cómo vivimos para contarlo.</p>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">No uso Entity Framework. En 3 años de ERP, cero migraciones, cero N+1, cero sorpresas en producción</h3>
+<p><time itemprop="datePublished" datetime="2026-08-01">2026-08-01</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: Dapper, arquitectura, .NET, performance, patrones.</p>
+<p itemprop="description">Cada vez que alguien dice &quot;usa EF Core, es el estándar&quot;, me pregunto si su base de datos tiene 200 stored procedures legacy y un equipo de DBA. Te cuento por qué elegimos Dapper puro y cómo vivimos para contarlo.</p>
 </article>
-<article>
-<h3>Versioné 24 controladores de una API en producción sin cambiar ni una sola URL existente</h3>
-<p><strong>Published</strong>: 2026-08-15. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: API, arquitectura, .NET, ASP.NET Core, patrones.</p>
-<p>Cuando 24 controladores están en producción y los clientes no pueden actualizarse todos al mismo tiempo, romper URLs no es una opción. Así implementé versionado transparente con rutas duales sin que ningún consumidor legacy se enterara.</p>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Versioné 24 controladores de una API en producción sin cambiar ni una sola URL existente</h3>
+<p><time itemprop="datePublished" datetime="2026-08-15">2026-08-15</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: API, arquitectura, .NET, ASP.NET Core, patrones.</p>
+<p itemprop="description">Cuando 24 controladores están en producción y los clientes no pueden actualizarse todos al mismo tiempo, romper URLs no es una opción. Así implementé versionado transparente con rutas duales sin que ningún consumidor legacy se enterara.</p>
 </article>
-<article>
-<h3>Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio</h3>
-<p><strong>Published</strong>: 2026-09-01. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: arquitectura, .NET, patrones, orquestación, integraciones.</p>
-<p>Cuando una orden de producción necesita notificar por email, guardar PDFs en la nube y actualizar el estado en otro sistema, la tentación es crear un orquestador. Pero a veces el orquestador correcto es un método de 30 líneas.</p>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio</h3>
+<p><time itemprop="datePublished" datetime="2026-09-01">2026-09-01</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: arquitectura, .NET, patrones, orquestación, integraciones.</p>
+<p itemprop="description">Cuando una orden de producción necesita notificar por email, guardar PDFs en la nube y actualizar el estado en otro sistema, la tentación es crear un orquestador. Pero a veces el orquestador correcto es un método de 30 líneas.</p>
 </article>
 <h2>Technologies (39 production-grade)</h2>
 <p>PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · .NET Framework · ERP · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API</p>
