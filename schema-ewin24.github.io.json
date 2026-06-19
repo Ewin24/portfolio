@@ -1,0 +1,288 @@
+<!-- ====================================================================== -->
+<!-- SCHEMA INSTALLATION FILE — ewin24.github.io/portfolio                 -->
+<!-- Generated: 2026-06-19 | Scoring Model: v2                             -->
+<!--                                                                        -->
+<!-- INSTALLATION (SPA — Vite + React 19):                                  -->
+<!--   Since this is a React SPA, inject these into index.html <head>.      -->
+<!--   For per-article schema, use react-helmet-async or similar to          -->
+<!--   inject per-route <script type="application/ld+json"> blocks.         -->
+<!--                                                                        -->
+<!-- VALIDATE: https://validator.schema.org/                                -->
+<!-- ====================================================================== -->
+
+<!-- ============================================ -->
+<!-- HOMEPAGE: Person + WebSite + BreadcrumbList  -->
+<!-- Place in <head> of index.html                -->
+<!-- ============================================ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://ewin24.github.io/portfolio/#person",
+      "name": "Edwin Trigos",
+      "givenName": "Edwin",
+      "familyName": "Trigos",
+      "jobTitle": "Software Architect & Full Stack Developer",
+      "description": "Arquitecto de Software y Full Stack Developer con 5+ años de experiencia en .NET, Clean Architecture, sistemas financieros, y desarrollo cloud. Especializado en sistemas de originación de crédito, integraciones con burós de crédito, y plataformas SaaS B2B.",
+      "url": "https://ewin24.github.io/portfolio/",
+      "sameAs": [
+        "https://github.com/Ewin24",
+        "https://www.linkedin.com/in/edwintrigosguevara"
+      ],
+      "knowsAbout": [
+        ".NET",
+        "C#",
+        "Clean Architecture",
+        "SQL Server",
+        "Dapper",
+        "React",
+        "TypeScript",
+        "PHP",
+        "Laravel",
+        "AWS",
+        "Flutter",
+        "Docker",
+        "Java",
+        "Spring Boot",
+        "PostgreSQL",
+        "Azure",
+        "System Design",
+        "API Design",
+        "Fintech",
+        "Domain-Driven Design"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bucaramanga",
+        "addressCountry": "CO"
+      },
+      "email": "edwintrigos24@gmail.com",
+      "image": "https://avatars.githubusercontent.com/Ewin24"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ewin24.github.io/portfolio/#website",
+      "url": "https://ewin24.github.io/portfolio/",
+      "name": "Edwin Trigos | Full Stack Developer",
+      "description": "Personal portfolio of Edwin Trigos — Software Architect and Full Stack Developer. Case studies, technical blog, and live GitHub integration.",
+      "inLanguage": ["en", "es"],
+      "author": { "@id": "https://ewin24.github.io/portfolio/#person" },
+      "copyrightYear": 2026,
+      "dateCreated": "2024",
+      "dateModified": "2026-06-19"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://ewin24.github.io/portfolio/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<!-- ============================================ -->
+<!-- BLOG POST: Clean Architecture LOS            -->
+<!-- Route: /blog/arquitectura-limpa-sistema-...  -->
+<!-- ============================================ -->
+<!-- Inject via react-helmet-async on blog post page -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Clean Architecture en un Sistema de Originación de Crédito: Cómo evité el caos antes de escribir la primera línea de código",
+  "description": "Cómo diseñé la arquitectura del LOS con 114 endpoints en 6 capas BFF, 27 stored procedures, y 0 duplicación de lógica entre canales antes de escribir una línea de código de producción.",
+  "author": { "@id": "https://ewin24.github.io/portfolio/#person" },
+  "datePublished": "2026-01-15T08:00:00-05:00",
+  "dateModified": "2026-01-15T08:00:00-05:00",
+  "inLanguage": "es",
+  "wordCount": 1200,
+  "articleSection": "Arquitectura",
+  "keywords": ["Clean Architecture", ".NET", "DDD", "LOS", "loan origination", "BFF pattern"],
+  "about": {
+    "@type": "Thing",
+    "name": "Clean Architecture",
+    "sameAs": "https://en.wikipedia.org/wiki/Clean_architecture"
+  },
+  "publisher": {
+    "@type": "Person",
+    "@id": "https://ewin24.github.io/portfolio/#person"
+  },
+  "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/arquitectura-limpa-sistema-originacion-credito",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [".blog-article h1", ".blog-article .excerpt", ".blog-article p:first-of-type"]
+  }
+}
+</script>
+
+<!-- ============================================ -->
+<!-- BLOG POST: Catalog-Driven Decision Engine    -->
+<!-- Route: /blog/motor-decisiones-catalog-...     -->
+<!-- ============================================ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Eliminé todos los if/switch de mi motor de decisiones (y por qué deberías hacer lo mismo)",
+  "description": "Cómo implementé un motor de decisiones catalog-driven con Strategy Pattern que elimina cambios de código cuando el negocio modifica reglas. 0 ifs, 0 switches, 100% configurable desde base de datos.",
+  "author": { "@id": "https://ewin24.github.io/portfolio/#person" },
+  "datePublished": "2026-03-20T08:00:00-05:00",
+  "dateModified": "2026-03-20T08:00:00-05:00",
+  "inLanguage": "es",
+  "wordCount": 1400,
+  "articleSection": "Arquitectura",
+  "keywords": ["Strategy Pattern", "decision engine", "catalog-driven", "C#", ".NET", "design patterns"],
+  "publisher": {
+    "@type": "Person",
+    "@id": "https://ewin24.github.io/portfolio/#person"
+  },
+  "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/motor-decisiones-catalog-driven-sin-if",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [".blog-article h1", ".blog-article .excerpt", ".blog-article p:first-of-type"]
+  }
+}
+</script>
+
+<!-- ============================================ -->
+<!-- BLOG POST: Centralized Communications API    -->
+<!-- Route: /blog/api-centralizada-comunicaciones -->
+<!-- ============================================ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Centralicé todos los correos de la empresa en una API con Clean Architecture (y dejé de preguntarle al proveedor qué pasó)",
+  "description": "Cómo diseñé una API centralizada de comunicaciones con 4 capas Clean Architecture, multi-tenant desde el día 1, trazabilidad con GUID, y provider-agnostic. De múltiples sistemas con su propia clave API a una sola API con 8 cuentas gestionadas desde un punto.",
+  "author": { "@id": "https://ewin24.github.io/portfolio/#person" },
+  "datePublished": "2026-06-15T08:00:00-05:00",
+  "dateModified": "2026-06-15T08:00:00-05:00",
+  "inLanguage": "es",
+  "wordCount": 2500,
+  "articleSection": "Arquitectura",
+  "keywords": ["Clean Architecture", "API design", "multi-tenant", "Infobip", "email", ".NET", "Dapper", "Serilog"],
+  "publisher": {
+    "@type": "Person",
+    "@id": "https://ewin24.github.io/portfolio/#person"
+  },
+  "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/api-centralizada-comunicaciones",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [".blog-article h1", ".blog-article .excerpt", ".blog-article p:first-of-type"]
+  }
+}
+</script>
+
+<!-- ============================================ -->
+<!-- FAQ: Technical Architecture Questions        -->
+<!-- Place on dedicated FAQ section/page          -->
+<!-- ============================================ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Qué es Clean Architecture y cómo se aplica en sistemas .NET?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Clean Architecture organiza el código en capas concéntricas con dependencias hacia adentro: Domain (entidades), Application (casos de uso), Infrastructure (persistencia, APIs externas), y Presentation (API, UI). En .NET, se implementa con proyectos separados por capa, inyección de dependencias, y repositorios por dominio funcional — no por tabla. La regla clave: la capa de dominio no conoce nada externo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cuándo usar Dapper en lugar de Entity Framework Core?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dapper es preferible cuando necesitás control total sobre el SQL, máximo rendimiento en consultas, o trabajás con stored procedures existentes. EF Core es mejor cuando necesitás change tracking, migraciones automáticas, y navegación de objetos. En sistemas financieros con queries complejas y procedimientos almacenados optimizados, Dapper ofrece mejor performance y menor overhead que EF Core."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué es el patrón Strategy y cómo se usa en motores de decisión?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "El patrón Strategy define una familia de algoritmos intercambiables. En motores de decisión, cada estrategia implementa una interfaz común (ej: IValidacionStrategy) con implementaciones concretas (BotValidacionStrategy, ManualValidacionStrategy). El motor resuelve la estrategia adecuada en runtime sin if/switch hardcodeados. Combinado con un catálogo en base de datos, permite modificar reglas de decisión sin tocar código."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo manejar integraciones con APIs externas de forma resiliente en .NET?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usá Polly para circuit breaker y retry policies. Implementá logging estructurado con Serilog para trazabilidad completa de request/response. Sanitizá campos sensibles en el middleware de logging. Guardá cada transacción con GUID, payload completo y timestamp para auditoría. Diseñá interfaces provider-agnostic (ej: IEmailProvider) para poder cambiar de proveedor sin modificar sistemas consumidores."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué es un sistema BFF (Backend for Frontend) y cuándo usarlo?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BFF es un patrón donde cada canal de consumo (web, mobile, admin) tiene su propia capa de API adaptada a sus necesidades específicas, pero todos comparten los mismos servicios de dominio. En el LOS implementado, 6 capas BFF (Admin, Core, Tienda, Web, Handoff, Util) inyectan los mismos servicios (EstudioService, TerceroService, OtpService) — cero duplicación de lógica entre canales, solo cambia la forma del request."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cómo diseñar una base de datos para un sistema de originación de crédito?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Organizá en esquemas lógicos por responsabilidad: cfg (configuración), cat (catálogos), fab (fábrica/producción), aud (auditoría). Usá stored procedures para operaciones transaccionales complejas. Implementá una máquina de estados con trazabilidad completa (23 estados en el LOS). La auditoría debe ser INSERT-ONLY — nunca updates ni deletes en tablas de auditoría."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- ============================================ -->
+<!-- CASE STUDY: STARSOL (SaaS Platform)          -->
+<!-- ============================================ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "STARSOL — Plataforma SaaS para Gestión Integral de Riesgos",
+  "description": "Plataforma SaaS B2B para el sector solidario cubriendo SARLAFT, SARC y SIAR. Arquitectura asíncrona con 3 background workers en PHP/Laravel, aplicación cliente .NET MAUI con capacidad offline, e infraestructura AWS con alta disponibilidad.",
+  "author": { "@id": "https://ewin24.github.io/portfolio/#person" },
+  "about": {
+    "@type": "Thing",
+    "name": "SaaS Financial Risk Management"
+  },
+  "keywords": ["SaaS", "fintech", "Laravel", "AWS", ".NET MAUI", "risk management"],
+  "dateCreated": "2024",
+  "creativeWorkStatus": "Published"
+}
+</script>
+
+<!-- ============================================ -->
+<!-- CASE STUDY: LOS (Loan Origination System)    -->
+<!-- ============================================ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC",
+  "description": "Sistema completo de originación de crédito con 114+ endpoints en 6 capas BFF, 27 stored procedures, máquina de estados de 23 estados, verificación biométrica, y motor de decisiones catalog-driven. Construido con .NET 8, Clean Architecture, Dapper, y SQL Server.",
+  "author": { "@id": "https://ewin24.github.io/portfolio/#person" },
+  "about": {
+    "@type": "Thing",
+    "name": "Loan Origination System"
+  },
+  "keywords": ["LOS", "fintech", ".NET", "Clean Architecture", "SQL Server", "BFF", "DDD"],
+  "dateCreated": "2025",
+  "creativeWorkStatus": "Published"
+}
+</script>
+
+<!-- ============================================ -->
+<!-- END OF SCHEMA INSTALLATION FILE              -->
+<!-- Total: 10 JSON-LD blocks across 6 pages      -->
+<!-- ============================================ -->
