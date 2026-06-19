@@ -1,0 +1,34 @@
+# Edwin Trigos | Software Architect & Full Stack Developer
+
+> Portfolio of Edwin Trigos — Software Architect and Full Stack Developer specializing in .NET, Clean Architecture, and financial systems (fintech, loan origination, credit bureaus). 5+ years building production systems including a 114-endpoint LOS API, identity validation orchestrator, centralized communications platform, and a B2B SaaS risk management platform. Bilingual technical blog (ES/EN) covering architecture decisions, design patterns, and real production tradeoffs. Based in Bucaramanga, Colombia.
+
+Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure.
+
+## Blog — Technical Architecture Articles
+- [Clean Architecture en un Sistema de Originación de Crédito](https://ewin24.github.io/portfolio/): Cómo diseñar 114 endpoints en 6 capas BFF con 0 duplicación. Repositorios por esquema, servicios por dominio, controladores por canal. Caso real con .NET + Dapper + SQL Server.
+- [Motor de Decisiones Catalog-Driven sin if/switch](https://ewin24.github.io/portfolio/): Implementación del patrón Strategy con catálogo en base de datos. Cómo agregar diagnósticos sin tocar código. SOVI — sistema de validación de identidad con bot de voz + plan B manual.
+- [API Centralizada de Comunicaciones con Clean Architecture](https://ewin24.github.io/portfolio/): De 5 sistemas con su propia clave API a 1 API con 8 cuentas multi-tenant. Provider-agnostic, trazabilidad con GUID, 3 pipelines de logging con Serilog.
+- [Dual-Frontend Clean Architecture: Blazor + REST API](https://ewin24.github.io/portfolio/): ERP donde Blazor Server y REST API comparten los mismos Application Services. Inyección directa sin llamadas HTTP entre capas de presentación.
+- [Dapper + Stored Procedures: Cuándo elegirlos sobre EF Core](https://ewin24.github.io/portfolio/): Performance comparison, casos reales en sistemas financieros, y patrones de repositorio con Dapper. (Upcoming)
+
+## Case Studies — Production Systems
+- [STARSOL SaaS Platform](https://ewin24.github.io/portfolio/): B2B SaaS for financial risk management (SARLAFT, SARC, SIAR). Async architecture with 3 background workers, .NET MAUI client, AWS infrastructure.
+- [LOS — Loan Origination System](https://ewin24.github.io/portfolio/): 114+ API endpoints, 27 stored procedures, 23-state lifecycle, biometric verification, INSERT-ONLY audit. Built from scratch with Clean Architecture.
+- [SOVI — Identity Validation Orchestrator](https://ewin24.github.io/portfolio/): Strategy pattern with voice bot + manual fallback. Catalog-driven decision engine. Full biometric audit trail.
+- [Datacredito API Integration](https://ewin24.github.io/portfolio/): Credit bureau API with Polly circuit breaker + retry. Query times reduced from 3s to 400ms. JWT auth + Serilog structured logging.
+- [Payroll System (Franchise Chain) — ERP Document Generation](https://ewin24.github.io/portfolio/): Extended CRM routing for 48 payroll types. 21 Crystal Reports templates. Non-invasive extension — zero breaks in legacy payroll types.
+- [Admin Module UI Architecture](https://ewin24.github.io/portfolio/): Separated monitoring dashboard from CRUD configuration. Navigation reflects Clean Architecture backend domains.
+
+## Skills & Technologies
+- [Full Technology Stack](https://ewin24.github.io/portfolio/): .NET/C#, PHP/Laravel, SQL Server, React, TypeScript, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure, Clean Architecture. 12 technologies with production milestones.
+
+## Experience
+- [Work History](https://ewin24.github.io/portfolio/): STARSOL (Cloud Architect, 2024-present), BAGUER S.A.S (Full Stack .NET & Mobile, 2024-present), CAMPUSLANDS (Full Stack, 2023-2024), ESPEJOS GLAM (Web Developer, 2022-2023).
+
+## About
+- [About Edwin Trigos](https://ewin24.github.io/portfolio/): Software Architect and Full Stack Developer. Remote from Colombia. GitHub: Ewin24. LinkedIn: edwintrigosguevara. Email: edwintrigos24@gmail.com.
+
+## Optional
+- [Contact](https://ewin24.github.io/portfolio/): Contact information and links to GitHub and LinkedIn profiles.
+- [Education](https://ewin24.github.io/portfolio/): Academic background and certifications.
+- [Testimonials](https://ewin24.github.io/portfolio/): Professional recommendations and endorsements.
