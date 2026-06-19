@@ -9,9 +9,9 @@ import { blogPosts } from './src/blog/content/posts'
 import { testimonials } from './src/content/testimonials'
 
 /**
- * Pre-render plugin: generates comprehensive static HTML from the
- * project content (case studies, blog, experience, education, etc.)
- * and injects it into the <noscript> block at build time.
+ * Pre-render plugin: generates comprehensive static HTML and additional
+ * JSON-LD schemas (Article per post, FAQPage, HowTo, CreativeWork) from
+ * the project content and injects them into the build output.
  *
  * This closes the CSR-only gap for non-JS crawlers (and any
  * crawlers that inspect the HTML source before executing JS).
@@ -60,10 +60,10 @@ function generatePreloadedContent(): string {
   lines.push(`<h2>Technical Blog</h2>`)
   blogPosts.forEach((post) => {
     lines.push(
-      `<article>`,
-      `<h3>${escapeHtml(post.title)}</h3>`,
-      `<p><strong>Published</strong>: ${escapeHtml(post.date)}.${post.category ? ` <strong>Category</strong>: ${escapeHtml(post.category)}.` : ''} <strong>Tags</strong>: ${post.tags.map(escapeHtml).join(', ')}.</p>`,
-      `<p>${escapeHtml(post.excerpt)}</p>`,
+      `<article itemscope itemtype="https://schema.org/Article">`,
+      `<h3 itemprop="headline">${escapeHtml(post.title)}</h3>`,
+      `<p><time itemprop="datePublished" datetime="${escapeHtml(post.date)}">${escapeHtml(post.date)}</time>.${post.category ? ` <strong>Category</strong>: <span itemprop="articleSection">${escapeHtml(post.category)}</span>.` : ''} <strong>Tags</strong>: ${post.tags.map(escapeHtml).join(', ')}.</p>`,
+      `<p itemprop="description">${escapeHtml(post.excerpt)}</p>`,
       `</article>`,
     )
   })
@@ -133,18 +133,215 @@ function generatePreloadedContent(): string {
 }
 
 /**
- * Vite plugin: injects the pre-rendered content into the <noscript> block.
- * Replaces the entire <noscript>...</noscript> contents in index.html.
+ * Generate Article schema for each blog post.
+ * One JSON-LD <script> block per article, batched as a single injection.
+ */
+function generateArticleSchemas(): string {
+  const articles = blogPosts.map((post) => ({
+    '@type': 'Article',
+    '@id': `https://ewin24.github.io/portfolio/#article-${post.id}`,
+    headline: post.title,
+    description: post.excerpt,
+    inLanguage: 'es',
+    datePublished: `${post.date}T08:00:00-05:00`,
+    dateModified: `${post.date}T08:00:00-05:00`,
+    author: { '@id': 'https://ewin24.github.io/portfolio/#person' },
+    publisher: { '@id': 'https://ewin24.github.io/portfolio/#person' },
+    keywords: post.tags.join(', '),
+    articleSection: post.category,
+    wordCount: post.readingTime * 200,
+    mainEntityOfPage: `https://ewin24.github.io/portfolio/#/blog/article/${post.slug}`,
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['.blog-article h1', '.blog-article .excerpt', 'h1', 'h2'],
+    },
+  }))
+
+  return `<script type="application/ld+json">
+${JSON.stringify(articles, null, 2)}
+</script>`
+}
+
+/**
+ * Generate FAQPage schema with 6 Q&A pairs extracted from the
+ * portfolio content (architecture decisions, fintech patterns, etc.).
+ */
+function generateFaqSchema(): string {
+  const faq = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '¿Qué es Clean Architecture y cómo se aplica en sistemas .NET?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Clean Architecture organiza el código en capas concéntricas con dependencias hacia adentro: Domain (entidades), Application (casos de uso), Infrastructure (persistencia, APIs externas), y Presentation (API, UI). En .NET se implementa con proyectos separados por capa, inyección de dependencias, y repositorios por dominio funcional — no por tabla. La regla clave: la capa de dominio no conoce nada externo. En el LOS de Fábricas de Crédito, esto se traduce en 114 endpoints en 6 capas BFF con cero duplicación de lógica entre canales.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Cuándo usar Dapper en lugar de Entity Framework Core?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Dapper es preferible cuando necesitás control total sobre el SQL, máximo rendimiento en consultas, o trabajás con stored procedures existentes. EF Core es mejor cuando necesitás change tracking, migraciones automáticas, y navegación de objetos. En sistemas financieros con queries complejas y procedimientos almacenados optimizados, Dapper ofrece mejor performance y menor overhead. En BAGUER: 200 stored procedures legacy, cero migraciones, cero N+1, cero sorpresas en producción — query times reducidas de 3s a 400ms con Dapper.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Qué es el patrón Strategy y cómo se usa en motores de decisión?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'El patrón Strategy define una familia de algoritmos intercambiables. En motores de decisión, cada estrategia implementa una interfaz común (ej: IValidacionStrategy) con implementaciones concretas (BotValidacionStrategy, ManualValidacionStrategy). El motor resuelve la estrategia adecuada en runtime sin if/switch hardcodeados. Combinado con un catálogo en base de datos, permite modificar reglas de decisión sin tocar código. Implementado en SOVI: 10+ diagnósticos del bot con acciones configurables sin redeploy.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Cómo manejar integraciones con APIs externas de forma resiliente en .NET?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Tres patrones clave: (1) Polly para circuit breaker y retry policies con backoff exponencial; (2) Interfaz provider-agnostic (ej: IEmailProvider) para poder cambiar de proveedor sin modificar sistemas consumidores; (3) Logging estructurado con Serilog con tres pipelines separados: consola para runtime, archivo general para errores, archivo dedicado para trazabilidad de transacciones (Request/Response/Template). En la API de comunicaciones: cambio de Sendinblue a Infobip en horas, no días, gracias al desacople por interfaz.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Qué es un sistema BFF (Backend for Frontend) y cuándo usarlo?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'BFF es un patrón donde cada canal de consumo (web, mobile, admin, tienda física) tiene su propia capa de API adaptada a sus necesidades específicas, pero todos comparten los mismos servicios de dominio. En el LOS implementado: 6 capas BFF (Admin, Core, Tienda, Web, Handoff, Util) inyectan los mismos servicios de dominio (EstudioService, TerceroService, OtpService, BiometriaService) — cero duplicación de lógica entre canales, solo cambia la forma del request. Cuando se agrega un nuevo canal, solo se crean controladores nuevos sin tocar servicios.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: '¿Cómo diseñar una base de datos para un sistema de originación de crédito?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Tres reglas: (1) Organizar en esquemas lógicos por responsabilidad: cfg (configuración), cat (catálogos), fab (fábrica/producción), aud (auditoría); (2) Usar stored procedures para operaciones transaccionales complejas — son el contrato entre la app y la BD; (3) Auditoría INSERT-ONLY — nunca updates ni deletes en tablas de auditoría, cada cambio es un nuevo registro. En el LOS QUAC: 4 esquemas, 30+ tablas, 27 stored procedures, 23 estados de ciclo de vida, trazabilidad completa desde solicitud hasta desembolso.',
+        },
+      },
+    ],
+  }
+
+  return `<script type="application/ld+json">
+${JSON.stringify(faq, null, 2)}
+</script>`
+}
+
+/**
+ * Generate HowTo schema for the most tutorial-like blog post
+ * (the Clean Architecture one — highest impact for AI search).
+ */
+function generateHowToSchema(): string {
+  const howto = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: 'Cómo diseñar Clean Architecture en un sistema .NET con 6 capas BFF',
+    description:
+      'Paso a paso para organizar código .NET en capas con propósito único: repositorios por esquema, servicios por dominio, controladores por canal.',
+    totalTime: 'PT2H',
+    estimatedCost: {
+      '@type': 'MonetaryAmount',
+      currency: 'USD',
+      value: '0',
+    },
+    step: [
+      {
+        '@type': 'HowToStep',
+        position: 1,
+        name: 'Organizar la base de datos en esquemas lógicos',
+        text: 'Dividir la BD en cfg (config), cat (catálogos), fab (factory/producción), aud (auditoría). Cada esquema tiene un propósito claro y una responsabilidad única.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 2,
+        name: 'Crear un repositorio por esquema, no por tabla',
+        text: 'Anti-patrón: un repositorio por tabla. Patrón correcto: ICfgRepository, ICatRepository, IFabRepository, IAudRepository. La regla mental: si la tabla está en fab.EstudiosCredito, va en IFabRepository. No hay ambigüedad.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 3,
+        name: 'Definir servicios por dominio funcional',
+        text: 'No usar una carpeta genérica Services/. En su lugar: EstudioService (apertura, riesgo, aprobación), TerceroService (datos del cliente), OtpService (validación), BiometriaService (verificación facial). Cada servicio contiene toda la lógica de su dominio.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 4,
+        name: 'Crear controladores por canal de consumo',
+        text: 'Cada canal (Tienda BFF, Web, Handoff, Admin) tiene sus propios controladores, pero TODOS inyectan los mismos servicios de dominio. La diferencia está en la forma del request, no en la lógica de negocio.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 5,
+        name: 'Verificar con un test de canal nuevo',
+        text: 'Cuando se requiera agregar un nuevo canal (ej: mobile), crear los controladores nuevos e inyectar los mismos servicios existentes. Resultado: cero cambios en servicios o repositorios. Si no se cumple esto, volver al paso 2.',
+      },
+    ],
+  }
+
+  return `<script type="application/ld+json">
+${JSON.stringify(howto, null, 2)}
+</script>`
+}
+
+/**
+ * Generate CreativeWork schemas for case studies.
+ */
+function generateCaseStudySchemas(): string {
+  const works = caseStudies.map((cs) => ({
+    '@type': 'CreativeWork',
+    '@id': `https://ewin24.github.io/portfolio/#case-${cs.id}`,
+    name: cs.title,
+    description: cs.impact,
+    inLanguage: 'es',
+    dateCreated: cs.period.split('–')[0].trim(),
+    author: { '@id': 'https://ewin24.github.io/portfolio/#person' },
+    keywords: cs.tags.join(', '),
+    about: {
+      '@type': 'Thing',
+      name: cs.industry,
+    },
+    creativeWorkStatus: 'Published',
+  }))
+
+  return `<script type="application/ld+json">
+${JSON.stringify(works, null, 2)}
+</script>`
+}
+
+/**
+ * Vite plugin: injects pre-rendered content + additional JSON-LD schemas.
+ * - Replaces the <noscript> block with full static content
+ * - Adds Article, FAQPage, HowTo, and CreativeWork schemas to the <head>
  */
 function preloadStaticContent(): import('vite').Plugin {
   return {
     name: 'preload-static-content',
     transformIndexHtml(html) {
       const content = generatePreloadedContent()
-      return html.replace(
+      const articleSchemas = generateArticleSchemas()
+      const faqSchema = generateFaqSchema()
+      const howtoSchema = generateHowToSchema()
+      const caseStudySchemas = generateCaseStudySchemas()
+
+      const additionalSchemas =
+        articleSchemas +
+        '\n' +
+        faqSchema +
+        '\n' +
+        howtoSchema +
+        '\n' +
+        caseStudySchemas
+
+      // Replace the noscript content
+      let result = html.replace(
         /<noscript>[\s\S]*?<\/noscript>/,
         `<noscript>\n<div style="max-width:900px;margin:0 auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;">\n${content}\n</div>\n</noscript>`,
       )
+
+      // Inject additional schemas before </head>
+      result = result.replace('</head>', `${additionalSchemas}\n</head>`)
+
+      return result
     },
   }
 }

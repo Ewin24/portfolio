@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/portfolio/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Edwin Trigos — Software Architect and Full Stack Developer. 5+ years building production systems in .NET, Clean Architecture, fintech, and cloud. Case studies, technical blog, and live GitHub integration." />
+    <meta name="description" content="Edwin Trigos — Software Architect & Full Stack Developer. 5+ years building .NET systems, Clean Architecture, and fintech SaaS. Case studies + bilingual technical blog." />
     <meta name="author" content="Edwin Trigos" />
     <meta name="keywords" content="Edwin Trigos, Full Stack Developer, Software Architect, .NET, C#, Clean Architecture, React, TypeScript, PHP, Laravel, AWS, Flutter, SQL Server, Dapper, Fintech, Loan Origination System" />
 
@@ -44,7 +44,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 
-    <!-- JSON-LD: Person + WebSite + BreadcrumbList -->
+    <!-- JSON-LD: Person + WebSite + BreadcrumbList + Service + ProfessionalService -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -58,7 +58,19 @@
           "jobTitle": "Software Architect & Full Stack Developer",
           "description": "Arquitecto de Software y Full Stack Developer con 5+ años de experiencia en .NET, Clean Architecture, sistemas financieros, y desarrollo cloud. Especializado en sistemas de originación de crédito, integraciones con burós de crédito, y plataformas SaaS B2B.",
           "url": "https://ewin24.github.io/portfolio/",
-          "image": "https://avatars.githubusercontent.com/Ewin24",
+          "image": {
+            "@type": "ImageObject",
+            "url": "https://avatars.githubusercontent.com/Ewin24",
+            "width": 460,
+            "height": 460,
+            "caption": "Edwin Trigos — Software Architect & Full Stack Developer"
+          },
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://avatars.githubusercontent.com/Ewin24",
+            "width": 460,
+            "height": 460
+          },
           "sameAs": [
             "https://github.com/Ewin24",
             "https://www.linkedin.com/in/edwintrigosguevara"
@@ -94,6 +106,10 @@
           "alumniOf": {
             "@type": "EducationalOrganization",
             "name": "Universidad"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", ".hero h1", "h2", "h3", ".article-summary"]
           }
         },
         {
@@ -106,7 +122,42 @@
           "author": { "@id": "https://ewin24.github.io/portfolio/#person" },
           "copyrightYear": 2026,
           "dateCreated": "2024",
-          "dateModified": "2026-06-19"
+          "dateModified": "2026-06-19",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://ewin24.github.io/portfolio/?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "ProfessionalService",
+          "@id": "https://ewin24.github.io/portfolio/#service",
+          "name": "Edwin Trigos — Software Architecture Consulting",
+          "description": "Independent software architect specializing in .NET, Clean Architecture, fintech systems, and cloud-native SaaS platforms. Available for contract and consulting work.",
+          "url": "https://ewin24.github.io/portfolio/",
+          "image": "https://avatars.githubusercontent.com/Ewin24",
+          "priceRange": "$$",
+          "areaServed": [
+            {
+              "@type": "Country",
+              "name": "Colombia"
+            },
+            {
+              "@type": "Place",
+              "name": "Remote (Worldwide)"
+            }
+          ],
+          "serviceType": [
+            "Software Architecture",
+            "Full Stack Development",
+            "Cloud Migration",
+            "Code Review",
+            "Technical Mentoring"
+          ],
+          "provider": { "@id": "https://ewin24.github.io/portfolio/#person" }
         },
         {
           "@type": "BreadcrumbList",
@@ -127,6 +178,17 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Pre-rendered avatar with alt text for crawlers (hidden visually) -->
+    <img
+      src="https://avatars.githubusercontent.com/Ewin24"
+      alt="Edwin Trigos — Software Architect and Full Stack Developer based in Bucaramanga, Colombia. Specialist in .NET, Clean Architecture, and fintech systems."
+      title="Edwin Trigos — Software Architect & Full Stack Developer"
+      width="460"
+      height="460"
+      style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"
+      loading="lazy"
+    />
 
     <!-- noscript content for non-JS crawlers (SEO, accessibility, AI discovery) -->
     <noscript>
