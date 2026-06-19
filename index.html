@@ -132,62 +132,208 @@
 
     <!-- noscript content for non-JS crawlers (SEO, accessibility, AI discovery) -->
     <noscript>
-      <div style="max-width:900px;margin:0 auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;">
-        <h1>Edwin Trigos — Software Architect &amp; Full Stack Developer</h1>
-        <p>
-          Software Architect and Full Stack Developer with 5+ years building production systems
-          in .NET, Clean Architecture, fintech, and cloud infrastructure. Based in Bucaramanga, Colombia.
-          Remote-ready.
-        </p>
-        <h2>About</h2>
-        <p>
-          I design and build production-grade systems end-to-end: from clean architecture
-          foundations to cloud deployment. My current focus is on financial systems (loan
-          origination, credit bureaus, risk management) and B2B SaaS platforms. I write
-          detailed case studies documenting the real architecture decisions, metrics, and
-          tradeoffs from systems I've shipped.
-        </p>
-        <h2>Production Case Studies</h2>
-        <ul>
-          <li><strong>STARSOL</strong> — B2B SaaS for risk management (SARLAFT, SARC, SIAR). Async architecture with 3 background workers, .NET MAUI client, AWS infrastructure.</li>
-          <li><strong>Loan Origination System (LOS)</strong> — 114+ API endpoints in 6 BFF layers, 27 stored procedures, 23-state lifecycle, biometric verification, INSERT-ONLY audit trail. Clean Architecture with .NET 8, Dapper, SQL Server.</li>
-          <li><strong>SOVI (Identity Validation Orchestrator)</strong> — Strategy pattern with voice bot + manual fallback. Catalog-driven decision engine with no hardcoded if/switch.</li>
-          <li><strong>Datacredito API</strong> — Credit bureau integration with Polly circuit breaker + retry. Query times reduced from 3s to 400ms. JWT auth, Serilog structured logging.</li>
-          <li><strong>Kampot Payroll</strong> — Extended CRM routing for 48 payroll types. 21 Crystal Reports templates, zero breaks in legacy payroll.</li>
-          <li><strong>Admin Module UI</strong> — Separated monitoring dashboard from CRUD configuration. Navigation reflects clean backend architecture.</li>
-        </ul>
-        <h2>Technical Blog</h2>
-        <ul>
-          <li><strong>Clean Architecture in a Loan Origination System</strong> — How I designed 114 endpoints in 6 BFF layers with zero logic duplication.</li>
-          <li><strong>Catalog-Driven Decision Engine (no if/switch)</strong> — Strategy pattern with database catalog. 0 code changes when business rules change.</li>
-          <li><strong>Centralized Communications API</strong> — From 5 systems with separate API keys to 1 multi-tenant API. Provider-agnostic, full audit trail.</li>
-          <li><strong>Dual-Frontend Clean Architecture</strong> — Blazor + REST API sharing the same Application Services via shared DI container.</li>
-          <li><strong>Dapper vs EF Core</strong> — When to choose raw SQL performance over change tracking convenience. (Forthcoming)</li>
-        </ul>
-        <h2>Technologies</h2>
-        <p>
-          .NET 8+, C#, Clean Architecture, SQL Server, Dapper, React 19, TypeScript, Vite,
-          Tailwind CSS, PHP, Laravel, AWS, .NET MAUI, Flutter, Docker, CI/CD, Java, Spring Boot,
-          PostgreSQL, Azure, Domain-Driven Design, Strategy Pattern, BFF Pattern.
-        </p>
-        <h2>Work Experience</h2>
-        <ul>
-          <li><strong>STARSOL</strong> — Cloud Software Architect &amp; Independent Developer (2024–Present)</li>
-          <li><strong>BAGUER S.A.S</strong> — Full Stack C# .NET &amp; Mobile Developer (2024–Present)</li>
-          <li><strong>CAMPUSLANDS</strong> — Full Stack Developer .NET &amp; JavaScript (2023–2024)</li>
-          <li><strong>BAGUER S.A.S</strong> — .NET Backend Developer (2021–2023)</li>
-          <li><strong>ESPEJOS GLAM</strong> — Web Developer (2022–2023)</li>
-        </ul>
-        <h2>Contact</h2>
-        <ul>
-          <li>Email: <a href="mailto:edwintrigos24@gmail.com">edwintrigos24@gmail.com</a></li>
-          <li>GitHub: <a href="https://github.com/Ewin24">github.com/Ewin24</a></li>
-          <li>LinkedIn: <a href="https://www.linkedin.com/in/edwintrigosguevara">linkedin.com/in/edwintrigosguevara</a></li>
-          <li>Location: Bucaramanga, Colombia (Remote)</li>
-        </ul>
-        <p><em>To see the full interactive portfolio, please enable JavaScript. Visit <a href="https://ewin24.github.io/portfolio/">ewin24.github.io/portfolio/</a>.</em></p>
-      </div>
-    </noscript>
+<div style="max-width:900px;margin:0 auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;">
+<h1>Edwin Trigos — Software Architect &amp; Full Stack Developer</h1>
+<p>Software Architect and Full Stack Developer with 5+ years building production systems in .NET, Clean Architecture, fintech, and cloud infrastructure. Based in Bucaramanga, Colombia. Remote-ready.</p>
+<h2>About</h2>
+<p>I design and build production-grade systems end-to-end: from clean architecture foundations to cloud deployment. My current focus is on financial systems (loan origination, credit bureaus, risk management) and B2B SaaS platforms. I write detailed case studies documenting the real architecture decisions, metrics, and tradeoffs from systems I've shipped.</p>
+<h2>Production Case Studies</h2>
+<article>
+<h3>Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC</h3>
+<p><strong>Company</strong>: Fábricas de Crédito QUAC. <strong>Period</strong>: 2025 – 2026. <strong>Stack</strong>: .NET 8+, C#, Dapper, SQL Server, Clean Architecture, REST API, JWT, Strategy Pattern.</p>
+<p><strong>Problem</strong>: La empresa no contaba con un sistema digital de originación de crédito. Las solicitudes se procesaban de forma manual, tomando días en completarse, sin validación de identidad ni detección de fraude. Cada solicitud requería revisión humana sin automatización, generando demoras, errores de conciliación y exposición a suplantación de identidad.</p>
+<p><strong>Solution</strong>: Diseñé y construí el sistema completo desde cero. En la capa de datos: DDL con 4 esquemas lógicos (cfg/cat/fab/aud), 30+ tablas transaccionales, máquina de estados de 23 estados, y 27 stored procedures optimizados. En la capa de servicios: API REST en .NET con Clean Architecture — repositorios por esquema, servicios por dominio funcional (Estudio, Tercero, OTP, Biometría) y controladores por canal (Admin/Tienda/Web/Handoff). Implementé el SOVI (Sistema Orquestador de Validación de Identidad) con patrón Strategy para verificación por bot de voz + validación manual, con motor de decisiones catalog-driven (sin if/switch hardcodeados). Integré detección de fraude con análisis biométrico de fotografías y un flujo completo de auditoría INSERT-ONLY.</p>
+<p><strong>Impact</strong>: 114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones.</p>
+</article>
+<article>
+<h3>SOVI — Sistema Orquestador de Validación de Identidad</h3>
+<p><strong>Company</strong>: Fábricas de Crédito QUAC. <strong>Period</strong>: 2026. <strong>Stack</strong>: .NET, C#, SQL Server, Strategy Pattern, REST API.</p>
+<p><strong>Problem</strong>: El sistema de originación de crédito (LOS) requería validar la identidad del cliente en tiempo real mientras estaba activo en el flujo de solicitud. Sin esta validación, el riesgo de suplantación de identidad era crítico. Necesitaba un sistema que funcionara tanto automatizado (bot de voz) como con respaldo manual, con trazabilidad completa de cada intento.</p>
+<p><strong>Solution</strong>: Diseñé el SOVI con tres tablas especializadas (catálogo de diagnósticos, campañas por estudio, intentos con biometría). Implementé el patrón Strategy con dos estrategias: BotValidacionStrategy (automático vía bot de voz) y ManualValidacionStrategy (asesor humano como plan B). El motor de decisiones no tiene if/switch hardcodeados — cada diagnóstico del bot dispara una AccionSistema desde el catálogo en base de datos. Cada intento registra timestamps, URL de audio y datos biométricos para auditoría completa.</p>
+<p><strong>Impact</strong>: Validación de identidad en tiempo real sin intervención humana en el flujo estándar. Plan B manual como ciudadano de primera clase (no un fallback after-thought). Motor de decisiones catalog-driven: agregar nuevos diagnósticos no requiere cambios de código. Trazabilidad completa por estudio con 10+ diagnósticos de bot categorizados.</p>
+</article>
+<article>
+<h3>API de Integración con Burós de Crédito — Datacredito</h3>
+<p><strong>Company</strong>: Baguer Software. <strong>Period</strong>: 2024 – 2025. <strong>Stack</strong>: .NET 8, C#, Dapper, SQL Server, Polly, Serilog, JWT, REST API.</p>
+<p><strong>Problem</strong>: El proceso de consulta a centrales de riesgo (Datacredito) requería integración manual con formatos legacy. Las consultas fallaban frecuentemente por errores de formato, y no había resiliencia ante fallos de red del proveedor externo. No existía trazabilidad de las consultas realizadas.</p>
+<p><strong>Solution</strong>: Construí una API REST en .NET 8 con Dapper + SQL Server, implementando patrones de resiliencia con Polly (circuit breaker + retry policy), autenticación JWT, y logging estructurado con Serilog. Implementé un middleware de request/response logging con sanitización de campos sensibles. Arquitectura en 3 capas (Web/Data/Common) con inyección de dependencias.</p>
+<p><strong>Impact</strong>: Consultas automatizadas al 100%. Resiliencia ante fallos del proveedor externo con circuit breaker y retry policy. Trazabilidad completa via Serilog. Arquitectura preparada para migración a .NET 10 sin cambios estructurales.</p>
+</article>
+<article>
+<h3>Sistema de Nómina Kampot — Generación de Documentos ERP</h3>
+<p><strong>Company</strong>: Baguer Software. <strong>Period</strong>: 2025 – 2026. <strong>Stack</strong>: C#, .NET Framework, Crystal Reports, SQL Server, ERP.</p>
+<p><strong>Problem</strong>: El ERP manejaba 45+ tipos de nómina (contratos, terminaciones, cartas) con rutas de documentos estáticas. Tres nuevos tipos de nómina Kampot (Comercial, Administrativa, Temporada) requerían sus propias plantillas Crystal Reports, y el sistema existente usaba rutas compartidas que no permitían personalización por tipo.</p>
+<p><strong>Solution</strong>: Extendí el sistema de enrutamiento de documentos del CRM para soportar los 3 nuevos tipos de nómina Kampot. Modifiqué el CrmController.cs para actualizar la lógica de enrutamiento dinámico: añadí los IDs 46/47/48 al array de nóminas por cuotas, agregué casos específicos en ObtenerNombreContrato(), y creé 21 archivos .rpt (7 por nómina) en una nueva carpeta CReports/Kampot/. Todo siguiendo el patrón existente sin afectar las 45+ nóminas legacy.</p>
+<p><strong>Impact</strong>: Extensión no-invasiva: 0 breaks en nóminas legacy. 21 plantillas Crystal Reports organizadas por tipo de nómina. Patrón reusable para futuros tipos de contrato. Sistema de enrutamiento dinámico probado con 48 tipos de nómina.</p>
+</article>
+<article>
+<h3>Arquitectura UI para Módulo Administrativo de LOS</h3>
+<p><strong>Company</strong>: Baguer Software. <strong>Period</strong>: 2026. <strong>Stack</strong>: React, TypeScript, REST API, UI Architecture.</p>
+<p><strong>Problem</strong>: La API V2 del sistema de originación de crédito tenía dominios backend bien estructurados (AUD, CAT, CFG, FAB), pero la interfaz de administración no reflejaba esta separación. El monitoreo en tiempo real (auditoría, colas de crédito) estaba mezclado con la configuración CRUD (catálogos, reglas de negocio), creando una experiencia confusa para el operador.</p>
+<p><strong>Solution</strong>: Diseñé la reestructuración del módulo Admin en dos macro-módulos: &quot;Panel de Control&quot; (dashboard de monitoreo consumiendo endpoints AUD + FAB read-only) y &quot;Módulo Administrar&quot; (interfaz tipo navegador con tabs: Catálogos/CAT, Workflow/CFG, Operación/FAB). Mapeé cada área del backend a su macro-módulo correspondiente, delegando la gestión de roles/permisos a la aplicación host. La navegación refleja la arquitectura limpia del backend.</p>
+<p><strong>Impact</strong>: Separación clara de responsabilidades UI (monitoreo vs. configuración). Arquitectura escalable: agregar nuevas capacidades solo requiere crear un nuevo tab en el macro-módulo correspondiente. Sin duplicación de lógica de permisos. Consistencia con la arquitectura limpia del backend.</p>
+</article>
+<article>
+<h3>Portfolio con Arquitectura Híbrida (React 19 + Vite)</h3>
+<p><strong>Company</strong>: Proyecto Personal. <strong>Period</strong>: 2024 – Presente. <strong>Stack</strong>: React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion, GitHub API.</p>
+<p><strong>Problem</strong>: Los portfolios de desarrolladores muestran código pero no el impacto de negocio. Depender exclusivamente de la API de GitHub para mostrar proyectos oculta el trabajo más valioso: sistemas privados empresariales bajo NDA. Necesitaba una plataforma que vendiera ingeniería, no solo repositorios públicos.</p>
+<p><strong>Solution</strong>: Diseñé una arquitectura híbrida: capa de contenido curado (casos de estudio en TypeScript con formato STAR, experiencia laboral, blog) como fuente principal de verdad, y API de GitHub como widget secundario de actividad. Implementé i18n nativo (ES/EN), design system editorial pixel-art con sombras pixeladas y tipografía de periódico, y animaciones con Framer Motion. Construido con React 19 + Vite + TypeScript + Tailwind CSS v4.</p>
+<p><strong>Impact</strong>: Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript.</p>
+</article>
+<article>
+<h3>STARSOL — Plataforma SaaS para Gestión Integral de Riesgos</h3>
+<p><strong>Company</strong>: STARSOL. <strong>Period</strong>: 2024 – Presente. <strong>Stack</strong>: PHP, Laravel, AWS, .NET MAUI, MySQL, Docker, CI/CD.</p>
+<p><strong>Problem</strong>: Las entidades del sector solidario (cooperativas, fondos de empleados) enfrentaban procesos manuales para la gestión de riesgos SARLAFT, SARC y SIAR, con flujos de originación de crédito y monitoreo normativo sin digitalizar. El servidor web monolítico se convertía en cuello de botella al procesar archivos financieros pesados de forma sincrónica, degradando la experiencia del usuario.</p>
+<p><strong>Solution</strong>: Diseñé y construí STARSOL desde cero como plataforma SaaS B2B en PHP con Laravel, implementando una arquitectura asíncrona con 3 background workers que procesan jobs simultáneamente, desacoplando completamente la carga de archivos del hilo principal del servidor web. Para la gestión avanzada de archivos, desarrollé una aplicación cliente en .NET MAUI con capacidad offline que se sincroniza con el backend en la nube. A nivel de infraestructura, aprovisioné entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad para el procesamiento de datos financieros sensibles.</p>
+<p><strong>Impact</strong>: Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR.</p>
+</article>
+<h2>Technical Blog</h2>
+<article>
+<h3>Clean Architecture en un Sistema de Originación de Crédito: Cómo evité el caos antes de escribir la primera línea de código</h3>
+<p><strong>Published</strong>: 2026-01-15. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: arquitectura, .NET, clean architecture, DDD.</p>
+<p>Cuando te dan un proyecto desde cero, la tentación es abrir Visual Studio y empezar a escribir controladores. Pero sin una estructura clara, en 3 meses tienes un Big Ball of Mud. Así diseñé la arquitectura del LOS antes de escribir una línea de código de producción.</p>
+</article>
+<article>
+<h3>Eliminé todos los if/switch de mi motor de decisiones (y por qué deberías hacer lo mismo)</h3>
+<p><strong>Published</strong>: 2026-03-20. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: arquitectura, patrones, C#, design patterns.</p>
+<p>Cuando construyes un sistema que toma decisiones basadas en diagnósticos externos (un bot de voz, un servicio de validación), la tentación es escribir switch(mensaje) { case &quot;ERROR&quot;: ... }. Eso es deuda técnica inmediata. Te cuento cómo lo evité con un motor catalog-driven.</p>
+</article>
+<article>
+<h3>Centralicé todos los correos de la empresa en una API con Clean Architecture (y dejé de preguntarle al proveedor qué pasó)</h3>
+<p><strong>Published</strong>: 2026-06-15. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: arquitectura, .NET, clean architecture, API, patrones.</p>
+<p>Cada área de la empresa gestionaba el correo por su cuenta, con su propia implementación, su propia clave API, y su propia definición de &quot;éxito&quot;. Hasta que el proveedor decía &quot;no me llegó el comprobante&quot; y nadie sabía qué pasó. Así diseñé una API centralizada que eliminó el black box de las comunicaciones empresariales.</p>
+</article>
+<article>
+<h3>Diseñé un ERP donde la capa de presentación (Blazor) y la REST API son intercambiables gracias a Clean Architecture</h3>
+<p><strong>Published</strong>: 2026-07-01. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: .NET, clean architecture, Blazor, ASP.NET Core, C#.</p>
+<p>Cómo logré que Blazor y la API compartieran exactamente la misma lógica de negocio en un ERP de producción mediante inyección de dependencias en Clean Architecture, eliminando duplicación y acelerando el desarrollo de características.</p>
+</article>
+<article>
+<h3>Todo el error handling de mi API se reduce a dos archivos: así eliminé los try-catch de mis controladores</h3>
+<p><strong>Published</strong>: 2026-07-15. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: arquitectura, .NET, ASP.NET Core, patrones, C#.</p>
+<p>Cada controller tenía su propio try-catch, cada error devolvía un formato distinto, y los mensajes mezclaban detalles técnicos con reglas de negocio. Unificarlo todo en dos archivos — DomainExceptions.cs + ExceptionHandlingMiddleware — cambió la forma en que pensamos los errores.</p>
+</article>
+<article>
+<h3>No uso Entity Framework. En 3 años de ERP, cero migraciones, cero N+1, cero sorpresas en producción</h3>
+<p><strong>Published</strong>: 2026-08-01. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: Dapper, arquitectura, .NET, performance, patrones.</p>
+<p>Cada vez que alguien dice &quot;usa EF Core, es el estándar&quot;, me pregunto si su base de datos tiene 200 stored procedures legacy y un equipo de DBA. Te cuento por qué elegimos Dapper puro y cómo vivimos para contarlo.</p>
+</article>
+<article>
+<h3>Versioné 24 controladores de una API en producción sin cambiar ni una sola URL existente</h3>
+<p><strong>Published</strong>: 2026-08-15. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: API, arquitectura, .NET, ASP.NET Core, patrones.</p>
+<p>Cuando 24 controladores están en producción y los clientes no pueden actualizarse todos al mismo tiempo, romper URLs no es una opción. Así implementé versionado transparente con rutas duales sin que ningún consumidor legacy se enterara.</p>
+</article>
+<article>
+<h3>Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio</h3>
+<p><strong>Published</strong>: 2026-09-01. <strong>Category</strong>: arquitectura. <strong>Tags</strong>: arquitectura, .NET, patrones, orquestación, integraciones.</p>
+<p>Cuando una orden de producción necesita notificar por email, guardar PDFs en la nube y actualizar el estado en otro sistema, la tentación es crear un orquestador. Pero a veces el orquestador correcto es un método de 30 líneas.</p>
+</article>
+<h2>Technologies (39 production-grade)</h2>
+<p>PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · .NET Framework · ERP · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API</p>
+<h2>Work Experience</h2>
+<article>
+<h3>Arquitecto de Software Cloud &amp; Desarrollador Independiente — STARSOL</h3>
+<p><strong>Period</strong>: Ene 2024 – Presente. <strong>Location</strong>: Colombia (Remoto). <strong>Current</strong>.</p>
+<ul>
+<li>Lideré el diseño arquitectónico, desarrollo end-to-end y despliegue en la nube de STARSOL, una plataforma SaaS B2B para el sector solidario que gestiona el Sistema Integral de Administración de Riesgos (SARLAFT, SARC, SIAR), digitalizando y automatizando flujos complejos de originación de crédito y monitoreo normativo</li>
+<li>Diseñé una arquitectura asíncrona con 3 background workers procesando jobs simultáneamente para desacoplar tareas pesadas del hilo principal del servidor web (PHP/Laravel), eliminando cuellos de botella en el procesamiento de archivos financieros</li>
+<li>Orquesté el aprovisionamiento de entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad y seguridad para el procesamiento de datos financieros sensibles</li>
+</ul>
+<p><strong>Stack</strong>: PHP, Laravel, AWS, .NET MAUI, MySQL, Docker, CI/CD</p>
+</article>
+<article>
+<h3>Programador Full Stack C# .NET &amp; Mobile — BAGUER S.A.S</h3>
+<p><strong>Period</strong>: 2024 – Presente. <strong>Location</strong>: Colombia (Remoto). <strong>Current</strong>.</p>
+<ul>
+<li>Construí desde cero el Sistema de Originación de Crédito (LOS) con Clean Architecture en .NET 8 — DDL con 30+ tablas y 4 esquemas lógicos, 27 stored procedures, API REST con 114+ endpoints organizados en 6 capas BFF sin duplicación de lógica entre canales</li>
+<li>Diseñé el SOVI (Sistema Orquestador de Validación de Identidad) con patrón Strategy para verificación por bot de voz + respaldo manual, implementando un motor de decisiones catalog-driven que eliminó todo if/switch hardcodeado del flujo de validación</li>
+<li>Implementé la API de integración con burós de crédito (Datacredito) en .NET 8 con patrones de resiliencia (Polly circuit breaker + retry policy), autenticación JWT y logging estructurado con Serilog, reduciendo tiempos de consulta de 3s a 400ms mediante optimización de índices y queries</li>
+<li>Lideré la migración forzada de la aplicación móvil empresarial de Xamarin Forms a Flutter tras la depreciación de Xamarin por Microsoft, restaurando la disponibilidad en App Store y dotando al proyecto de un stack móvil moderno, fluido y mantenible</li>
+</ul>
+<p><strong>Stack</strong>: .NET 8, C#, SQL Server, Clean Architecture, Flutter, Dapper, React, TypeScript</p>
+</article>
+<article>
+<h3>Desarrollador Backend .NET — BAGUER S.A.S</h3>
+<p><strong>Period</strong>: 2021 – 2023. <strong>Location</strong>: Colombia (Remoto).</p>
+<ul>
+<li>Desarrollé y mantuve integraciones con APIs de terceros (burós de crédito CIFIN, pasarelas de pago, servicios de mensajería Infobip) procesando miles de transacciones diarias</li>
+<li>Implementé APIs REST en .NET con Dapper y SQL Server, optimizando consultas mediante índices y caching que redujeron tiempos de respuesta de 3s a 400ms</li>
+<li>Construí sistemas de reportes automatizados con Crystal Reports integrados al ERP, eliminando horas de trabajo manual del equipo de análisis</li>
+<li>Participé en la migración de aplicaciones .NET Framework a .NET Core, aplicando inyección de dependencias y patrones modernos de arquitectura</li>
+</ul>
+<p><strong>Stack</strong>: C#, .NET Core, Dapper, SQL Server, REST API, Crystal Reports</p>
+</article>
+<article>
+<h3>Desarrollador Full Stack (.NET &amp; JavaScript) — CAMPUSLANDS</h3>
+<p><strong>Period</strong>: Feb 2023 – Ene 2024. <strong>Location</strong>: Colombia.</p>
+<ul>
+<li>Desarrollé una solución de software integral bajo metodología ágil Scrum para la gestión operativa de un modelo logístico</li>
+<li>Diseñé un backend altamente escalable en .NET fundamentado en principios SOLID con Fluent API para mapeo de datos</li>
+<li>Orquesté el diseño, normalización y administración de la base de datos relacional en MySQL</li>
+<li>Consumí los servicios backend a través de un frontend dinámico e interactivo construido con JavaScript, asegurando calidad y mantenibilidad del código a largo plazo</li>
+</ul>
+<p><strong>Stack</strong>: C#, .NET, MySQL, JavaScript, HTML/CSS, Scrum</p>
+</article>
+<article>
+<h3>Desarrollador Backend .NET — BAGUER S.A.S</h3>
+<p><strong>Period</strong>: 2021 – 2023. <strong>Location</strong>: Colombia (Remoto).</p>
+<ul>
+<li>Desarrollé y mantuve integraciones con APIs de terceros (burós de crédito CIFIN, pasarelas de pago, servicios de mensajería Infobip) procesando miles de transacciones diarias</li>
+<li>Implementé APIs REST en .NET con Dapper y SQL Server, optimizando consultas mediante índices y caching que redujeron tiempos de respuesta de 3s a 400ms</li>
+<li>Construí sistemas de reportes automatizados con Crystal Reports integrados al ERP, eliminando horas de trabajo manual del equipo de análisis</li>
+<li>Participé en la migración de aplicaciones .NET Framework a .NET Core, aplicando inyección de dependencias y patrones modernos de arquitectura</li>
+</ul>
+<p><strong>Stack</strong>: C#, .NET Core, Dapper, SQL Server, REST API, Crystal Reports</p>
+</article>
+<article>
+<h3>Programador Web — ESPEJOS GLAM</h3>
+<p><strong>Period</strong>: Ene 2022 – Ene 2023. <strong>Location</strong>: Colombia.</p>
+<ul>
+<li>Fui responsable del desarrollo end-to-end de la plataforma web comercial, gestionando todo el ciclo de vida del producto: desde la toma de requerimientos y diseño de interfaces (UI/UX) mediante mockups, hasta la implementación técnica utilizando PHP, JavaScript, HTML y CSS</li>
+<li>Ejecuté la integración de la lógica de negocio, la optimización de contenidos y el despliegue automatizado en servidores de producción, garantizando la estabilidad del sitio</li>
+</ul>
+<p><strong>Stack</strong>: PHP, JavaScript, HTML, CSS, UI/UX, Deployment</p>
+</article>
+<h2>Education</h2>
+<article>
+<h3>Ingeniería en Desarrollo de Sistemas — Unidades Tecnológicas de Santander (UTS)</h3>
+<p><strong>Period</strong>: 2024 – Presente</p>
+<p>Formación en ingeniería de software, arquitectura de sistemas, bases de datos avanzadas y gestión de proyectos tecnológicos.</p>
+</article>
+<article>
+<h3>Tecnología en Sistemas — Unidades Tecnológicas de Santander (UTS)</h3>
+<p><strong>Period</strong>: 2024 – 2026</p>
+
+</article>
+<article>
+<h3>Tecnología en Análisis y Desarrollo de Sistemas de Información (ADSI) — SENA — Centro de Producción Limpia (LOPE), Nariño</h3>
+<p><strong>Period</strong>: 2022 – 2024</p>
+
+</article>
+<article>
+<h3>Entrenamiento Intensivo en Desarrollo de Software (Bootcamp) — Campuslands</h3>
+<p><strong>Period</strong>: 2023 – 2024</p>
+<p>Bootcamp de 10 meses con formación intensiva en .NET, Java, Spring Boot, SQL, arquitectura limpia y metodologías ágiles.</p>
+</article>
+<h2>Testimonials</h2>
+<article>
+<blockquote>Trabajar con Edwin en el diseño y construcción de nuestra plataforma de créditos fue una experiencia transformadora. No solo entendió el negocio desde el día uno, sino que diseñó una arquitectura que nos permite escalar sin miedo a romper lo que ya funciona. Su enfoque en la trazabilidad y la auditoría nos dio la confianza que necesitábamos para operar en un sector tan regulado como el financiero.</blockquote>
+<p>— Cliente — Fábricas de Crédito QUAC, Director de Operaciones at Fábricas de Crédito QUAC</p>
+</article>
+<article>
+<blockquote>Edwin tiene una capacidad única para ver el panorama completo: no solo sabe cómo implementar una API, sino que entiende cómo esa API encaja en el flujo de negocio, cómo va a escalar, y qué va a pasar cuando el negocio cambie. Es de esas personas con las que das gracias de trabajar porque sabes que el código que escribe no va a darte dolores de cabeza en producción.</blockquote>
+<p>— Colega — Baguer Software, Desarrollador Backend Senior at Baguer Software</p>
+</article>
+<h2>Contact</h2>
+<ul>
+<li>Email: <a href="mailto:edwintrigos24@gmail.com">edwintrigos24@gmail.com</a></li>
+<li>GitHub: <a href="https://github.com/Ewin24">github.com/Ewin24</a></li>
+<li>LinkedIn: <a href="https://www.linkedin.com/in/edwintrigosguevara">linkedin.com/in/edwintrigosguevara</a></li>
+<li>Location: Bucaramanga, Colombia (Remote)</li>
+</ul>
+<p><em>To see the full interactive portfolio, please enable JavaScript. Visit <a href="https://ewin24.github.io/portfolio/">ewin24.github.io/portfolio/</a>.</em></p>
+</div>
+</noscript>
 
   </body>
 </html>
