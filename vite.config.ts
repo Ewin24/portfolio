@@ -309,9 +309,90 @@ ${JSON.stringify(works, null, 2)}
 }
 
 /**
+ * Generate ProfilePage + WebPage + ItemList wrappers for the homepage.
+ * These give AI engines a clearer understanding of the page type and structure.
+ */
+function generatePageWrapperSchemas(): string {
+  const profilePage = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    '@id': 'https://ewin24.github.io/portfolio/#profilepage',
+    url: 'https://ewin24.github.io/portfolio/',
+    name: 'Edwin Trigos — Software Architect & Full Stack Developer',
+    description:
+      'Personal portfolio featuring production case studies, technical blog, and professional experience.',
+    inLanguage: ['en', 'es'],
+    mainEntity: { '@id': 'https://ewin24.github.io/portfolio/#person' },
+    about: { '@id': 'https://ewin24.github.io/portfolio/#person' },
+    isPartOf: { '@id': 'https://ewin24.github.io/portfolio/#website' },
+    dateModified: '2026-06-19',
+  }
+
+  const webPage = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': 'https://ewin24.github.io/portfolio/#webpage',
+    url: 'https://ewin24.github.io/portfolio/',
+    name: 'Edwin Trigos | Software Architect & Full Stack Developer',
+    description:
+      'Software Architect and Full Stack Developer specializing in .NET, Clean Architecture, and financial systems.',
+    inLanguage: ['en', 'es'],
+    isPartOf: { '@id': 'https://ewin24.github.io/portfolio/#website' },
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      url: 'https://avatars.githubusercontent.com/Ewin24',
+    },
+    dateModified: '2026-06-19',
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1', 'h2', '.hero h1', 'article h3'],
+    },
+  }
+
+  const caseStudyList = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Production Case Studies',
+    description: 'Real systems shipped to production by Edwin Trigos.',
+    numberOfItems: caseStudies.length,
+    itemListElement: caseStudies.map((cs, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: cs.title,
+      url: `https://ewin24.github.io/portfolio/#projects`,
+      description: cs.impact,
+    })),
+  }
+
+  const blogList = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Technical Blog',
+    description:
+      'Bilingual technical blog on architecture decisions, design patterns, and production tradeoffs.',
+    numberOfItems: blogPosts.length,
+    itemListElement: blogPosts.map((post, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: post.title,
+      url: `https://ewin24.github.io/portfolio/#/blog/article/${post.slug}`,
+      description: post.excerpt,
+    })),
+  }
+
+  return [
+    `<script type="application/ld+json">\n${JSON.stringify(profilePage, null, 2)}\n</script>`,
+    `<script type="application/ld+json">\n${JSON.stringify(webPage, null, 2)}\n</script>`,
+    `<script type="application/ld+json">\n${JSON.stringify(caseStudyList, null, 2)}\n</script>`,
+    `<script type="application/ld+json">\n${JSON.stringify(blogList, null, 2)}\n</script>`,
+  ].join('\n')
+}
+
+/**
  * Vite plugin: injects pre-rendered content + additional JSON-LD schemas.
  * - Replaces the <noscript> block with full static content
- * - Adds Article, FAQPage, HowTo, and CreativeWork schemas to the <head>
+ * - Adds Article, FAQPage, HowTo, CreativeWork, ProfilePage, WebPage,
+ *   ItemList, BreadcrumbList schemas to the <head>
  */
 function preloadStaticContent(): import('vite').Plugin {
   return {
@@ -322,6 +403,7 @@ function preloadStaticContent(): import('vite').Plugin {
       const faqSchema = generateFaqSchema()
       const howtoSchema = generateHowToSchema()
       const caseStudySchemas = generateCaseStudySchemas()
+      const pageWrappers = generatePageWrapperSchemas()
 
       const additionalSchemas =
         articleSchemas +
@@ -330,7 +412,9 @@ function preloadStaticContent(): import('vite').Plugin {
         '\n' +
         howtoSchema +
         '\n' +
-        caseStudySchemas
+        caseStudySchemas +
+        '\n' +
+        pageWrappers
 
       // Replace the noscript content
       let result = html.replace(
