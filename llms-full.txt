@@ -1,0 +1,157 @@
+# Edwin Trigos | Software Architect & Full Stack Developer
+
+> Portfolio of Edwin Trigos — Software Architect and Full Stack Developer specializing in .NET, Clean Architecture, and financial systems. 5+ years building production systems. Bilingual technical blog (ES/EN). Remote from Bucaramanga, Colombia.
+
+Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure.
+
+---
+
+## Blog — Technical Architecture Articles
+
+### Clean Architecture en un Sistema de Originación de Crédito
+https://ewin24.github.io/portfolio/
+
+**Published**: 2026-01-15 | **Language**: ES/EN
+
+Cuando asumí el diseño del Sistema de Originación de Crédito, sabía que este no sería un proyecto más. Era un sistema completo desde cero: base de datos transaccional, API REST con múltiples canales de consumo, integración con burós de crédito, verificación biométrica, y un flujo de 23 estados que un préstamo recorre desde la solicitud hasta el desembolso.
+
+La decisión más importante no fue qué tecnología usar, sino cómo organizar el código para que el proyecto siguiera siendo mantenible cuando llegara a 100 mil líneas.
+
+**La solución: Capas con propósito único**
+
+Dividí el código en 3 ejes ortogonales:
+
+1. Repositorios por esquema de base de datos: ICfgRepository, ICatRepository, IFabRepository, IAudRepository. La regla mental es trivial: si la tabla está en fab.EstudiosCredito, va en IFabRepository. No hay ambigüedad.
+
+2. Servicios por dominio funcional: EstudioService (apertura, riesgo, aprobación), TerceroService (datos del cliente), OtpService (validación OTP), BiometriaService (verificación facial). Cada servicio contiene toda la lógica de su dominio.
+
+3. Controladores por canal de consumo: Tienda (BFF), Web, Handoff, Admin. Cada canal tiene sus propios controladores, pero TODOS inyectan los mismos servicios de dominio. Sin duplicación de lógica.
+
+**Resultado**: 114 endpoints en 6 capas BFF, 27 stored procedures, 0 duplicación de lógica entre canales. Cuando llegó el requerimiento de agregar el canal Web, solo creamos controladores nuevos — cero cambios en servicios o repositorios existentes.
+
+---
+
+### Motor de Decisiones Catalog-Driven sin if/switch
+https://ewin24.github.io/portfolio/
+
+**Published**: 2026-03-20 | **Language**: ES/EN
+
+El SOVI (Sistema Orquestador de Validación de Identidad) nació de un requisito aparentemente simple: "validar que la persona que solicita el crédito es quien dice ser". Pero el bot de voz podía devolver 10+ diagnósticos diferentes.
+
+En lugar de hardcodear decisiones con switch(diagnostico) { case "ERROR": ... }, creé una tabla cat.CatalogoDiagnosticosBot:
+
+| IdDiagnostico | CodigoDiagnostico | AccionSistema | RequiereReintento |
+|---------------|-------------------|---------------|-------------------|
+| 1 | IDENTIDAD_CONFIRMADA | APROBAR | false |
+| 2 | VOZ_NO_COINCIDE | ESCALAR | true |
+| 3 | ERROR_TECNICO_BOT | REINTENTAR | true |
+
+El motor de decisiones ahora es una línea: `var accion = await _repositorio.ObtenerAccionPorDiagnostico(codigoDiagnostico); return EjecutarAccion(accion);`
+
+Implementé el patrón Strategy con dos estrategias de validación: BotValidacionStrategy (automatizada vía bot de voz) y ManualValidacionStrategy (asesor humano como plan B). El plan B es ciudadano de primera clase, no un fallback after-thought.
+
+**Resultado**: 0 cambios de código cuando el negocio modifica reglas. 0 cambios cuando se agregan nuevos diagnósticos. Trazabilidad completa con timestamp, URL de audio y datos biométricos.
+
+---
+
+### API Centralizada de Comunicaciones con Clean Architecture
+https://ewin24.github.io/portfolio/
+
+**Published**: 2026-06-15 | **Language**: ES/EN
+
+Teníamos áreas enteras de la empresa gestionando el correo por su cuenta: gestión de proveedores, recursos humanos, cumplimiento, producción, atención al cliente. Cada una con su propia integración, su propia clave API de Sendinblue hardcodeada, y su propio concepto de "éxito".
+
+**La solución: una API, 4 capas**
+
+Diseñé una API centralizada con Clean Architecture en 4 capas: API (controllers HTTP), Application (servicios de orquestación), Domain (entidades e interfaces), Infrastructure (proveedores concretos, repositorios con Dapper, configuración multi-tenant).
+
+La clave del desacople: `public interface IEmailProvider { Task<EmailResponse> SendAsync(EmailRequest request); }`. Infobip es UNA implementación. Cuando migramos de Sendinblue a Infobip, el impacto total fue crear una clase que implementara IEmailProvider. Ni un solo sistema consumidor se enteró.
+
+Trazabilidad con GUID: cada transacción persiste con ID propio, request/response payload completo, y status (SUCCESS/API_REJECTED/APP_ERROR). Logging con 3 pipelines de Serilog separando ruido operativo de trazabilidad real.
+
+Multi-tenant desde el día 1: 8 cuentas de Infobip para 8 contextos de negocio, resueltas por OriginContext desde configuración centralizada.
+
+**Resultado**: Cambio de proveedor de días a horas. Múltiples áreas → 1 API. Cada transacción trazable con GUID. Debugging pasó de 30min-2h a segundos.
+
+---
+
+### Dual-Frontend Clean Architecture: Blazor + REST API
+https://ewin24.github.io/portfolio/
+
+**Published**: 2026-07-01 | **Language**: ES/EN
+
+ERP que atiende dos tipos de consumidores: sistemas externos mediante REST API e usuarios internos mediante Blazor Server. Ambos inyectan los mismos Application Services desde un contenedor DI compartido — sin llamadas HTTP entre capas de presentación.
+
+La clave: `builder.Services.AddScoped<IOrdenService, OrdenService>()` registrado una vez, consumido por ambos entry points. En Blazor con `@inject IOrdenService`, en API con constructor injection estándar.
+
+**Resultado**: Cero duplicación de lógica de negocio. Cada nueva regla se implementa una sola vez. Tiempo de feature development reducido ~60% comparado con doble implementación.
+
+---
+
+## Case Studies — Production Systems
+
+### STARSOL — SaaS Platform for Integrated Risk Management
+https://ewin24.github.io/portfolio/
+**Period**: 2024-Present | **Role**: Cloud Software Architect & Independent Developer
+**Stack**: PHP, Laravel, AWS, .NET MAUI, MySQL, Docker, CI/CD
+
+B2B SaaS platform for the solidarity sector covering SARLAFT, SARC, and SIAR risk management. Async architecture with 3 background workers processing jobs simultaneously, decoupling file uploads from the main web server thread. .NET MAUI client app with offline sync. AWS high-availability infrastructure with CI/CD pipelines.
+
+### LOS — Loan Origination System
+https://ewin24.github.io/portfolio/
+**Period**: 2025-2026 | **Role**: Software Architect / Full Stack Developer
+**Stack**: .NET 8+, C#, Dapper, SQL Server, Clean Architecture, REST API, JWT, Strategy Pattern
+
+Complete loan origination system built from scratch. Data layer: DDL with 4 logical schemas (cfg/cat/fab/aud), 30+ tables, 23-state state machine, 27 stored procedures. Service layer: REST API with Clean Architecture — repositories per schema, services per domain, controllers per channel (Admin/Store/Web/Handoff). Identity verification via voice bot with catalog-driven decision engine. Biometric fraud detection. INSERT-ONLY audit trail.
+
+**Impact**: 114+ API endpoints across 6 BFF layers. 27 SPs in production. 23-state loan lifecycle with full traceability. Automated identity verification.
+
+### SOVI — Identity Validation Orchestrator
+https://ewin24.github.io/portfolio/
+**Period**: 2026 | **Role**: Software Architect
+**Stack**: .NET, C#, SQL Server, Strategy Pattern, REST API
+
+Strategy pattern with two validation strategies: BotValidacionStrategy (voice bot) and ManualValidacionStrategy (human advisor). Catalog-driven decision engine — no hardcoded if/switch. Each bot diagnosis triggers a SystemAction from database catalog. Complete traceability per study with 10+ categorized bot diagnoses.
+
+### Datacredito API Integration
+https://ewin24.github.io/portfolio/
+**Period**: 2024-2025 | **Role**: Backend Developer
+**Stack**: .NET 8, C#, Dapper, SQL Server, Polly, Serilog, JWT, REST API
+
+Credit bureau REST API with resilience patterns (Polly circuit breaker + retry policy). JWT authentication. Structured logging with Serilog. Request/response logging middleware with sensitive field sanitization. Query times reduced from 3s to 400ms through index optimization.
+
+### Kampot Payroll — ERP Document Generation
+https://ewin24.github.io/portfolio/
+**Period**: 2025-2026 | **Role**: Full Stack Developer
+**Stack**: C#, .NET Framework, Crystal Reports, SQL Server, ERP
+
+Extended CRM document routing for 3 new Kampot payroll types. Modified dynamic routing logic, added 21 .rpt templates organized by payroll type. Non-invasive extension — zero breaks in 45+ legacy payroll types.
+
+### Admin Module UI Architecture
+https://ewin24.github.io/portfolio/
+**Period**: 2026 | **Role**: Frontend Architect
+**Stack**: React, TypeScript, REST API, UI Architecture
+
+Restructured admin module into two macro-modules: "Panel de Control" (monitoring dashboard) and "Módulo Administrar" (CRUD configuration with tabs). Navigation reflects clean backend architecture. Scalable — new capabilities require only a new tab in the corresponding macro-module.
+
+### Portfolio — Hybrid Architecture
+https://ewin24.github.io/portfolio/
+**Period**: 2024-Present | **Role**: Frontend Developer & Designer
+**Stack**: React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion, GitHub API
+
+Hybrid architecture: curated content layer (STAR-format case studies, blog) as primary source of truth, GitHub API as secondary activity widget. Native i18n (ES/EN). Pixel-art editorial design system. Built with React 19 + Vite + TypeScript + Tailwind CSS v4.
+
+---
+
+## About Edwin Trigos
+
+Software Architect and Full Stack Developer with 5+ years building production systems in fintech, ERP, and SaaS. Specialized in .NET ecosystem, Clean Architecture, and cloud infrastructure.
+
+**Location**: Bucaramanga, Colombia (Remote)
+**GitHub**: https://github.com/Ewin24
+**LinkedIn**: https://www.linkedin.com/in/edwintrigosguevara
+**Email**: edwintrigos24@gmail.com
+
+**Core Technologies**: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure.
+
+**Systems in Production**: 7 documented case studies. 114+ API endpoints designed. 27 stored procedures optimized. Credit bureau integrations processing thousands of daily transactions.
