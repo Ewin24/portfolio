@@ -630,6 +630,188 @@
   }
 ]
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "@id": "https://ewin24.github.io/portfolio/#profilepage",
+  "url": "https://ewin24.github.io/portfolio/",
+  "name": "Edwin Trigos — Software Architect & Full Stack Developer",
+  "description": "Personal portfolio featuring production case studies, technical blog, and professional experience.",
+  "inLanguage": [
+    "en",
+    "es"
+  ],
+  "mainEntity": {
+    "@id": "https://ewin24.github.io/portfolio/#person"
+  },
+  "about": {
+    "@id": "https://ewin24.github.io/portfolio/#person"
+  },
+  "isPartOf": {
+    "@id": "https://ewin24.github.io/portfolio/#website"
+  },
+  "dateModified": "2026-06-19"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://ewin24.github.io/portfolio/#webpage",
+  "url": "https://ewin24.github.io/portfolio/",
+  "name": "Edwin Trigos | Software Architect & Full Stack Developer",
+  "description": "Software Architect and Full Stack Developer specializing in .NET, Clean Architecture, and financial systems.",
+  "inLanguage": [
+    "en",
+    "es"
+  ],
+  "isPartOf": {
+    "@id": "https://ewin24.github.io/portfolio/#website"
+  },
+  "primaryImageOfPage": {
+    "@type": "ImageObject",
+    "url": "https://avatars.githubusercontent.com/Ewin24"
+  },
+  "dateModified": "2026-06-19",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [
+      "h1",
+      "h2",
+      ".hero h1",
+      "article h3"
+    ]
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Production Case Studies",
+  "description": "Real systems shipped to production by Edwin Trigos.",
+  "numberOfItems": 7,
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC",
+      "url": "https://ewin24.github.io/portfolio/#projects",
+      "description": "114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones."
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "SOVI — Sistema Orquestador de Validación de Identidad",
+      "url": "https://ewin24.github.io/portfolio/#projects",
+      "description": "Validación de identidad en tiempo real sin intervención humana en el flujo estándar. Plan B manual como ciudadano de primera clase (no un fallback after-thought). Motor de decisiones catalog-driven: agregar nuevos diagnósticos no requiere cambios de código. Trazabilidad completa por estudio con 10+ diagnósticos de bot categorizados."
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "API de Integración con Burós de Crédito — Datacredito",
+      "url": "https://ewin24.github.io/portfolio/#projects",
+      "description": "Consultas automatizadas al 100%. Resiliencia ante fallos del proveedor externo con circuit breaker y retry policy. Trazabilidad completa via Serilog. Arquitectura preparada para migración a .NET 10 sin cambios estructurales."
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Sistema de Nómina Kampot — Generación de Documentos ERP",
+      "url": "https://ewin24.github.io/portfolio/#projects",
+      "description": "Extensión no-invasiva: 0 breaks en nóminas legacy. 21 plantillas Crystal Reports organizadas por tipo de nómina. Patrón reusable para futuros tipos de contrato. Sistema de enrutamiento dinámico probado con 48 tipos de nómina."
+    },
+    {
+      "@type": "ListItem",
+      "position": 5,
+      "name": "Arquitectura UI para Módulo Administrativo de LOS",
+      "url": "https://ewin24.github.io/portfolio/#projects",
+      "description": "Separación clara de responsabilidades UI (monitoreo vs. configuración). Arquitectura escalable: agregar nuevas capacidades solo requiere crear un nuevo tab en el macro-módulo correspondiente. Sin duplicación de lógica de permisos. Consistencia con la arquitectura limpia del backend."
+    },
+    {
+      "@type": "ListItem",
+      "position": 6,
+      "name": "Portfolio con Arquitectura Híbrida (React 19 + Vite)",
+      "url": "https://ewin24.github.io/portfolio/#projects",
+      "description": "Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript."
+    },
+    {
+      "@type": "ListItem",
+      "position": 7,
+      "name": "STARSOL — Plataforma SaaS para Gestión Integral de Riesgos",
+      "url": "https://ewin24.github.io/portfolio/#projects",
+      "description": "Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR."
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Technical Blog",
+  "description": "Bilingual technical blog on architecture decisions, design patterns, and production tradeoffs.",
+  "numberOfItems": 8,
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Clean Architecture en un Sistema de Originación de Crédito: Cómo evité el caos antes de escribir la primera línea de código",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/arquitectura-limpa-sistema-originacion-credito",
+      "description": "Cuando te dan un proyecto desde cero, la tentación es abrir Visual Studio y empezar a escribir controladores. Pero sin una estructura clara, en 3 meses tienes un Big Ball of Mud. Así diseñé la arquitectura del LOS antes de escribir una línea de código de producción."
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Eliminé todos los if/switch de mi motor de decisiones (y por qué deberías hacer lo mismo)",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/motor-decisiones-catalog-driven-sin-if",
+      "description": "Cuando construyes un sistema que toma decisiones basadas en diagnósticos externos (un bot de voz, un servicio de validación), la tentación es escribir switch(mensaje) { case \"ERROR\": ... }. Eso es deuda técnica inmediata. Te cuento cómo lo evité con un motor catalog-driven."
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Centralicé todos los correos de la empresa en una API con Clean Architecture (y dejé de preguntarle al proveedor qué pasó)",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/api-centralizada-comunicaciones",
+      "description": "Cada área de la empresa gestionaba el correo por su cuenta, con su propia implementación, su propia clave API, y su propia definición de \"éxito\". Hasta que el proveedor decía \"no me llegó el comprobante\" y nadie sabía qué pasó. Así diseñé una API centralizada que eliminó el black box de las comunicaciones empresariales."
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Diseñé un ERP donde la capa de presentación (Blazor) y la REST API son intercambiables gracias a Clean Architecture",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/dual-frontend-clean-architecture-dotnet-10",
+      "description": "Cómo logré que Blazor y la API compartieran exactamente la misma lógica de negocio en un ERP de producción mediante inyección de dependencias en Clean Architecture, eliminando duplicación y acelerando el desarrollo de características."
+    },
+    {
+      "@type": "ListItem",
+      "position": 5,
+      "name": "Todo el error handling de mi API se reduce a dos archivos: así eliminé los try-catch de mis controladores",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/error-handling-middleware-pipeline",
+      "description": "Cada controller tenía su propio try-catch, cada error devolvía un formato distinto, y los mensajes mezclaban detalles técnicos con reglas de negocio. Unificarlo todo en dos archivos — DomainExceptions.cs + ExceptionHandlingMiddleware — cambió la forma en que pensamos los errores."
+    },
+    {
+      "@type": "ListItem",
+      "position": 6,
+      "name": "No uso Entity Framework. En 3 años de ERP, cero migraciones, cero N+1, cero sorpresas en producción",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/dapper-stored-procedures-en-lugar-de-ef-core",
+      "description": "Cada vez que alguien dice \"usa EF Core, es el estándar\", me pregunto si su base de datos tiene 200 stored procedures legacy y un equipo de DBA. Te cuento por qué elegimos Dapper puro y cómo vivimos para contarlo."
+    },
+    {
+      "@type": "ListItem",
+      "position": 7,
+      "name": "Versioné 24 controladores de una API en producción sin cambiar ni una sola URL existente",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/versionado-api-transparente-sin-romper-clientes",
+      "description": "Cuando 24 controladores están en producción y los clientes no pueden actualizarse todos al mismo tiempo, romper URLs no es una opción. Así implementé versionado transparente con rutas duales sin que ningún consumidor legacy se enterara."
+    },
+    {
+      "@type": "ListItem",
+      "position": 8,
+      "name": "Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/orquestacion-cross-system-sin-acoplamiento",
+      "description": "Cuando una orden de producción necesita notificar por email, guardar PDFs en la nube y actualizar el estado en otro sistema, la tentación es crear un orquestador. Pero a veces el orquestador correcto es un método de 30 líneas."
+    }
+  ]
+}
+</script>
 </head>
   <body>
     <div id="root"></div>
