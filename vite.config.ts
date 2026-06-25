@@ -390,9 +390,20 @@ function generatePageWrapperSchemas(): string {
 
 /**
  * Vite plugin: injects pre-rendered content + additional JSON-LD schemas.
- * - Replaces the <noscript> block with full static content
- * - Adds Article, FAQPage, HowTo, CreativeWork, ProfilePage, WebPage,
- *   ItemList, BreadcrumbList schemas to the <head>
+ *
+ * Strategy: The pre-rendered static content is injected INSIDE
+ * `<div id="root">` (not in a <noscript> block). This way:
+ *   - Non-JS crawlers see the content directly in the HTML source
+ *   - JS users see only the React-rendered content (React replaces
+ *     the inner HTML of the root div on hydration)
+ *   - No visual duplication — there is no separate <noscript> block
+ *     showing the same content alongside the React app
+ *
+ * A minimal <noscript> fallback remains for the rare case of a real
+ * user with JavaScript disabled (different from a crawler).
+ *
+ * JSON-LD schemas (Article, FAQPage, HowTo, CreativeWork,
+ * ProfilePage, WebPage, ItemList) are injected into the <head>.
  */
 function preloadStaticContent(): import('vite').Plugin {
   return {
@@ -416,13 +427,36 @@ function preloadStaticContent(): import('vite').Plugin {
         '\n' +
         pageWrappers
 
-      // Replace the noscript content
+      // 1. Inject pre-rendered content INSIDE <div id="root">
+      //    React will replace this inner HTML on hydration, so the
+      //    user only ever sees the React-rendered portfolio.
+      //    Non-JS crawlers still see the full content in the HTML source.
+      const wrappedContent = `<div id="root"><div id="ssr-content" data-ssr="true" style="max-width:900px;margin:0 auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;">\n${content}\n</div></div>`
+
       let result = html.replace(
-        /<noscript>[\s\S]*?<\/noscript>/,
-        `<noscript>\n<div style="max-width:900px;margin:0 auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;">\n${content}\n</div>\n</noscript>`,
+        /<div id="root"><\/div>/,
+        wrappedContent,
       )
 
-      // Inject additional schemas before </head>
+      // 2. Replace the existing <noscript> with a minimal real-user
+      //    fallback (this is for actual users with JS disabled,
+      //    not for crawlers — crawlers get content from inside root).
+      result = result.replace(
+        /<noscript>[\s\S]*?<\/noscript>/,
+        `<noscript>
+          <div style="max-width:600px;margin:4rem auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;text-align:center;">
+            <h1 style="font-size:1.5rem;margin-bottom:1rem;">Edwin Trigos — Software Architect</h1>
+            <p>This portfolio requires JavaScript to render. Please enable JavaScript and reload the page.</p>
+            <p style="margin-top:1.5rem;font-size:0.875rem;color:#666;">
+              Direct contact: <a href="mailto:edwintrigos24@gmail.com">edwintrigos24@gmail.com</a> ·
+              <a href="https://github.com/Ewin24">GitHub</a> ·
+              <a href="https://www.linkedin.com/in/edwintrigosguevara">LinkedIn</a>
+            </p>
+          </div>
+        </noscript>`,
+      )
+
+      // 3. Inject JSON-LD schemas before </head>
       result = result.replace('</head>', `${additionalSchemas}\n</head>`)
 
       return result
