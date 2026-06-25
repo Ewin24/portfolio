@@ -814,22 +814,7 @@
 </script>
 </head>
   <body>
-    <div id="root"></div>
-
-    <!-- Pre-rendered avatar with alt text for crawlers (hidden visually) -->
-    <img
-      src="https://avatars.githubusercontent.com/Ewin24"
-      alt="Edwin Trigos — Software Architect and Full Stack Developer based in Bucaramanga, Colombia. Specialist in .NET, Clean Architecture, and fintech systems."
-      title="Edwin Trigos — Software Architect & Full Stack Developer"
-      width="460"
-      height="460"
-      style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"
-      loading="lazy"
-    />
-
-    <!-- noscript content for non-JS crawlers (SEO, accessibility, AI discovery) -->
-    <noscript>
-<div style="max-width:900px;margin:0 auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;">
+    <div id="root"><div id="ssr-content" data-ssr="true" style="max-width:900px;margin:0 auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;">
 <h1>Edwin Trigos — Software Architect &amp; Full Stack Developer</h1>
 <p>Software Architect and Full Stack Developer with 5+ years building production systems in .NET, Clean Architecture, fintech, and cloud infrastructure. Based in Bucaramanga, Colombia. Remote-ready.</p>
 <h2>About</h2>
@@ -1029,8 +1014,31 @@
 <li>Location: Bucaramanga, Colombia (Remote)</li>
 </ul>
 <p><em>To see the full interactive portfolio, please enable JavaScript. Visit <a href="https://ewin24.github.io/portfolio/">ewin24.github.io/portfolio/</a>.</em></p>
-</div>
-</noscript>
+</div></div>
+
+    <!-- Pre-rendered avatar with alt text for crawlers (hidden visually) -->
+    <img
+      src="https://avatars.githubusercontent.com/Ewin24"
+      alt="Edwin Trigos — Software Architect and Full Stack Developer based in Bucaramanga, Colombia. Specialist in .NET, Clean Architecture, and fintech systems."
+      title="Edwin Trigos — Software Architect & Full Stack Developer"
+      width="460"
+      height="460"
+      style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"
+      loading="lazy"
+    />
+
+    <!-- noscript content for non-JS crawlers (SEO, accessibility, AI discovery) -->
+    <noscript>
+          <div style="max-width:600px;margin:4rem auto;padding:2rem;font-family:system-ui,sans-serif;line-height:1.6;color:#1a1a1a;text-align:center;">
+            <h1 style="font-size:1.5rem;margin-bottom:1rem;">Edwin Trigos — Software Architect</h1>
+            <p>This portfolio requires JavaScript to render. Please enable JavaScript and reload the page.</p>
+            <p style="margin-top:1.5rem;font-size:0.875rem;color:#666;">
+              Direct contact: <a href="mailto:edwintrigos24@gmail.com">edwintrigos24@gmail.com</a> ·
+              <a href="https://github.com/Ewin24">GitHub</a> ·
+              <a href="https://www.linkedin.com/in/edwintrigosguevara">LinkedIn</a>
+            </p>
+          </div>
+        </noscript>
 
   </body>
 </html>
