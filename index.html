@@ -175,7 +175,7 @@
     </script>
 
     <title>Edwin Trigos | Software Architect & Full Stack Developer</title>
-    <script type="module" crossorigin src="/portfolio/assets/index-C-s-ICYQ.js"></script>
+    <script type="module" crossorigin src="/portfolio/assets/index-Bg7yCuHi.js"></script>
     <link rel="stylesheet" crossorigin href="/portfolio/assets/index-cuoKVj85.css">
   <script type="application/ld+json">
 [
@@ -402,6 +402,146 @@
         "h2"
       ]
     }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-inherited-oss-flutter-modernization",
+    "headline": "Lo que realmente heredás cuando forkás un proyecto Flutter \"no mantenido\"",
+    "description": "Un repo \"no mantenido\" no significa \"no compila\". Significa: paquetes abandonados, flags de migrador olvidados, código que crashea en runtime con -1 fuera de rango, y cero herramientas de debugging. Cuando forké Harmony-Music en junio 2026, ese fue el estado real. Acá está la metodología de triage en 4 fases que usé para llevarlo de \"no compila\" a release v1.12.2.",
+    "inLanguage": "es",
+    "datePublished": "2026-06-26T08:00:00-05:00",
+    "dateModified": "2026-06-26T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "flutter, open-source, oss, maintenance, triage, build, deprecation, debugging",
+    "articleSection": "arquitectura",
+    "wordCount": 1000,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/heredar-proyecto-flutter-no-mantenido",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-flutter-cross-platform-audio-architecture",
+    "headline": "Audio multiplataforma en Flutter: dos engines, una API, tres plataformas",
+    "description": "No existe un solo engine de audio en Flutter que cubra Android, Windows y Linux con la misma calidad. La solución no es elegir uno: es componer. just_audio como API unificada, media_kit como backend en desktop, audio_service para lifecycle y notificación, SMTC para media keys en Windows. Acá está la arquitectura real, los offsets platform-specific, y los bugs que solo aparecen en desktop.",
+    "inLanguage": "es",
+    "datePublished": "2026-06-26T08:00:00-05:00",
+    "dateModified": "2026-06-26T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "flutter, audio, just_audio, media_kit, audio_service, android, windows, linux, architecture",
+    "articleSection": "arquitectura",
+    "wordCount": 1000,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/audio-multiplataforma-flutter-arquitectura",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-youtube-innertube-api-resilience",
+    "headline": "Cuando tu app depende de una API que no controlás: reverse-engineering YouTube Music",
+    "description": "Harmony-Music no usa la API oficial de YouTube. Usa InnerTube, la API interna que YouTube Music expone a su propia web app, reverse-engineered desde hace años. Cuando YouTube cambia el formato de respuesta (sin changelog, sin docs, sin warning), 24 de 25 resultados de búsqueda caen en buckets huérfanos. Acá está la historia de reescribir el bucketing, clasificar por pageType, y construir un ResponseRecorder para diff offline.",
+    "inLanguage": "es",
+    "datePublished": "2026-06-26T08:00:00-05:00",
+    "dateModified": "2026-06-26T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "flutter, youtube, innertube, api-resilience, debugging, logging, resilience",
+    "articleSection": "arquitectura",
+    "wordCount": 1000,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/youtube-innertube-api-resiliencia",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-flutter-build-modernization-upgrade-mountain",
+    "headline": "El precio de la modernización: actualizar un proyecto Flutter abandonado a Flutter 3.5+",
+    "description": "Actualizar un proyecto Flutter que estuvo 6 meses sin mantenimiento no es un bump de versión. Es una cadena acoplada: SDK de Flutter, AGP, Gradle, Kotlin, plugins, deprecaciones de Dart, deprecaciones de Material, paquetes abandonados. Cuando forké Harmony-Music, el \"upgrade tax\" fue 19 commits separados. Acá está el orden correcto, los commits que rompieron todo, y la métrica que nadie te dice sobre migrar.",
+    "inLanguage": "es",
+    "datePublished": "2026-06-26T08:00:00-05:00",
+    "dateModified": "2026-06-26T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "flutter, gradle, agp, kotlin, deprecation, modernization, build, migrator",
+    "articleSection": "arquitectura",
+    "wordCount": 1200,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/modernizacion-build-flutter-upgrade",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-android-14-background-audio-modernization",
+    "headline": "Audio en background en Android 14+ cuando heredaste código de Android 9",
+    "description": "Una app de música que heredaste con código de Android 9 tiene tres problemas para correr en Android 14+: scoped storage mató Permission.storage, foreground service types son estrictos, y cualquier API nativa (como el equalizer) necesita un bridge JNI porque no hay package Dart. Acá está la solución completa: SDK-version-aware permissions, JNI para Equalizer, y la config de audio_service que mantiene la música viva en background.",
+    "inLanguage": "es",
+    "datePublished": "2026-06-26T08:00:00-05:00",
+    "dateModified": "2026-06-26T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "flutter, android, audio_service, jni, equalizer, background-audio, modernization, permissions",
+    "articleSection": "arquitectura",
+    "wordCount": 1200,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/android-14-audio-background-modernizacion",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
   }
 ]
 </script>
@@ -613,6 +753,23 @@
   },
   {
     "@type": "CreativeWork",
+    "@id": "https://ewin24.github.io/portfolio/#case-harmony-music-oss",
+    "name": "Harmony-Music — Mantenedor de App Flutter Open Source de Música Multiplataforma",
+    "description": "~36 commits en 3 días que llevaron la app de \"no compila\" a \"release v1.12.2\" con toolchain moderno. Búsqueda funcional con nuevo formato de InnerTube (clasificación por pageType, top 10 por bucket). Build limpio con Flutter 3.44+. Audio funcional en 3 plataformas con engines separados pero API unificada. Documentación completa (setup, contributing, API surface map, Postman collection). App mantenida activamente en GitHub con releases y changelog.",
+    "inLanguage": "es",
+    "dateCreated": "2026",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "flutter, open-source, oss, maintenance, mobile, desktop, audio, build, api-resilience",
+    "about": {
+      "@type": "Thing",
+      "name": "Open Source / Mobile & Desktop"
+    },
+    "creativeWorkStatus": "Published"
+  },
+  {
+    "@type": "CreativeWork",
     "@id": "https://ewin24.github.io/portfolio/#case-starsol-saas",
     "name": "STARSOL — Plataforma SaaS para Gestión Integral de Riesgos",
     "description": "Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR.",
@@ -691,7 +848,7 @@
   "@type": "ItemList",
   "name": "Production Case Studies",
   "description": "Real systems shipped to production by Edwin Trigos.",
-  "numberOfItems": 7,
+  "numberOfItems": 8,
   "itemListElement": [
     {
       "@type": "ListItem",
@@ -738,6 +895,13 @@
     {
       "@type": "ListItem",
       "position": 7,
+      "name": "Harmony-Music — Mantenedor de App Flutter Open Source de Música Multiplataforma",
+      "url": "https://ewin24.github.io/portfolio/#projects",
+      "description": "~36 commits en 3 días que llevaron la app de \"no compila\" a \"release v1.12.2\" con toolchain moderno. Búsqueda funcional con nuevo formato de InnerTube (clasificación por pageType, top 10 por bucket). Build limpio con Flutter 3.44+. Audio funcional en 3 plataformas con engines separados pero API unificada. Documentación completa (setup, contributing, API surface map, Postman collection). App mantenida activamente en GitHub con releases y changelog."
+    },
+    {
+      "@type": "ListItem",
+      "position": 8,
       "name": "STARSOL — Plataforma SaaS para Gestión Integral de Riesgos",
       "url": "https://ewin24.github.io/portfolio/#projects",
       "description": "Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR."
@@ -751,7 +915,7 @@
   "@type": "ItemList",
   "name": "Technical Blog",
   "description": "Bilingual technical blog on architecture decisions, design patterns, and production tradeoffs.",
-  "numberOfItems": 8,
+  "numberOfItems": 13,
   "itemListElement": [
     {
       "@type": "ListItem",
@@ -808,6 +972,41 @@
       "name": "Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio",
       "url": "https://ewin24.github.io/portfolio/#/blog/article/orquestacion-cross-system-sin-acoplamiento",
       "description": "Cuando una orden de producción necesita notificar por email, guardar PDFs en la nube y actualizar el estado en otro sistema, la tentación es crear un orquestador. Pero a veces el orquestador correcto es un método de 30 líneas."
+    },
+    {
+      "@type": "ListItem",
+      "position": 9,
+      "name": "Lo que realmente heredás cuando forkás un proyecto Flutter \"no mantenido\"",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/heredar-proyecto-flutter-no-mantenido",
+      "description": "Un repo \"no mantenido\" no significa \"no compila\". Significa: paquetes abandonados, flags de migrador olvidados, código que crashea en runtime con -1 fuera de rango, y cero herramientas de debugging. Cuando forké Harmony-Music en junio 2026, ese fue el estado real. Acá está la metodología de triage en 4 fases que usé para llevarlo de \"no compila\" a release v1.12.2."
+    },
+    {
+      "@type": "ListItem",
+      "position": 10,
+      "name": "Audio multiplataforma en Flutter: dos engines, una API, tres plataformas",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/audio-multiplataforma-flutter-arquitectura",
+      "description": "No existe un solo engine de audio en Flutter que cubra Android, Windows y Linux con la misma calidad. La solución no es elegir uno: es componer. just_audio como API unificada, media_kit como backend en desktop, audio_service para lifecycle y notificación, SMTC para media keys en Windows. Acá está la arquitectura real, los offsets platform-specific, y los bugs que solo aparecen en desktop."
+    },
+    {
+      "@type": "ListItem",
+      "position": 11,
+      "name": "Cuando tu app depende de una API que no controlás: reverse-engineering YouTube Music",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/youtube-innertube-api-resiliencia",
+      "description": "Harmony-Music no usa la API oficial de YouTube. Usa InnerTube, la API interna que YouTube Music expone a su propia web app, reverse-engineered desde hace años. Cuando YouTube cambia el formato de respuesta (sin changelog, sin docs, sin warning), 24 de 25 resultados de búsqueda caen en buckets huérfanos. Acá está la historia de reescribir el bucketing, clasificar por pageType, y construir un ResponseRecorder para diff offline."
+    },
+    {
+      "@type": "ListItem",
+      "position": 12,
+      "name": "El precio de la modernización: actualizar un proyecto Flutter abandonado a Flutter 3.5+",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/modernizacion-build-flutter-upgrade",
+      "description": "Actualizar un proyecto Flutter que estuvo 6 meses sin mantenimiento no es un bump de versión. Es una cadena acoplada: SDK de Flutter, AGP, Gradle, Kotlin, plugins, deprecaciones de Dart, deprecaciones de Material, paquetes abandonados. Cuando forké Harmony-Music, el \"upgrade tax\" fue 19 commits separados. Acá está el orden correcto, los commits que rompieron todo, y la métrica que nadie te dice sobre migrar."
+    },
+    {
+      "@type": "ListItem",
+      "position": 13,
+      "name": "Audio en background en Android 14+ cuando heredaste código de Android 9",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/android-14-audio-background-modernizacion",
+      "description": "Una app de música que heredaste con código de Android 9 tiene tres problemas para correr en Android 14+: scoped storage mató Permission.storage, foreground service types son estrictos, y cualquier API nativa (como el equalizer) necesita un bridge JNI porque no hay package Dart. Acá está la solución completa: SDK-version-aware permissions, JNI para Equalizer, y la config de audio_service que mantiene la música viva en background."
     }
   ]
 }
@@ -863,6 +1062,13 @@
 <p><strong>Impact</strong>: Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript.</p>
 </article>
 <article>
+<h3>Harmony-Music — Mantenedor de App Flutter Open Source de Música Multiplataforma</h3>
+<p><strong>Company</strong>: Harmony-Music (Fork OSS). <strong>Period</strong>: 2026 – Presente. <strong>Stack</strong>: Flutter 3.44+, Dart, GetX, just_audio, media_kit, audio_service, youtube_explode_dart, Hive, Dio, JNI.</p>
+<p><strong>Problem</strong>: El creador original marcó el repositorio como &quot;no mantenido&quot; en diciembre 2025, dejando una app Flutter cross-platform (Android, Windows, Linux) con dependencias abandonadas (ionicons roto con Dart 3.12), flags de migrador de Gradle sin limpiar, código que crasheaba en runtime (RangeError por indexWhere devolviendo -1), y sin herramientas de debugging. La app usaba una API no documentada (InnerTube de YouTube Music) que cambiaba sin aviso, rompiendo búsquedas y bucketing de resultados.</p>
+<p><strong>Solution</strong>: Apliqué una metodología de triage en 4 fases: (1) Build primero — Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20 con DSL moderno, removí flags del migrador, migré a Flutter built-in Kotlin. (2) Deprecaciones — 19 commits reemplazando withOpacity por withValues(alpha:), Color.value por toARGB32(), ThemeData getters por colorScheme, removí ionicons. (3) Runtime — reescribí el bucketing de búsqueda para responder al nuevo formato plano de InnerTube (24/25 resultados caían en buckets huérfanos), agregué guardas de indexWhere, mejoré el logging estructurado de HTTP. (4) Tooling — construí un ResponseRecorder que captura respuestas crudas a disco y un logger con colores ANSI para inspeccionar cambios de API offline. La arquitectura de audio usa just_audio + media_kit + audio_service + SMTC para cubrir 3 plataformas con una sola API Dart.</p>
+<p><strong>Impact</strong>: ~36 commits en 3 días que llevaron la app de &quot;no compila&quot; a &quot;release v1.12.2&quot; con toolchain moderno. Búsqueda funcional con nuevo formato de InnerTube (clasificación por pageType, top 10 por bucket). Build limpio con Flutter 3.44+. Audio funcional en 3 plataformas con engines separados pero API unificada. Documentación completa (setup, contributing, API surface map, Postman collection). App mantenida activamente en GitHub con releases y changelog.</p>
+</article>
+<article>
 <h3>STARSOL — Plataforma SaaS para Gestión Integral de Riesgos</h3>
 <p><strong>Company</strong>: STARSOL. <strong>Period</strong>: 2024 – Presente. <strong>Stack</strong>: PHP, Laravel, AWS, .NET MAUI, MySQL, Docker, CI/CD.</p>
 <p><strong>Problem</strong>: Las entidades del sector solidario (cooperativas, fondos de empleados) enfrentaban procesos manuales para la gestión de riesgos SARLAFT, SARC y SIAR, con flujos de originación de crédito y monitoreo normativo sin digitalizar. El servidor web monolítico se convertía en cuello de botella al procesar archivos financieros pesados de forma sincrónica, degradando la experiencia del usuario.</p>
@@ -910,9 +1116,45 @@
 <p><time itemprop="datePublished" datetime="2026-09-01">2026-09-01</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: arquitectura, .NET, patrones, orquestación, integraciones.</p>
 <p itemprop="description">Cuando una orden de producción necesita notificar por email, guardar PDFs en la nube y actualizar el estado en otro sistema, la tentación es crear un orquestador. Pero a veces el orquestador correcto es un método de 30 líneas.</p>
 </article>
-<h2>Technologies (39 production-grade)</h2>
-<p>PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · .NET Framework · ERP · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API</p>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Lo que realmente heredás cuando forkás un proyecto Flutter &quot;no mantenido&quot;</h3>
+<p><time itemprop="datePublished" datetime="2026-06-26">2026-06-26</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: flutter, open-source, oss, maintenance, triage, build, deprecation, debugging.</p>
+<p itemprop="description">Un repo &quot;no mantenido&quot; no significa &quot;no compila&quot;. Significa: paquetes abandonados, flags de migrador olvidados, código que crashea en runtime con -1 fuera de rango, y cero herramientas de debugging. Cuando forké Harmony-Music en junio 2026, ese fue el estado real. Acá está la metodología de triage en 4 fases que usé para llevarlo de &quot;no compila&quot; a release v1.12.2.</p>
+</article>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Audio multiplataforma en Flutter: dos engines, una API, tres plataformas</h3>
+<p><time itemprop="datePublished" datetime="2026-06-26">2026-06-26</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: flutter, audio, just_audio, media_kit, audio_service, android, windows, linux, architecture.</p>
+<p itemprop="description">No existe un solo engine de audio en Flutter que cubra Android, Windows y Linux con la misma calidad. La solución no es elegir uno: es componer. just_audio como API unificada, media_kit como backend en desktop, audio_service para lifecycle y notificación, SMTC para media keys en Windows. Acá está la arquitectura real, los offsets platform-specific, y los bugs que solo aparecen en desktop.</p>
+</article>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Cuando tu app depende de una API que no controlás: reverse-engineering YouTube Music</h3>
+<p><time itemprop="datePublished" datetime="2026-06-26">2026-06-26</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: flutter, youtube, innertube, api-resilience, debugging, logging, resilience.</p>
+<p itemprop="description">Harmony-Music no usa la API oficial de YouTube. Usa InnerTube, la API interna que YouTube Music expone a su propia web app, reverse-engineered desde hace años. Cuando YouTube cambia el formato de respuesta (sin changelog, sin docs, sin warning), 24 de 25 resultados de búsqueda caen en buckets huérfanos. Acá está la historia de reescribir el bucketing, clasificar por pageType, y construir un ResponseRecorder para diff offline.</p>
+</article>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">El precio de la modernización: actualizar un proyecto Flutter abandonado a Flutter 3.5+</h3>
+<p><time itemprop="datePublished" datetime="2026-06-26">2026-06-26</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: flutter, gradle, agp, kotlin, deprecation, modernization, build, migrator.</p>
+<p itemprop="description">Actualizar un proyecto Flutter que estuvo 6 meses sin mantenimiento no es un bump de versión. Es una cadena acoplada: SDK de Flutter, AGP, Gradle, Kotlin, plugins, deprecaciones de Dart, deprecaciones de Material, paquetes abandonados. Cuando forké Harmony-Music, el &quot;upgrade tax&quot; fue 19 commits separados. Acá está el orden correcto, los commits que rompieron todo, y la métrica que nadie te dice sobre migrar.</p>
+</article>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">Audio en background en Android 14+ cuando heredaste código de Android 9</h3>
+<p><time itemprop="datePublished" datetime="2026-06-26">2026-06-26</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: flutter, android, audio_service, jni, equalizer, background-audio, modernization, permissions.</p>
+<p itemprop="description">Una app de música que heredaste con código de Android 9 tiene tres problemas para correr en Android 14+: scoped storage mató Permission.storage, foreground service types son estrictos, y cualquier API nativa (como el equalizer) necesita un bridge JNI porque no hay package Dart. Acá está la solución completa: SDK-version-aware permissions, JNI para Equalizer, y la config de audio_service que mantiene la música viva en background.</p>
+</article>
+<h2>Technologies (52 production-grade)</h2>
+<p>Flutter 3.44+ · Dart · GetX · just_audio · media_kit · audio_service · youtube_explode_dart · Hive · Dio · JNI · Gradle · AGP · Kotlin DSL · PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · .NET Framework · ERP · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API</p>
 <h2>Work Experience</h2>
+<article>
+<h3>Mantenedor Open Source (Fork) &amp; Desarrollador Flutter — Harmony-Music</h3>
+<p><strong>Period</strong>: Jun 2026 – Presente. <strong>Location</strong>: Colombia (Remoto). <strong>Current</strong>.</p>
+<ul>
+<li>Tomé el mantenimiento del fork de Harmony-Music (app Flutter de música streaming para Android, Windows y Linux) tras el abandono del creador original en diciembre 2025, aplicando una metodología de triage en 4 fases que llevó la app de &quot;no compila&quot; a release v1.12.2 con toolchain moderno</li>
+<li>Modernicé el stack de build completo — Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20 con DSL moderno — removiendo flags residuales del Flutter migrator y migrando al Kotlin built-in de Flutter para preparar la app para Flutter 3.5+</li>
+<li>Resolví 19 olas de deprecaciones de Flutter 3.4x+ (withOpacity→withValues, Color.value→toARGB32, ThemeData getters→colorScheme, ionicons→Material Icons) en 19 commits separados, demostrando capacidad de ejecutar auditorías de código a gran escala</li>
+<li>Reescribí el bucketing de búsqueda de YouTube Music cuando InnerTube cambió su formato de respuesta (24/25 resultados caían en buckets huérfanos), implementando clasificación por pageType con límite de 10 por bucket y construyendo un ResponseRecorder para diff de respuestas crudas</li>
+</ul>
+<p><strong>Stack</strong>: Flutter 3.44+, Dart, GetX, just_audio, media_kit, audio_service, youtube_explode_dart, Hive, Dio, JNI, Gradle, AGP, Kotlin DSL</p>
+</article>
 <article>
 <h3>Arquitecto de Software Cloud &amp; Desarrollador Independiente — STARSOL</h3>
 <p><strong>Period</strong>: Ene 2024 – Presente. <strong>Location</strong>: Colombia (Remoto). <strong>Current</strong>.</p>
