@@ -13,6 +13,34 @@ import type { WorkExperience } from '../types'
 
 export const workExperience: WorkExperience[] = [
   // ═════════════════════════════════════════════════════════════════════════
+  // HARMONY-MUSIC — Open Source Maintainer
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'harmony-music-maintainer',
+    company: 'Harmony-Music',
+    companyUrl: 'https://github.com/Ewin24/Harmony-Music',
+    role: 'Mantenedor Open Source (Fork) & Desarrollador Flutter',
+    roleEn: 'Open Source Maintainer (Fork) & Flutter Developer',
+    period: 'Jun 2026 – Presente',
+    current: true,
+    location: 'Colombia (Remoto)',
+    achievements: [
+      'Tomé el mantenimiento del fork de Harmony-Music (app Flutter de música streaming para Android, Windows y Linux) tras el abandono del creador original en diciembre 2025, aplicando una metodología de triage en 4 fases que llevó la app de "no compila" a release v1.12.2 con toolchain moderno',
+      'Modernicé el stack de build completo — Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20 con DSL moderno — removiendo flags residuales del Flutter migrator y migrando al Kotlin built-in de Flutter para preparar la app para Flutter 3.5+',
+      'Resolví 19 olas de deprecaciones de Flutter 3.4x+ (withOpacity→withValues, Color.value→toARGB32, ThemeData getters→colorScheme, ionicons→Material Icons) en 19 commits separados, demostrando capacidad de ejecutar auditorías de código a gran escala',
+      'Reescribí el bucketing de búsqueda de YouTube Music cuando InnerTube cambió su formato de respuesta (24/25 resultados caían en buckets huérfanos), implementando clasificación por pageType con límite de 10 por bucket y construyendo un ResponseRecorder para diff de respuestas crudas',
+    ],
+    achievementsEn: [
+      'Took over maintenance of the Harmony-Music fork (Flutter music streaming app for Android, Windows, and Linux) after the original creator abandoned it in December 2025, applying a 4-phase triage methodology that took the app from "does not compile" to release v1.12.2 with modern toolchain',
+      'Modernized the complete build stack — Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20 with modern DSL — removing residual Flutter migrator flags and migrating to Flutter built-in Kotlin to prepare the app for Flutter 3.5+',
+      'Resolved 19 waves of Flutter 3.4x+ deprecations (withOpacity→withValues, Color.value→toARGB32, ThemeData getters→colorScheme, ionicons→Material Icons) in 19 separate commits, demonstrating ability to execute large-scale code audits',
+      'Rewrote YouTube Music search bucketing when InnerTube changed its response format (24/25 results fell into orphan buckets), implementing pageType classification with a 10-per-bucket limit and building a ResponseRecorder for raw response diffing',
+    ],
+    stack: ['Flutter 3.44+', 'Dart', 'GetX', 'just_audio', 'media_kit', 'audio_service', 'youtube_explode_dart', 'Hive', 'Dio', 'JNI', 'Gradle', 'AGP', 'Kotlin DSL'],
+    order: 5,
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
   // STARSOL — SaaS Financiero (Independiente)
   // ═════════════════════════════════════════════════════════════════════════
   {
