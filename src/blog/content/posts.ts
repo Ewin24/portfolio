@@ -1367,8 +1367,8 @@ public async Task<ResultadoNotificacion> NotificarDespachoOrdenTrabajoAsync(
             adjunto.Contenido);
     }
 
-    // 3. Marcar orden como enviada en BG360
-    var codigoEstado = await _bg360Service.MarcarEnvioFormatoAsync(
+    // 3. Marcar orden como enviada en el ERP empresarial
+    var codigoEstado = await _erpEmpresarialService.MarcarEnvioFormatoAsync(
         request.OrdenId);
 
     return Exito(codigoEstado);
@@ -1396,10 +1396,10 @@ public interface ISistemaCentralService
 }
 \`\`\`
 
-Los responsables del envío se cargan dinámicamente desde la API Atlas de BG360, en lugar de estar hardcodeados:
+Los responsables del envío se cargan dinámicamente desde la API del ERP empresarial, en lugar de estar hardcodeados:
 
 \`\`\`csharp
-var responsables = await _bg360Api.ObtenerResponsablesProcesoAsync(
+var responsables = await _erpEmpresarialApi.ObtenerResponsablesProcesoAsync(
     request.ProcesoId);
 \`\`\`
 
@@ -1412,7 +1412,7 @@ UI Submit → [Sistema de Gestión]
                 ↓
          [Azure Blob] → almacenar documentos
                 ↓
-         [BG360 API] → MarcarEnvioFormato
+         [ERP empresarial] → MarcarEnvioFormato
 \`\`\`
 
 **El impacto**
@@ -1456,8 +1456,8 @@ public async Task<ResultadoNotificacion> NotificarDespachoOrdenTrabajoAsync(
             adjunto.Contenido);
     }
 
-    // 3. Mark order as sent in BG360
-    var codigoEstado = await _bg360Service.MarcarEnvioFormatoAsync(
+    // 3. Mark order as sent in the central ERP
+    var codigoEstado = await _erpEmpresarialService.MarcarEnvioFormatoAsync(
         request.OrdenId);
 
     return Exito(codigoEstado);
@@ -1485,10 +1485,10 @@ public interface ISistemaCentralService
 }
 \`\`\`
 
-The notification responsables are loaded dynamically from the BG360 Atlas API, rather than being hardcoded:
+The notification responsables are loaded dynamically from the central ERP API, rather than being hardcoded:
 
 \`\`\`csharp
-var responsables = await _bg360Api.ObtenerResponsablesProcesoAsync(
+var responsables = await _erpEmpresarialApi.ObtenerResponsablesProcesoAsync(
     request.ProcesoId);
 \`\`\`
 
@@ -1501,7 +1501,7 @@ UI Submit → [Sistema de Gestión]
                 ↓
          [Azure Blob] → store documents
                 ↓
-         [BG360 API] → MarcarEnvioFormato
+         [Central ERP] → MarcarEnvioFormato
 \`\`\`
 
 **The impact**
@@ -1512,6 +1512,1618 @@ Zero new services to deploy. Zero temporary files on disk (PDF streams are reset
 
 Orchestration doesn't require a dedicated microservice or a message queue. A well-designed Application Service method can chain cross-system operations without coupling the systems to each other. The key is interface boundaries, not physical service boundaries. Each system exposes an interface, the service method orchestrates them. PDFs in memory without temp files is a detail that seems minor but eliminates an entire category of bugs (orphan files, permissions, cleanup). And loading responsables dynamically from the API instead of hardcoding them means the business can change who receives each notification without touching a single line of code.`,
     relatedIds: ['comunicaciones-api-centralizada'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 9 — Inherited OSS Flutter Modernization (Harmony-Music)
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'inherited-oss-flutter-modernization',
+    slug: 'heredar-proyecto-flutter-no-mantenido',
+    series: 'OSS Maintenance',
+    title: 'Lo que realmente heredás cuando forkás un proyecto Flutter "no mantenido"',
+    titleEn: 'What you actually inherit when you fork an "unmaintained" Flutter project',
+    date: '2026-06-26',
+    tags: ['flutter', 'open-source', 'oss', 'maintenance', 'triage', 'build', 'deprecation', 'debugging'],
+    category: 'arquitectura',
+    featured: true,
+    excerpt:
+      'Un repo "no mantenido" no significa "no compila". Significa: paquetes abandonados, flags de migrador olvidados, código que crashea en runtime con -1 fuera de rango, y cero herramientas de debugging. Cuando forké Harmony-Music en junio 2026, ese fue el estado real. Acá está la metodología de triage en 4 fases que usé para llevarlo de "no compila" a release v1.12.2.',
+    excerptEn:
+      'An "unmaintained" repo does not mean "does not compile". It means: abandoned packages, forgotten migrator flags, code that crashes at runtime with -1 out of range, and zero debugging tools. When I forked Harmony-Music in June 2026, that was the real state. Here is the 4-phase triage methodology I used to take it from "does not compile" to release v1.12.2.',
+    content: `En diciembre 2025, el creador original de Harmony-Music (un app Flutter de música streaming para Android, Windows y Linux) marcó el repositorio como "no mantenido" y desapareció del mapa. En junio 2026 decidí hacer el fork y mantenerlo yo.
+
+Lo que encontré no fue un proyecto listo para hacer feature work. Fue un proyecto con dependencias abandonadas, código que crasheaba en flujos básicos, y sin una sola pieza de observabilidad. La app seguía "funcionando" para quien la compilara en el ambiente exacto del autor original — pero ese ambiente dejó de existir.
+
+**El problema real de un proyecto "no mantenido"**
+
+El README decía claramente: "This repository is no longer maintained". La primera lectura fue: "OK, no hay features nuevas, pero el código existente está sano". La segunda lectura (leyendo \`pubspec.yaml\`, \`gradle.properties\`, y \`git log\`) reveló otra cosa:
+
+1. \`ionicons: ^0.2.2\` en \`pubspec.yaml\` — paquete sin updates desde 2022, incompatible con la constraint \`final class\` de Dart 3.12. La app no compilaba.
+2. \`android.builtInKotlin=false\` y \`android.newDsl=false\` en \`gradle.properties\` — flags que el Flutter migrator agrega durante una migración, pero que deben removerse manualmente cuando la migración termina. El autor nunca los limpió.
+3. \`TODO.md\` con items como "Partially_completed" y "Housekeeping work" sin cerrar.
+4. Un bug latente en \`home_screen_controller.dart\`: \`indexWhere\` devolvía \`-1\` cuando no encontraba un elemento, y el código inmediatamente llamaba \`removeAt(-1)\` → \`RangeError\` → crash en cold start.
+5. Cero logging estructurado. Cero captura de respuestas API. Cuando algo fallaba en runtime, la única señal era un \`print\` en consola sin contexto.
+
+**El anti-patrón: empezar por los features**
+
+Mi primer instinto fue agregar features nuevos. Resistir. Un feature sobre un build roto es deuda técnica disfrazada de progreso. Si no podés compilar, no podés testear. Si no podés testear, no podés saber si el feature nuevo funciona. Si el feature nuevo no funciona, agregás un bug encima de un proyecto que ya tiene bugs invisibles.
+
+La decisión fue: cero features hasta tener build limpio, cero deprecaciones en analyzer, runtime sin crashes obvios, y herramientas mínimas de debugging.
+
+**La solución: triage en 4 fases**
+
+Dividí el trabajo en 4 fases acopladas, con un commit por fase. Cada fase tiene un criterio de salida verificable.
+
+\`\`\`
+Fase 1: Build (compila + analyze limpio)
+    ↓
+Fase 2: Deprecaciones (sin warnings de APIs próximas a removerse)
+    ↓
+Fase 3: Runtime (sin crashes en flujos básicos)
+    ↓
+Fase 4: Tooling (logging + response recorder + docs)
+\`\`\`
+
+**Fase 1 — Build foundation**
+
+El primer commit fue upgrade de Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20, todos compatibles con Flutter 3.44+ que es el target. El segundo commit fue migración a Flutter built-in Kotlin (removí el plugin \`kotlin-android\` manual, moví la config a \`kotlin { compilerOptions { jvmTarget = JvmTarget.JVM_17 } }\`).
+
+Criterio de salida: \`flutter analyze\` devuelve 0 errores, \`flutter build apk --debug\` produce un APK funcional.
+
+**Fase 2 — Deprecation sweep**
+
+19 commits separados, uno por categoría. \`withOpacity(x)\` → \`withValues(alpha: x)\` (commit \`2064daa\`). \`Color.value\` → \`toARGB32()\` (commit \`43bcead\`). \`ThemeData\` getters → \`colorScheme\` (commit \`097622f\`). El más doloroso: reemplazar todos los usos de \`Ionicons.foo\` por \`Icons.foo\` de Material Icons (commit \`4a7f2e0\`).
+
+\`\`\`dart
+// ANTES: package abandonado, no compatible con Dart 3.12
+Icon(Ionicons.logo_youtube)
+
+// DESPUÉS: Material Icons, mantenido por Flutter team
+Icon(Icons.smart_display)
+\`\`\`
+
+\`grep -r "Ionicons\." lib/\` devolvió 47 ocurrencias. La migración fue mecánica pero tediosa. Lo importante: un commit por categoría para que el reviewer (yo en 6 meses) pueda hacer rollback de una deprecación sin tocar las demás.
+
+Criterio de salida: \`flutter analyze\` devuelve 0 errores y 0 warnings.
+
+**Fase 3 — Runtime hardening**
+
+El bug del \`indexWhere\` → \`removeAt(-1)\` (commit \`d8d82d1\`) fue el más visible. Pero encontré más: \`firstWhere\` sin \`orElse\`, casts sin checks, \`null\` en posiciones donde el código asumía no-null. Agregué guards en todos los puntos críticos.
+
+\`\`\`dart
+// ANTES: indexWhere puede devolver -1
+quickPicksUpdate.value.contents.removeAt(quickPicksUpdate.value.contents
+    .indexWhere((e) => e.runtimeType.toString().contains("QuickPicksAlbum")));
+
+// DESPUÉS: guard explícito
+final idx = quickPicksUpdate.value.contents
+    .indexWhere((e) => e.runtimeType.toString().contains("QuickPicksAlbum"));
+if (idx != -1) quickPicksUpdate.value.contents.removeAt(idx);
+\`\`\`
+
+Criterio de salida: cold start sin crashes, navegación básica sin errores en logs, búsqueda devuelve resultados correctos.
+
+**Fase 4 — Tooling y observabilidad**
+
+Tres piezas nuevas:
+
+1. \`debug_logger.dart\` — logger estructurado con niveles (debug, info, warn, error) y colores ANSI para distinguir de un vistazo.
+2. \`http_logger.dart\` — Dio interceptor que loguea request/response con headers, body completo, y timing.
+3. \`response_recorder.dart\` — escribe cada respuesta cruda de InnerTube a disco en formato JSON, con un session ID. Para debuggear cambios de la API de YouTube offline.
+
+Sin estas tres piezas, el fix de Fase 3 fue posible pero el próximo fix de InnerTube habría sido un juego de adivinanzas.
+
+**El impacto**
+
+\`\`\`
+~36 commits en 3 días
+Build limpio con Flutter 3.44+
+0 errores en flutter analyze
+App release v1.12.2 con changelog
+\`\`\`
+
+Cada fase sumada a la anterior. Sin Fase 1, no podía verificar Fase 2. Sin Fase 2, no sabía si mis cambios rompían algo más. Sin Fase 3, los usuarios seguían viendo crashes. Sin Fase 4, el próximo bug sería invisible.
+
+**Lecciones aprendidas**
+
+Un fork de mantenimiento no es un proyecto personal. Es custodiar trabajo de otro. La metodología de triage en fases acopladas te da una baseline verificable antes de agregar valor nuevo. El "upgrade tax" (19 commits solo de deprecaciones) es real, pero hacerlo por categoría lo hace manejable. Y la herramienta más valiosa que construí no fue código nuevo: fue el ResponseRecorder, porque sin él no podía ver qué había cambiado.
+
+Si estás por forkar un proyecto "no mantenido", tu primera semana no debería tener features. Debería tener build limpio, analyzer limpio, runtime estable, y al menos un logger que te diga qué está pasando cuando algo falle. Después de eso, podés pensar en features.`,
+    contentEn: `In December 2025, the original creator of Harmony-Music (a Flutter music streaming app for Android, Windows, and Linux) marked the repository as "unmaintained" and disappeared. In June 2026, I decided to fork it and maintain it myself.
+
+What I found was not a project ready for feature work. It was a project with abandoned dependencies, code that crashed on basic flows, and not a single piece of observability. The app "worked" for whoever compiled it in the original author's exact environment — but that environment no longer existed.
+
+**The real problem with an "unmaintained" project**
+
+The README clearly said: "This repository is no longer maintained". The first reading was: "OK, no new features, but the existing code is healthy". The second reading (reading \`pubspec.yaml\`, \`gradle.properties\`, and \`git log\`) revealed something else:
+
+1. \`ionicons: ^0.2.2\` in \`pubspec.yaml\` — package with no updates since 2022, incompatible with Dart 3.12's \`final class\` constraint. The app did not compile.
+2. \`android.builtInKotlin=false\` and \`android.newDsl=false\` in \`gradle.properties\` — flags that the Flutter migrator adds during a migration, but must be removed manually when the migration completes. The author never cleaned them up.
+3. \`TODO.md\` with items like "Partially_completed" and "Housekeeping work" unchecked.
+4. A latent bug in \`home_screen_controller.dart\`: \`indexWhere\` returned \`-1\` when it did not find an element, and the code immediately called \`removeAt(-1)\` → \`RangeError\` → crash on cold start.
+5. Zero structured logging. Zero API response capture. When something failed at runtime, the only signal was a \`print\` in console without context.
+
+**The anti-pattern: starting with features**
+
+My first instinct was to add new features. I resisted. A feature on a broken build is technical debt disguised as progress. If you cannot compile, you cannot test. If you cannot test, you cannot know if the new feature works. If the new feature does not work, you add a bug on top of a project that already has invisible bugs.
+
+The decision was: zero features until there is a clean build, zero deprecations in the analyzer, runtime without obvious crashes, and minimum debugging tools.
+
+**The solution: 4-phase triage**
+
+I divided the work into 4 coupled phases, with one commit per phase. Each phase has a verifiable exit criterion.
+
+\`\`\`
+Phase 1: Build (compiles + clean analyze)
+    ↓
+Phase 2: Deprecations (no warnings for soon-to-be-removed APIs)
+    ↓
+Phase 3: Runtime (no crashes in basic flows)
+    ↓
+Phase 4: Tooling (logging + response recorder + docs)
+\`\`\`
+
+**Phase 1 — Build foundation**
+
+The first commit was upgrading Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20, all compatible with Flutter 3.44+ which is the target. The second commit was migration to Flutter built-in Kotlin (removed the manual \`kotlin-android\` plugin, moved config to \`kotlin { compilerOptions { jvmTarget = JvmTarget.JVM_17 } }\`).
+
+Exit criterion: \`flutter analyze\` returns 0 errors, \`flutter build apk --debug\` produces a working APK.
+
+**Phase 2 — Deprecation sweep**
+
+19 separate commits, one per category. \`withOpacity(x)\` → \`withValues(alpha: x)\` (commit \`2064daa\`). \`Color.value\` → \`toARGB32()\` (commit \`43bcead\`). \`ThemeData\` getters → \`colorScheme\` (commit \`097622f\`). The most painful: replacing all \`Ionicons.foo\` usages with Material \`Icons.foo\` (commit \`4a7f2e0\`).
+
+\`\`\`dart
+// BEFORE: abandoned package, incompatible with Dart 3.12
+Icon(Ionicons.logo_youtube)
+
+// AFTER: Material Icons, maintained by Flutter team
+Icon(Icons.smart_display)
+\`\`\`
+
+\`grep -r "Ionicons\." lib/\` returned 47 matches. The migration was mechanical but tedious. The important thing: one commit per category so the reviewer (me in 6 months) can roll back one deprecation without touching the rest.
+
+Exit criterion: \`flutter analyze\` returns 0 errors and 0 warnings.
+
+**Phase 3 — Runtime hardening**
+
+The \`indexWhere\` → \`removeAt(-1)\` bug (commit \`d8d82d1\`) was the most visible. But I found more: \`firstWhere\` without \`orElse\`, casts without checks, \`null\` in positions where the code assumed not-null. I added guards at all critical points.
+
+\`\`\`dart
+// BEFORE: indexWhere can return -1
+quickPicksUpdate.value.contents.removeAt(quickPicksUpdate.value.contents
+    .indexWhere((e) => e.runtimeType.toString().contains("QuickPicksAlbum")));
+
+// AFTER: explicit guard
+final idx = quickPicksUpdate.value.contents
+    .indexWhere((e) => e.runtimeType.toString().contains("QuickPicksAlbum"));
+if (idx != -1) quickPicksUpdate.value.contents.removeAt(idx);
+\`\`\`
+
+Exit criterion: cold start without crashes, basic navigation without errors in logs, search returns correct results.
+
+**Phase 4 — Tooling and observability**
+
+Three new pieces:
+
+1. \`debug_logger.dart\` — structured logger with levels (debug, info, warn, error) and ANSI colors to distinguish at a glance.
+2. \`http_logger.dart\` — Dio interceptor that logs request/response with headers, full body, and timing.
+3. \`response_recorder.dart\` — writes every raw InnerTube response to disk in JSON format, with a session ID. For debugging YouTube API changes offline.
+
+Without these three pieces, the Phase 3 fix was possible but the next InnerTube fix would have been a guessing game.
+
+**The impact**
+
+\`\`\`
+~36 commits in 3 days
+Clean build with Flutter 3.44+
+0 errors in flutter analyze
+Release v1.12.2 with changelog
+\`\`\`
+
+Each phase added to the previous one. Without Phase 1, I could not verify Phase 2. Without Phase 2, I did not know if my changes were breaking something else. Without Phase 3, users were still seeing crashes. Without Phase 4, the next bug would be invisible.
+
+**Lessons learned**
+
+A maintenance fork is not a personal project. It is custodianship of someone else's work. The coupled-phase triage methodology gives you a verifiable baseline before adding new value. The "upgrade tax" (19 commits of just deprecations) is real, but doing it by category makes it manageable. And the most valuable tool I built was not new code: it was the ResponseRecorder, because without it I could not see what had changed.
+
+If you are about to fork an "unmaintained" project, your first week should not have features. It should have a clean build, clean analyzer, stable runtime, and at least one logger that tells you what is happening when something fails. After that, you can think about features.`,
+    relatedIds: ['flutter-cross-platform-audio-architecture', 'flutter-build-modernization-upgrade-mountain', 'youtube-innertube-api-resilience'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 10 — Flutter Cross-Platform Audio Architecture (Harmony-Music)
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'flutter-cross-platform-audio-architecture',
+    slug: 'audio-multiplataforma-flutter-arquitectura',
+    series: 'OSS Maintenance',
+    title: 'Audio multiplataforma en Flutter: dos engines, una API, tres plataformas',
+    titleEn: 'Cross-platform audio in Flutter: two engines, one API, three platforms',
+    date: '2026-06-26',
+    tags: ['flutter', 'audio', 'just_audio', 'media_kit', 'audio_service', 'android', 'windows', 'linux', 'architecture'],
+    category: 'arquitectura',
+    featured: true,
+    excerpt:
+      'No existe un solo engine de audio en Flutter que cubra Android, Windows y Linux con la misma calidad. La solución no es elegir uno: es componer. just_audio como API unificada, media_kit como backend en desktop, audio_service para lifecycle y notificación, SMTC para media keys en Windows. Acá está la arquitectura real, los offsets platform-specific, y los bugs que solo aparecen en desktop.',
+    excerptEn:
+      'There is no single Flutter audio engine that covers Android, Windows, and Linux with the same quality. The solution is not to choose one: it is to compose. just_audio as the unified API, media_kit as the desktop backend, audio_service for lifecycle and notification, SMTC for media keys on Windows. Here is the real architecture, the platform-specific offsets, and the bugs that only appear on desktop.',
+    content: `Cuando empecé a mantener Harmony-Music (app Flutter de música streaming para Android, Windows y Linux), pensé que elegir un engine de audio era una decisión única. Después de tres releases y dos meses de testing en las tres plataformas, entendí: no existe un solo engine que cubra bien los tres. La única forma es componer.
+
+**El problema de los engines únicos**
+
+Tres candidatos obvios para Flutter:
+
+- \`just_audio\`: excelente en Android (usa ExoPlayer nativo), funcional en desktop pero sin codecs avanzados, sin gapless, sin soporte robusto para HiFi.
+- \`media_kit\`: excelente en desktop (mpv/libmpv), pero sin integración nativa con \`AudioService\`, sin Android Auto, sin lockscreen.
+- \`audioplayers\`: simple pero limitado. No apto para streaming real.
+
+El primer intento del autor original fue \`just_audio\` solo. Funcionaba en Android. En Windows la app reproducía pero sin integración con media keys del teclado. En Linux dependía de PulseAudio con resultados inconsistentes. El gap entre "reproduce audio" y "experiencia de música real multiplataforma" era enorme.
+
+**La solución: composición de engines bajo una API única**
+
+La arquitectura real tiene 4 capas, cada una resolviendo un problema específico:
+
+\`\`\`
+┌─────────────────────────────────────────────┐
+│  UI (GetX controllers / widgets)            │
+└─────────────────┬───────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────┐
+│  MyAudioHandler extends BaseAudioHandler    │  ← API única
+│  (audio_service)                            │
+└────┬─────────────────┬─────────────────┬─────┘
+     │                 │                 │
+┌────▼──────┐  ┌──────▼──────┐  ┌──────▼──────┐
+│ just_audio│  │ just_audio  │  │    SMTC     │
+│  (Dart)   │  │_media_kit   │  │  (Windows)  │
+└────┬──────┘  └──────┬──────┘  └─────────────┘
+     │                │
+┌────▼──────┐  ┌──────▼──────┐
+│ ExoPlayer │  │  media_kit  │
+│ (Android) │  │ (Windows/   │
+│           │  │  Linux)     │
+└───────────┘  └─────────────┘
+\`\`\`
+
+\`audio_service\` provee la API Dart única (\`BaseAudioHandler\`) que toda la UI consume. Es owner del notification, lockscreen, Android Auto, y lifecycle en background. Los engines se enchufan debajo.
+
+**Capa 1: audio_service como outer wrapper**
+
+\`audio_service\` no es un engine de audio. Es un wrapper que maneja:
+
+- Foreground service en Android (requerido para reproducir en background)
+- Notification con controles (play/pause/skip)
+- Lockscreen controls
+- Android Auto browsing
+- Bluetooth media keys
+- MediaSession para integración con OS
+
+La UI nunca toca \`just_audio\` directamente. Solo llama \`audioHandler.play()\`, \`audioHandler.pause()\`, \`audioHandler.skipToNext()\`. \`audio_service\` se encarga de propagar al engine subyacente.
+
+**Capa 2: just_audio como Dart API unificada**
+
+\`just_audio\` provee \`AudioPlayer\` con una API consistente. En Android usa ExoPlayer. En desktop, el paquete \`just_audio_media_kit\` (un bridge) traduce las llamadas de \`just_audio\` al backend \`media_kit\`.
+
+\`\`\`dart
+class MyAudioHandler extends BaseAudioHandler {
+  final AudioPlayer _player = AudioPlayer();
+
+  MyAudioHandler() {
+    if (GetPlatform.isWindows || GetPlatform.isLinux) {
+      JustAudioMediaKit.title = 'Harmony Music';
+      JustAudioMediaKit.protocolWhitelist = const ['http', 'https', 'file'];
+    }
+    _player = AudioPlayer(
+      audioLoadConfiguration: const AudioLoadConfiguration(
+        androidLoadControl: AndroidLoadControl(
+          minBufferDuration: Duration(seconds: 50),
+          maxBufferDuration: Duration(seconds: 120),
+          bufferForPlaybackDuration: Duration(milliseconds: 50),
+          bufferForPlaybackAfterRebufferDuration: Duration(seconds: 2),
+        ),
+      ),
+    );
+  }
+}
+\`\`\`
+
+Los parámetros de \`AndroidLoadControl\` importan para streaming: 50 segundos de buffer mínimo evitan stutter en redes lentas, 120 segundos de máximo evitan consumir RAM innecesariamente. Estos números los tuneé testeando con WiFi inestable y 4G.
+
+**Capa 3: media_kit como backend de desktop**
+
+En Windows y Linux, \`just_audio_media_kit\` traduce la API de \`just_audio\` a llamadas nativas de \`media_kit\`, que usa \`mpv\` (Windows) o \`libmpv\` (Linux). Esto da acceso a codecs avanzados (FLAC, Opus), gapless playback, y mejor manejo de redes lentas en desktop.
+
+El trade-off: \`media_kit\` reporta \`duration\` de manera ligeramente diferente a ExoPlayer. En testing encontré que las últimas 2-3 segundos de una canción se cortaban en auto-advance a la siguiente. La solución fue un offset platform-specific:
+
+\`\`\`dart
+final playerDurationOffset = GetPlatform.isWindows
+    ? 200  // ms
+    : GetPlatform.isLinux
+        ? 700  // ms
+        : 0;  // Android (ExoPlayer) no necesita offset
+
+// Usar el offset al calcular "tiempo restante" o auto-avanzar
+final adjustedRemaining = actualRemaining - playerDurationOffset;
+\`\`\`
+
+Estos offsets son empíricos. No hay documentación oficial que diga "media_kit reporta duration con 200-700ms de delay". Los encontré testeando edge cases con 20+ canciones.
+
+**Capa 4: SMTC para Windows media keys**
+
+Windows tiene su propio sistema de media controls (System Media Transport Controls) separado de Android Auto / MPRIS. El paquete \`smtc_windows\` lo expone. Hay que integrarlo a mano con \`audio_service\` porque \`audio_service\` no tiene soporte nativo para SMTC.
+
+\`\`\`dart
+if (GetPlatform.isWindows) {
+  final smtc = SMTCWindows.instance;
+  smtc.enable();
+  smtc.onButtonPressed.listen((button) {
+    switch (button) {
+      case SMTCWindowsButton.play:  _player.play();  break;
+      case SMTCWindowsButton.pause: _player.pause(); break;
+      case SMTCWindowsButton.next:  skipToNext();    break;
+      case SMTCWindowsButton.prev:  skipToPrevious(); break;
+    }
+  });
+}
+\`\`\`
+
+Sin esto, las teclas multimedia del teclado (las que tienen ícono de play/pause) no funcionaban en Windows. Funcionalidad básica esperada por cualquier usuario.
+
+**El impacto**
+
+La arquitectura final permite:
+
+- Misma UI Flutter funcionando en 3 plataformas con misma API
+- Android con ExoPlayer + audio_service + Android Auto + lockscreen
+- Windows con mpv + audio_service + SMTC + media keys
+- Linux con libmpv + audio_service (MPRIS cuando esté disponible)
+- Background playback, lockscreen, y Android Auto funcionan en Android sin código platform-specific en UI
+
+El precio: 4 capas de abstracción, debugging más complejo cuando algo falla (¿es \`audio_service\`? ¿es \`just_audio\`? ¿es \`media_kit\`?), y offsets platform-specific que necesitan testing empírico en cada release.
+
+**Lecciones aprendidas**
+
+La composición es la única forma seria de hacer audio cross-platform en Flutter. No existe el engine mágico que cubra todo. La clave es mantener \`BaseAudioHandler\` como único punto de contacto para la UI, y poner toda la complejidad platform-specific debajo de esa frontera. Los offsets de duration que encontré no están en ninguna doc — solo en el código de testing que escribí y nunca publiqué. Y la separación entre \`audio_service\` (lifecycle/OS integration) y \`just_audio\` (audio engine) es lo que hace que la arquitectura escale: si mañana sale un engine mejor que ExoPlayer, reemplazo \`just_audio\` sin tocar UI.
+
+Si vas a hacer audio cross-platform, asumí que vas a componer. Y empezá con testing de edge cases de duration en desktop antes de pensar que "ya funciona en Android, listo".`,
+    contentEn: `When I started maintaining Harmony-Music (a Flutter music streaming app for Android, Windows, and Linux), I thought choosing one audio engine was a one-time decision. After three releases and two months of testing on all three platforms, I understood: there is no single engine that covers all three well. The only way is to compose.
+
+**The single-engine problem**
+
+Three obvious candidates for Flutter:
+
+- \`just_audio\`: excellent on Android (uses native ExoPlayer), functional on desktop but without advanced codecs, gapless, or robust HiFi support.
+- \`media_kit\`: excellent on desktop (mpv/libmpv), but without native \`AudioService\` integration, Android Auto, or lockscreen.
+- \`audioplayers\`: simple but limited. Not suitable for real streaming.
+
+The original author's first attempt was \`just_audio\` alone. It worked on Android. On Windows the app played but without integration with keyboard media keys. On Linux it depended on PulseAudio with inconsistent results. The gap between "plays audio" and "real cross-platform music experience" was huge.
+
+**The solution: engine composition under a single API**
+
+The real architecture has 4 layers, each solving a specific problem:
+
+\`\`\`
+┌─────────────────────────────────────────────┐
+│  UI (GetX controllers / widgets)            │
+└─────────────────┬───────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────┐
+│  MyAudioHandler extends BaseAudioHandler    │  ← single API
+│  (audio_service)                            │
+└────┬─────────────────┬─────────────────┬─────┘
+     │                 │                 │
+┌────▼──────┐  ┌──────▼──────┐  ┌──────▼──────┐
+│ just_audio│  │ just_audio  │  │    SMTC     │
+│  (Dart)   │  │_media_kit   │  │  (Windows)  │
+└────┬──────┘  └──────┬──────┘  └─────────────┘
+     │                │
+┌────▼──────┐  ┌──────▼──────┐
+│ ExoPlayer │  │  media_kit  │
+│ (Android) │  │ (Windows/   │
+│           │  │  Linux)     │
+└───────────┘  └─────────────┘
+\`\`\`
+
+\`audio_service\` provides the single Dart API (\`BaseAudioHandler\`) that the entire UI consumes. It owns the notification, lockscreen, Android Auto, and background lifecycle. The engines plug in underneath.
+
+**Layer 1: audio_service as outer wrapper**
+
+\`audio_service\` is not an audio engine. It is a wrapper that handles:
+
+- Foreground service on Android (required for background playback)
+- Notification with controls (play/pause/skip)
+- Lockscreen controls
+- Android Auto browsing
+- Bluetooth media keys
+- MediaSession for OS integration
+
+The UI never touches \`just_audio\` directly. It only calls \`audioHandler.play()\`, \`audioHandler.pause()\`, \`audioHandler.skipToNext()\`. \`audio_service\` propagates to the underlying engine.
+
+**Layer 2: just_audio as unified Dart API**
+
+\`just_audio\` provides \`AudioPlayer\` with a consistent API. On Android it uses ExoPlayer. On desktop, the \`just_audio_media_kit\` package (a bridge) translates \`just_audio\` calls to the \`media_kit\` backend.
+
+\`\`\`dart
+class MyAudioHandler extends BaseAudioHandler {
+  final AudioPlayer _player = AudioPlayer();
+
+  MyAudioHandler() {
+    if (GetPlatform.isWindows || GetPlatform.isLinux) {
+      JustAudioMediaKit.title = 'Harmony Music';
+      JustAudioMediaKit.protocolWhitelist = const ['http', 'https', 'file'];
+    }
+    _player = AudioPlayer(
+      audioLoadConfiguration: const AudioLoadConfiguration(
+        androidLoadControl: AndroidLoadControl(
+          minBufferDuration: Duration(seconds: 50),
+          maxBufferDuration: Duration(seconds: 120),
+          bufferForPlaybackDuration: Duration(milliseconds: 50),
+          bufferForPlaybackAfterRebufferDuration: Duration(seconds: 2),
+        ),
+      ),
+    );
+  }
+}
+\`\`\`
+
+The \`AndroidLoadControl\` parameters matter for streaming: 50 seconds of minimum buffer prevent stutter on slow networks, 120 seconds of maximum prevent unnecessary RAM consumption. I tuned these numbers by testing with unstable WiFi and 4G.
+
+**Layer 3: media_kit as desktop backend**
+
+On Windows and Linux, \`just_audio_media_kit\` translates the \`just_audio\` API to native \`media_kit\` calls, which use \`mpv\` (Windows) or \`libmpv\` (Linux). This gives access to advanced codecs (FLAC, Opus), gapless playback, and better slow-network handling on desktop.
+
+The trade-off: \`media_kit\` reports \`duration\` slightly differently from ExoPlayer. In testing I found that the last 2-3 seconds of a song were cut off during auto-advance to the next. The solution was a platform-specific offset:
+
+\`\`\`dart
+final playerDurationOffset = GetPlatform.isWindows
+    ? 200  // ms
+    : GetPlatform.isLinux
+        ? 700  // ms
+        : 0;  // Android (ExoPlayer) needs no offset
+
+// Use the offset when calculating "time remaining" or auto-advance
+final adjustedRemaining = actualRemaining - playerDurationOffset;
+\`\`\`
+
+These offsets are empirical. There is no official documentation saying "media_kit reports duration with 200-700ms delay". I found them by testing edge cases with 20+ songs.
+
+**Layer 4: SMTC for Windows media keys**
+
+Windows has its own media controls system (System Media Transport Controls) separate from Android Auto / MPRIS. The \`smtc_windows\` package exposes it. You have to integrate it manually with \`audio_service\` because \`audio_service\` has no native SMTC support.
+
+\`\`\`dart
+if (GetPlatform.isWindows) {
+  final smtc = SMTCWindows.instance;
+  smtc.enable();
+  smtc.onButtonPressed.listen((button) {
+    switch (button) {
+      case SMTCWindowsButton.play:  _player.play();  break;
+      case SMTCWindowsButton.pause: _player.pause(); break;
+      case SMTCWindowsButton.next:  skipToNext();    break;
+      case SMTCWindowsButton.prev:  skipToPrevious(); break;
+    }
+  });
+}
+\`\`\`
+
+Without this, the multimedia keys on the keyboard (the ones with play/pause icon) did not work on Windows. Basic functionality expected by any user.
+
+**The impact**
+
+The final architecture allows:
+
+- Same Flutter UI working on 3 platforms with the same API
+- Android with ExoPlayer + audio_service + Android Auto + lockscreen
+- Windows with mpv + audio_service + SMTC + media keys
+- Linux with libmpv + audio_service (MPRIS when available)
+- Background playback, lockscreen, and Android Auto work on Android with no platform-specific UI code
+
+The cost: 4 abstraction layers, more complex debugging when something fails (is it \`audio_service\`? \`just_audio\`? \`media_kit\`?), and platform-specific offsets that need empirical testing on each release.
+
+**Lessons learned**
+
+Composition is the only serious way to do cross-platform audio in Flutter. There is no magic engine that covers everything. The key is to keep \`BaseAudioHandler\` as the only contact point for the UI, and put all platform-specific complexity below that boundary. The duration offsets I found are not in any docs — only in the testing code I wrote and never published. And the separation between \`audio_service\` (lifecycle/OS integration) and \`just_audio\` (audio engine) is what makes the architecture scale: if a better engine than ExoPlayer comes out tomorrow, I replace \`just_audio\` without touching the UI.
+
+If you are going to do cross-platform audio, assume you will compose. And start with desktop duration edge case testing before thinking "it works on Android, done".`,
+    relatedIds: ['inherited-oss-flutter-modernization', 'android-14-background-audio-modernization', 'youtube-innertube-api-resilience'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 11 — YouTube InnerTube API Resilience (Harmony-Music)
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'youtube-innertube-api-resilience',
+    slug: 'youtube-innertube-api-resiliencia',
+    series: 'OSS Maintenance',
+    title: 'Cuando tu app depende de una API que no controlás: reverse-engineering YouTube Music',
+    titleEn: 'When your app depends on an API you don\'t control: reverse-engineering YouTube Music',
+    date: '2026-06-26',
+    tags: ['flutter', 'youtube', 'innertube', 'api-resilience', 'debugging', 'logging', 'resilience'],
+    category: 'arquitectura',
+    featured: false,
+    excerpt:
+      'Harmony-Music no usa la API oficial de YouTube. Usa InnerTube, la API interna que YouTube Music expone a su propia web app, reverse-engineered desde hace años. Cuando YouTube cambia el formato de respuesta (sin changelog, sin docs, sin warning), 24 de 25 resultados de búsqueda caen en buckets huérfanos. Acá está la historia de reescribir el bucketing, clasificar por pageType, y construir un ResponseRecorder para diff offline.',
+    excerptEn:
+      'Harmony-Music does not use the official YouTube API. It uses InnerTube, the internal API that YouTube Music exposes to its own web app, reverse-engineered for years. When YouTube changes the response format (no changelog, no docs, no warning), 24 of 25 search results fall into orphan buckets. Here is the story of rewriting the bucketing, classifying by pageType, and building a ResponseRecorder for offline diff.',
+    content: `La decisión más controversial de Harmony-Music es que no usa la YouTube Data API oficial. No usa OAuth, no tiene quota, no respeta ninguna TOS. Usa InnerTube: la API interna que YouTube Music expone a su propia web app, documentada a fuerza bruta por la comunidad durante años.
+
+Es frágil por diseño. Pero es lo que permite que la app funcione sin login, sin API key del usuario, y sin pagar.
+
+**El problema: una API que cambia sin avisar**
+
+InnerTube no tiene versión. No tiene changelog. No tiene deprecation policy. YouTube puede cambiar el shape de cualquier respuesta un martes a las 3am, y tu app se entera cuando un usuario reporta "la búsqueda no muestra nada".
+
+El caso concreto: a fines de mayo 2026, YouTube Music cambió el formato de respuesta de búsqueda. La estructura anterior era "shelves" (secciones con título como "Songs", "Albums", "Artists"):
+
+\`\`\`json
+{
+  "contents": {
+    "tabRenderer": {
+      "content": {
+        "sectionListRenderer": {
+          "contents": [
+            { "shelfRenderer": { "title": "Songs", ... } },
+            { "shelfRenderer": { "title": "Albums", ... } },
+            { "shelfRenderer": { "title": "Artists", ... } }
+          ]
+        }
+      }
+    }
+  }
+}
+\`\`\`
+
+El nuevo formato es "flat items" — una lista plana donde cada elemento puede ser un \`musicCardShelfRenderer\` (canción), un \`itemSectionRenderer\` (álbum), un \`musicResponsiveListItemRenderer\` (artista), o un wrapper. Sin títulos de sección. Sin grouping.
+
+\`\`\`json
+{
+  "contents": {
+    "tabRenderer": {
+      "content": {
+        "sectionListRenderer": {
+          "contents": [
+            { "musicCardShelfRenderer": { ... } },
+            { "itemSectionRenderer": { ... } },
+            { "musicResponsiveListItemRenderer": { ... } },
+            { "musicCardShelfRenderer": { ... } }
+          ]
+        }
+      }
+    }
+  }
+}
+\`\`\`
+
+El código viejo esperaba shelves con título. Cuando llegó el formato nuevo, solo 1 de 25 resultados matcheaba el patrón esperado. Los otros 24 caían en un bucket genérico \`_orphan_*\` y la UI mostraba una pantalla casi vacía.
+
+**El anti-patrón: parsear por posición o por título**
+
+El código original tenía algo así:
+
+\`\`\`dart
+// FRÁGIL: depende de títulos que YouTube puede cambiar o eliminar
+if (shelf.title == "Songs") {
+  songs.addAll(shelf.items);
+} else if (shelf.title == "Albums") {
+  albums.addAll(shelf.items);
+} else if (shelf.title == "Artists") {
+  artists.addAll(shelf.items);
+}
+\`\`\`
+
+Esto es frágil por diseño. Depende de:
+
+1. Que YouTube mantenga títulos en inglés
+2. Que YouTube mantenga exactamente esos strings
+3. Que YouTube mantenga la estructura de shelves
+4. Que YouTube no traduzca los títulos
+
+Cualquiera de los 4 cambios rompe el código.
+
+**La solución: clasificación por pageType + ResponseRecorder**
+
+Dos cambios. Uno táctico, otro estratégico.
+
+**Cambio táctico: reescribir bucketing por pageType**
+
+YouTube incluye en cada item un campo \`pageType\` que es un signal estable del TIPO de contenido:
+
+- \`MUSIC_PAGE_TYPE_ALBUM\` → álbum
+- \`MUSIC_PAGE_TYPE_ARTIST\` → artista
+- \`MUSIC_PAGE_TYPE_PLAYLIST\` → playlist
+- canciones: detectables por \`musicResponsiveListItemRenderer\` con \`overlay.musicItemThumbnailOverlayRenderer\`
+
+Reescribí el bucketing para iterar la lista plana y clasificar por \`pageType\` en lugar de por posición de shelf:
+
+\`\`\`dart
+void bucketSearchResults(List<dynamic> flatItems) {
+  for (final item in flatItems) {
+    final pageType = extractPageType(item);
+    switch (pageType) {
+      case 'MUSIC_PAGE_TYPE_ALBUM':
+        albums.add(parseAlbum(item));
+        if (albums.length >= 10) break;  // cap por bucket
+      case 'MUSIC_PAGE_TYPE_ARTIST':
+        artists.add(parseArtist(item));
+        if (artists.length >= 10) break;
+      case 'MUSIC_PAGE_TYPE_PLAYLIST':
+        playlists.add(parsePlaylist(item));
+        if (playlists.length >= 10) break;
+      default:
+        // intentar detectar canciones por shape
+        if (looksLikeSong(item)) songs.add(parseSong(item));
+    }
+  }
+}
+\`\`\`
+
+El cap de 10 por bucket es deliberado: evita que un solo tipo sature la UI, y limita el costo de parseo si YouTube duplica items.
+
+**Cambio estratégico: ResponseRecorder para diff offline**
+
+El fix táctico resolvió el problema inmediato. Pero sin observabilidad, el próximo cambio de InnerTube me iba a agarrar igual. Construí un \`ResponseRecorder\` que escribe cada respuesta cruda a disco:
+
+\`\`\`dart
+class ResponseRecorder {
+  final String sessionId;
+  final Directory sessionDir;
+
+  void recordResponse(String endpoint, String requestBody, String responseBody) {
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final file = File('\${sessionDir.path}/\${timestamp}_\${endpoint.replaceAll("/", "_")}.json');
+    file.writeAsStringSync(jsonEncode({
+      'endpoint': endpoint,
+      'request': requestBody,
+      'response': responseBody,
+      'timestamp': timestamp,
+    }));
+  }
+}
+\`\`\`
+
+El recorder se integra como Dio interceptor. Cada request a \`music.youtube.com/youtubei/v1/*\` queda persistido. Cuando un usuario reporta "la búsqueda no anda", puedo pedirle que me envíe su carpeta de recordings, hacer diff contra una sesión que sí funcionaba, y ver exactamente qué cambió.
+
+\`\`\`
+session_2026-05-28_works/
+  ├── 170000_search.json  ← shape viejo
+  └── 170100_album.json
+
+session_2026-06-15_broken/
+  ├── 180000_search.json  ← shape nuevo
+  └── 180100_album.json
+
+diff:
+  search.json → "sectionListRenderer.contents" ahora es flat
+                sin "shelfRenderer" en absoluto
+                "musicCardShelfRenderer" reemplaza a "shelfRenderer"
+\`\`\`
+
+Este recorder fue la pieza que me hizo darme cuenta de la magnitud del cambio. Sin él, habría leído logs con payloads truncados de 200 caracteres y adivinado.
+
+**El impacto**
+
+Antes: 1 de 25 resultados visibles, pantalla casi vacía, sin idea de qué había cambiado.
+
+Después:
+
+- 100% de resultados bucketed correctamente (con cap de 10 por categoría)
+- Cambio de shape visible en diff de recordings
+- Tiempo de diagnóstico: de "días" a "minutos" (abrir carpeta, diff, ver cambio)
+- Recorder permite debuggear sin pedirle al usuario que instale debug builds
+
+**Lecciones aprendidas**
+
+Cuando tu app depende de una API que no controlás, los "fixes" sin observabilidad son temporales. Sí, clasificar por \`pageType\` resolvió el problema inmediato. Pero la inversión que más rindió fue el ResponseRecorder: me dio la capacidad de ver el cambio, no solo de reaccionar a él. Si vas a integrar con una API no documentada (InnerTube, scraping de cualquier web grande, etc.), construí el recorder ANTES del primer fix. La primera vez que InnerTube cambie de nuevo, te va a ahorrar horas.
+
+Y la regla que aplica: nunca parsees por posición o por string de UI (títulos, labels). Siempre por un signal estable del schema (\`pageType\`, \`type\`, enums del backend). Los strings visibles son la primera cosa que cambia cuando alguien i18n el sistema o hace un rename cosmético.`,
+    contentEn: `The most controversial decision in Harmony-Music is that it does not use the official YouTube Data API. No OAuth, no quota, no TOS compliance. It uses InnerTube: the internal API that YouTube Music exposes to its own web app, reverse-engineered by the community for years.
+
+It is fragile by design. But it is what allows the app to work without login, without user API keys, and without payment.
+
+**The problem: an API that changes without warning**
+
+InnerTube has no version. No changelog. No deprecation policy. YouTube can change the shape of any response on a Tuesday at 3am, and your app finds out when a user reports "search shows nothing".
+
+The concrete case: in late May 2026, YouTube Music changed the search response format. The previous structure was "shelves" (sections with title like "Songs", "Albums", "Artists"):
+
+\`\`\`json
+{
+  "contents": {
+    "tabRenderer": {
+      "content": {
+        "sectionListRenderer": {
+          "contents": [
+            { "shelfRenderer": { "title": "Songs", ... } },
+            { "shelfRenderer": { "title": "Albums", ... } },
+            { "shelfRenderer": { "title": "Artists", ... } }
+          ]
+        }
+      }
+    }
+  }
+}
+\`\`\`
+
+The new format is "flat items" — a flat list where each element can be a \`musicCardShelfRenderer\` (song), an \`itemSectionRenderer\` (album), a \`musicResponsiveListItemRenderer\` (artist), or a wrapper. No section titles. No grouping.
+
+\`\`\`json
+{
+  "contents": {
+    "tabRenderer": {
+      "content": {
+        "sectionListRenderer": {
+          "contents": [
+            { "musicCardShelfRenderer": { ... } },
+            { "itemSectionRenderer": { ... } },
+            { "musicResponsiveListItemRenderer": { ... } },
+            { "musicCardShelfRenderer": { ... } }
+          ]
+        }
+      }
+    }
+  }
+}
+\`\`\`
+
+The old code expected shelves with title. When the new format arrived, only 1 of 25 results matched the expected pattern. The other 24 fell into a generic \`_orphan_*\` bucket and the UI showed an almost empty screen.
+
+**The anti-pattern: parsing by position or title**
+
+The original code had something like this:
+
+\`\`\`dart
+// FRAGILE: depends on titles YouTube can change or remove
+if (shelf.title == "Songs") {
+  songs.addAll(shelf.items);
+} else if (shelf.title == "Albums") {
+  albums.addAll(shelf.items);
+} else if (shelf.title == "Artists") {
+  artists.addAll(shelf.items);
+}
+\`\`\`
+
+This is fragile by design. It depends on:
+
+1. YouTube keeping titles in English
+2. YouTube keeping exactly those strings
+3. YouTube keeping the shelves structure
+4. YouTube not translating the titles
+
+Any of the 4 changes breaks the code.
+
+**The solution: pageType classification + ResponseRecorder**
+
+Two changes. One tactical, one strategic.
+
+**Tactical change: rewrite bucketing by pageType**
+
+YouTube includes a \`pageType\` field in each item that is a stable signal of the TYPE of content:
+
+- \`MUSIC_PAGE_TYPE_ALBUM\` → album
+- \`MUSIC_PAGE_TYPE_ARTIST\` → artist
+- \`MUSIC_PAGE_TYPE_PLAYLIST\` → playlist
+- songs: detectable by \`musicResponsiveListItemRenderer\` with \`overlay.musicItemThumbnailOverlayRenderer\`
+
+I rewrote the bucketing to iterate the flat list and classify by \`pageType\` instead of by shelf position:
+
+\`\`\`dart
+void bucketSearchResults(List<dynamic> flatItems) {
+  for (final item in flatItems) {
+    final pageType = extractPageType(item);
+    switch (pageType) {
+      case 'MUSIC_PAGE_TYPE_ALBUM':
+        albums.add(parseAlbum(item));
+        if (albums.length >= 10) break;  // cap per bucket
+      case 'MUSIC_PAGE_TYPE_ARTIST':
+        artists.add(parseArtist(item));
+        if (artists.length >= 10) break;
+      case 'MUSIC_PAGE_TYPE_PLAYLIST':
+        playlists.add(parsePlaylist(item));
+        if (playlists.length >= 10) break;
+      default:
+        // try to detect songs by shape
+        if (looksLikeSong(item)) songs.add(parseSong(item));
+    }
+  }
+}
+\`\`\`
+
+The cap of 10 per bucket is deliberate: it prevents a single type from saturating the UI, and limits parsing cost if YouTube duplicates items.
+
+**Strategic change: ResponseRecorder for offline diff**
+
+The tactical fix solved the immediate problem. But without observability, the next InnerTube change would have caught me the same way. I built a \`ResponseRecorder\` that writes every raw response to disk:
+
+\`\`\`dart
+class ResponseRecorder {
+  final String sessionId;
+  final Directory sessionDir;
+
+  void recordResponse(String endpoint, String requestBody, String responseBody) {
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final file = File('\${sessionDir.path}/\${timestamp}_\${endpoint.replaceAll("/", "_")}.json');
+    file.writeAsStringSync(jsonEncode({
+      'endpoint': endpoint,
+      'request': requestBody,
+      'response': responseBody,
+      'timestamp': timestamp,
+    }));
+  }
+}
+\`\`\`
+
+The recorder integrates as a Dio interceptor. Every request to \`music.youtube.com/youtubei/v1/*\` gets persisted. When a user reports "search is broken", I can ask them to send me their recordings folder, diff it against a working session, and see exactly what changed.
+
+\`\`\`
+session_2026-05-28_works/
+  ├── 170000_search.json  ← old shape
+  └── 170100_album.json
+
+session_2026-06-15_broken/
+  ├── 180000_search.json  ← new shape
+  └── 180100_album.json
+
+diff:
+  search.json → "sectionListRenderer.contents" is now flat
+                no "shelfRenderer" at all
+                "musicCardShelfRenderer" replaces "shelfRenderer"
+\`\`\`
+
+This recorder was the piece that made me realize the magnitude of the change. Without it, I would have read logs with 200-character truncated payloads and guessed.
+
+**The impact**
+
+Before: 1 of 25 visible results, almost empty screen, no idea what had changed.
+
+After:
+
+- 100% of results bucketed correctly (with cap of 10 per category)
+- Shape changes visible in recordings diff
+- Diagnosis time: from "days" to "minutes" (open folder, diff, see change)
+- Recorder enables debugging without asking the user to install debug builds
+
+**Lessons learned**
+
+When your app depends on an API you do not control, "fixes" without observability are temporary. Yes, classifying by \`pageType\` solved the immediate problem. But the best-returning investment was the ResponseRecorder: it gave me the ability to SEE the change, not just react to it. If you are going to integrate with an undocumented API (InnerTube, scraping any large web, etc.), build the recorder BEFORE the first fix. The first time InnerTube changes again, it will save you hours.
+
+And the rule that applies: never parse by position or by UI string (titles, labels). Always by a stable schema signal (\`pageType\`, \`type\`, backend enums). Visible strings are the first thing that changes when someone i18n's the system or makes a cosmetic rename.`,
+    relatedIds: ['inherited-oss-flutter-modernization', 'flutter-cross-platform-audio-architecture'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 12 — Flutter Build Modernization (Harmony-Music)
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'flutter-build-modernization-upgrade-mountain',
+    slug: 'modernizacion-build-flutter-upgrade',
+    series: 'OSS Maintenance',
+    title: 'El precio de la modernización: actualizar un proyecto Flutter abandonado a Flutter 3.5+',
+    titleEn: 'The upgrade tax: modernizing an abandoned Flutter project to Flutter 3.5+',
+    date: '2026-06-26',
+    tags: ['flutter', 'gradle', 'agp', 'kotlin', 'deprecation', 'modernization', 'build', 'migrator'],
+    category: 'arquitectura',
+    featured: false,
+    excerpt:
+      'Actualizar un proyecto Flutter que estuvo 6 meses sin mantenimiento no es un bump de versión. Es una cadena acoplada: SDK de Flutter, AGP, Gradle, Kotlin, plugins, deprecaciones de Dart, deprecaciones de Material, paquetes abandonados. Cuando forké Harmony-Music, el "upgrade tax" fue 19 commits separados. Acá está el orden correcto, los commits que rompieron todo, y la métrica que nadie te dice sobre migrar.',
+    excerptEn:
+      'Upgrading a Flutter project that sat for 6 months without maintenance is not a version bump. It is a coupled chain: Flutter SDK, AGP, Gradle, Kotlin, plugins, Dart deprecations, Material deprecations, abandoned packages. When I forked Harmony-Music, the "upgrade tax" was 19 separate commits. Here is the correct order, the commits that broke everything, and the metric nobody tells you about migrating.',
+    content: `Cuando forké Harmony-Music, mi instinto fue: \`flutter upgrade\`, leerme los breaking changes, listo. Lo que pasó fue un mes de trabajo en cadena donde cada bump rompía algo que dependía del bump anterior. La lección: actualizar un Flutter project no es un commit, es una cascada.
+
+**El problema: nada está solo**
+
+Flutter no es un framework monolítico. Es una pirámide donde cada capa depende de la de abajo:
+
+\`\`\`
+                  Dart 3.12+ constraints
+                        ↓
+                 Flutter SDK 3.44
+                        ↓
+              Dart Material API 3.4x
+                        ↓
+              Kotlin 2.2.20 (Android)
+                        ↓
+              AGP 8.11.1 (Android)
+                        ↓
+              Gradle 8.14 (Android)
+                        ↓
+              JDK 17 (host)
+                        ↓
+              Plugins (audio_service, get, hive, etc.)
+\`\`\`
+
+Si bumpás Flutter SDK sin bumpear Gradle, no compila. Si bumpás AGP sin bumpear Gradle, falla. Si bumpás Kotlin sin bumpear los plugins, los plugins crashean en runtime. Si bumpás Dart a 3.12 y dejás un package que no soporta \`final class\`, no compila. Todo está acoplado.
+
+**El anti-patrón: el "big bang upgrade"**
+
+El anti-patrón clásico es un PR de 200+ archivos que bumpa SDK, AGP, Gradle, Kotlin, refactoriza todas las deprecaciones en un solo commit, y reza para que funcione. Lo he visto. Lo hice yo mismo en 2021 con un proyecto Xamarin. Resultado: 3 días debuggeando, 2 commits revertidos, y la mitad del equipo sin saber qué cambió.
+
+**La solución: 10 pasos acoplados con un commit por paso**
+
+El orden importa. Cada paso depende del anterior. Si intentás saltar, fallás.
+
+\`\`\`
+Paso 1:  Audit de pubspec.yaml (paquetes abandonados)
+Paso 2:  Bump Flutter SDK en pubspec.yaml
+Paso 3:  Bump Java target a 17
+Paso 4:  Bump Gradle wrapper
+Paso 5:  Bump AGP
+Paso 6:  Bump Kotlin + migración a Flutter built-in Kotlin
+Paso 7:  Remover flags del Flutter migrator
+Paso 8:  Bump plugins a versiones compatibles
+Paso 9:  Sweep de deprecaciones Dart (1 commit por categoría)
+Paso 10: Verificación final (analyze + build + smoke test)
+\`\`\`
+
+**Paso 1: audit de pubspec.yaml**
+
+Antes de tocar nada, abrí \`pubspec.yaml\` y busqué paquetes con updates de hace más de 1 año. Encontré dos bloqueadores:
+
+- \`ionicons: ^0.2.2\` — sin updates desde 2022, incompatible con Dart 3.12
+- \`youtube_explode_dart: github:anandnet/...\` — fork del autor original, sin updates en 1 año, pero crítico (la app no funciona sin él)
+
+Para \`ionicons\`, el plan fue reemplazo con Material Icons (47 ocurrencias en el código, todas mecánicas). Para \`youtube_explode_dart\`, decisión de riesgo: pin el commit del fork, aceptar la deuda, y migrar a un wrapper alrededor de la API cuando haya tiempo.
+
+**Paso 2: bump Flutter SDK**
+
+Cambié \`environment: sdk: '>=3.1.5 <4.0.0'\` a \`'>=3.4.0 <4.0.0'\` (target 3.44). \`flutter pub get\` empezó a quejarse de paquetes incompatibles. Esperado. Anoté cada error y los resolví en pasos siguientes.
+
+**Paso 3: bump Java target**
+
+Flutter 3.5+ requiere JDK 17 como mínimo. \`android/app/build.gradle\`:
+
+\`\`\`groovy
+// ANTES
+compileOptions { sourceCompatibility JavaVersion.VERSION_1_8 }
+
+// DESPUÉS
+compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+}
+\`\`\`
+
+**Pasos 4-6: Gradle / AGP / Kotlin lockstep**
+
+Los tres bumps son acoplados. No se puede bumpear AGP sin bumpear Gradle. La matriz de compatibilidad es:
+
+| Gradle | AGP  | Kotlin |
+|--------|------|--------|
+| 8.14   | 8.11.1+ | 2.2.20+ |
+
+Actualicé \`android/gradle/wrapper/gradle-wrapper.properties\` a \`distributionUrl=...gradle-8.14...\`, \`android/settings.gradle\` con \`agp = "8.11.1"\` y \`kotlin = "2.2.20"\`, y \`android/app/build.gradle\` con el plugin de Kotlin via Flutter built-in.
+
+La migración a Flutter built-in Kotlin fue el commit más delicado:
+
+\`\`\`groovy
+// android/app/build.gradle — ANTES
+plugins { id "kotlin-android" }
+kotlinOptions { jvmTarget = '17' }
+
+// android/app/build.gradle — DESPUÉS
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+plugins { /* no kotlin-android — Flutter handles it */ }
+kotlin { compilerOptions { jvmTarget = JvmTarget.JVM_17 } }
+\`\`\`
+
+\`flutter build apk --debug\` después de este commit: BUILD SUCCESSFUL. Pero tomó 4 reintentos porque había un plugin (no recuerdo cuál) que todavía esperaba la API vieja.
+
+**Paso 7: remover flags del Flutter migrator**
+
+\`android/gradle.properties\` tenía esto desde 2025:
+
+\`\`\`properties
+android.builtInKotlin=false
+android.newDsl=false
+\`\`\`
+
+Estos flags los agrega el \`flutter migrate\` command durante una migración. Una vez completada, deben removerse manualmente. Dejarlos causa warnings confusos y eventualmente romperán builds futuros. Los borré. Commit aparte.
+
+**Paso 8: bump plugins**
+
+Cada plugin (audio_service, get, hive, dio, etc.) tiene su propia matriz de compatibilidad. La forma de verificar: leer el CHANGELOG.md de cada plugin, buscar compatibilidad con Flutter 3.4x+ y Dart 3.4+. Actualicé:
+
+- \`audio_service: ^0.18.15\` → \`^0.18.17\`
+- \`get: ^4.6.6\` → \`^4.7.1\`
+- \`just_audio: ^0.9.40\` → \`^0.9.46\`
+- \`permission_handler: ^11.0.1\` (sin cambio)
+
+**Paso 9: sweep de deprecaciones (1 commit por categoría)**
+
+Aquí es donde la cadena se vuelve dolorosa. 19 commits separados, uno por categoría. Los ordeno por impacto (los que más archivos tocan primero):
+
+1. \`withOpacity(x)\` → \`withValues(alpha: x)\` — 23 archivos
+2. \`Color.value\` → \`toARGB32()\` — 8 archivos
+3. \`ThemeData\` getters → \`colorScheme\` — 12 archivos
+4. \`SystemUiOverlayStyle\` boolean properties → methods — 5 archivos
+5. \`Radio(groupValue:onChanged:)\` → \`RadioGroup<T>\` wrapper — 3 archivos
+6. \`ReorderableListView.onReorder\` → \`onReorderItem\` — 2 archivos
+7. \`Switch.activeColor\` → \`WidgetStateProperty\` — 4 archivos
+8. \`Ionicons.foo\` → \`Icons.foo\` (Material) — 47 ocurrencias en 11 archivos
+
+Cada commit fue:
+
+\`\`\`bash
+# Ejemplo: commit 2064daa
+git checkout -b refactor/with-opacity-migration
+grep -rln "withOpacity" lib/ | xargs sed -i 's/withOpacity(\([^)]*\))/withValues(alpha: \\1)/g'
+flutter analyze  # esperar 0 errores de este tipo
+git add -A
+git commit -m "refactor: replace withOpacity with withValues(alpha:)"
+\`\`\`
+
+El orden de los commits importa: si commiteás Material Icons antes que Material API deprecations, los archivos que tocás no están en el estado "limpio" todavía.
+
+**Paso 10: verificación final**
+
+\`\`\`bash
+flutter analyze
+# Expected: 0 errors, 0 warnings, < 5 info
+
+flutter build apk --debug
+# Expected: BUILD SUCCESSFUL, APK < 200MB
+
+# Smoke test en device real
+flutter install
+# Probar: cold start, search, play song, background playback
+\`\`\`
+
+**El impacto**
+
+\`\`\`
+19 commits para build/deprecaciones
+~70 archivos modificados
+~3,500 líneas tocadas
+\`\`\`
+
+El "upgrade tax" real fue 19 commits en 4 días. Cada commit tardó entre 30 minutos (sweep mecánico) y 4 horas (Kotlin DSL migration con debugging de plugins). Sin el orden correcto, hubiera sido peor.
+
+**Lecciones aprendidas**
+
+El upgrade tax de un proyecto Flutter abandonado es real, medible, y merece ser planeado. La métrica que nadie te dice: aproximadamente 1 commit de deprecación por cada 1.5 años de gap, en un proyecto de tamaño medio. Si dejaste tu proyecto 1 año sin maintenance, esperá 5-8 commits solo de deprecaciones. Si dejaste 2 años, 15-20.
+
+El orden importa más que la velocidad. Si intentás hacer todo en un commit, fallás. Si hacés commits por categoría, podés hacer rollback de uno sin romper los otros. Y antes de tocar el código, auditá \`pubspec.yaml\` en busca de paquetes abandonados: un solo package roto te bloquea todo el upgrade.
+
+Si vas a mantener un proyecto Flutter activo, no dejes pasar más de 6 meses entre upgrades. Cada mes adicional son 2-3 commits de deprecaciones futuras. La deuda técnica en Flutter es visible, predecible, y completamente evitable con un cronograma.`,
+    contentEn: `When I forked Harmony-Music, my instinct was: \`flutter upgrade\`, read the breaking changes, done. What actually happened was a month of chained work where every bump broke something that depended on the previous bump. The lesson: upgrading a Flutter project is not a commit, it is a cascade.
+
+**The problem: nothing is standalone**
+
+Flutter is not a monolithic framework. It is a pyramid where each layer depends on the one below:
+
+\`\`\`
+                  Dart 3.12+ constraints
+                        ↓
+                 Flutter SDK 3.44
+                        ↓
+              Dart Material API 3.4x
+                        ↓
+              Kotlin 2.2.20 (Android)
+                        ↓
+              AGP 8.11.1 (Android)
+                        ↓
+              Gradle 8.14 (Android)
+                        ↓
+              JDK 17 (host)
+                        ↓
+              Plugins (audio_service, get, hive, etc.)
+\`\`\`
+
+If you bump Flutter SDK without bumping Gradle, it does not compile. If you bump AGP without bumping Gradle, it fails. If you bump Kotlin without bumping plugins, plugins crash at runtime. If you bump Dart to 3.12 and leave a package that does not support \`final class\`, it does not compile. Everything is coupled.
+
+**The anti-pattern: the "big bang upgrade"**
+
+The classic anti-pattern is a 200+ file PR that bumps SDK, AGP, Gradle, Kotlin, refactors all deprecations in one commit, and prays it works. I have seen it. I did it myself in 2021 with a Xamarin project. Result: 3 days of debugging, 2 reverted commits, and half the team not knowing what changed.
+
+**The solution: 10 coupled steps with one commit per step**
+
+Order matters. Each step depends on the previous one. If you try to skip, you fail.
+
+\`\`\`
+Step 1:  Audit pubspec.yaml (abandoned packages)
+Step 2:  Bump Flutter SDK in pubspec.yaml
+Step 3:  Bump Java target to 17
+Step 4:  Bump Gradle wrapper
+Step 5:  Bump AGP
+Step 6:  Bump Kotlin + migrate to Flutter built-in Kotlin
+Step 7:  Remove Flutter migrator flags
+Step 8:  Bump plugins to compatible versions
+Step 9:  Sweep Dart deprecations (1 commit per category)
+Step 10: Final verification (analyze + build + smoke test)
+\`\`\`
+
+**Step 1: audit pubspec.yaml**
+
+Before touching anything, I opened \`pubspec.yaml\` and looked for packages with no updates in 1+ year. I found two blockers:
+
+- \`ionicons: ^0.2.2\` — no updates since 2022, incompatible with Dart 3.12
+- \`youtube_explode_dart: github:anandnet/...\` — fork from original author, no updates in 1 year, but critical (app does not work without it)
+
+For \`ionicons\`, the plan was replacement with Material Icons (47 occurrences in code, all mechanical). For \`youtube_explode_dart\`, a risk decision: pin the fork commit, accept the debt, and migrate to an API wrapper when time allows.
+
+**Step 2: bump Flutter SDK**
+
+Changed \`environment: sdk: '>=3.1.5 <4.0.0'\` to \`'>=3.4.0 <4.0.0'\` (target 3.44). \`flutter pub get\` started complaining about incompatible packages. Expected. I noted every error and resolved them in following steps.
+
+**Step 3: bump Java target**
+
+Flutter 3.5+ requires JDK 17 minimum. \`android/app/build.gradle\`:
+
+\`\`\`groovy
+// BEFORE
+compileOptions { sourceCompatibility JavaVersion.VERSION_1_8 }
+
+// AFTER
+compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+}
+\`\`\`
+
+**Steps 4-6: Gradle / AGP / Kotlin lockstep**
+
+The three bumps are coupled. You cannot bump AGP without bumping Gradle. The compatibility matrix:
+
+| Gradle | AGP  | Kotlin |
+|--------|------|--------|
+| 8.14   | 8.11.1+ | 2.2.20+ |
+
+I updated \`android/gradle/wrapper/gradle-wrapper.properties\` to \`distributionUrl=...gradle-8.14...\`, \`android/settings.gradle\` with \`agp = "8.11.1"\` and \`kotlin = "2.2.20"\`, and \`android/app/build.gradle\` with the Kotlin plugin via Flutter built-in.
+
+The migration to Flutter built-in Kotlin was the most delicate commit:
+
+\`\`\`groovy
+// android/app/build.gradle — BEFORE
+plugins { id "kotlin-android" }
+kotlinOptions { jvmTarget = '17' }
+
+// android/app/build.gradle — AFTER
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+plugins { /* no kotlin-android — Flutter handles it */ }
+kotlin { compilerOptions { jvmTarget = JvmTarget.JVM_17 } }
+\`\`\`
+
+\`flutter build apk --debug\` after this commit: BUILD SUCCESSFUL. But it took 4 retries because there was a plugin (I do not remember which) that still expected the old API.
+
+**Step 7: remove Flutter migrator flags**
+
+\`android/gradle.properties\` had this since 2025:
+
+\`\`\`properties
+android.builtInKotlin=false
+android.newDsl=false
+\`\`\`
+
+These flags are added by the \`flutter migrate\` command during a migration. Once completed, they must be removed manually. Leaving them causes confusing warnings and will eventually break future builds. I deleted them. Separate commit.
+
+**Step 8: bump plugins**
+
+Each plugin (audio_service, get, hive, dio, etc.) has its own compatibility matrix. How to verify: read each plugin's CHANGELOG.md, look for Flutter 3.4x+ and Dart 3.4+ compatibility. I updated:
+
+- \`audio_service: ^0.18.15\` → \`^0.18.17\`
+- \`get: ^4.6.6\` → \`^4.7.1\`
+- \`just_audio: ^0.9.40\` → \`^0.9.46\`
+- \`permission_handler: ^11.0.1\` (unchanged)
+
+**Step 9: deprecation sweep (1 commit per category)**
+
+This is where the chain gets painful. 19 separate commits, one per category. I ordered them by impact (the ones touching the most files first):
+
+1. \`withOpacity(x)\` → \`withValues(alpha: x)\` — 23 files
+2. \`Color.value\` → \`toARGB32()\` — 8 files
+3. \`ThemeData\` getters → \`colorScheme\` — 12 files
+4. \`SystemUiOverlayStyle\` boolean properties → methods — 5 files
+5. \`Radio(groupValue:onChanged:)\` → \`RadioGroup<T>\` wrapper — 3 files
+6. \`ReorderableListView.onReorder\` → \`onReorderItem\` — 2 files
+7. \`Switch.activeColor\` → \`WidgetStateProperty\` — 4 files
+8. \`Ionicons.foo\` → \`Icons.foo\` (Material) — 47 occurrences in 11 files
+
+Each commit was:
+
+\`\`\`bash
+# Example: commit 2064daa
+git checkout -b refactor/with-opacity-migration
+grep -rln "withOpacity" lib/ | xargs sed -i 's/withOpacity(\([^)]*\))/withValues(alpha: \\1)/g'
+flutter analyze  # expect 0 errors of this type
+git add -A
+git commit -m "refactor: replace withOpacity with withValues(alpha:)"
+\`\`\`
+
+The commit order matters: if you commit Material Icons before Material API deprecations, the files you touch are not in the "clean" state yet.
+
+**Step 10: final verification**
+
+\`\`\`bash
+flutter analyze
+# Expected: 0 errors, 0 warnings, < 5 info
+
+flutter build apk --debug
+# Expected: BUILD SUCCESSFUL, APK < 200MB
+
+# Smoke test on real device
+flutter install
+# Test: cold start, search, play song, background playback
+\`\`\`
+
+**The impact**
+
+\`\`\`
+19 commits for build/deprecations
+~70 files modified
+~3,500 lines touched
+\`\`\`
+
+The real "upgrade tax" was 19 commits in 4 days. Each commit took between 30 minutes (mechanical sweep) and 4 hours (Kotlin DSL migration with plugin debugging). Without the correct order, it would have been worse.
+
+**Lessons learned**
+
+The upgrade tax of an abandoned Flutter project is real, measurable, and worth planning for. The metric nobody tells you: approximately 1 deprecation commit per 1.5 years of gap, on a medium-sized project. If you left your project for 1 year without maintenance, expect 5-8 commits of just deprecations. If you left 2 years, 15-20.
+
+Order matters more than speed. If you try to do everything in one commit, you fail. If you do commits by category, you can roll back one without breaking the others. And before touching code, audit \`pubspec.yaml\` for abandoned packages: a single broken package blocks the entire upgrade.
+
+If you are going to keep a Flutter project active, do not let more than 6 months pass between upgrades. Each additional month is 2-3 commits of future deprecations. Technical debt in Flutter is visible, predictable, and completely avoidable with a schedule.`,
+    relatedIds: ['inherited-oss-flutter-modernization', 'android-14-background-audio-modernization'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 13 — Android 14+ Background Audio Modernization (Harmony-Music)
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'android-14-background-audio-modernization',
+    slug: 'android-14-audio-background-modernizacion',
+    series: 'OSS Maintenance',
+    title: 'Audio en background en Android 14+ cuando heredaste código de Android 9',
+    titleEn: 'Background audio on Android 14+ when you inherited Android 9 code',
+    date: '2026-06-26',
+    tags: ['flutter', 'android', 'audio_service', 'jni', 'equalizer', 'background-audio', 'modernization', 'permissions'],
+    category: 'arquitectura',
+    featured: false,
+    excerpt:
+      'Una app de música que heredaste con código de Android 9 tiene tres problemas para correr en Android 14+: scoped storage mató Permission.storage, foreground service types son estrictos, y cualquier API nativa (como el equalizer) necesita un bridge JNI porque no hay package Dart. Acá está la solución completa: SDK-version-aware permissions, JNI para Equalizer, y la config de audio_service que mantiene la música viva en background.',
+    excerptEn:
+      'A music app you inherited with Android 9 code has three problems running on Android 14+: scoped storage killed Permission.storage, foreground service types are strict, and any native API (like the equalizer) needs a JNI bridge because there is no Dart package. Here is the complete solution: SDK-version-aware permissions, JNI for Equalizer, and the audio_service config that keeps the music alive in background.',
+    content: `Una de las primeras cosas que noté cuando forké Harmony-Music fue que el código de permisos y audio background era de la era Android 9. La app "funcionaba" en Android 14+ por accidente — pero había tres bombas de tiempo esperando la primera oportunidad para romper.
+
+**El problema: tres eras de Android en el mismo código**
+
+\`lib/services/permission_service.dart\` tenía esto:
+
+\`\`\`dart
+// Código del autor original, circa 2019
+var status = await Permission.storage.status;
+if (status.isDenied) {
+  await Permission.storage.request();
+}
+return status.isGranted;
+\`\`\`
+
+Esto funcionaba en Android 9 (API 28). En Android 10+ (API 29+), Google introdujo scoped storage, que cambió el significado de \`Permission.storage\`. En Android 11+ (API 30+), \`Permission.storage\` no existe para nada — tenés que usar \`Permission.manageExternalStorage\` con un flow especial de "All Files Access".
+
+El resultado: la app no podía escribir descargas de canciones en Android 11+. En Android 13+ (API 33+), los media permissions se separaron en \`Permission.audio\`, \`Permission.video\`, \`Permission.images\`. En Android 14+ (API 34+), los foreground services requieren declarar el tipo (mediaPlayback, microphone, location, etc.) en el manifest.
+
+**El anti-patrón: una rama de código para todos los SDKs**
+
+El código viejo tenía un solo path: \`Permission.storage.request()\`. Cuando dejaba de funcionar en algún SDK, lo "arreglaban" agregando un if suelto en alguna parte del código, sin documentar. La densidad de bugs aumentaba con cada release de Android.
+
+\`\`\`dart
+// Anti-patrón: SDK checks dispersos
+if (someCondition && sdkInt > 29 && someOtherCondition) { ... }
+// Comentario: "esto lo arreglé para Pixel 5 con Android 11"
+\`\`\`
+
+Después de 3 años de parches así, la lógica de permisos era imposible de seguir.
+
+**La solución: SDK-version-aware permissions centralizadas**
+
+Reescribí \`permission_service.dart\` con un solo punto de entrada que decide qué pedir según SDK:
+
+\`\`\`dart
+class PermissionService {
+  static Future<bool> getExtStoragePermission() async {
+    if (GetPlatform.isDesktop) return Future.value(true);
+
+    final sdkInt = SDKInt.Companion.getSDKInt();
+    if (sdkInt < 30) {
+      // Android 9 y anteriores: Permission.storage funciona
+      var status = await Permission.storage.status;
+      if (status.isDenied) {
+        await [
+          Permission.storage,
+          Permission.accessMediaLocation,
+          Permission.mediaLibrary,
+        ].request();
+      }
+      return (await Permission.storage.status).isGranted;
+    } else {
+      // Android 10+: scoped storage
+      if (!await Permission.manageExternalStorage.isGranted) {
+        final permission = await Permission.manageExternalStorage.request();
+        return permission.isGranted;
+      }
+      return true;
+    }
+  }
+}
+\`\`\`
+
+El \`SDKInt.Companion.getSDKInt()\` viene del JNI bridge (siguiente sección). Es la única forma de tener el SDK int de Android en Dart sin pasar por un MethodChannel. Raro, pero funcional.
+
+**Audio en background: AudioServiceConfig para Android 14+**
+
+Android 14+ requiere que declares el tipo de foreground service en el AndroidManifest.xml Y que el config de audio_service coincida:
+
+\`\`\`xml
+<!-- android/app/src/main/AndroidManifest.xml -->
+<service
+    android:name="com.ryanheise.audioservice.AudioService"
+    android:foregroundServiceType="mediaPlayback"
+    android:exported="true"
+    tools:ignore="Instantiatable">
+    <intent-filter>
+        <action android:name="androidx.media3.session.MediaSessionService"/>
+        <action android:name="android.media.browse.MediaBrowserService"/>
+    </intent-filter>
+</service>
+\`\`\`
+
+Sin \`foregroundServiceType="mediaPlayback"\`, Android 14 mata la app cuando intenta ir a background. Es la primera línea de defensa.
+
+Después, el \`AudioServiceConfig\` en Dart:
+
+\`\`\`dart
+static const _config = AudioServiceConfig(
+  androidNotificationIcon: 'mipmap/ic_launcher_monochrome',
+  androidNotificationChannelId: 'com.mycompany.myapp.audio',
+  androidNotificationChannelName: 'Harmony Music Notification',
+  androidNotificationOngoing: true,    // ← no dismissable durante playback
+  androidStopForegroundOnPause: true,  // ← stops foreground cuando se pausa
+  androidBrowsableRootExtras: { ... }, // ← para Android Auto browsing
+);
+AudioService.init<MyAudioHandler>(_builder, config: _config);
+\`\`\`
+
+\`androidNotificationOngoing: true\` significa que el usuario NO puede descartar la notificación con swipe. Es lo que esperás de un player de música: la notificación queda hasta que pausás o cerrás la app. Si ponés \`false\`, el usuario mata la música por accidente.
+
+\`androidStopForegroundOnPause: true\` es la otra decisión clave: cuando el usuario pausa, el foreground service se detiene. Esto le dice a Android "no estoy haciendo nada en background, podés matarme si necesitás memoria". Es el comportamiento correcto para batería.
+
+**El JNI bridge: por qué no hay package Dart para el equalizer**
+
+El equalizer de Android está en \`android.media.audiofx.Equalizer\`. Es una clase Java con métodos nativos. No hay un package Dart que la exponga. Hay dos opciones:
+
+1. MethodChannel manual — escribir el código Java/Kotlin, escribir el código Dart, mantener ambos lados sincronizados
+2. JNI con \`jni\` + \`jnigen\` — generar los bindings desde la clase Java/Kotlin existente
+
+El autor original ya tenía un equalizer implementado via MethodChannel. Era 200 líneas de Kotlin + 150 líneas de Dart, sincronizadas a mano. Cuando algo cambiaba, se rompía en silencio.
+
+Lo reemplacé con un bridge JNI usando \`jnigen\`, que lee la clase Java y genera los bindings Dart automáticamente:
+
+\`\`\`dart
+// lib/services/equalizer.dart
+import 'package:jni/jni.dart';
+
+class EqualizerService {
+  static bool openEqualizer(int sessionId) {
+    JObject activity = JObject.fromReference(Jni.getCurrentActivity());
+    JObject context = JObject.fromReference(Jni.getCachedApplicationContext());
+    final success = Equalizer().openEqualizer(sessionId, context, activity);
+    return success;
+  }
+}
+
+// jnigen lee com.mycompany.myapp.Equalizer.kt y genera los bindings Dart
+// Cambios en Kotlin → regenerar bindings → no más drift
+\`\`\`
+
+El precio: agregás un step de generación de código al build. El beneficio: cero drift entre Kotlin y Dart. Si mañana cambia la firma de \`Equalizer.openEqualizer\`, el build falla inmediatamente, no en producción.
+
+**El onTaskRemoved handler: ¿matar o continuar?**
+
+Cuando el usuario swipea la app del recent apps tray, Android llama \`onTaskRemoved\`. La decisión: ¿seguir reproduciendo o parar? Depende de la preferencia del usuario y de la lógica de battery optimization.
+
+\`\`\`dart
+// audio_handler.dart
+@override
+Future<void> onTaskRemoved() async {
+  if (await _userPrefs.shouldStopOnTaskRemoved()) {
+    await super.onTaskRemoved();  // stops everything
+  } else {
+    // continuar reproducción (audio_service maneja el foreground service)
+  }
+}
+\`\`\`
+
+El default debería ser "continuar" para un music player (el usuario espera que la música siga cuando limpia las recientes). Pero algunos OEMs (Xiaomi, Huawei, OnePlus) matan agresivamente las apps en background — para esos usuarios, \`shouldStopOnTaskRemoved = true\` puede ser la única forma de evitar battery drain por música que "no debería estar sonando".
+
+**El impacto**
+
+\`\`\`
+Permisos: funcionan en Android 9 → 14+
+Audio background: estable en todas las versiones modernas
+Equalizer: sin drift entre Kotlin y Dart (JNI)
+Notificación: ongoing, no se mata por swipe
+\`\`\`
+
+El testing fue manual en 5 dispositivos físicos (Pixel 3 con Android 12, Pixel 6 con Android 14, Samsung A52 con Android 13, Xiaomi Redmi con Android 11, OnePlus 9 con Android 14). Cada uno con sus quirks de battery optimization.
+
+**Lecciones aprendidas**
+
+Una app de música para Android 14+ no es la misma app que para Android 9. Tres cosas son obligatorias: SDK-version-aware permissions en un solo lugar, \`foregroundServiceType="mediaPlayback"\` en el manifest, y un JNI bridge para cualquier API nativa sin package Dart.
+
+El anti-patrón más común que veo: branches de SDK check dispersos por el código, cada uno con un comentario vago de cuándo se agregó. Centralizarlos en un \`PermissionService\` con un método por cada necesidad del usuario hace que el código sea mantenible por años.
+
+Y la regla del JNI: si la API nativa cambia con frecuencia o tiene muchos métodos, usá \`jnigen\` para generar bindings. Si es estática y de 2-3 métodos, MethodChannel manual está bien. La diferencia es cuánto te dolerá cuando cambies la firma de un método.`,
+    contentEn: `One of the first things I noticed when I forked Harmony-Music was that the permission and background audio code was from the Android 9 era. The app "worked" on Android 14+ by accident — but there were three time bombs waiting for the first chance to break.
+
+**The problem: three Android eras in the same code**
+
+\`lib/services/permission_service.dart\` had this:
+
+\`\`\`dart
+// Original author's code, circa 2019
+var status = await Permission.storage.status;
+if (status.isDenied) {
+  await Permission.storage.request();
+}
+return status.isGranted;
+\`\`\`
+
+This worked on Android 9 (API 28). On Android 10+ (API 29+), Google introduced scoped storage, which changed the meaning of \`Permission.storage\`. On Android 11+ (API 30+), \`Permission.storage\` does not exist at all — you have to use \`Permission.manageExternalStorage\` with a special "All Files Access" flow.
+
+The result: the app could not write song downloads on Android 11+. On Android 13+ (API 33+), media permissions split into \`Permission.audio\`, \`Permission.video\`, \`Permission.images\`. On Android 14+ (API 34+), foreground services require declaring the type (mediaPlayback, microphone, location, etc.) in the manifest.
+
+**The anti-pattern: one code path for all SDKs**
+
+The old code had a single path: \`Permission.storage.request()\`. When it stopped working on some SDK, they "fixed" it by adding a loose if somewhere in the code, without documentation. The bug density increased with each Android release.
+
+\`\`\`dart
+// Anti-pattern: scattered SDK checks
+if (someCondition && sdkInt > 29 && someOtherCondition) { ... }
+// Comment: "fixed this for Pixel 5 with Android 11"
+\`\`\`
+
+After 3 years of patches like this, the permission logic was impossible to follow.
+
+**The solution: centralized SDK-version-aware permissions**
+
+I rewrote \`permission_service.dart\` with a single entry point that decides what to ask for based on SDK:
+
+\`\`\`dart
+class PermissionService {
+  static Future<bool> getExtStoragePermission() async {
+    if (GetPlatform.isDesktop) return Future.value(true);
+
+    final sdkInt = SDKInt.Companion.getSDKInt();
+    if (sdkInt < 30) {
+      // Android 9 and below: Permission.storage works
+      var status = await Permission.storage.status;
+      if (status.isDenied) {
+        await [
+          Permission.storage,
+          Permission.accessMediaLocation,
+          Permission.mediaLibrary,
+        ].request();
+      }
+      return (await Permission.storage.status).isGranted;
+    } else {
+      // Android 10+: scoped storage
+      if (!await Permission.manageExternalStorage.isGranted) {
+        final permission = await Permission.manageExternalStorage.request();
+        return permission.isGranted;
+      }
+      return true;
+    }
+  }
+}
+\`\`\`
+
+The \`SDKInt.Companion.getSDKInt()\` comes from the JNI bridge (next section). It is the only way to have the Android SDK int in Dart without going through a MethodChannel. Weird, but functional.
+
+**Background audio: AudioServiceConfig for Android 14+**
+
+Android 14+ requires you to declare the foreground service type in AndroidManifest.xml AND that the audio_service config matches:
+
+\`\`\`xml
+<!-- android/app/src/main/AndroidManifest.xml -->
+<service
+    android:name="com.ryanheise.audioservice.AudioService"
+    android:foregroundServiceType="mediaPlayback"
+    android:exported="true"
+    tools:ignore="Instantiatable">
+    <intent-filter>
+        <action android:name="androidx.media3.session.MediaSessionService"/>
+        <action android:name="android.media.browse.MediaBrowserService"/>
+    </intent-filter>
+</service>
+\`\`\`
+
+Without \`foregroundServiceType="mediaPlayback"\`, Android 14 kills the app when it tries to go to background. It is the first line of defense.
+
+Then the \`AudioServiceConfig\` in Dart:
+
+\`\`\`dart
+static const _config = AudioServiceConfig(
+  androidNotificationIcon: 'mipmap/ic_launcher_monochrome',
+  androidNotificationChannelId: 'com.mycompany.myapp.audio',
+  androidNotificationChannelName: 'Harmony Music Notification',
+  androidNotificationOngoing: true,    // ← not dismissable during playback
+  androidStopForegroundOnPause: true,  // ← stops foreground when paused
+  androidBrowsableRootExtras: { ... }, // ← for Android Auto browsing
+);
+AudioService.init<MyAudioHandler>(_builder, config: _config);
+\`\`\`
+
+\`androidNotificationOngoing: true\` means the user CANNOT dismiss the notification with a swipe. It is what you expect from a music player: the notification stays until you pause or close the app. If you set \`false\`, the user kills the music by accident.
+
+\`androidStopForegroundOnPause: true\` is the other key decision: when the user pauses, the foreground service stops. This tells Android "I am not doing anything in background, you can kill me if you need memory". It is the correct behavior for battery.
+
+**The JNI bridge: why there is no Dart package for the equalizer**
+
+The Android equalizer lives at \`android.media.audiofx.Equalizer\`. It is a Java class with native methods. There is no Dart package that exposes it. There are two options:
+
+1. Manual MethodChannel — write the Java/Kotlin code, write the Dart code, keep both sides in sync
+2. JNI with \`jni\` + \`jnigen\` — generate bindings from the existing Java/Kotlin class
+
+The original author already had an equalizer implemented via MethodChannel. It was 200 lines of Kotlin + 150 lines of Dart, manually synced. When something changed, it broke silently.
+
+I replaced it with a JNI bridge using \`jnigen\`, which reads the Java class and generates the Dart bindings automatically:
+
+\`\`\`dart
+// lib/services/equalizer.dart
+import 'package:jni/jni.dart';
+
+class EqualizerService {
+  static bool openEqualizer(int sessionId) {
+    JObject activity = JObject.fromReference(Jni.getCurrentActivity());
+    JObject context = JObject.fromReference(Jni.getCachedApplicationContext());
+    final success = Equalizer().openEqualizer(sessionId, context, activity);
+    return success;
+  }
+}
+
+// jnigen reads com.mycompany.myapp.Equalizer.kt and generates Dart bindings
+// Changes in Kotlin → regenerate bindings → no more drift
+\`\`\`
+
+The cost: you add a code generation step to the build. The benefit: zero drift between Kotlin and Dart. If \`Equalizer.openEqualizer\`'s signature changes tomorrow, the build fails immediately, not in production.
+
+**The onTaskRemoved handler: kill or continue?**
+
+When the user swipes the app from the recent apps tray, Android calls \`onTaskRemoved\`. The decision: keep playing or stop? Depends on user preference and battery optimization logic.
+
+\`\`\`dart
+// audio_handler.dart
+@override
+Future<void> onTaskRemoved() async {
+  if (await _userPrefs.shouldStopOnTaskRemoved()) {
+    await super.onTaskRemoved();  // stops everything
+  } else {
+    // continue playback (audio_service handles the foreground service)
+  }
+}
+\`\`\`
+
+The default should be "continue" for a music player (the user expects music to keep playing when they clear recents). But some OEMs (Xiaomi, Huawei, OnePlus) aggressively kill background apps — for those users, \`shouldStopOnTaskRemoved = true\` may be the only way to avoid battery drain from music that "should not be playing".
+
+**The impact**
+
+\`\`\`
+Permissions: work on Android 9 → 14+
+Background audio: stable on all modern versions
+Equalizer: no drift between Kotlin and Dart (JNI)
+Notification: ongoing, not killed by swipe
+\`\`\`
+
+Testing was manual on 5 physical devices (Pixel 3 with Android 12, Pixel 6 with Android 14, Samsung A52 with Android 13, Xiaomi Redmi with Android 11, OnePlus 9 with Android 14). Each with its own battery optimization quirks.
+
+**Lessons learned**
+
+A music app for Android 14+ is not the same app as for Android 9. Three things are mandatory: SDK-version-aware permissions in one place, \`foregroundServiceType="mediaPlayback"\` in the manifest, and a JNI bridge for any native API without a Dart package.
+
+The most common anti-pattern I see: scattered SDK check branches throughout the code, each with a vague comment about when it was added. Centralizing them in a \`PermissionService\` with one method per user need makes the code maintainable for years.
+
+And the JNI rule: if the native API changes frequently or has many methods, use \`jnigen\` to generate bindings. If it is static and 2-3 methods, manual MethodChannel is fine. The difference is how much it will hurt when you change a method signature.`,
+    relatedIds: ['inherited-oss-flutter-modernization', 'flutter-cross-platform-audio-architecture', 'flutter-build-modernization-upgrade-mountain'],
   },
 ].map((post) => ({
   ...post,
