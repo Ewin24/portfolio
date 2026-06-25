@@ -265,6 +265,49 @@ export const caseStudies: CaseStudy[] = [
   },
 
   // ═════════════════════════════════════════════════════════════════════════
+  // PROYECTO 8 — Harmony-Music (Open Source)
+  // Mantenedor independiente de app Flutter de música streaming
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'harmony-music-oss',
+    slug: 'harmony-music-flutter-open-source-maintainer',
+    featured: true,
+    order: -1,
+
+    title: 'Harmony-Music — Mantenedor de App Flutter Open Source de Música Multiplataforma',
+    titleEn: 'Harmony-Music — Maintainer of Cross-Platform Flutter Open Source Music App',
+
+    company: 'Harmony-Music (Fork OSS)',
+    companyAnon: false,
+    industry: 'Open Source / Mobile & Desktop',
+
+    period: '2026 – Presente',
+    role: 'Mantenedor Open Source & Desarrollador Flutter',
+    roleEn: 'Open Source Maintainer & Flutter Developer',
+
+    problem:
+      'El creador original marcó el repositorio como "no mantenido" en diciembre 2025, dejando una app Flutter cross-platform (Android, Windows, Linux) con dependencias abandonadas (ionicons roto con Dart 3.12), flags de migrador de Gradle sin limpiar, código que crasheaba en runtime (RangeError por indexWhere devolviendo -1), y sin herramientas de debugging. La app usaba una API no documentada (InnerTube de YouTube Music) que cambiaba sin aviso, rompiendo búsquedas y bucketing de resultados.',
+    problemEn:
+      'The original creator marked the repository as "unmaintained" in December 2025, leaving a cross-platform Flutter app (Android, Windows, Linux) with abandoned dependencies (ionicons broken with Dart 3.12), leftover Gradle migrator flags, code that crashed at runtime (RangeError from indexWhere returning -1), and no debugging tools. The app used an undocumented API (YouTube Music InnerTube) that changed without notice, breaking search and result bucketing.',
+
+    solution:
+      'Apliqué una metodología de triage en 4 fases: (1) Build primero — Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20 con DSL moderno, removí flags del migrador, migré a Flutter built-in Kotlin. (2) Deprecaciones — 19 commits reemplazando withOpacity por withValues(alpha:), Color.value por toARGB32(), ThemeData getters por colorScheme, removí ionicons. (3) Runtime — reescribí el bucketing de búsqueda para responder al nuevo formato plano de InnerTube (24/25 resultados caían en buckets huérfanos), agregué guardas de indexWhere, mejoré el logging estructurado de HTTP. (4) Tooling — construí un ResponseRecorder que captura respuestas crudas a disco y un logger con colores ANSI para inspeccionar cambios de API offline. La arquitectura de audio usa just_audio + media_kit + audio_service + SMTC para cubrir 3 plataformas con una sola API Dart.',
+    solutionEn:
+      'Applied a 4-phase triage methodology: (1) Build first — Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20 with modern DSL, removed migrator flags, migrated to Flutter built-in Kotlin. (2) Deprecations — 19 commits replacing withOpacity with withValues(alpha:), Color.value with toARGB32(), ThemeData getters with colorScheme, removed ionicons. (3) Runtime — rewrote search bucketing to handle the new flat InnerTube format (24/25 results fell into orphan buckets), added indexWhere guards, improved structured HTTP logging. (4) Tooling — built a ResponseRecorder that captures raw responses to disk and a logger with ANSI colors to inspect API changes offline. The audio architecture uses just_audio + media_kit + audio_service + SMTC to cover 3 platforms with a single Dart API.',
+
+    impact:
+      '~36 commits en 3 días que llevaron la app de "no compila" a "release v1.12.2" con toolchain moderno. Búsqueda funcional con nuevo formato de InnerTube (clasificación por pageType, top 10 por bucket). Build limpio con Flutter 3.44+. Audio funcional en 3 plataformas con engines separados pero API unificada. Documentación completa (setup, contributing, API surface map, Postman collection). App mantenida activamente en GitHub con releases y changelog.',
+    impactEn:
+      '~36 commits in 3 days that took the app from "does not compile" to "release v1.12.2" with modern toolchain. Working search with new InnerTube format (pageType classification, top 10 per bucket). Clean build with Flutter 3.44+. Working audio on 3 platforms with separate engines but unified API. Complete documentation (setup, contributing, API surface map, Postman collection). Actively maintained app on GitHub with releases and changelog.',
+
+    stack: ['Flutter 3.44+', 'Dart', 'GetX', 'just_audio', 'media_kit', 'audio_service', 'youtube_explode_dart', 'Hive', 'Dio', 'JNI'],
+    architectureDiagram: 'Capa de UI (GetX controllers) → Capa de Servicios (MusicService/InnerTube, StreamService/youtube_explode, AudioHandler/audio_service) → Storage local (Hive boxes: AppPrefs, SongsCache, SongDownloads, SongsUrlCache) → Engines de audio: just_audio (Android/ExoPlayer) + just_audio_media_kit (Windows/Linux/mpv) + SMTC (Windows media keys). Aíslates para URL fetch. Debug overlay con ResponseRecorder + structured logger.',
+    githubUrl: 'https://github.com/Ewin24/Harmony-Music',
+    hasNDA: false,
+    tags: ['flutter', 'open-source', 'oss', 'maintenance', 'mobile', 'desktop', 'audio', 'build', 'api-resilience'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
   // PROYECTO 7 — STARSOL (SaaS Riesgos Financieros)
   // Plataforma B2B para el sector solidario
   // ═════════════════════════════════════════════════════════════════════════
