@@ -1521,7 +1521,7 @@ Orchestration doesn't require a dedicated microservice or a message queue. A wel
     id: 'inherited-oss-flutter-modernization',
     slug: 'heredar-proyecto-flutter-no-mantenido',
     series: 'OSS Maintenance',
-    title: 'Lo que realmente heredás cuando forkás un proyecto Flutter "no mantenido"',
+    title: 'Lo que realmente heredas al hacer un fork de un proyecto Flutter "no mantenido"',
     titleEn: 'What you actually inherit when you fork an "unmaintained" Flutter project',
     date: '2026-06-26',
     tags: ['flutter', 'open-source', 'oss', 'maintenance', 'triage', 'build', 'deprecation', 'debugging'],
@@ -1547,7 +1547,7 @@ El README decía claramente: "This repository is no longer maintained". La prime
 
 **El anti-patrón: empezar por los features**
 
-Mi primer instinto fue agregar features nuevos. Resistir. Un feature sobre un build roto es deuda técnica disfrazada de progreso. Si no podés compilar, no podés testear. Si no podés testear, no podés saber si el feature nuevo funciona. Si el feature nuevo no funciona, agregás un bug encima de un proyecto que ya tiene bugs invisibles.
+Mi primer instinto fue agregar features nuevos. Resistir. Un feature sobre un build roto es deuda técnica disfrazada de progreso. Si no puedes compilar, no puedes testear. Si no puedes testear, no puedes saber si el feature nuevo funciona. Si el feature nuevo no funciona, agregas un bug encima de un proyecto que ya tiene bugs invisibles.
 
 La decisión fue: cero features hasta tener build limpio, cero deprecaciones en analyzer, runtime sin crashes obvios, y herramientas mínimas de debugging.
 
@@ -1629,7 +1629,7 @@ Cada fase sumada a la anterior. Sin Fase 1, no podía verificar Fase 2. Sin Fase
 
 Un fork de mantenimiento no es un proyecto personal. Es custodiar trabajo de otro. La metodología de triage en fases acopladas te da una baseline verificable antes de agregar valor nuevo. El "upgrade tax" (19 commits solo de deprecaciones) es real, pero hacerlo por categoría lo hace manejable. Y la herramienta más valiosa que construí no fue código nuevo: fue el ResponseRecorder, porque sin él no podía ver qué había cambiado.
 
-Si estás por forkar un proyecto "no mantenido", tu primera semana no debería tener features. Debería tener build limpio, analyzer limpio, runtime estable, y al menos un logger que te diga qué está pasando cuando algo falle. Después de eso, podés pensar en features.`,
+Si estás por hacer un fork de un proyecto "no mantenido", tu primera semana no debería tener features. Debería tener build limpio, analyzer limpio, runtime estable, y al menos un logger que te diga qué está pasando cuando algo falle. Después de eso, puedes pensar en features.`,
     contentEn: `In December 2025, the original creator of Harmony-Music (a Flutter music streaming app for Android, Windows, and Linux) marked the repository as "unmaintained" and disappeared. In June 2026, I decided to fork it and maintain it myself.
 
 What I found was not a project ready for feature work. It was a project with abandoned dependencies, code that crashed on basic flows, and not a single piece of observability. The app "worked" for whoever compiled it in the original author's exact environment — but that environment no longer existed.
@@ -2037,7 +2037,7 @@ If you are going to do cross-platform audio, assume you will compose. And start 
     id: 'youtube-innertube-api-resilience',
     slug: 'youtube-innertube-api-resiliencia',
     series: 'OSS Maintenance',
-    title: 'Cuando tu app depende de una API que no controlás: reverse-engineering YouTube Music',
+    title: 'Cuando tu app depende de una API que no controlas: reverse-engineering YouTube Music',
     titleEn: 'When your app depends on an API you don\'t control: reverse-engineering YouTube Music',
     date: '2026-06-26',
     tags: ['flutter', 'youtube', 'innertube', 'api-resilience', 'debugging', 'logging', 'resilience'],
@@ -2215,7 +2215,7 @@ Después:
 
 **Lecciones aprendidas**
 
-Cuando tu app depende de una API que no controlás, los "fixes" sin observabilidad son temporales. Sí, clasificar por \`pageType\` resolvió el problema inmediato. Pero la inversión que más rindió fue el ResponseRecorder: me dio la capacidad de ver el cambio, no solo de reaccionar a él. Si vas a integrar con una API no documentada (InnerTube, scraping de cualquier web grande, etc.), construí el recorder ANTES del primer fix. La primera vez que InnerTube cambie de nuevo, te va a ahorrar horas.
+Cuando tu app depende de una API que no controlas, los "fixes" sin observabilidad son temporales. Sí, clasificar por \`pageType\` resolvió el problema inmediato. Pero la inversión que más rindió fue el ResponseRecorder: me dio la capacidad de ver el cambio, no solo de reaccionar a él. Si vas a integrar con una API no documentada (InnerTube, scraping de cualquier web grande, etc.), construí el recorder ANTES del primer fix. La primera vez que InnerTube cambie de nuevo, te va a ahorrar horas.
 
 Y la regla que aplica: nunca parsees por posición o por string de UI (títulos, labels). Siempre por un signal estable del schema (\`pageType\`, \`type\`, enums del backend). Los strings visibles son la primera cosa que cambia cuando alguien i18n el sistema o hace un rename cosmético.`,
     contentEn: `The most controversial decision in Harmony-Music is that it does not use the official YouTube Data API. No OAuth, no quota, no TOS compliance. It uses InnerTube: the internal API that YouTube Music exposes to its own web app, reverse-engineered by the community for years.
@@ -2433,7 +2433,7 @@ Flutter no es un framework monolítico. Es una pirámide donde cada capa depende
               Plugins (audio_service, get, hive, etc.)
 \`\`\`
 
-Si bumpás Flutter SDK sin bumpear Gradle, no compila. Si bumpás AGP sin bumpear Gradle, falla. Si bumpás Kotlin sin bumpear los plugins, los plugins crashean en runtime. Si bumpás Dart a 3.12 y dejás un package que no soporta \`final class\`, no compila. Todo está acoplado.
+Si haces bump de Flutter SDK sin bumpear Gradle, no compila. Si haces bump de AGP sin bumpear Gradle, falla. Si haces bump de Kotlin sin bumpear los plugins, los plugins crashean en runtime. Si haces bump de Dart a 3.12 y dejas un package que no soporta \`final class\`, no compila. Todo está acoplado.
 
 **El anti-patrón: el "big bang upgrade"**
 
@@ -2441,7 +2441,7 @@ El anti-patrón clásico es un PR de 200+ archivos que bumpa SDK, AGP, Gradle, K
 
 **La solución: 10 pasos acoplados con un commit por paso**
 
-El orden importa. Cada paso depende del anterior. Si intentás saltar, fallás.
+El orden importa. Cada paso depende del anterior. Si intentas saltar, fallas.
 
 \`\`\`
 Paso 1:  Audit de pubspec.yaml (paquetes abandonados)
@@ -2553,7 +2553,7 @@ git add -A
 git commit -m "refactor: replace withOpacity with withValues(alpha:)"
 \`\`\`
 
-El orden de los commits importa: si commiteás Material Icons antes que Material API deprecations, los archivos que tocás no están en el estado "limpio" todavía.
+El orden de los commits importa: si haces commit de Material Icons antes que Material API deprecations, los archivos que tocas no están en el estado "limpio" todavía.
 
 **Paso 10: verificación final**
 
@@ -2583,7 +2583,7 @@ El "upgrade tax" real fue 19 commits en 4 días. Cada commit tardó entre 30 min
 
 El upgrade tax de un proyecto Flutter abandonado es real, medible, y merece ser planeado. La métrica que nadie te dice: aproximadamente 1 commit de deprecación por cada 1.5 años de gap, en un proyecto de tamaño medio. Si dejaste tu proyecto 1 año sin maintenance, esperá 5-8 commits solo de deprecaciones. Si dejaste 2 años, 15-20.
 
-El orden importa más que la velocidad. Si intentás hacer todo en un commit, fallás. Si hacés commits por categoría, podés hacer rollback de uno sin romper los otros. Y antes de tocar el código, auditá \`pubspec.yaml\` en busca de paquetes abandonados: un solo package roto te bloquea todo el upgrade.
+El orden importa más que la velocidad. Si intentas hacer todo en un commit, fallas. Si haces commits por categoría, puedes hacer rollback de uno sin romper los otros. Y antes de tocar el código, audita \`pubspec.yaml\` en busca de paquetes abandonados: un solo package roto te bloquea todo el upgrade.
 
 Si vas a mantener un proyecto Flutter activo, no dejes pasar más de 6 meses entre upgrades. Cada mes adicional son 2-3 commits de deprecaciones futuras. La deuda técnica en Flutter es visible, predecible, y completamente evitable con un cronograma.`,
     contentEn: `When I forked Harmony-Music, my instinct was: \`flutter upgrade\`, read the breaking changes, done. What actually happened was a month of chained work where every bump broke something that depended on the previous bump. The lesson: upgrading a Flutter project is not a commit, it is a cascade.
@@ -2798,7 +2798,7 @@ if (status.isDenied) {
 return status.isGranted;
 \`\`\`
 
-Esto funcionaba en Android 9 (API 28). En Android 10+ (API 29+), Google introdujo scoped storage, que cambió el significado de \`Permission.storage\`. En Android 11+ (API 30+), \`Permission.storage\` no existe para nada — tenés que usar \`Permission.manageExternalStorage\` con un flow especial de "All Files Access".
+Esto funcionaba en Android 9 (API 28). En Android 10+ (API 29+), Google introdujo scoped storage, que cambió el significado de \`Permission.storage\`. En Android 11+ (API 30+), \`Permission.storage\` no existe para nada — tienes que usar \`Permission.manageExternalStorage\` con un flow especial de "All Files Access".
 
 El resultado: la app no podía escribir descargas de canciones en Android 11+. En Android 13+ (API 33+), los media permissions se separaron en \`Permission.audio\`, \`Permission.video\`, \`Permission.images\`. En Android 14+ (API 34+), los foreground services requieren declarar el tipo (mediaPlayback, microphone, location, etc.) en el manifest.
 
@@ -2883,9 +2883,9 @@ static const _config = AudioServiceConfig(
 AudioService.init<MyAudioHandler>(_builder, config: _config);
 \`\`\`
 
-\`androidNotificationOngoing: true\` significa que el usuario NO puede descartar la notificación con swipe. Es lo que esperás de un player de música: la notificación queda hasta que pausás o cerrás la app. Si ponés \`false\`, el usuario mata la música por accidente.
+\`androidNotificationOngoing: true\` significa que el usuario NO puede descartar la notificación con swipe. Es lo que esperas de un player de música: la notificación queda hasta que pausas o cierras la app. Si pones \`false\`, el usuario mata la música por accidente.
 
-\`androidStopForegroundOnPause: true\` es la otra decisión clave: cuando el usuario pausa, el foreground service se detiene. Esto le dice a Android "no estoy haciendo nada en background, podés matarme si necesitás memoria". Es el comportamiento correcto para batería.
+\`androidStopForegroundOnPause: true\` es la otra decisión clave: cuando el usuario pausa, el foreground service se detiene. Esto le dice a Android "no estoy haciendo nada en background, puedes matarme si necesitas memoria". Es el comportamiento correcto para batería.
 
 **El JNI bridge: por qué no hay package Dart para el equalizer**
 
@@ -2915,7 +2915,7 @@ class EqualizerService {
 // Cambios en Kotlin → regenerar bindings → no más drift
 \`\`\`
 
-El precio: agregás un step de generación de código al build. El beneficio: cero drift entre Kotlin y Dart. Si mañana cambia la firma de \`Equalizer.openEqualizer\`, el build falla inmediatamente, no en producción.
+El precio: agregas un step de generación de código al build. El beneficio: cero drift entre Kotlin y Dart. Si mañana cambia la firma de \`Equalizer.openEqualizer\`, el build falla inmediatamente, no en producción.
 
 **El onTaskRemoved handler: ¿matar o continuar?**
 
@@ -2952,7 +2952,7 @@ Una app de música para Android 14+ no es la misma app que para Android 9. Tres 
 
 El anti-patrón más común que veo: branches de SDK check dispersos por el código, cada uno con un comentario vago de cuándo se agregó. Centralizarlos en un \`PermissionService\` con un método por cada necesidad del usuario hace que el código sea mantenible por años.
 
-Y la regla del JNI: si la API nativa cambia con frecuencia o tiene muchos métodos, usá \`jnigen\` para generar bindings. Si es estática y de 2-3 métodos, MethodChannel manual está bien. La diferencia es cuánto te dolerá cuando cambies la firma de un método.`,
+Y la regla del JNI: si la API nativa cambia con frecuencia o tiene muchos métodos, usa \`jnigen\` para generar bindings. Si es estática y de 2-3 métodos, MethodChannel manual está bien. La diferencia es cuánto te dolerá cuando cambies la firma de un método.`,
     contentEn: `One of the first things I noticed when I forked Harmony-Music was that the permission and background audio code was from the Android 9 era. The app "worked" on Android 14+ by accident — but there were three time bombs waiting for the first chance to break.
 
 **The problem: three Android eras in the same code**
