@@ -175,7 +175,7 @@
     </script>
 
     <title>Edwin Trigos | Software Architect & Full Stack Developer</title>
-    <script type="module" crossorigin src="/portfolio/assets/index-CO-jcpoJ.js"></script>
+    <script type="module" crossorigin src="/portfolio/assets/index-n43mLDRQ.js"></script>
     <link rel="stylesheet" crossorigin href="/portfolio/assets/index-cuoKVj85.css">
   <script type="application/ld+json">
 [
@@ -687,13 +687,13 @@
     "@type": "CreativeWork",
     "@id": "https://ewin24.github.io/portfolio/#case-datacredito-api",
     "name": "API de Integración con Burós de Crédito — Datacredito",
-    "description": "Consultas automatizadas al 100%. Resiliencia ante fallos del proveedor externo con circuit breaker y retry policy. Trazabilidad completa via Serilog. Arquitectura preparada para migración a .NET 10 sin cambios estructurales.",
+    "description": "Reducción drástica de tiempos de consulta (de 3+ segundos a sub-segundo) mediante índices optimizados y caché de credenciales. CredentialFactory centralizado: cero duplicación de claves, agregar un nuevo proveedor sin desplegar código. Resiliencia operativa: circuit breaker aísla fallos del proveedor sin afectar otras integraciones. Trazabilidad completa: cada consulta queda registrada con su respuesta real del proveedor — cuando un analista reporta un fallo, se reproduce en segundos abriendo la tabla de auditoría. Patrón always-register: FueExitoso=true/false para todos los servicios, sin excepciones. Arquitectura preparada para migración a .NET 10 sin cambios estructurales.",
     "inLanguage": "es",
     "dateCreated": "2024",
     "author": {
       "@id": "https://ewin24.github.io/portfolio/#person"
     },
-    "keywords": "fintech, api, backend, resilience, dotnet",
+    "keywords": "fintech, api, backend, resilience, dotnet, credentials, audit",
     "about": {
       "@type": "Thing",
       "name": "Fintech / Riesgo Crediticio"
@@ -748,6 +748,23 @@
     "about": {
       "@type": "Thing",
       "name": "Desarrollo Web"
+    },
+    "creativeWorkStatus": "Published"
+  },
+  {
+    "@type": "CreativeWork",
+    "@id": "https://ewin24.github.io/portfolio/#case-infobip-email-api",
+    "name": "API Centralizada de Comunicaciones por Email — Infobip como Proveedor Único",
+    "description": "Tiempo medio de diagnóstico de email no entregado: de 30 minutos a 5 segundos (búsqueda por GUID en la tabla de auditoría). Cero credenciales hardcodeadas: las 8 cuentas viven en BD con encriptación, rotables sin redeploy. Cambio de proveedor de email: de \"reescribir 5 integraciones\" a \"implementar un nuevo IEmailProvider\" — medido en horas, no semanas. Cero emails huérfanos: cada transacción tiene estado persistido antes de llamar al proveedor, no se pierde traceability si el request falla a mitad de camino. Logs de proveedor compartidos sin filtrar contexto de negocio: nombres de sp_ internos ofuscados, prefijos de negocio en mensajes de log removidos. 7 controladores REST (uno por canal de consumo: admin, suppliers, employees, batch, webhooks, monitoring, admin-tools) consumiendo el mismo servicio de aplicación — cero duplicación de lógica entre canales.",
+    "inLanguage": "es",
+    "dateCreated": "2024",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "api, architecture, clean-architecture, dotnet, communications, integration, multi-tenant, audit",
+    "about": {
+      "@type": "Thing",
+      "name": "Communications / SaaS B2B"
     },
     "creativeWorkStatus": "Published"
   },
@@ -848,7 +865,7 @@
   "@type": "ItemList",
   "name": "Production Case Studies",
   "description": "Real systems shipped to production by Edwin Trigos.",
-  "numberOfItems": 8,
+  "numberOfItems": 9,
   "itemListElement": [
     {
       "@type": "ListItem",
@@ -869,7 +886,7 @@
       "position": 3,
       "name": "API de Integración con Burós de Crédito — Datacredito",
       "url": "https://ewin24.github.io/portfolio/#projects",
-      "description": "Consultas automatizadas al 100%. Resiliencia ante fallos del proveedor externo con circuit breaker y retry policy. Trazabilidad completa via Serilog. Arquitectura preparada para migración a .NET 10 sin cambios estructurales."
+      "description": "Reducción drástica de tiempos de consulta (de 3+ segundos a sub-segundo) mediante índices optimizados y caché de credenciales. CredentialFactory centralizado: cero duplicación de claves, agregar un nuevo proveedor sin desplegar código. Resiliencia operativa: circuit breaker aísla fallos del proveedor sin afectar otras integraciones. Trazabilidad completa: cada consulta queda registrada con su respuesta real del proveedor — cuando un analista reporta un fallo, se reproduce en segundos abriendo la tabla de auditoría. Patrón always-register: FueExitoso=true/false para todos los servicios, sin excepciones. Arquitectura preparada para migración a .NET 10 sin cambios estructurales."
     },
     {
       "@type": "ListItem",
@@ -895,13 +912,20 @@
     {
       "@type": "ListItem",
       "position": 7,
+      "name": "API Centralizada de Comunicaciones por Email — Infobip como Proveedor Único",
+      "url": "https://ewin24.github.io/portfolio/#projects",
+      "description": "Tiempo medio de diagnóstico de email no entregado: de 30 minutos a 5 segundos (búsqueda por GUID en la tabla de auditoría). Cero credenciales hardcodeadas: las 8 cuentas viven en BD con encriptación, rotables sin redeploy. Cambio de proveedor de email: de \"reescribir 5 integraciones\" a \"implementar un nuevo IEmailProvider\" — medido en horas, no semanas. Cero emails huérfanos: cada transacción tiene estado persistido antes de llamar al proveedor, no se pierde traceability si el request falla a mitad de camino. Logs de proveedor compartidos sin filtrar contexto de negocio: nombres de sp_ internos ofuscados, prefijos de negocio en mensajes de log removidos. 7 controladores REST (uno por canal de consumo: admin, suppliers, employees, batch, webhooks, monitoring, admin-tools) consumiendo el mismo servicio de aplicación — cero duplicación de lógica entre canales."
+    },
+    {
+      "@type": "ListItem",
+      "position": 8,
       "name": "Harmony-Music — Mantenedor de App Flutter Open Source de Música Multiplataforma",
       "url": "https://ewin24.github.io/portfolio/#projects",
       "description": "~36 commits en 3 días que llevaron la app de \"no compila\" a \"release v1.12.2\" con toolchain moderno. Búsqueda funcional con nuevo formato de InnerTube (clasificación por pageType, top 10 por bucket). Build limpio con Flutter 3.44+. Audio funcional en 3 plataformas con engines separados pero API unificada. Documentación completa (setup, contributing, API surface map, Postman collection). App mantenida activamente en GitHub con releases y changelog."
     },
     {
       "@type": "ListItem",
-      "position": 8,
+      "position": 9,
       "name": "STARSOL — Plataforma SaaS para Gestión Integral de Riesgos",
       "url": "https://ewin24.github.io/portfolio/#projects",
       "description": "Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR."
@@ -1035,10 +1059,10 @@
 </article>
 <article>
 <h3>API de Integración con Burós de Crédito — Datacredito</h3>
-<p><strong>Company</strong>: Baguer Software. <strong>Period</strong>: 2024 – 2025. <strong>Stack</strong>: .NET 8, C#, Dapper, SQL Server, Polly, Serilog, JWT, REST API.</p>
-<p><strong>Problem</strong>: El proceso de consulta a centrales de riesgo (Datacredito) requería integración manual con formatos legacy. Las consultas fallaban frecuentemente por errores de formato, y no había resiliencia ante fallos de red del proveedor externo. No existía trazabilidad de las consultas realizadas.</p>
-<p><strong>Solution</strong>: Construí una API REST en .NET 8 con Dapper + SQL Server, implementando patrones de resiliencia con Polly (circuit breaker + retry policy), autenticación JWT, y logging estructurado con Serilog. Implementé un middleware de request/response logging con sanitización de campos sensibles. Arquitectura en 3 capas (Web/Data/Common) con inyección de dependencias.</p>
-<p><strong>Impact</strong>: Consultas automatizadas al 100%. Resiliencia ante fallos del proveedor externo con circuit breaker y retry policy. Trazabilidad completa via Serilog. Arquitectura preparada para migración a .NET 10 sin cambios estructurales.</p>
+<p><strong>Company</strong>: Baguer Software. <strong>Period</strong>: 2024 – 2025. <strong>Stack</strong>: .NET 8, C#, Dapper, SQL Server, Polly, Serilog, JWT, REST API, Strategy Pattern, Factory Pattern.</p>
+<p><strong>Problem</strong>: El proceso de consulta a centrales de riesgo (Datacredito) requería integración manual con formatos legacy. Las consultas tardaban más de 3 segundos en promedio por falta de índices optimizados, las credenciales de cada servicio estaban hardcodeadas en código y archivos de configuración dispersos, y cuando una consulta fallaba no había forma de saber si el problema era del proveedor, de la red, o de los datos de entrada. Sin trazabilidad: cero registro de respuestas, cero auditoría de fallos, cero posibilidad de reproducir un error reportado por un usuario.</p>
+<p><strong>Solution</strong>: Construí una API REST en .NET 8 con Dapper + SQL Server. Para la resiliencia: Polly con circuit breaker (separa fallos del proveedor del resto del sistema) + retry policy exponencial. Para las credenciales: diseñé un patrón de CredentialFactory con interfaz ICredentialProvider (las credenciales se consultan desde base de datos, no del código), con caché por servicio y expiración automática — agregar un nuevo proveedor es una fila en una tabla, no un cambio de código. Para la trazabilidad: middleware de request/response logging con sanitización de campos sensibles (números de documento, claves), Serilog con tres pipelines (consola + archivo + base de datos), y el patrón always-register que persiste el resultado de cada consulta con su campo FueExitoso tanto en éxito como en fallo. Arquitectura en 3 capas (Web/Data/Common) con inyección de dependencias, optimización de índices en las tablas de historial, y procedimientos almacenados específicos por cada uno de los 5 servicios del proveedor (Preselecta, CrossCore, Historia, Evidente, Reconocer).</p>
+<p><strong>Impact</strong>: Reducción drástica de tiempos de consulta (de 3+ segundos a sub-segundo) mediante índices optimizados y caché de credenciales. CredentialFactory centralizado: cero duplicación de claves, agregar un nuevo proveedor sin desplegar código. Resiliencia operativa: circuit breaker aísla fallos del proveedor sin afectar otras integraciones. Trazabilidad completa: cada consulta queda registrada con su respuesta real del proveedor — cuando un analista reporta un fallo, se reproduce en segundos abriendo la tabla de auditoría. Patrón always-register: FueExitoso=true/false para todos los servicios, sin excepciones. Arquitectura preparada para migración a .NET 10 sin cambios estructurales.</p>
 </article>
 <article>
 <h3>Sistema de Nómina Kampot — Generación de Documentos ERP</h3>
@@ -1060,6 +1084,13 @@
 <p><strong>Problem</strong>: Los portfolios de desarrolladores muestran código pero no el impacto de negocio. Depender exclusivamente de la API de GitHub para mostrar proyectos oculta el trabajo más valioso: sistemas privados empresariales bajo NDA. Necesitaba una plataforma que vendiera ingeniería, no solo repositorios públicos.</p>
 <p><strong>Solution</strong>: Diseñé una arquitectura híbrida: capa de contenido curado (casos de estudio en TypeScript con formato STAR, experiencia laboral, blog) como fuente principal de verdad, y API de GitHub como widget secundario de actividad. Implementé i18n nativo (ES/EN), design system editorial pixel-art con sombras pixeladas y tipografía de periódico, y animaciones con Framer Motion. Construido con React 19 + Vite + TypeScript + Tailwind CSS v4.</p>
 <p><strong>Impact</strong>: Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript.</p>
+</article>
+<article>
+<h3>API Centralizada de Comunicaciones por Email — Infobip como Proveedor Único</h3>
+<p><strong>Company</strong>: la empresa. <strong>Period</strong>: 2024. <strong>Stack</strong>: .NET 8, C#, Clean Architecture, Infobip Email API, Dapper, SQL Server, Serilog, Polly, Azure Blob Storage, JWT.</p>
+<p><strong>Problem</strong>: La empresa operaba con 5 silos independientes de envío de emails: cada sistema (ERP, CRM, portal de proveedores, sistema de originación de crédito, portal de empleados) llamaba directo al proveedor con sus propias credenciales, su propia lógica de retry, y su propio formato. Cuando un email no llegaba, el tiempo medio de diagnóstico era de 30 minutos — había que revisar logs en 5 servidores distintos, identificar cuál de los 8 buzones falló, y reconstruir la petición a mano. Los nombres de stored procedures internos (prefijo sp_ interno) filtraban contexto de negocio en logs compartidos con proveedores externos, comprometiendo la separación de responsabilidades. Cero trazabilidad cross-system: no se podía responder &quot;¿cuántos emails se enviaron a proveedores en las últimas 24 horas?&quot; sin escribir una query nueva cada vez.</p>
+<p><strong>Solution</strong>: Diseñé una API REST unificadora en .NET 8 con Clean Architecture estricta en 4 capas (Api / Application / Domain / Infrastructure). En la capa de Dominio definí la interfaz IEmailProvider con un único método EnviarCorreoConAdjuntosAsync, abstracta sobre cualquier proveedor. En la capa de Application implementé el EmailService que orquesta: validación, plantillas por contexto, persistencia de la transacción con GUID propio antes de llamar al proveedor, y reintento exponencial. En Infrastructure implementé el adaptador InfobipProvider con HttpClient tipado y Polly para circuit breaker. Las 8 cuentas multi-tenant se configuran en appsettings.json con nombres genéricos por contexto de negocio (no por sistema origen), permitiendo ruteo por contexto sin hardcodear. Cada transacción de email se persiste con un GUID como identidad propia — el nuestro, no el del proveedor — trazable desde el log de aplicación hasta la respuesta HTTP. Serilog con 3 pipelines (consola + archivo rotativo + tabla de auditoría en BD) con sanitización de adjuntos, PII y credenciales. Implementé el patrón de plantilla-por-contexto: cada tipo de email (notificación a proveedor, recordatorio a cliente, alerta interna) tiene su template con tokens tipados en lugar de string interpolation, eliminando errores de placeholder.</p>
+<p><strong>Impact</strong>: Tiempo medio de diagnóstico de email no entregado: de 30 minutos a 5 segundos (búsqueda por GUID en la tabla de auditoría). Cero credenciales hardcodeadas: las 8 cuentas viven en BD con encriptación, rotables sin redeploy. Cambio de proveedor de email: de &quot;reescribir 5 integraciones&quot; a &quot;implementar un nuevo IEmailProvider&quot; — medido en horas, no semanas. Cero emails huérfanos: cada transacción tiene estado persistido antes de llamar al proveedor, no se pierde traceability si el request falla a mitad de camino. Logs de proveedor compartidos sin filtrar contexto de negocio: nombres de sp_ internos ofuscados, prefijos de negocio en mensajes de log removidos. 7 controladores REST (uno por canal de consumo: admin, suppliers, employees, batch, webhooks, monitoring, admin-tools) consumiendo el mismo servicio de aplicación — cero duplicación de lógica entre canales.</p>
 </article>
 <article>
 <h3>Harmony-Music — Mantenedor de App Flutter Open Source de Música Multiplataforma</h3>
@@ -1141,8 +1172,8 @@
 <p><time itemprop="datePublished" datetime="2026-06-26">2026-06-26</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: flutter, android, audio_service, jni, equalizer, background-audio, modernization, permissions.</p>
 <p itemprop="description">Una app de música que heredaste con código de Android 9 tiene tres problemas para correr en Android 14+: scoped storage mató Permission.storage, foreground service types son estrictos, y cualquier API nativa (como el equalizer) necesita un bridge JNI porque no hay package Dart. Acá está la solución completa: SDK-version-aware permissions, JNI para Equalizer, y la config de audio_service que mantiene la música viva en background.</p>
 </article>
-<h2>Technologies (52 production-grade)</h2>
-<p>Flutter 3.44+ · Dart · GetX · just_audio · media_kit · audio_service · youtube_explode_dart · Hive · Dio · JNI · Gradle · AGP · Kotlin DSL · PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · .NET Framework · ERP · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API</p>
+<h2>Technologies (55 production-grade)</h2>
+<p>Flutter 3.44+ · Dart · GetX · just_audio · media_kit · audio_service · youtube_explode_dart · Hive · Dio · JNI · Gradle · AGP · Kotlin DSL · PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · Factory Pattern · .NET Framework · ERP · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API · Infobip Email API · Azure Blob Storage</p>
 <h2>Work Experience</h2>
 <article>
 <h3>Mantenedor Open Source (Fork) &amp; Desarrollador Flutter — Harmony-Music</h3>
