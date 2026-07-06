@@ -144,17 +144,17 @@ export const caseStudies: CaseStudy[] = [
   },
 
   // ═════════════════════════════════════════════════════════════════════════
-  // PROYECTO 4 — ErpBaguer / Kampot Nominas
+  // PROYECTO 4 — Extensión de Nóminas para Cadena de Franquicias
   // Sistema de generación de documentos de nómina
   // ═════════════════════════════════════════════════════════════════════════
   {
-    id: 'kampot-nominas',
-    slug: 'integracion-nominas-kampot-erp',
+    id: 'nominas-franquicias',
+    slug: 'extension-plantillas-nomina-franquicias',
     featured: true,
     order: 4,
 
-    title: 'Sistema de Nómina Kampot — Generación de Documentos ERP',
-    titleEn: 'Kampot Payroll System — ERP Document Generation',
+    title: 'Sistema de Nómina — Generación de Documentos para Franquicias',
+    titleEn: 'Payroll System — Document Generation for Franchise Chain',
 
     company: 'Baguer Software',
     companyAnon: false,
@@ -165,14 +165,14 @@ export const caseStudies: CaseStudy[] = [
     roleEn: 'Full Stack Developer',
 
     problem:
-      'El ERP manejaba 45+ tipos de nómina (contratos, terminaciones, cartas) con rutas de documentos estáticas. Tres nuevos tipos de nómina Kampot (Comercial, Administrativa, Temporada) requerían sus propias plantillas Crystal Reports, y el sistema existente usaba rutas compartidas que no permitían personalización por tipo.',
+      'El ERP manejaba 45+ tipos de nómina (contratos, terminaciones, cartas) con rutas de documentos estáticas. Una cadena de franquicias de tiendas de ropa requería 3 nuevos tipos de nómina (Comercial, Administrativa, Temporada) con sus propias plantillas Crystal Reports, pero el sistema existente usaba rutas compartidas que no permitían personalización por tipo.',
     problemEn:
-      'The ERP handled 45+ payroll types (contracts, terminations, letters) with static document routes. Three new Kampot payroll types (Commercial, Administrative, Seasonal) required their own Crystal Reports templates, and the existing system used shared routes that did not allow per-type customization.',
+      'The ERP handled 45+ payroll types (contracts, terminations, letters) with static document routes. A clothing franchise chain required 3 new payroll types (Commercial, Administrative, Seasonal) with their own Crystal Reports templates, but the existing system used shared routes that did not allow per-type customization.',
 
     solution:
-      'Extendí el sistema de enrutamiento de documentos del CRM para soportar los 3 nuevos tipos de nómina Kampot. Modifiqué el CrmController.cs para actualizar la lógica de enrutamiento dinámico: añadí los IDs 46/47/48 al array de nóminas por cuotas, agregué casos específicos en ObtenerNombreContrato(), y creé 21 archivos .rpt (7 por nómina) en una nueva carpeta CReports/Kampot/. Todo siguiendo el patrón existente sin afectar las 45+ nóminas legacy.',
+      'Extendí el sistema de enrutamiento de documentos del CRM para soportar los 3 nuevos tipos de nómina de la cadena de franquicias. Modifiqué el controlador para actualizar la lógica de enrutamiento dinámico: añadí los IDs 46/47/48 al array de nóminas por cuotas, agregué casos específicos en el método de resolución de nombres, y creé 21 archivos .rpt (7 por nómina) en una nueva carpeta dedicada. Todo siguiendo el patrón existente sin afectar las 45+ nóminas legacy.',
     solutionEn:
-      'Extended the CRM document routing system to support the 3 new Kampot payroll types. Modified CrmController.cs to update dynamic routing logic: added IDs 46/47/48 to the installments array, added specific cases in ObtenerNombreContrato(), and created 21 .rpt files (7 per payroll type) in a new CReports/Kampot/ folder. All following the existing pattern without affecting 45+ legacy payroll types.',
+      'Extended the CRM document routing system to support the 3 new franchise chain payroll types. Modified the controller to update dynamic routing logic: added IDs 46/47/48 to the installments array, added specific cases in the name resolution method, and created 21 .rpt files (7 per payroll type) in a new dedicated folder. All following the existing pattern without affecting 45+ legacy payroll types.',
 
     impact:
       'Extensión no-invasiva: 0 breaks en nóminas legacy. 21 plantillas Crystal Reports organizadas por tipo de nómina. Patrón reusable para futuros tipos de contrato. Sistema de enrutamiento dinámico probado con 48 tipos de nómina.',

@@ -120,6 +120,31 @@ export const workExperience: WorkExperience[] = [
       'Participated in migration from .NET Framework to .NET Core applications, applying dependency injection and modern architecture patterns',
     ],
     stack: ['C#', '.NET Core', 'Dapper', 'SQL Server', 'REST API', 'Crystal Reports'],
+    order: 1,
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Cliente — Franquicias de Ropa (Kampot)
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'kampot-franquicias',
+    company: 'Cliente — Franquicias de Ropa',
+    role: 'Desarrollador Full Stack .NET',
+    roleEn: 'Full Stack .NET Developer',
+    period: '2025 – 2026',
+    current: false,
+    location: 'Colombia (Remoto)',
+    achievements: [
+      'Extendí el sistema de enrutamiento de documentos del CRM corporativo para soportar 3 nuevos tipos de nómina (Comercial, Administrativa, Temporada) para una cadena de franquicias de tiendas de ropa, agregando IDs y casos específicos sin afectar los 45+ tipos legacy existentes',
+      'Diseñé e implementé 21 plantillas Crystal Reports (7 por tipo de nómina) organizadas en una estructura de carpetas dedicada, siguiendo el patrón del sistema existente para mantener consistencia',
+      'Implementé enrutamiento dinámico de documentos modificando la lógica de generación de contratos, cartas y terminaciones, logrando una extensión no-invasiva sin regressiones en la operación existente',
+    ],
+    achievementsEn: [
+      'Extended the corporate CRM document routing system to support 3 new payroll types (Commercial, Administrative, Seasonal) for a clothing franchise chain, adding IDs and specific cases without affecting 45+ existing legacy types',
+      'Designed and implemented 21 Crystal Reports templates (7 per payroll type) organized in a dedicated folder structure, following the existing system pattern for consistency',
+      'Implemented dynamic document routing by modifying contract, letter, and termination generation logic, achieving a non-invasive extension with zero regressions on existing operations',
+    ],
+    stack: ['C#', '.NET Framework', 'Crystal Reports', 'SQL Server', 'ERP', 'CRM'],
     order: 2,
   },
 
@@ -149,34 +174,6 @@ export const workExperience: WorkExperience[] = [
     ],
     stack: ['C#', '.NET', 'MySQL', 'JavaScript', 'HTML/CSS', 'Scrum'],
     order: 2,
-  },
-
-  // ═════════════════════════════════════════════════════════════════════════
-  // BAGUER S.A.S — Rol Backend previo
-  // ═════════════════════════════════════════════════════════════════════════
-  {
-    id: 'baguer-software-backend',
-    company: 'BAGUER S.A.S',
-    companyUrl: undefined,
-    role: 'Desarrollador Backend .NET',
-    roleEn: '.NET Backend Developer',
-    period: '2021 – 2023',
-    current: false,
-    location: 'Colombia (Remoto)',
-    achievements: [
-      'Desarrollé y mantuve integraciones con APIs de terceros (burós de crédito CIFIN, pasarelas de pago, servicios de mensajería Infobip) procesando miles de transacciones diarias',
-      'Implementé APIs REST en .NET con Dapper y SQL Server, optimizando consultas mediante índices y caching que redujeron tiempos de respuesta de 3s a 400ms',
-      'Construí sistemas de reportes automatizados con Crystal Reports integrados al ERP, eliminando horas de trabajo manual del equipo de análisis',
-      'Participé en la migración de aplicaciones .NET Framework a .NET Core, aplicando inyección de dependencias y patrones modernos de arquitectura',
-    ],
-    achievementsEn: [
-      'Developed and maintained third-party API integrations (CIFIN credit bureaus, payment gateways, Infobip messaging services) processing thousands of daily transactions',
-      'Implemented REST APIs in .NET with Dapper and SQL Server, optimizing queries through indexes and caching that reduced response times from 3s to 400ms',
-      'Built automated reporting systems with Crystal Reports integrated into the ERP, eliminating hours of manual work from the analytics team',
-      'Participated in migration from .NET Framework to .NET Core applications, applying dependency injection and modern architecture patterns',
-    ],
-    stack: ['C#', '.NET Core', 'Dapper', 'SQL Server', 'REST API', 'Crystal Reports'],
-    order: 1,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
