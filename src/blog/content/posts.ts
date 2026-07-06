@@ -859,7 +859,7 @@ El cambio fue inmediato: cero try-catch en todos los controllers del ERP. Cualqu
 
 **Lecciones aprendidas**
 
-El error handling no es responsabilidad de los controllers. Es un concern transversal que pertenece al middleware. Cada vez que veo un try-catch en un controller, sé que hay una abstracción faltante. Las excepciones de dominio tipadas son la mejor documentación viva de "qué puede salir mal" en el sistema: abrís DomainExceptions.cs y ves todos los casos de error de negocio en una pantalla. El patrón middleware + excepciones tipadas es tan simple que cuesta creer que funcionó tan bien. Pero funcionó porque respeta la separación de capas: dominio define qué puede fallar, infraestructura decide cómo se expresa HTTP.`,
+El error handling no es responsabilidad de los controllers. Es un concern transversal que pertenece al middleware. Cada vez que veo un try-catch en un controller, sé que hay una abstracción faltante. Las excepciones de dominio tipadas son la mejor documentación viva de "qué puede salir mal" en el sistema: abres DomainExceptions.cs y ves todos los casos de error de negocio en una pantalla. El patrón middleware + excepciones tipadas es tan simple que cuesta creer que funcionó tan bien. Pero funcionó porque respeta la separación de capas: dominio define qué puede fallar, infraestructura decide cómo se expresa HTTP.`,
     contentEn: `**The problem: error handling everywhere**
 
 When I inherited the ERP codebase, every controller handled errors differently. Some had try-catch blocks returning 200 with a "success: false" flag. Others threw generic Exception that ended up as 500. And some handled nothing at all — if the service failed, the user saw ASP.NET's yellow error page. There was no consistency. Every few months a bug surfaced where an endpoint returned "Error: Object reference not set to an instance of an object" to the client, leaking internal infrastructure details.
@@ -1887,7 +1887,7 @@ El precio: 4 capas de abstracción, debugging más complejo cuando algo falla (�
 
 La composición es la única forma seria de hacer audio cross-platform en Flutter. No existe el engine mágico que cubra todo. La clave es mantener \`BaseAudioHandler\` como único punto de contacto para la UI, y poner toda la complejidad platform-specific debajo de esa frontera. Los offsets de duration que encontré no están en ninguna doc — solo en el código de testing que escribí y nunca publiqué. Y la separación entre \`audio_service\` (lifecycle/OS integration) y \`just_audio\` (audio engine) es lo que hace que la arquitectura escale: si mañana sale un engine mejor que ExoPlayer, reemplazo \`just_audio\` sin tocar UI.
 
-Si vas a hacer audio cross-platform, asumí que vas a componer. Y empezá con testing de edge cases de duration en desktop antes de pensar que "ya funciona en Android, listo".`,
+Si vas a hacer audio cross-platform, asumí que vas a componer. Y empieza con testing de edge cases de duration en desktop antes de pensar que "ya funciona en Android, listo".`,
     contentEn: `When I started maintaining Harmony-Music (a Flutter music streaming app for Android, Windows, and Linux), I thought choosing one audio engine was a one-time decision. After three releases and two months of testing on all three platforms, I understood: there is no single engine that covers all three well. The only way is to compose.
 
 **The single-engine problem**
@@ -3124,6 +3124,431 @@ The most common anti-pattern I see: scattered SDK check branches throughout the 
 
 And the JNI rule: if the native API changes frequently or has many methods, use \`jnigen\` to generate bindings. If it is static and 2-3 methods, manual MethodChannel is fine. The difference is how much it will hurt when you change a method signature.`,
     relatedIds: ['inherited-oss-flutter-modernization', 'flutter-cross-platform-audio-architecture', 'flutter-build-modernization-upgrade-mountain'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 14 — BOT Ubica / Prueba de Vida (Validación biométrica)
+  // Patrón Strategy + catálogo de diagnósticos + selector de buró
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'bot-ubica-prueba-vida',
+    slug: 'validacion-biometrica-geolocalizacion-credito',
+    series: 'Fintech Patterns',
+    title: 'BOT Ubica + Prueba de Vida: cómo validé identidad biométrica en tiempo real con fallback humano y catálogo de diagnósticos',
+    titleEn: 'BOT Ubica + Proof of Life: how I validated biometric identity in real-time with human fallback and diagnostic catalog',
+    date: '2026-07-15',
+    tags: ['dotnet', 'biometrics', 'strategy-pattern', 'catalog-driven', 'fintech', 'orchestration', 'liveness-detection', 'geolocation'],
+    category: 'arquitectura',
+    featured: true,
+    excerpt:
+      'En un sistema de originación de crédito, validar identidad no es solo confirmar un número de documento. Es probar que la persona está viva, está en el lugar que dice estar, y no es un deepfake. Acá está cómo diseñé BOT Ubica (bot de voz + geolocalización) más Prueba de Vida V2 (liveness detection con OAuth) más un motor de decisiones catalog-driven con 9 códigos de diagnóstico, fallback manual como ciudadano de primera clase, y un selector de buró de crédito configurable sin redeploy.',
+    excerptEn:
+      'In a loan origination system, validating identity is not just confirming a document number. It is proving that the person is alive, is where they say they are, and is not a deepfake. Here is how I designed BOT Ubica (voice bot + geolocation) plus Proof of Life V2 (liveness detection with OAuth) plus a catalog-driven decision engine with 9 diagnostic codes, manual fallback as a first-class citizen, and a configurable credit bureau selector without redeploy.',
+    content: `Cuando te dan un caso de fraude de identidad en una originación de crédito, el problema no es solo "verificar que la persona existe". El problema es verificar cuatro cosas en simultáneo, en tiempo real, sin molestar al cliente legítimo, y dejando trazabilidad completa para auditoría:
+
+1. **Que la persona está viva** (no es una foto robada, no es un video pregrabado)
+2. **Que está donde dice estar** (no es un bot operando desde otro país)
+3. **Que es quien dice ser** (no es un documento falsificado)
+4. **Que toda la operación quede registrada** (para auditoría y replay)
+
+**El problema de la validación manual**
+
+El sistema de originación de crédito en el que trabajé procesaba solicitudes a alta velocidad. La validación de identidad era el cuello de botella: un asesor humano llamaba al cliente, le hacía 4 preguntas, validaba su voz contra una grabación previa, y aprobaba o rechazaba. Tres problemas:
+
+- **Tiempo**: 8-12 minutos por validación. Multiplicado por cientos de solicitudes diarias, era un embudo.
+- **Inconsistencia**: dos asesores diferentes aplicaban criterios diferentes. El mismo cliente podía ser aprobado por uno y rechazado por otro.
+- **Cero trazabilidad**: cuando un caso se disputaba meses después, la única evidencia era "el asesor dijo que la voz no coincidía". Inútil para una disputa legal.
+
+Necesitaba automatizar sin sacrificar el respaldo humano. Y necesitaba que el sistema se pudiera extender sin tocar código (cada mes se agregan nuevos patrones de fraude, no se puede hacer deploy por cada uno).
+
+**El anti-patrón: if/switch con reglas hardcodeadas**
+
+El primer intento fue lo obvio: una clase \`ValidadorIdentidad\` con un \`switch\` enorme:
+
+\`\`\`csharp
+// ANTI-PATRÓN: lógica hardcodeada, no extensible
+public ResultadoValidacion Validar(Solicitud sol) {
+    if (sol.EsClienteNuevo && sol.PaisOrigen == "CO") return LlamarBot(sol);
+    if (sol.MontoSolicitado > 50_000_000) return LlamarBotYVideo(sol);
+    if (sol.EsClienteNuevo) return LlamarAsesor(sol);
+    return SoloOtp(sol);
+    // ... 200 ramas más en producción ...
+}
+\`\`\`
+
+Tres problemas:
+- Cada nueva regla requiere deploy
+- Imposible saber qué reglas se aplicaron a una solicitud específica
+- El equipo de negocio no puede proponer cambios — depende del equipo de desarrollo
+
+**La solución: Strategy Pattern + motor catalog-driven**
+
+Reescribí el sistema en tres capas:
+
+\`\`\`
+┌──────────────────────────────────────────────┐
+│   Capa de orquestación: SOVI (orquestador)   │
+└────────────────┬─────────────────────────────┘
+                 │
+     ┌───────────┴───────────┐
+     │                       │
+┌────▼──────────┐    ┌───────▼────────┐
+│ BOT Ubica     │    │ Validador      │
+│ (bot voz +    │    │ Manual         │
+│  geolocation) │    │ (asesor humano)│
+└────┬──────────┘    └───────┬────────┘
+     │                       │
+     └───────────┬───────────┘
+                 │
+        ┌────────▼─────────┐
+        │ Diagnostico      │
+        │ Decision Engine  │
+        │ (catálogo en BD) │
+        └────────┬─────────┘
+                 │
+        ┌────────▼─────────┐
+        │ CentralSelector  │
+        │ (CIFIN/DATACRE-  │
+        │  DITO por        │
+        │  campaña)        │
+        └────────┬─────────┘
+                 │
+        ┌────────▼─────────┐
+        │ Prueba de Vida   │
+        │ V2 (Face Liveness│
+        │ con OAuth)       │
+        └──────────────────┘
+\`\`\`
+
+**Capa 1: Strategy Pattern para BOT vs Manual**
+
+Definí una interfaz \`IValidacionStrategy\` con dos implementaciones:
+
+\`\`\`csharp
+public interface IValidacionStrategy {
+    Task<ResultadoValidacion> ValidarAsync(Solicitud solicitud);
+    string NombreEstrategia { get; }
+}
+public class BotValidacionStrategy : IValidacionStrategy {
+    public string NombreEstrategia => "BOT_UBICA";
+    public async Task<ResultadoValidacion> ValidarAsync(Solicitud s)
+        => _engine.Decidir(_engine.Clasificar(await _bot.EjecutarAsync(s)), s);
+}
+// ManualValidacionStrategy: misma interfaz, asigna asesor
+\`\`\`
+
+El orquestador SOVI decide cuál estrategia usar en runtime, basándose en reglas de negocio (campaña, monto, país, score de riesgo). Pero la decisión **de qué hacer con el resultado** vive en el motor de diagnósticos, no en el orquestador.
+
+**Capa 2: Diagnostico Decision Engine (catalog-driven)**
+
+El motor de decisiones no tiene un solo \`if\` hardcodeado. Toda la lógica vive en una tabla de catálogo en base de datos:
+
+\`\`\`sql
+CREATE TABLE cat.CatalogoDiagnosticosBot (
+    CodigoDiagnostico VARCHAR(20) PRIMARY KEY,
+    Descripcion NVARCHAR(200),
+    AccionSistema VARCHAR(50),  -- APROBAR, RECHAZAR, ESCALAR_MANUAL, REINTENTAR
+    RequiereCallback BIT,
+    TiempoEsperaMinutos INT,
+    Activo BIT
+);
+\`\`\`
+
+Cuando el bot retorna, el motor clasifica la respuesta en uno de los 9 códigos de diagnóstico actuales y consulta el catálogo:
+
+\`\`\`csharp
+public class DiagnosticoDecisionEngine {
+    public DecisionResultado Decidir(string codigo, Solicitud s) {
+        var diag = _catalogo.ObtenerDiagnostico(codigo);
+        return diag == null
+            ? new DecisionResultado(ESCALAR_MANUAL, _paquete.Construir(codigo, s))  // Plan B
+            : new DecisionResultado(diag.AccionSistema, diag.RequiereCallback);
+    }
+}
+\`\`\`
+
+El "Paquete de Inconsistencia" es un objeto con toda la información que el asesor humano necesita para resolver un caso que el bot no pudo clasificar. **No es un fallback afterthought**: es un ciudadano de primera clase, diseñado desde el día uno.
+
+**Capa 3: CentralSelector (buró de crédito configurable por campaña)**
+
+Cada campaña publicitaria usa un buró distinto (CIFIN, DATACREDITO, o ambos). El selector evita hardcodear esto:
+
+\`\`\`csharp
+public class CentralSelector {
+    private readonly ICampanaRepository _campanas;
+    public async Task<List<IConsultoraCredito>> SeleccionarAsync(int campanaId) {
+        var campana = await _campanas.ObtenerConCentralesAsync(campanaId);
+        return campana.Centrales.OrderBy(c => c.OrdenConsulta)
+            .Select(c => c.Tipo == TipoCentral.CIFIN ? _cifinProvider : _datacreditoProvider)
+            .ToList();
+        // Agregar bur\u00f3 = una fila en la tabla, no un cambio de c\u00f3digo
+    }
+}
+\`\`\`
+
+Cambiar de buró para una campaña es una fila en una tabla, no un cambio de código.
+
+**Capa 4: Prueba de Vida V2 (Face Liveness OAuth)**
+
+Para detectar deepfakes y videos pregrabados, agregué Face Liveness Detection con OAuth contra un proveedor externo. La integración usa un \`FaceLivenessClient\` con caché de tokens:
+
+\`\`\`csharp
+// En FaceLivenessClient: cache de token OAuth con double-checked locking
+private static readonly SemaphoreSlim _lock = new(1, 1);
+private static string? _token; private static DateTime _expiry;
+public static async Task<string> GetTokenAsync() {
+    if (_token != null && DateTime.UtcNow < _expiry) return _token;  // fast path
+    await _lock.WaitAsync();
+    if (_token != null && DateTime.UtcNow < _expiry) return _token;  // re-check
+    _token = await _oauth.ObtenerAccessTokenAsync();
+    _expiry = DateTime.UtcNow.AddMinutes(50); return _token;  // margen 10 min
+}
+\`\`\`
+
+El \`SemaphoreSlim\` evita el thundering herd cuando múltiples validaciones concurrentes necesitan token al mismo tiempo. El margen de 10 minutos (token válido 60, caché 50) evita usar tokens expirados en el último segundo.
+
+**El patrón hybrid sync/async**
+
+El bot de voz opera en modo síncrono desde la perspectiva del cliente: el cliente espera en línea mientras el bot hace las preguntas. Pero internamente, algunas operaciones son asíncronas (consulta al buró, liveness check). El orquestador maneja esto con un patrón de callback híbrido:
+
+\`\`\`
+Cliente (síncrono) → BOT (síncrono) → SOVI (orquesta)
+                                          │
+                                          ├── CIFIN/DATACREDITO (async) ←┐
+                                          ├── Face Liveness (async)      │
+                                          └── [espera ambos resultados] ─┘
+                                          │
+                                          ← Respuesta consolidada
+\`\`\`
+
+El SOVI espera ambos resultados con un timeout, y si alguno falla, el motor de diagnósticos decide si escalar a manual o reintentar.
+
+**El impacto**
+
+- **9 códigos de diagnóstico** activos en el catálogo, cada uno con su acción específica
+- **6 endpoints REST** expuestos: 3 para BOT, 2 para liveness, 1 para consulta de estado
+- **9 stored procedures** dedicadas al módulo de validación (todas con prefijo \`sp_\`)
+- **Feature flag rollout** gradual: 5% → 25% → 50% → 100% de las campañas nuevas
+- **Cero código nuevo** para agregar un nuevo código de diagnóstico (es una fila en la tabla)
+- **Fallback manual** con paquete de inconsistencia automático
+- **Cero downtime** durante deploys: la tabla de catálogo se actualiza sin reiniciar el servicio
+
+El feature flag es clave: cada nueva campaña entra al 5% de tráfico. Si la tasa de escalación a manual supera un umbral (definido por campaña), se detiene el rollout automáticamente.
+
+**Lecciones aprendidas**
+
+Tres lecciones que aplican a cualquier sistema de validación automatizada:
+
+**1. Plan B como ciudadano de primera clase, no afterthought.** El paquete de inconsistencia y la estrategia manual están diseñados desde el inicio, no agregados cuando falla. Esto significa que cuando un caso no se puede resolver automáticamente, el asesor humano tiene TODO lo que necesita para resolverlo en segundos, no en minutos reconstruyendo contexto.
+
+**2. Catalog-driven > if/switch hardcodeado.** Cualquier regla de decisión que pueda cambiar con frecuencia (códigos de fraude, acciones por tipo de validación, umbral de escalación) debe vivir en base de datos, no en código. El equipo de negocio puede proponer cambios, el equipo de desarrollo solo revisa la estructura del catálogo.
+
+**3. El feature flag no es opcional.** El rollout gradual 5→25→50→100% con auto-rollback por umbral de escalación es lo que te permite dormir tranquilo. Si BOT Ubica funciona mal en el primer 5%, solo afecta al 5% — no a toda la producción.
+
+Si estás diseñando un sistema de validación con fallback humano, asumí que el bot va a fallar. Diseñá para el fallo. Y la forma de diseñar para el fallo es tener el plan B como código de primera, no como una rama de \`catch\`.`,
+    contentEn: `When you get an identity fraud case in a loan origination, the problem is not just "verify the person exists". The problem is verifying four things simultaneously, in real-time, without bothering the legitimate customer, and leaving complete traceability for auditing:
+
+1. **That the person is alive** (not a stolen photo, not a pre-recorded video)
+2. **That they are where they say they are** (not a bot operating from another country)
+3. **That they are who they say they are** (not a forged document)
+4. **That the entire operation is recorded** (for audit and replay)
+
+**The manual validation problem**
+
+The loan origination system I worked on processed applications at high speed. Identity validation was the bottleneck: a human advisor called the customer, asked 4 questions, validated their voice against a previous recording, and approved or rejected. Three problems:
+
+- **Time**: 8-12 minutes per validation. Multiplied by hundreds of daily applications, it was a funnel.
+- **Inconsistency**: two different advisors applied different criteria. The same customer could be approved by one and rejected by another.
+- **Zero traceability**: when a case was disputed months later, the only evidence was "the advisor said the voice did not match". Useless for a legal dispute.
+
+I needed to automate without sacrificing human backup. And I needed the system to be extendable without touching code (every month new fraud patterns are added, you cannot deploy for each one).
+
+**The anti-pattern: if/switch with hardcoded rules**
+
+The first attempt was the obvious one: a \`ValidadorIdentidad\` class with a huge \`switch\`:
+
+\`\`\`csharp
+// ANTI-PATTERN: hardcoded logic, not extendable
+public ResultadoValidacion Validar(Solicitud sol) {
+    if (sol.EsClienteNuevo && sol.PaisOrigen == "CO") return CallBot(sol);
+    if (sol.MontoSolicitado > 50_000_000) return CallBotAndVideo(sol);
+    if (sol.EsClienteNuevo) return CallAdvisor(sol);
+    return OtpOnly(sol);
+    // ... 200 more branches in production ...
+}
+\`\`\`
+
+Three problems:
+- Every new rule requires a deploy
+- Impossible to know which rules were applied to a specific application
+- The business team cannot propose changes — it depends on the development team
+
+**The solution: Strategy Pattern + catalog-driven engine**
+
+I rewrote the system in three layers:
+
+\`\`\`
+┌──────────────────────────────────────────────┐
+│   Orchestration layer: SOVI (orchestrator)   │
+└────────────────┬─────────────────────────────┘
+                 │
+     ┌───────────┴───────────┐
+     │                       │
+┌────▼──────────┐    ┌───────▼────────┐
+│ BOT Ubica     │    │ Manual         │
+│ (voice bot +  │    │ Validator      │
+│  geolocation) │    │ (human advisor)│
+└────┬──────────┘    └───────┬────────┘
+     │                       │
+     └───────────┬───────────┘
+                 │
+        ┌────────▼─────────┐
+        │ Diagnostic       │
+        │ Decision Engine  │
+        │ (catalog in DB)  │
+        └────────┬─────────┘
+                 │
+        ┌────────▼─────────┐
+        │ CentralSelector  │
+        │ (CIFIN/DATACRE-  │
+        │  DITO per        │
+        │  campaign)       │
+        └────────┬─────────┘
+                 │
+        ┌────────▼─────────┐
+        │ Proof of Life    │
+        │ V2 (Face Liveness│
+        │ with OAuth)      │
+        └──────────────────┘
+\`\`\`
+
+**Layer 1: Strategy Pattern for BOT vs Manual**
+
+I defined an \`IValidacionStrategy\` interface with two implementations:
+
+\`\`\`csharp
+public interface IValidacionStrategy {
+    Task<ResultadoValidacion> ValidarAsync(Solicitud solicitud);
+    string NombreEstrategia { get; }
+}
+public class BotValidacionStrategy : IValidacionStrategy {
+    public string NombreEstrategia => "BOT_UBICA";
+    public async Task<ResultadoValidacion> ValidarAsync(Solicitud s)
+        => _engine.Decidir(_engine.Clasificar(await _bot.EjecutarAsync(s)), s);
+}
+// ManualValidacionStrategy: same interface, assigns advisor
+\`\`\`
+
+The SOVI orchestrator decides which strategy to use at runtime, based on business rules (campaign, amount, country, risk score). But the decision **of what to do with the result** lives in the diagnostic engine, not in the orchestrator.
+
+**Layer 2: Diagnostic Decision Engine (catalog-driven)**
+
+The decision engine does not have a single hardcoded \`if\`. All logic lives in a catalog table in the database:
+
+\`\`\`sql
+CREATE TABLE cat.CatalogoDiagnosticosBot (
+    CodigoDiagnostico VARCHAR(20) PRIMARY KEY,
+    Descripcion NVARCHAR(200),
+    AccionSistema VARCHAR(50),  -- APROBAR, RECHAZAR, ESCALAR_MANUAL, REINTENTAR
+    RequiereCallback BIT,
+    TiempoEsperaMinutos INT,
+    Activo BIT
+);
+\`\`\`
+
+When the bot returns, the engine classifies the response into one of the 9 current diagnostic codes and queries the catalog:
+
+\`\`\`csharp
+public class DiagnosticoDecisionEngine {
+    public DecisionResultado Decidir(string codigo, Solicitud s) {
+        var diag = _catalogo.ObtenerDiagnostico(codigo);
+        return diag == null
+            ? new DecisionResultado(ESCALAR_MANUAL, _paquete.Construir(codigo, s))  // Plan B
+            : new DecisionResultado(diag.AccionSistema, diag.RequiereCallback);
+    }
+}
+\`\`\`
+
+The "Inconsistency Package" is an object with all the information the human advisor needs to resolve a case the bot could not classify. **It is not an afterthought fallback**: it is a first-class citizen, designed from day one.
+
+**Layer 3: CentralSelector (configurable credit bureau per campaign)**
+
+Each advertising campaign uses a different bureau (CIFIN, DATACREDITO, or both). The selector avoids hardcoding this:
+
+\`\`\`csharp
+public class CentralSelector {
+    private readonly ICampanaRepository _campanas;
+    public async Task<List<IConsultoraCredito>> SeleccionarAsync(int campanaId) {
+        var campana = await _campanas.ObtenerConCentralesAsync(campanaId);
+        return campana.Centrales.OrderBy(c => c.OrdenConsulta)
+            .Select(c => c.Tipo == TipoCentral.CIFIN ? _cifinProvider : _datacreditoProvider)
+            .ToList();
+        // Agregar bur\u00f3 = una fila en la tabla, no un cambio de c\u00f3digo
+    }
+}
+\`\`\`
+
+Changing the bureau for a campaign is a row in a table, not a code change.
+
+**Layer 4: Proof of Life V2 (Face Liveness OAuth)**
+
+To detect deepfakes and pre-recorded videos, I added Face Liveness Detection with OAuth against an external provider. The integration uses a \`FaceLivenessClient\` with token caching:
+
+\`\`\`csharp
+// En FaceLivenessClient: cache de token OAuth con double-checked locking
+private static readonly SemaphoreSlim _lock = new(1, 1);
+private static string? _token; private static DateTime _expiry;
+public static async Task<string> GetTokenAsync() {
+    if (_token != null && DateTime.UtcNow < _expiry) return _token;  // fast path
+    await _lock.WaitAsync();
+    if (_token != null && DateTime.UtcNow < _expiry) return _token;  // re-check
+    _token = await _oauth.ObtenerAccessTokenAsync();
+    _expiry = DateTime.UtcNow.AddMinutes(50); return _token;  // margen 10 min
+}
+\`\`\`
+
+The \`SemaphoreSlim\` prevents the thundering herd when multiple concurrent validations need the token at the same time. The 10-minute margin (token valid 60, cache 50) avoids using expired tokens at the last second.
+
+**The hybrid sync/async pattern**
+
+The voice bot operates in synchronous mode from the client perspective: the client waits on the line while the bot asks questions. But internally, some operations are async (bureau query, liveness check). The orchestrator handles this with a hybrid callback pattern:
+
+\`\`\`
+Client (sync) → BOT (sync) → SOVI (orchestrates)
+                                          │
+                                          ├── CIFIN/DATACREDITO (async) ←┐
+                                          ├── Face Liveness (async)      │
+                                          └── [waits for both results] ─┘
+                                          │
+                                          ← Consolidated response
+\`\`\`
+
+The SOVI waits for both results with a timeout, and if either fails, the diagnostic engine decides whether to escalate to manual or retry.
+
+**The impact**
+
+- **9 diagnostic codes** active in the catalog, each with its specific action
+- **6 REST endpoints** exposed: 3 for BOT, 2 for liveness, 1 for status query
+- **9 stored procedures** dedicated to the validation module (all with \`sp_\` prefix)
+- **Feature flag rollout** gradual: 5% → 25% → 50% → 100% of new campaigns
+- **Zero new code** to add a new diagnostic code (it is a row in the table)
+- **Manual fallback** with automatic inconsistency package
+- **Zero downtime** during deploys: the catalog table is updated without restarting the service
+
+The feature flag is key: each new campaign enters at 5% of traffic. If the manual escalation rate exceeds a threshold (defined per campaign), the rollout stops automatically.
+
+**Lessons learned**
+
+Three lessons that apply to any automated validation system with human fallback:
+
+**1. Plan B as first-class citizen, not afterthought.** The inconsistency package and the manual strategy are designed from the start, not added when things fail. This means that when a case cannot be resolved automatically, the human advisor has EVERYTHING they need to resolve it in seconds, not minutes reconstructing context.
+
+**2. Catalog-driven > hardcoded if/switch.** Any decision rule that may change frequently (fraud codes, validation actions, escalation threshold) must live in the database, not in code. The business team can propose changes, the development team only reviews the catalog structure.
+
+**3. The feature flag is not optional.** The gradual rollout 5→25→50→100% with auto-rollback by escalation threshold is what lets you sleep well. If BOT Ubica fails at the first 5%, it only affects 5% — not the entire production.
+
+If you are designing a validation system with human fallback, assume the bot will fail. Design for failure. And the way to design for failure is to have plan B as first-class code, not as a \`catch\` branch.`,
+    relatedIds: ['clean-architecture-los', 'catalog-driven-decision-engine', 'domain-exception-problemdetails-pipeline'],
   },
 ].map((post) => ({
   ...post,
