@@ -175,7 +175,7 @@
     </script>
 
     <title>Edwin Trigos | Software Architect & Full Stack Developer</title>
-    <script type="module" crossorigin src="/portfolio/assets/index-BiPLE2U7.js"></script>
+    <script type="module" crossorigin src="/portfolio/assets/index-acDXc3ZQ.js"></script>
     <link rel="stylesheet" crossorigin href="/portfolio/assets/index-cuoKVj85.css">
   <script type="application/ld+json">
 [
@@ -730,8 +730,8 @@
   },
   {
     "@type": "CreativeWork",
-    "@id": "https://ewin24.github.io/portfolio/#case-kampot-nominas",
-    "name": "Sistema de Nómina Kampot — Generación de Documentos ERP",
+    "@id": "https://ewin24.github.io/portfolio/#case-nominas-franquicias",
+    "name": "Sistema de Nómina — Generación de Documentos para Franquicias",
     "description": "Extensión no-invasiva: 0 breaks en nóminas legacy. 21 plantillas Crystal Reports organizadas por tipo de nómina. Patrón reusable para futuros tipos de contrato. Sistema de enrutamiento dinámico probado con 48 tipos de nómina.",
     "inLanguage": "es",
     "dateCreated": "2025",
@@ -919,7 +919,7 @@
     {
       "@type": "ListItem",
       "position": 4,
-      "name": "Sistema de Nómina Kampot — Generación de Documentos ERP",
+      "name": "Sistema de Nómina — Generación de Documentos para Franquicias",
       "url": "https://ewin24.github.io/portfolio/#projects",
       "description": "Extensión no-invasiva: 0 breaks en nóminas legacy. 21 plantillas Crystal Reports organizadas por tipo de nómina. Patrón reusable para futuros tipos de contrato. Sistema de enrutamiento dinámico probado con 48 tipos de nómina."
     },
@@ -1100,10 +1100,10 @@
 <p><strong>Impact</strong>: Reducción drástica de tiempos de consulta (de 3+ segundos a sub-segundo) mediante índices optimizados y caché de credenciales. CredentialFactory centralizado: cero duplicación de claves, agregar un nuevo proveedor sin desplegar código. Resiliencia operativa: circuit breaker aísla fallos del proveedor sin afectar otras integraciones. Trazabilidad completa: cada consulta queda registrada con su respuesta real del proveedor — cuando un analista reporta un fallo, se reproduce en segundos abriendo la tabla de auditoría. Patrón always-register: FueExitoso=true/false para todos los servicios, sin excepciones. Arquitectura preparada para migración a .NET 10 sin cambios estructurales.</p>
 </article>
 <article>
-<h3>Sistema de Nómina Kampot — Generación de Documentos ERP</h3>
+<h3>Sistema de Nómina — Generación de Documentos para Franquicias</h3>
 <p><strong>Company</strong>: Baguer Software. <strong>Period</strong>: 2025 – 2026. <strong>Stack</strong>: C#, .NET Framework, Crystal Reports, SQL Server, ERP.</p>
-<p><strong>Problem</strong>: El ERP manejaba 45+ tipos de nómina (contratos, terminaciones, cartas) con rutas de documentos estáticas. Tres nuevos tipos de nómina Kampot (Comercial, Administrativa, Temporada) requerían sus propias plantillas Crystal Reports, y el sistema existente usaba rutas compartidas que no permitían personalización por tipo.</p>
-<p><strong>Solution</strong>: Extendí el sistema de enrutamiento de documentos del CRM para soportar los 3 nuevos tipos de nómina Kampot. Modifiqué el CrmController.cs para actualizar la lógica de enrutamiento dinámico: añadí los IDs 46/47/48 al array de nóminas por cuotas, agregué casos específicos en ObtenerNombreContrato(), y creé 21 archivos .rpt (7 por nómina) en una nueva carpeta CReports/Kampot/. Todo siguiendo el patrón existente sin afectar las 45+ nóminas legacy.</p>
+<p><strong>Problem</strong>: El ERP manejaba 45+ tipos de nómina (contratos, terminaciones, cartas) con rutas de documentos estáticas. Una cadena de franquicias de tiendas de ropa requería 3 nuevos tipos de nómina (Comercial, Administrativa, Temporada) con sus propias plantillas Crystal Reports, pero el sistema existente usaba rutas compartidas que no permitían personalización por tipo.</p>
+<p><strong>Solution</strong>: Extendí el sistema de enrutamiento de documentos del CRM para soportar los 3 nuevos tipos de nómina de la cadena de franquicias. Modifiqué el controlador para actualizar la lógica de enrutamiento dinámico: añadí los IDs 46/47/48 al array de nóminas por cuotas, agregué casos específicos en el método de resolución de nombres, y creé 21 archivos .rpt (7 por nómina) en una nueva carpeta dedicada. Todo siguiendo el patrón existente sin afectar las 45+ nóminas legacy.</p>
 <p><strong>Impact</strong>: Extensión no-invasiva: 0 breaks en nóminas legacy. 21 plantillas Crystal Reports organizadas por tipo de nómina. Patrón reusable para futuros tipos de contrato. Sistema de enrutamiento dinámico probado con 48 tipos de nómina.</p>
 </article>
 <article>
@@ -1212,8 +1212,8 @@
 <p><time itemprop="datePublished" datetime="2026-07-15">2026-07-15</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: dotnet, biometrics, strategy-pattern, catalog-driven, fintech, orchestration, liveness-detection, geolocation.</p>
 <p itemprop="description">En un sistema de originación de crédito, validar identidad no es solo confirmar un número de documento. Es probar que la persona está viva, está en el lugar que dice estar, y no es un deepfake. Acá está cómo diseñé BOT Ubica (bot de voz + geolocalización) más Prueba de Vida V2 (liveness detection con OAuth) más un motor de decisiones catalog-driven con 9 códigos de diagnóstico, fallback manual como ciudadano de primera clase, y un selector de buró de crédito configurable sin redeploy.</p>
 </article>
-<h2>Technologies (55 production-grade)</h2>
-<p>Flutter 3.44+ · Dart · GetX · just_audio · media_kit · audio_service · youtube_explode_dart · Hive · Dio · JNI · Gradle · AGP · Kotlin DSL · PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · Factory Pattern · .NET Framework · ERP · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API · Infobip Email API · Azure Blob Storage</p>
+<h2>Technologies (56 production-grade)</h2>
+<p>Flutter 3.44+ · Dart · GetX · just_audio · media_kit · audio_service · youtube_explode_dart · Hive · Dio · JNI · Gradle · AGP · Kotlin DSL · PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET Framework · ERP · CRM · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · Factory Pattern · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API · Infobip Email API · Azure Blob Storage</p>
 <h2>Work Experience</h2>
 <article>
 <h3>Mantenedor Open Source (Fork) &amp; Desarrollador Flutter — Harmony-Music</h3>
@@ -1259,6 +1259,16 @@
 <p><strong>Stack</strong>: C#, .NET Core, Dapper, SQL Server, REST API, Crystal Reports</p>
 </article>
 <article>
+<h3>Desarrollador Full Stack .NET — Cliente — Franquicias de Ropa</h3>
+<p><strong>Period</strong>: 2025 – 2026. <strong>Location</strong>: Colombia (Remoto).</p>
+<ul>
+<li>Extendí el sistema de enrutamiento de documentos del CRM corporativo para soportar 3 nuevos tipos de nómina (Comercial, Administrativa, Temporada) para una cadena de franquicias de tiendas de ropa, agregando IDs y casos específicos sin afectar los 45+ tipos legacy existentes</li>
+<li>Diseñé e implementé 21 plantillas Crystal Reports (7 por tipo de nómina) organizadas en una estructura de carpetas dedicada, siguiendo el patrón del sistema existente para mantener consistencia</li>
+<li>Implementé enrutamiento dinámico de documentos modificando la lógica de generación de contratos, cartas y terminaciones, logrando una extensión no-invasiva sin regressiones en la operación existente</li>
+</ul>
+<p><strong>Stack</strong>: C#, .NET Framework, Crystal Reports, SQL Server, ERP, CRM</p>
+</article>
+<article>
 <h3>Desarrollador Full Stack (.NET &amp; JavaScript) — CAMPUSLANDS</h3>
 <p><strong>Period</strong>: Feb 2023 – Ene 2024. <strong>Location</strong>: Colombia.</p>
 <ul>
@@ -1268,17 +1278,6 @@
 <li>Consumí los servicios backend a través de un frontend dinámico e interactivo construido con JavaScript, asegurando calidad y mantenibilidad del código a largo plazo</li>
 </ul>
 <p><strong>Stack</strong>: C#, .NET, MySQL, JavaScript, HTML/CSS, Scrum</p>
-</article>
-<article>
-<h3>Desarrollador Backend .NET — BAGUER S.A.S</h3>
-<p><strong>Period</strong>: 2021 – 2023. <strong>Location</strong>: Colombia (Remoto).</p>
-<ul>
-<li>Desarrollé y mantuve integraciones con APIs de terceros (burós de crédito CIFIN, pasarelas de pago, servicios de mensajería Infobip) procesando miles de transacciones diarias</li>
-<li>Implementé APIs REST en .NET con Dapper y SQL Server, optimizando consultas mediante índices y caching que redujeron tiempos de respuesta de 3s a 400ms</li>
-<li>Construí sistemas de reportes automatizados con Crystal Reports integrados al ERP, eliminando horas de trabajo manual del equipo de análisis</li>
-<li>Participé en la migración de aplicaciones .NET Framework a .NET Core, aplicando inyección de dependencias y patrones modernos de arquitectura</li>
-</ul>
-<p><strong>Stack</strong>: C#, .NET Core, Dapper, SQL Server, REST API, Crystal Reports</p>
 </article>
 <article>
 <h3>Programador Web — ESPEJOS GLAM</h3>
