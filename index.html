@@ -175,7 +175,7 @@
     </script>
 
     <title>Edwin Trigos | Software Architect & Full Stack Developer</title>
-    <script type="module" crossorigin src="/portfolio/assets/index-n43mLDRQ.js"></script>
+    <script type="module" crossorigin src="/portfolio/assets/index-BiPLE2U7.js"></script>
     <link rel="stylesheet" crossorigin href="/portfolio/assets/index-cuoKVj85.css">
   <script type="application/ld+json">
 [
@@ -533,6 +533,34 @@
     "articleSection": "arquitectura",
     "wordCount": 1200,
     "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/android-14-audio-background-modernizacion",
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [
+        ".blog-article h1",
+        ".blog-article .excerpt",
+        "h1",
+        "h2"
+      ]
+    }
+  },
+  {
+    "@type": "Article",
+    "@id": "https://ewin24.github.io/portfolio/#article-bot-ubica-prueba-vida",
+    "headline": "BOT Ubica + Prueba de Vida: cómo validé identidad biométrica en tiempo real con fallback humano y catálogo de diagnósticos",
+    "description": "En un sistema de originación de crédito, validar identidad no es solo confirmar un número de documento. Es probar que la persona está viva, está en el lugar que dice estar, y no es un deepfake. Acá está cómo diseñé BOT Ubica (bot de voz + geolocalización) más Prueba de Vida V2 (liveness detection con OAuth) más un motor de decisiones catalog-driven con 9 códigos de diagnóstico, fallback manual como ciudadano de primera clase, y un selector de buró de crédito configurable sin redeploy.",
+    "inLanguage": "es",
+    "datePublished": "2026-07-15T08:00:00-05:00",
+    "dateModified": "2026-07-15T08:00:00-05:00",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "publisher": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "dotnet, biometrics, strategy-pattern, catalog-driven, fintech, orchestration, liveness-detection, geolocation",
+    "articleSection": "arquitectura",
+    "wordCount": 1400,
+    "mainEntityOfPage": "https://ewin24.github.io/portfolio/#/blog/article/validacion-biometrica-geolocalizacion-credito",
     "speakable": {
       "@type": "SpeakableSpecification",
       "cssSelector": [
@@ -939,7 +967,7 @@
   "@type": "ItemList",
   "name": "Technical Blog",
   "description": "Bilingual technical blog on architecture decisions, design patterns, and production tradeoffs.",
-  "numberOfItems": 13,
+  "numberOfItems": 14,
   "itemListElement": [
     {
       "@type": "ListItem",
@@ -1031,6 +1059,13 @@
       "name": "Audio en background en Android 14+ cuando heredaste código de Android 9",
       "url": "https://ewin24.github.io/portfolio/#/blog/article/android-14-audio-background-modernizacion",
       "description": "Una app de música que heredaste con código de Android 9 tiene tres problemas para correr en Android 14+: scoped storage mató Permission.storage, foreground service types son estrictos, y cualquier API nativa (como el equalizer) necesita un bridge JNI porque no hay package Dart. Acá está la solución completa: SDK-version-aware permissions, JNI para Equalizer, y la config de audio_service que mantiene la música viva en background."
+    },
+    {
+      "@type": "ListItem",
+      "position": 14,
+      "name": "BOT Ubica + Prueba de Vida: cómo validé identidad biométrica en tiempo real con fallback humano y catálogo de diagnósticos",
+      "url": "https://ewin24.github.io/portfolio/#/blog/article/validacion-biometrica-geolocalizacion-credito",
+      "description": "En un sistema de originación de crédito, validar identidad no es solo confirmar un número de documento. Es probar que la persona está viva, está en el lugar que dice estar, y no es un deepfake. Acá está cómo diseñé BOT Ubica (bot de voz + geolocalización) más Prueba de Vida V2 (liveness detection con OAuth) más un motor de decisiones catalog-driven con 9 códigos de diagnóstico, fallback manual como ciudadano de primera clase, y un selector de buró de crédito configurable sin redeploy."
     }
   ]
 }
@@ -1171,6 +1206,11 @@
 <h3 itemprop="headline">Audio en background en Android 14+ cuando heredaste código de Android 9</h3>
 <p><time itemprop="datePublished" datetime="2026-06-26">2026-06-26</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: flutter, android, audio_service, jni, equalizer, background-audio, modernization, permissions.</p>
 <p itemprop="description">Una app de música que heredaste con código de Android 9 tiene tres problemas para correr en Android 14+: scoped storage mató Permission.storage, foreground service types son estrictos, y cualquier API nativa (como el equalizer) necesita un bridge JNI porque no hay package Dart. Acá está la solución completa: SDK-version-aware permissions, JNI para Equalizer, y la config de audio_service que mantiene la música viva en background.</p>
+</article>
+<article itemscope itemtype="https://schema.org/Article">
+<h3 itemprop="headline">BOT Ubica + Prueba de Vida: cómo validé identidad biométrica en tiempo real con fallback humano y catálogo de diagnósticos</h3>
+<p><time itemprop="datePublished" datetime="2026-07-15">2026-07-15</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: dotnet, biometrics, strategy-pattern, catalog-driven, fintech, orchestration, liveness-detection, geolocation.</p>
+<p itemprop="description">En un sistema de originación de crédito, validar identidad no es solo confirmar un número de documento. Es probar que la persona está viva, está en el lugar que dice estar, y no es un deepfake. Acá está cómo diseñé BOT Ubica (bot de voz + geolocalización) más Prueba de Vida V2 (liveness detection con OAuth) más un motor de decisiones catalog-driven con 9 códigos de diagnóstico, fallback manual como ciudadano de primera clase, y un selector de buró de crédito configurable sin redeploy.</p>
 </article>
 <h2>Technologies (55 production-grade)</h2>
 <p>Flutter 3.44+ · Dart · GetX · just_audio · media_kit · audio_service · youtube_explode_dart · Hive · Dio · JNI · Gradle · AGP · Kotlin DSL · PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · Factory Pattern · .NET Framework · ERP · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API · Infobip Email API · Azure Blob Storage</p>
