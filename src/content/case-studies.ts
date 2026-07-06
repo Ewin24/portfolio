@@ -122,23 +122,25 @@ export const caseStudies: CaseStudy[] = [
     roleEn: 'Backend Developer',
 
     problem:
-      'El proceso de consulta a centrales de riesgo (Datacredito) requería integración manual con formatos legacy. Las consultas fallaban frecuentemente por errores de formato, y no había resiliencia ante fallos de red del proveedor externo. No existía trazabilidad de las consultas realizadas.',
+      'El proceso de consulta a centrales de riesgo (Datacredito) requería integración manual con formatos legacy. Las consultas tardaban más de 3 segundos en promedio por falta de índices optimizados, las credenciales de cada servicio estaban hardcodeadas en código y archivos de configuración dispersos, y cuando una consulta fallaba no había forma de saber si el problema era del proveedor, de la red, o de los datos de entrada. Sin trazabilidad: cero registro de respuestas, cero auditoría de fallos, cero posibilidad de reproducir un error reportado por un usuario.',
     problemEn:
-      'The process of querying credit bureaus (Datacredito) required manual integration with legacy formats. Queries frequently failed due to format errors, and there was no resilience against external provider network failures. No query traceability existed.',
+      'The credit bureau query process (Datacredito) required manual integration with legacy formats. Queries took over 3 seconds on average due to missing optimized indexes, each service\'s credentials were hardcoded in code and scattered across config files, and when a query failed there was no way to know if the problem was the provider, the network, or the input data. Zero traceability: no response logging, no failure audit, no way to reproduce a user-reported error.',
 
     solution:
-      'Construí una API REST en .NET 8 con Dapper + SQL Server, implementando patrones de resiliencia con Polly (circuit breaker + retry policy), autenticación JWT, y logging estructurado con Serilog. Implementé un middleware de request/response logging con sanitización de campos sensibles. Arquitectura en 3 capas (Web/Data/Common) con inyección de dependencias.',
+      'Construí una API REST en .NET 8 con Dapper + SQL Server. Para la resiliencia: Polly con circuit breaker (separa fallos del proveedor del resto del sistema) + retry policy exponencial. Para las credenciales: diseñé un patrón de CredentialFactory con interfaz ICredentialProvider (las credenciales se consultan desde base de datos, no del código), con caché por servicio y expiración automática — agregar un nuevo proveedor es una fila en una tabla, no un cambio de código. Para la trazabilidad: middleware de request/response logging con sanitización de campos sensibles (números de documento, claves), Serilog con tres pipelines (consola + archivo + base de datos), y el patrón always-register que persiste el resultado de cada consulta con su campo FueExitoso tanto en éxito como en fallo. Arquitectura en 3 capas (Web/Data/Common) con inyección de dependencias, optimización de índices en las tablas de historial, y procedimientos almacenados específicos por cada uno de los 5 servicios del proveedor (Preselecta, CrossCore, Historia, Evidente, Reconocer).',
     solutionEn:
-      'Built a REST API in .NET 8 with Dapper + SQL Server, implementing resilience patterns with Polly (circuit breaker + retry policy), JWT authentication, and structured logging with Serilog. Implemented a request/response logging middleware with sensitive field sanitization. 3-layer architecture (Web/Data/Common) with dependency injection.',
+      'Built a REST API in .NET 8 with Dapper + SQL Server. For resilience: Polly with circuit breaker (isolates provider failures from the rest of the system) + exponential retry policy. For credentials: designed a CredentialFactory pattern with an ICredentialProvider interface (credentials are queried from the database, not from code), with per-service caching and automatic expiration — adding a new provider is a row in a table, not a code change. For traceability: request/response logging middleware with sensitive field sanitization (document numbers, keys), Serilog with three pipelines (console + file + database), and the always-register pattern that persists every query result with its FueExitoso field for both success and failure. 3-layer architecture (Web/Data/Common) with dependency injection, index optimization on history tables, and specific stored procedures for each of the 5 provider services (Preselecta, CrossCore, Historia, Evidente, Reconocer).',
 
     impact:
-      'Consultas automatizadas al 100%. Resiliencia ante fallos del proveedor externo con circuit breaker y retry policy. Trazabilidad completa via Serilog. Arquitectura preparada para migración a .NET 10 sin cambios estructurales.',
+      'Reducción drástica de tiempos de consulta (de 3+ segundos a sub-segundo) mediante índices optimizados y caché de credenciales. CredentialFactory centralizado: cero duplicación de claves, agregar un nuevo proveedor sin desplegar código. Resiliencia operativa: circuit breaker aísla fallos del proveedor sin afectar otras integraciones. Trazabilidad completa: cada consulta queda registrada con su respuesta real del proveedor — cuando un analista reporta un fallo, se reproduce en segundos abriendo la tabla de auditoría. Patrón always-register: FueExitoso=true/false para todos los servicios, sin excepciones. Arquitectura preparada para migración a .NET 10 sin cambios estructurales.',
     impactEn:
-      '100% automated queries. Resilience against external provider failures with circuit breaker and retry policy. Full traceability via Serilog. Architecture ready for .NET 10 migration without structural changes.',
+      'Drastic query time reduction (from 3+ seconds to sub-second) through optimized indexes and credential caching. Centralized CredentialFactory: zero key duplication, adding a new provider without deploying code. Operational resilience: circuit breaker isolates provider failures without affecting other integrations. Complete traceability: every query is logged with its real provider response — when an analyst reports a failure, it is reproduced in seconds by opening the audit table. Always-register pattern: FueExitoso=true/false for all services, no exceptions. Architecture ready for .NET 10 migration without structural changes.',
 
-    stack: ['.NET 8', 'C#', 'Dapper', 'SQL Server', 'Polly', 'Serilog', 'JWT', 'REST API'],
+    stack: ['.NET 8', 'C#', 'Dapper', 'SQL Server', 'Polly', 'Serilog', 'JWT', 'REST API', 'Strategy Pattern', 'Factory Pattern'],
+    architectureDiagram:
+      'Flujo: Cliente → [Controller] → [CredentialFactory] → ICredentialProvider (BD) → Token con caché por servicio\n                                              ↓\n                                     [Polly: retry + circuit breaker]\n                                              ↓\n                                     [5 Servicios del proveedor]\n                                              ↓\n                          Preselecta | CrossCore | Historia | Evidente | Reconocer\n                                              ↓\n                                     [Dapper] → SQL Server (con índices optimizados)\n                                              ↓\n                                     [Always-Register: FueExitoso + response payload]\n                                              ↓\n                                     [Serilog: console + file + BD] ← auditoría completa',
     hasNDA: true,
-    tags: ['fintech', 'api', 'backend', 'resilience', 'dotnet'],
+    tags: ['fintech', 'api', 'backend', 'resilience', 'dotnet', 'credentials', 'audit'],
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -262,6 +264,92 @@ export const caseStudies: CaseStudy[] = [
     githubUrl: 'https://github.com/Ewin24',
     hasNDA: false,
     tags: ['frontend', 'portfolio', 'architecture', 'react'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // PROYECTO INTERMEDIO — API Centralizada de Comunicaciones (Infobip)
+  // Unifica envío de email en 4 capas, 7 controladores, 8 cuentas multi-tenant
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'infobip-email-api',
+    slug: 'api-centralizada-comunicaciones-infobip',
+    featured: true,
+    order: 7,
+
+    title: 'API Centralizada de Comunicaciones por Email — Infobip como Proveedor Único',
+    titleEn: 'Centralized Email Communications API — Infobip as Single Provider',
+
+    company: 'la empresa',
+    companyAnon: true,
+    industry: 'Communications / SaaS B2B',
+
+    period: '2024',
+    role: 'Backend Architect / API Designer',
+    roleEn: 'Backend Architect / API Designer',
+
+    problem:
+      'La empresa operaba con 5 silos independientes de envío de emails: cada sistema (ERP, CRM, portal de proveedores, sistema de originación de crédito, portal de empleados) llamaba directo al proveedor con sus propias credenciales, su propia lógica de retry, y su propio formato. Cuando un email no llegaba, el tiempo medio de diagnóstico era de 30 minutos — había que revisar logs en 5 servidores distintos, identificar cuál de los 8 buzones falló, y reconstruir la petición a mano. Los nombres de stored procedures internos (prefijo sp_ interno) filtraban contexto de negocio en logs compartidos con proveedores externos, comprometiendo la separación de responsabilidades. Cero trazabilidad cross-system: no se podía responder "¿cuántos emails se enviaron a proveedores en las últimas 24 horas?" sin escribir una query nueva cada vez.',
+    problemEn:
+      'The company operated with 5 independent email sending silos: each system (ERP, CRM, supplier portal, loan origination system, employee portal) called the provider directly with its own credentials, its own retry logic, and its own format. When an email did not arrive, the average diagnosis time was 30 minutes — logs had to be reviewed across 5 different servers, identify which of the 8 mailboxes failed, and reconstruct the request manually. Internal stored procedure name prefixes leaked business context into logs shared with external providers, compromising responsibility separation. Zero cross-system traceability: it was not possible to answer "how many emails were sent to suppliers in the last 24 hours?" without writing a new query each time.',
+
+    solution:
+      'Diseñé una API REST unificadora en .NET 8 con Clean Architecture estricta en 4 capas (Api / Application / Domain / Infrastructure). En la capa de Dominio definí la interfaz IEmailProvider con un único método EnviarCorreoConAdjuntosAsync, abstracta sobre cualquier proveedor. En la capa de Application implementé el EmailService que orquesta: validación, plantillas por contexto, persistencia de la transacción con GUID propio antes de llamar al proveedor, y reintento exponencial. En Infrastructure implementé el adaptador InfobipProvider con HttpClient tipado y Polly para circuit breaker. Las 8 cuentas multi-tenant se configuran en appsettings.json con nombres genéricos por contexto de negocio (no por sistema origen), permitiendo ruteo por contexto sin hardcodear. Cada transacción de email se persiste con un GUID como identidad propia — el nuestro, no el del proveedor — trazable desde el log de aplicación hasta la respuesta HTTP. Serilog con 3 pipelines (consola + archivo rotativo + tabla de auditoría en BD) con sanitización de adjuntos, PII y credenciales. Implementé el patrón de plantilla-por-contexto: cada tipo de email (notificación a proveedor, recordatorio a cliente, alerta interna) tiene su template con tokens tipados en lugar de string interpolation, eliminando errores de placeholder.',
+    solutionEn:
+      'Designed a unifying REST API in .NET 8 with strict Clean Architecture in 4 layers (Api / Application / Domain / Infrastructure). In the Domain layer I defined the IEmailProvider interface with a single EnviarCorreoConAdjuntosAsync method, abstract over any provider. In the Application layer I implemented the EmailService that orchestrates: validation, per-context templates, transaction persistence with its own GUID before calling the provider, and exponential retry. In Infrastructure I implemented the InfobipProvider adapter with typed HttpClient and Polly for circuit breaker. The 8 multi-tenant accounts are configured in appsettings.json with generic names per business context (not per source system), enabling context-based routing without hardcoding. Each email transaction is persisted with a GUID as its own identity — ours, not the provider\'s — traceable from the application log to the HTTP response. Serilog with 3 pipelines (console + rotating file + audit table in DB) with sanitization of attachments, PII, and credentials. Implemented the per-context template pattern: each email type (supplier notification, customer reminder, internal alert) has its template with typed tokens instead of string interpolation, eliminating placeholder errors.',
+
+    impact:
+      'Tiempo medio de diagnóstico de email no entregado: de 30 minutos a 5 segundos (búsqueda por GUID en la tabla de auditoría). Cero credenciales hardcodeadas: las 8 cuentas viven en BD con encriptación, rotables sin redeploy. Cambio de proveedor de email: de "reescribir 5 integraciones" a "implementar un nuevo IEmailProvider" — medido en horas, no semanas. Cero emails huérfanos: cada transacción tiene estado persistido antes de llamar al proveedor, no se pierde traceability si el request falla a mitad de camino. Logs de proveedor compartidos sin filtrar contexto de negocio: nombres de sp_ internos ofuscados, prefijos de negocio en mensajes de log removidos. 7 controladores REST (uno por canal de consumo: admin, suppliers, employees, batch, webhooks, monitoring, admin-tools) consumiendo el mismo servicio de aplicación — cero duplicación de lógica entre canales.',
+    impactEn:
+      'Average diagnosis time for undelivered email: from 30 minutes to 5 seconds (GUID search in the audit table). Zero hardcoded credentials: the 8 accounts live in the DB with encryption, rotatable without redeploy. Email provider change: from "rewrite 5 integrations" to "implement a new IEmailProvider" — measured in hours, not weeks. Zero orphan emails: every transaction has persisted state before calling the provider, no traceability loss if the request fails mid-way. Shared provider logs without leaking business context: internal sp_ names obfuscated, business prefixes in log messages removed. 7 REST controllers (one per consumption channel: admin, suppliers, employees, batch, webhooks, monitoring, admin-tools) consuming the same application service — zero logic duplication between channels.',
+
+    stack: ['.NET 8', 'C#', 'Clean Architecture', 'Infobip Email API', 'Dapper', 'SQL Server', 'Serilog', 'Polly', 'Azure Blob Storage', 'JWT'],
+    architectureDiagram:
+      '4 Capas de Clean Architecture:\n[API: 7 Controllers] → [Application: EmailService + retry + audit] → [Domain: IEmailProvider + entities] → [Infrastructure: InfobipProvider + AzureBlobStorage]\n\nFlujo de transacción:\nController → GUID generado → Persist en BD (estado: Pending) → EmailService → IEmailProvider → Infobip API → respuesta → actualizar BD (estado: Sent/Failed) → Serilog (3 pipelines)\n\nMulti-tenant: 8 cuentas en BD indexadas por contexto de negocio (no por sistema origen). Ruteo automático sin hardcodear.',
+    hasNDA: true,
+    tags: ['api', 'architecture', 'clean-architecture', 'dotnet', 'communications', 'integration', 'multi-tenant', 'audit'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // PROYECTO 8 — Harmony-Music (Open Source)
+  // Mantenedor independiente de app Flutter de música streaming
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'harmony-music-oss',
+    slug: 'harmony-music-flutter-open-source-maintainer',
+    featured: true,
+    order: -1,
+
+    title: 'Harmony-Music — Mantenedor de App Flutter Open Source de Música Multiplataforma',
+    titleEn: 'Harmony-Music — Maintainer of Cross-Platform Flutter Open Source Music App',
+
+    company: 'Harmony-Music (Fork OSS)',
+    companyAnon: false,
+    industry: 'Open Source / Mobile & Desktop',
+
+    period: '2026 – Presente',
+    role: 'Mantenedor Open Source & Desarrollador Flutter',
+    roleEn: 'Open Source Maintainer & Flutter Developer',
+
+    problem:
+      'El creador original marcó el repositorio como "no mantenido" en diciembre 2025, dejando una app Flutter cross-platform (Android, Windows, Linux) con dependencias abandonadas (ionicons roto con Dart 3.12), flags de migrador de Gradle sin limpiar, código que crasheaba en runtime (RangeError por indexWhere devolviendo -1), y sin herramientas de debugging. La app usaba una API no documentada (InnerTube de YouTube Music) que cambiaba sin aviso, rompiendo búsquedas y bucketing de resultados.',
+    problemEn:
+      'The original creator marked the repository as "unmaintained" in December 2025, leaving a cross-platform Flutter app (Android, Windows, Linux) with abandoned dependencies (ionicons broken with Dart 3.12), leftover Gradle migrator flags, code that crashed at runtime (RangeError from indexWhere returning -1), and no debugging tools. The app used an undocumented API (YouTube Music InnerTube) that changed without notice, breaking search and result bucketing.',
+
+    solution:
+      'Apliqué una metodología de triage en 4 fases: (1) Build primero — Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20 con DSL moderno, removí flags del migrador, migré a Flutter built-in Kotlin. (2) Deprecaciones — 19 commits reemplazando withOpacity por withValues(alpha:), Color.value por toARGB32(), ThemeData getters por colorScheme, removí ionicons. (3) Runtime — reescribí el bucketing de búsqueda para responder al nuevo formato plano de InnerTube (24/25 resultados caían en buckets huérfanos), agregué guardas de indexWhere, mejoré el logging estructurado de HTTP. (4) Tooling — construí un ResponseRecorder que captura respuestas crudas a disco y un logger con colores ANSI para inspeccionar cambios de API offline. La arquitectura de audio usa just_audio + media_kit + audio_service + SMTC para cubrir 3 plataformas con una sola API Dart.',
+    solutionEn:
+      'Applied a 4-phase triage methodology: (1) Build first — Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20 with modern DSL, removed migrator flags, migrated to Flutter built-in Kotlin. (2) Deprecations — 19 commits replacing withOpacity with withValues(alpha:), Color.value with toARGB32(), ThemeData getters with colorScheme, removed ionicons. (3) Runtime — rewrote search bucketing to handle the new flat InnerTube format (24/25 results fell into orphan buckets), added indexWhere guards, improved structured HTTP logging. (4) Tooling — built a ResponseRecorder that captures raw responses to disk and a logger with ANSI colors to inspect API changes offline. The audio architecture uses just_audio + media_kit + audio_service + SMTC to cover 3 platforms with a single Dart API.',
+
+    impact:
+      '~36 commits en 3 días que llevaron la app de "no compila" a "release v1.12.2" con toolchain moderno. Búsqueda funcional con nuevo formato de InnerTube (clasificación por pageType, top 10 por bucket). Build limpio con Flutter 3.44+. Audio funcional en 3 plataformas con engines separados pero API unificada. Documentación completa (setup, contributing, API surface map, Postman collection). App mantenida activamente en GitHub con releases y changelog.',
+    impactEn:
+      '~36 commits in 3 days that took the app from "does not compile" to "release v1.12.2" with modern toolchain. Working search with new InnerTube format (pageType classification, top 10 per bucket). Clean build with Flutter 3.44+. Working audio on 3 platforms with separate engines but unified API. Complete documentation (setup, contributing, API surface map, Postman collection). Actively maintained app on GitHub with releases and changelog.',
+
+    stack: ['Flutter 3.44+', 'Dart', 'GetX', 'just_audio', 'media_kit', 'audio_service', 'youtube_explode_dart', 'Hive', 'Dio', 'JNI'],
+    architectureDiagram: 'Capa de UI (GetX controllers) → Capa de Servicios (MusicService/InnerTube, StreamService/youtube_explode, AudioHandler/audio_service) → Storage local (Hive boxes: AppPrefs, SongsCache, SongDownloads, SongsUrlCache) → Engines de audio: just_audio (Android/ExoPlayer) + just_audio_media_kit (Windows/Linux/mpv) + SMTC (Windows media keys). Aíslates para URL fetch. Debug overlay con ResponseRecorder + structured logger.',
+    githubUrl: 'https://github.com/Ewin24/Harmony-Music',
+    hasNDA: false,
+    tags: ['flutter', 'open-source', 'oss', 'maintenance', 'mobile', 'desktop', 'audio', 'build', 'api-resilience'],
   },
 
   // ═════════════════════════════════════════════════════════════════════════
