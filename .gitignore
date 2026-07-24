@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 skills/
+skills-lock.json
 openspec/
 sdd/
 
