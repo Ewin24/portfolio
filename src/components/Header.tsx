@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Menu, X, Globe } from 'lucide-react'
 import { useTranslation } from '../hooks/useTranslation'
 import { GithubIcon } from './ui/GithubIcon'
@@ -17,6 +17,7 @@ const NAV_ITEMS = [
 
 export function Header() {
   const { t, lang, toggleLang } = useTranslation()
+  const reduceMotion = useReducedMotion()
   const [scrolled, setScrolled]   = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -93,6 +94,7 @@ export function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.2 }}
             className="md:hidden bg-paper border-t-2 border-ink"
           >
             <div className="px-6 py-4 flex flex-col gap-4">
