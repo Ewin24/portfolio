@@ -15,9 +15,15 @@ export function About() {
           <div className="border-b-2 md:border-b-0 md:border-r-2 border-ink p-8 bg-paper-dark flex flex-col items-center justify-start gap-4">
             {user?.avatar_url ? (
               <div className="border-4 border-ink shadow-pixel overflow-hidden">
+                {/* width/height match w-36 h-36 (144px) so the box is
+                    reserved before the remote avatar arrives — no layout shift */}
                 <img
                   src={user.avatar_url}
                   alt={user.name || 'Avatar'}
+                  width={144}
+                  height={144}
+                  loading="lazy"
+                  decoding="async"
                   className="w-36 h-36 object-cover block"
                   style={{ imageRendering: 'pixelated' }}
                 />

@@ -31,18 +31,22 @@
     <meta name="twitter:image" content="https://avatars.githubusercontent.com/Ewin24" />
     <meta name="twitter:creator" content="@Ewin24" />
 
-    <!-- Theme -->
-    <meta name="theme-color" content="#0a0a0f" />
+    <!-- Theme — must match --color-paper in src/index.css -->
+    <meta name="theme-color" content="#FAFAF5" />
 
     <!-- Hreflang -->
     <link rel="alternate" hreflang="en" href="https://ewin24.github.io/portfolio/?lang=en" />
     <link rel="alternate" hreflang="es" href="https://ewin24.github.io/portfolio/?lang=es" />
     <link rel="alternate" hreflang="x-default" href="https://ewin24.github.io/portfolio/" />
 
-    <!-- Fonts -->
+    <!-- Fonts — single request, discovered by the parser before CSS is fetched.
+         Keep this list in sync with the families used in src/index.css (@theme). -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IBM+Plex+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    />
 
     <!-- JSON-LD: Person + WebSite + BreadcrumbList + Service + ProfessionalService -->
     <script type="application/ld+json">

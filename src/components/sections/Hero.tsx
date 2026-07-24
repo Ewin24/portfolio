@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowDown, Mail } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
@@ -35,6 +35,7 @@ function computeStats() {
 export function Hero() {
   const { user } = useApp()
   const { t } = useTranslation()
+  const reduceMotion = useReducedMotion()
   const { yearsExp, systems, stackCount } = computeStats()
 
   const stats = [
@@ -119,9 +120,9 @@ export function Hero() {
               >
                 <motion.p
                   className="font-headline text-3xl md:text-4xl font-black text-ink leading-none"
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 + i * 0.1 }}
+                  transition={{ delay: reduceMotion ? 0 : 0.5 + i * 0.1 }}
                 >
                   {stat.value}
                 </motion.p>
@@ -134,11 +135,13 @@ export function Hero() {
         </FadeIn>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator — the loop is decorative, so it stops entirely
+          under reduced motion instead of running forever off-screen. */}
       <motion.div
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        animate={{ y: [0, 6, 0] }}
-        transition={{ repeat: Infinity, duration: 2 }}
+        animate={reduceMotion ? undefined : { y: [0, 6, 0] }}
+        transition={reduceMotion ? undefined : { repeat: Infinity, duration: 2 }}
+        aria-hidden="true"
       >
         <ArrowDown className="text-ink-muted" size={20} />
       </motion.div>
