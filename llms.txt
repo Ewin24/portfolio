@@ -16,7 +16,7 @@ Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, Typ
 - [LOS — Loan Origination System](https://ewin24.github.io/portfolio/): 114+ API endpoints, 27 stored procedures, 23-state lifecycle, biometric verification, INSERT-ONLY audit. Built from scratch with Clean Architecture.
 - [SOVI — Identity Validation Orchestrator](https://ewin24.github.io/portfolio/): Strategy pattern with voice bot + manual fallback. Catalog-driven decision engine. Full biometric audit trail.
 - [Datacredito API Integration](https://ewin24.github.io/portfolio/): Credit bureau API with Polly circuit breaker + retry. Query times reduced from 3s to 400ms. JWT auth + Serilog structured logging.
-- [Kampot Payroll — ERP Document Generation](https://ewin24.github.io/portfolio/): Extended CRM routing for 48 payroll types. 21 Crystal Reports templates. Non-invasive extension — zero breaks in legacy payroll types.
+- [Payroll System (Franchise Chain) — ERP Document Generation](https://ewin24.github.io/portfolio/): Extended CRM routing for 48 payroll types. 21 Crystal Reports templates. Non-invasive extension — zero breaks in legacy payroll types.
 - [Admin Module UI Architecture](https://ewin24.github.io/portfolio/): Separated monitoring dashboard from CRUD configuration. Navigation reflects Clean Architecture backend domains.
 
 ## Skills & Technologies

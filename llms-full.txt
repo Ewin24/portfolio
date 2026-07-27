@@ -120,12 +120,12 @@ https://ewin24.github.io/portfolio/
 
 Credit bureau REST API with resilience patterns (Polly circuit breaker + retry policy). JWT authentication. Structured logging with Serilog. Request/response logging middleware with sensitive field sanitization. Query times reduced from 3s to 400ms through index optimization.
 
-### Kampot Payroll — ERP Document Generation
+### Payroll System (Franchise Chain) — ERP Document Generation
 https://ewin24.github.io/portfolio/
 **Period**: 2025-2026 | **Role**: Full Stack Developer
 **Stack**: C#, .NET Framework, Crystal Reports, SQL Server, ERP
 
-Extended CRM document routing for 3 new Kampot payroll types. Modified dynamic routing logic, added 21 .rpt templates organized by payroll type. Non-invasive extension — zero breaks in 45+ legacy payroll types.
+Extended CRM document routing for 3 new franchise-chain payroll types. Modified dynamic routing logic, added 21 .rpt templates organized by payroll type. Non-invasive extension — zero breaks in 45+ legacy payroll types.
 
 ### Admin Module UI Architecture
 https://ewin24.github.io/portfolio/
