@@ -142,8 +142,11 @@ function App() {
         </motion.div>
       ) : (
         <motion.div key="portfolio" {...fade} className="min-h-screen bg-paper">
+          <a href="#main" className="skip-link">
+            {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
+          </a>
           <Header />
-          <main>
+          <main id="main" tabIndex={-1}>
             <Hero />
             <About />
             <Projects />

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import type { ComponentType } from 'react'
 import type { LucideProps } from 'lucide-react'
 
@@ -22,6 +22,8 @@ export function SkillNodeGrid({
   selectedId,
   onSelect,
 }: SkillNodeGridProps) {
+  const reduceMotion = useReducedMotion()
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {technologies.map((tech) => {
@@ -29,26 +31,25 @@ export function SkillNodeGrid({
         const Icon = tech.icon
 
         return (
-          <motion.div
+          // A real <button>: it brings Enter/Space activation, the correct
+          // role, and focus handling for free — no hand-rolled onKeyDown.
+          <motion.button
             key={tech.id}
-            layout
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            onClick={() => onSelect(tech.id)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                onSelect(tech.id)
-              }
+            type="button"
+            layout={!reduceMotion}
+            transition={{
+              duration: reduceMotion ? 0 : 0.2,
+              ease: [0.22, 1, 0.36, 1],
             }}
-            tabIndex={0}
-            role="button"
+            onClick={() => onSelect(tech.id)}
             aria-pressed={isSelected}
             className={`
+              w-full text-left
               border-2 cursor-pointer p-4 select-none
               transition-all duration-75
               ${isSelected
                 ? 'bg-ink text-paper shadow-none translate-x-1 translate-y-1 border-ink'
-                : 'bg-paper text-ink shadow-pixel border-ink hover:shadow-none hover:translate-x-1 hover:translate-y-1'
+                : 'bg-paper text-ink shadow-pixel border-ink hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1'
               }
             `}
           >
@@ -93,7 +94,7 @@ export function SkillNodeGrid({
                 </p>
               </div>
             </div>
-          </motion.div>
+          </motion.button>
         )
       })}
     </div>

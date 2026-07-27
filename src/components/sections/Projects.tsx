@@ -30,7 +30,7 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
 
   return (
     <FadeIn delay={index * 0.1}>
-      <article className="border-2 border-ink bg-paper shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-75 flex flex-col h-full">
+      <article className="border-2 border-ink bg-paper shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75 flex flex-col h-full">
 
         {/* Header del artículo */}
         <div className="border-b-2 border-ink p-5">

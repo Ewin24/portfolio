@@ -150,7 +150,7 @@ export function BlogArticle() {
           {prevPost ? (
             <button
               onClick={handlePrev}
-              className="flex-1 flex flex-col items-start gap-1 border-2 border-ink bg-paper p-4 shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-75 text-left cursor-pointer"
+              className="flex-1 flex flex-col items-start gap-1 border-2 border-ink bg-paper p-4 shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 text-left cursor-pointer"
             >
               <span className="font-mono text-[9px] uppercase tracking-wider text-ink-muted flex items-center gap-1">
                 <ArrowLeft size={10} /> {lang === 'es' ? 'Anterior' : 'Previous'}
@@ -166,7 +166,7 @@ export function BlogArticle() {
           {nextPost ? (
             <button
               onClick={handleNext}
-              className="flex-1 flex flex-col items-end gap-1 border-2 border-ink bg-paper p-4 shadow-pixel-sm hover:shadow-none hover:-translate-x-0.5 hover:translate-y-0.5 transition-all duration-75 text-right cursor-pointer"
+              className="flex-1 flex flex-col items-end gap-1 border-2 border-ink bg-paper p-4 shadow-pixel-sm hover:shadow-none hover:-translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:-translate-x-0.5 active:translate-y-0.5 transition-all duration-75 text-right cursor-pointer"
             >
               <span className="font-mono text-[9px] uppercase tracking-wider text-ink-muted flex items-center gap-1">
                 {lang === 'es' ? 'Siguiente' : 'Next'} <ArrowRight size={10} />
