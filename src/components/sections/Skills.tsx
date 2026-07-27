@@ -73,7 +73,9 @@ const TECH_DATA: TechData[] = [
     id: 'react',
     name: 'React',
     icon: Code,
-    color: '#61DAFB',
+    // react.dev's dark brand blue. The classic #61DAFB is tuned for dark
+    // backgrounds and only reaches 1.55:1 against paper — invisible here.
+    color: '#087EA4',
     milestoneKeys: [
       'skills.react.milestone1',
       'skills.react.milestone2',
@@ -99,7 +101,8 @@ const TECH_DATA: TechData[] = [
     id: 'aws',
     name: 'AWS',
     icon: Cloud,
-    color: '#FF9900',
+    // Darkened from #FF9900 (2.04:1 against paper) to clear the 3:1 floor
+    color: '#B35B00',
     milestoneKeys: [
       'skills.aws.milestone1',
       'skills.aws.milestone2',
@@ -138,7 +141,8 @@ const TECH_DATA: TechData[] = [
     id: 'docker',
     name: 'Docker',
     icon: Package,
-    color: '#2496ED',
+    // #2496ED sat exactly on the 3:1 line; this keeps a usable margin
+    color: '#1D7DC7',
     milestoneKeys: [
       'skills.docker.milestone1',
       'skills.docker.milestone2',

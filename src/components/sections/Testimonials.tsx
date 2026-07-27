@@ -31,7 +31,7 @@ export function Testimonials() {
 
           return (
             <FadeIn key={t.id} delay={i * 0.1}>
-              <div className="border-2 border-ink bg-paper shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-75 flex flex-col h-full">
+              <div className="border-2 border-ink bg-paper shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 flex flex-col h-full">
                 {/* Quote */}
                 <div className="p-6 flex-1">
                   <Quote size={20} className="text-ink-muted mb-3" />
