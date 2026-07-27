@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import type { ComponentType } from 'react'
 import type { LucideProps } from 'lucide-react'
 import { ExternalLink } from 'lucide-react'
@@ -19,17 +19,25 @@ interface SkillHUDProps {
 
 export function SkillHUD({ technology }: SkillHUDProps) {
   const { t } = useTranslation()
+  const reduceMotion = useReducedMotion()
   const Icon = technology.icon
+
+  // The panel swaps content on every selection, so under reduced motion it
+  // cross-fades in place instead of sliding.
+  const shift = reduceMotion ? 0 : 10
 
   return (
     <div className="border-2 border-ink bg-paper shadow-pixel p-6">
       <AnimatePresence mode="wait">
         <motion.div
           key={technology.id}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: shift }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          exit={{ opacity: 0, y: -shift }}
+          transition={{
+            duration: reduceMotion ? 0.1 : 0.2,
+            ease: [0.22, 1, 0.36, 1],
+          }}
         >
           {/* Header — icon + name */}
           <div className="flex items-center gap-4 mb-4 pb-4 border-b border-rule-light">

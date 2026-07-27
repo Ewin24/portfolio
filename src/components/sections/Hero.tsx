@@ -12,13 +12,30 @@ import { workExperience, caseStudies } from '../../content'
  * systems     → número de case studies (proyectos en producción)
  * stack       → número de tecnologías únicas en todos los casos + experience
  */
+/**
+ * Año en que arranca la carrera: el menor año que aparezca en cualquier período.
+ *
+ * No se puede usar `order` para esto — es un rango de visualización, no una
+ * línea de tiempo (hay valores repetidos y no siguen la cronología). Tampoco
+ * sirve leer un solo período: conviven dos formatos, '2021 – 2023' y
+ * 'Ene 2022 – Ene 2023', así que parsear el string completo produce NaN en
+ * los que empiezan con el mes. Se busca el primer año de cuatro dígitos de
+ * cada período y se toma el mínimo.
+ */
+function earliestCareerYear(): number | null {
+  const years = workExperience
+    .map((job) => job.period.match(/\d{4}/)?.[0])
+    .filter((year): year is string => year !== undefined)
+    .map(Number)
+
+  return years.length > 0 ? Math.min(...years) : null
+}
+
 function computeStats() {
   // Años de experiencia desde el trabajo más antiguo
-  const earliest = [...workExperience].sort((a, b) => a.order - b.order)[0]
-  const startYear = earliest
-    ? parseInt(earliest.period.split(/[–\-]/)[0].trim(), 10)
-    : new Date().getFullYear() - 5
-  const yearsExp = new Date().getFullYear() - startYear
+  const currentYear = new Date().getFullYear()
+  const startYear = earliestCareerYear() ?? currentYear - 5
+  const yearsExp = Math.max(0, currentYear - startYear)
 
   // Sistemas en producción = case studies con NDA (proyectos reales de empresa)
   const systems = caseStudies.length
