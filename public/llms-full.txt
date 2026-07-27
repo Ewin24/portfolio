@@ -120,7 +120,7 @@ https://ewin24.github.io/portfolio/
 
 Credit bureau REST API with resilience patterns (Polly circuit breaker + retry policy). JWT authentication. Structured logging with Serilog. Request/response logging middleware with sensitive field sanitization. Query times reduced from 3s to 400ms through index optimization.
 
-### Payroll System (Franchise Chain) — ERP Document Generation
+### Payroll System — ERP Document Generation for Franchise Chain
 https://ewin24.github.io/portfolio/
 **Period**: 2025-2026 | **Role**: Full Stack Developer
 **Stack**: C#, .NET Framework, Crystal Reports, SQL Server, ERP
