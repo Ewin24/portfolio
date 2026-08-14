@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { Clock, Tag, ArrowRight } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
+import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../../components/ui/FadeIn'
+import { Decipher } from '../../components/book/Decipher'
 import { useBlogContext } from '../context/BlogContext'
 import { EmptyState } from './EmptyState'
 import type { BlogPost } from '../types'
@@ -13,6 +15,13 @@ const PAGE_SIZE = 6
 
 function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRead: () => void }) {
   const { lang } = useTranslation()
+  const { theme, stillness } = useTheme()
+  const reduceMotion = useReducedMotion()
+
+  // The manuscripts: everything already written, waiting to be deciphered.
+  const ciphered = theme === 'book'
+  const still = Boolean(reduceMotion) || stillness
+
   const title = lang === 'es' ? post.title : post.titleEn
   const excerpt = lang === 'es' ? post.excerpt : post.excerptEn
 
@@ -31,7 +40,12 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
 
           {/* Title */}
           <h3 className="font-headline text-lg font-bold text-ink leading-tight line-clamp-2">
-            {title}
+            <Decipher
+              text={title}
+              active={ciphered}
+              still={still}
+              delay={(index % 6) * 110}
+            />
           </h3>
 
           {/* Excerpt */}
