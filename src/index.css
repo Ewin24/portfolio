@@ -22,11 +22,29 @@
   --color-accent:      #C41E1E;   /* Rojo periódico — para highlights */
   --color-accent-dark: #8B1313;   /* Rojo oscuro */
 
+  /* Text that sits ON an ink-filled surface (solid buttons, badges, skip link).
+     It is NOT the same role as --color-paper: a theme may make the page
+     surface translucent so a background layer shows through, and this text
+     still has to stay legible against solid ink. */
+  --color-on-ink:      #FAFAF5;
+
   /* Pixel Shadows */
   --shadow-pixel-sm:  2px 2px 0px #1A1A1A;
   --shadow-pixel:     4px 4px 0px #1A1A1A;
   --shadow-pixel-lg:  6px 6px 0px #1A1A1A;
   --shadow-pixel-xl:  8px 8px 0px #1A1A1A;
+
+  /* ── Shape & motion language ───────────────────────────────────────────
+     Colour alone does not carry an aesthetic. These tokens hold the traits
+     that actually distinguish one theme from another — corner softness,
+     page texture, and how fast the interface answers a gesture — so an
+     alternate theme can restate them without touching a single component. */
+  --radius-surface:   0px;      /* card / panel corners */
+  --radius-pill:      0px;      /* tags, badges, small controls */
+  --texture-body:     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23FAFAF5'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23F0EFE8' opacity='0.4'/%3E%3C/svg%3E");
+  --ease-surface:     cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-surface: 75ms;     /* the pixel press is deliberately instant */
+  --duration-chapter: 900ms;    /* cross-chapter colour drift */
 }
 
 /* ─── Base ─────────────────────────────────────────────────────────────── */
@@ -45,8 +63,8 @@
     background-color: var(--color-paper);
     color: var(--color-ink);
     overflow-x: hidden;
-    /* Textura sutil de papel */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23FAFAF5'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23F0EFE8' opacity='0.4'/%3E%3C/svg%3E");
+    /* Textura sutil de papel — token, so an alternate theme can drop it */
+    background-image: var(--texture-body);
   }
 
   h1, h2, h3, h4 {
@@ -99,7 +117,7 @@
     gap: 0.5rem;
     padding: 0.625rem 1.25rem;
     background: var(--color-ink);
-    color: var(--color-paper);
+    color: var(--color-on-ink);
     font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 700;
@@ -125,7 +143,7 @@
 
   .px-btn-outline:hover {
     background: var(--color-ink);
-    color: var(--color-paper);
+    color: var(--color-on-ink);
   }
 
   /* Pixel Badge / Tag */
@@ -133,7 +151,7 @@
     display: inline-block;
     padding: 0.125rem 0.5rem;
     background: var(--color-ink);
-    color: var(--color-paper);
+    color: var(--color-on-ink);
     font-family: var(--font-mono);
     font-size: 0.625rem;
     font-weight: 700;
@@ -187,7 +205,7 @@
 
   .skill-tag:hover {
     background: var(--color-ink);
-    color: var(--color-paper);
+    color: var(--color-on-ink);
   }
 
   /* Skip link — hidden until focused, so keyboard users can jump past the
@@ -199,7 +217,7 @@
     z-index: 100;
     padding: 0.625rem 1.25rem;
     background: var(--color-ink);
-    color: var(--color-paper);
+    color: var(--color-on-ink);
     font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 700;
@@ -244,19 +262,549 @@
   .text-ink-light { color: var(--color-ink-light); }
   .text-ink-muted { color: var(--color-ink-muted); }
   .text-accent    { color: var(--color-accent); }
-  .text-paper     { color: var(--color-paper); }
+  .text-paper     { color: var(--color-on-ink); }
 
   .bg-paper      { background-color: var(--color-paper); }
   .bg-paper-dark { background-color: var(--color-paper-dark); }
   .bg-ink        { background-color: var(--color-ink); }
   .bg-accent     { background-color: var(--color-accent); }
 
+  /* Structural rules read --color-rule, never --color-ink. They look identical
+     in the newspaper theme, but they are different roles: ink is text, rule is
+     the line that separates. A theme that wants to dissolve its borders has to
+     be able to do it without touching the text colour. */
+  .border-rule      { border-color: var(--color-rule); }
   .border-ink       { border-color: var(--color-ink); }
   .border-ink-muted { border-color: var(--color-ink-muted); }
   .border-rule-light{ border-color: var(--color-rule-light); }
 
   .shadow-pixel-sm { box-shadow: var(--shadow-pixel-sm); }
   .shadow-pixel    { box-shadow: var(--shadow-pixel); }
+
+  /* A border on an ink-filled surface. `border-white/30` only worked because
+     the newspaper's ink is near-black; when a theme inverts ink to cream the
+     white border vanishes into it. */
+  .border-on-ink {
+    border-color: color-mix(in srgb, var(--color-on-ink) 32%, transparent);
+  }
+}
+
+/* ─── Third-party brand colour ─────────────────────────────────────────────
+   Technology brand colours (React blue, AWS orange, .NET purple) are fixed
+   by their owners and were tuned in Skills.tsx to clear 3:1 against paper
+   specifically. They cannot also be responsible for contrast against a sky
+   that changes ten times down the page.
+
+   So they stop sitting on the page surface. The element carries the brand
+   colour as --tech and the theme decides what surface it lands on: a faint
+   tint of itself on paper, a lit chip in Book. Same markup, contrast
+   preserved in both.                                                       */
+@layer components {
+  .tech-chip {
+    background-color: color-mix(in srgb, var(--tech) 9%, transparent);
+  }
+
+  /* Selected state — the tint deepens against the ink fill it sits on. */
+  .tech-chip-strong {
+    background-color: color-mix(in srgb, var(--tech) 19%, transparent);
+  }
+
+  .tech-dot {
+    background-color: var(--tech);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   JOURNEY THEME
+   ═══════════════════════════════════════════════════════════════════════════
+
+   An alternate skin inspired by thatgamecompany's Book: no hard edges,
+   warm light, and a palette that drifts as the visitor descends the page.
+
+   Two things make it work without rewriting a single component:
+
+   1. Every colour utility already resolves through a CSS variable, so
+      restating the variables here repaints the whole site.
+   2. The palette is not fixed. A scroll observer writes --ch-* variables on
+      :root as each section comes into view (see src/theme/chapters.ts), and
+      the theme reads them with a fallback. If the engine never runs — JS
+      disabled, hydration failure — the fallbacks render the opening desert
+      instead of an unstyled page.
+
+   The structural rules further down are deliberate. Card surfaces are marked
+   in the markup by their border utility, not by a semantic class, so the
+   theme targets that. Doing it here keeps 85 border sites untouched and all
+   the Book knowledge in one file.                                       */
+
+html[data-theme='book'] {
+  /* Painted behind the fixed sky layer, so an overscroll bounce reveals
+     the current chapter's horizon instead of a white flash. */
+  background-color: var(--ch-page-3, #EDE4CE);
+}
+
+[data-theme='book'] {
+  /* ── Shape: a page, not a panel ──
+     Rounded corners and floating drop shadows are the vocabulary of a soft
+     modern app, and they were the single loudest reason this theme did not
+     read as a book. Paper has a cut edge. The radius drops to a hairline —
+     enough to avoid a brutalist corner, not enough to look like a widget —
+     and the laid grain comes back, because a page you cannot see the fibre
+     of is just a coloured rectangle. */
+  --radius-surface:   2px;
+  --radius-pill:      2px;
+  --texture-body:     var(--paper-grain);
+  --ease-surface:     cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-surface: 420ms;
+
+  /* Laid paper: closely spaced horizontal wire lines with sparser chain
+     lines across them, which is what makes real book stock catch the light. */
+  --paper-grain:
+    repeating-linear-gradient(
+      0deg,
+      rgba(90, 66, 34, 0.030) 0px,
+      rgba(90, 66, 34, 0.030) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(90, 66, 34, 0.022) 0px,
+      rgba(90, 66, 34, 0.022) 1px,
+      transparent 1px,
+      transparent 26px
+    );
+
+  /* ── Colour: driven by the current chapter ── */
+  --color-ink:        var(--ch-ink,        #4A3020);
+  --color-ink-light:  var(--ch-ink-light,  #6B4A32);
+  --color-ink-muted:  var(--ch-ink-muted,  #93704F);
+  --color-accent:     var(--ch-accent,     #B4462F);
+  --color-on-ink:     var(--ch-on-ink,     #FDF0D5);
+  --color-rule:       var(--ch-rule,       rgba(74, 48, 32, 0.20));
+  --color-rule-light: var(--ch-rule,       rgba(74, 48, 32, 0.12));
+
+  /* The page surface stops being opaque — the sky has to show through it. */
+  --color-paper:      transparent;
+  --color-paper-dark: transparent;
+
+  /* The veil is what makes a card readable on top of a moving sky. */
+  --veil:             var(--ch-veil,  rgba(255, 244, 224, 0.28));
+
+  /* A leaf of paper lying on a page does not levitate. The big soft drop
+     shadows are replaced by a tight contact shadow plus a hairline edge —
+     the same read you get from a card resting on a book, and the reason the
+     surfaces now sit IN the page instead of hovering above it. */
+  --shadow-pixel-sm:
+    0 1px 0 var(--ch-rule, rgba(74, 48, 32, 0.18)),
+    0 2px 3px -2px var(--ch-glow, rgba(74, 48, 32, 0.40));
+  --shadow-pixel:
+    0 1px 0 var(--ch-rule, rgba(74, 48, 32, 0.18)),
+    0 4px 6px -4px var(--ch-glow, rgba(74, 48, 32, 0.42));
+  --shadow-pixel-lg:
+    0 1px 0 var(--ch-rule, rgba(74, 48, 32, 0.18)),
+    0 8px 12px -8px var(--ch-glow, rgba(74, 48, 32, 0.45));
+  --shadow-pixel-xl:
+    0 1px 0 var(--ch-rule, rgba(74, 48, 32, 0.18)),
+    0 12px 18px -12px var(--ch-glow, rgba(74, 48, 32, 0.48));
+}
+
+/* Colour drift. The chapter variables snap when the observer swaps them;
+   what makes the change read as a sunset rather than a cut is transitioning
+   the concrete properties that consume them. Specificity 0 on the universal
+   selector, so any component with its own transition still wins. */
+[data-theme='book'] *,
+[data-theme='book'] *::before,
+[data-theme='book'] *::after {
+  transition:
+    color            var(--duration-chapter) var(--ease-surface),
+    background-color var(--duration-chapter) var(--ease-surface),
+    border-color     var(--duration-chapter) var(--ease-surface),
+    box-shadow       var(--duration-chapter) var(--ease-surface);
+}
+
+/* ── Card surfaces ──
+   Corner softness and the veil are separate concerns and must not share a
+   guard. The veil has to skip anything already carrying a solid fill, or it
+   paints over it — but the radius applies to every card without exception.
+   Sharing one rule is what made the selected item in a grid the only square
+   thing on the page, in the skills stack and in the blog filters alike.
+
+   :where() keeps specificity at 0 for the marker classes. */
+[data-theme='book'] :where(.border-2, .border-4) {
+  border-radius: var(--radius-surface);
+}
+
+[data-theme='book'] :where(.border-2, .border-4):not(.bg-ink):not(.bg-accent) {
+  background-color: var(--veil);
+  backdrop-filter: blur(12px) saturate(1.08);
+  -webkit-backdrop-filter: blur(12px) saturate(1.08);
+}
+
+/* ── The press becomes a lift ──
+   The newspaper answers a click by shoving the card 4px down-right into the
+   space its own hard shadow occupied. Book has no hard shadow to fall
+   into, so the same gesture reads as the element jumping out of alignment.
+
+   Tailwind v4 compiles these utilities to the `translate` property, NOT to
+   `transform`, so resetting transform here would silently do nothing.
+
+   Only prefixed variants are matched, plus the semantic pressed state — a
+   bare `-translate-x-1/2` is static centering and has to keep working. */
+[data-theme='book'] [class*='hover:translate-']:hover,
+[data-theme='book'] [class*='hover:-translate-']:hover,
+[data-theme='book'] [class*='active:translate-']:active,
+[data-theme='book'] [class*='active:-translate-']:active,
+[data-theme='book'] [aria-pressed='true'] {
+  translate: none;
+}
+
+/* Elevation carries the state the displacement used to. */
+[data-theme='book'] :where(.border-2, .border-4):hover,
+[data-theme='book'] :where(.border-2, .border-4)[aria-pressed='true'] {
+  box-shadow: var(--shadow-pixel);
+}
+
+/* Hover fills must still beat the veil. */
+[data-theme='book'] .hover\:bg-ink:hover {
+  background-color: var(--color-ink);
+}
+
+/* ── Newspaper rules become hairlines ──
+   Each direction is restated separately: forcing a shorthand would paint a
+   border on a side that never had one. */
+[data-theme='book'] .border-t-4 { border-top-width:    1px; }
+[data-theme='book'] .border-b-4 { border-bottom-width: 1px; }
+[data-theme='book'] .border-l-4 { border-left-width:   1px; }
+[data-theme='book'] .border-t-2 { border-top-width:    1px; }
+[data-theme='book'] .border-b-2 { border-bottom-width: 1px; }
+[data-theme='book'] .border-r-2 { border-right-width:  1px; }
+
+/* ── Controls lose their corners and their snap ── */
+[data-theme='book'] .px-btn,
+[data-theme='book'] .px-badge,
+[data-theme='book'] .skill-tag {
+  border-radius: var(--radius-pill);
+}
+
+[data-theme='book'] .px-btn {
+  border-color: transparent;
+  transition: transform var(--duration-surface) var(--ease-surface),
+              box-shadow var(--duration-surface) var(--ease-surface);
+}
+
+/* The outline variant has no fill — its border IS the button, so it cannot
+   inherit the transparent border above or it disappears entirely. */
+[data-theme='book'] .px-btn-outline {
+  border-color: var(--color-rule);
+  background: var(--veil);
+}
+
+/* .px-badge-accent and ::selection both hard-code white text, which only
+   works because the newspaper accent is a dark red. Book accents invert
+   with the chapter — pale blue in the ascent, pink at twilight — so they
+   follow the chapter's on-ink polarity instead. */
+[data-theme='book'] .px-badge-accent {
+  color: var(--color-on-ink);
+}
+
+[data-theme='book'] ::selection {
+  background: var(--color-accent);
+  color: var(--color-on-ink);
+}
+
+/* The header keeps its own veil.
+   Once --color-paper goes transparent, the scrolled header's bg-paper stops
+   painting anything and its nav would sit unreadable on top of moving
+   content. This restores a backdrop in both scroll states. */
+[data-theme='book'] header,
+[data-theme='book'] .chrome-bar {
+  background-color: var(--veil);
+  backdrop-filter: blur(14px) saturate(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
+}
+
+/* Brand colours get a lit chip to stand on, so a dark purple .NET icon is
+   still a dark purple .NET icon at the bottom of a midnight chapter. */
+[data-theme='book'] .tech-chip {
+  background-color: rgba(255, 251, 242, 0.92);
+  border-color: transparent;
+}
+
+/* The dots keep their brand colour but gain a light ring, which is what
+   separates them from a dark sky without repainting them. */
+[data-theme='book'] .tech-dot {
+  box-shadow: 0 0 0 2px rgba(255, 251, 242, 0.8);
+}
+
+/* Long-form reading needs more cover than a section does.
+   The two card-shaped <article> elements already get the veil through their
+   border utility; this is the bare reading container in BlogArticle, which
+   would otherwise put body copy straight onto a drifting sky. */
+[data-theme='book'] article:not(.border-2) {
+  background-color: var(--veil);
+  backdrop-filter: blur(16px) saturate(1.05);
+  -webkit-backdrop-filter: blur(16px) saturate(1.05);
+  border-radius: var(--radius-surface);
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+/* The pixel press was a 2px shove down-right. Here the button rises. */
+[data-theme='book'] .px-btn:hover,
+[data-theme='book'] .px-btn:active {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-pixel);
+}
+
+/* The active blog tag fills itself with bg-ink. This block is unlayered and
+   would otherwise beat that utility, leaving the selected filter looking
+   exactly like the unselected ones. */
+[data-theme='book'] .skill-tag:not(.bg-ink) {
+  background: var(--veil);
+  border-color: var(--color-rule);
+}
+
+/* ── Typography loosens ──
+   The mono labels keep their identity but drop the brutalist weight. */
+[data-theme='book'] .kicker,
+[data-theme='book'] .nav-link,
+[data-theme='book'] .px-badge {
+  font-weight: 500;
+  letter-spacing: 0.22em;
+}
+
+[data-theme='book'] h1,
+[data-theme='book'] h2,
+[data-theme='book'] h3 {
+  letter-spacing: 0.01em;
+  font-weight: 700;
+}
+
+/* ── The insomnia labels ──
+   A card tied to an object, naming it and saying what it is for.
+
+   The card does NOT follow the chapter palette, and that is deliberate. A
+   piece of pale paper is pale paper whatever the light in the room, and more
+   practically: --color-ink inverts to a light value in the dark chapters, so
+   inheriting it would put near-white handwriting on a near-white card during
+   the cross-chapter drift. The pair below is fixed and measures 11.8:1. */
+[data-theme='book'] .insomnia-tag {
+  display: block;
+  position: relative;
+  margin-top: 0.8rem;
+  padding-top: 0.85rem;
+}
+
+[data-theme='book'] .insomnia-thread {
+  position: absolute;
+  top: 0;
+  left: 1.1rem;
+  width: 18px;
+  height: 0.85rem;
+  overflow: visible;
+  fill: none;
+  stroke: var(--color-ink-muted);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+
+[data-theme='book'] .insomnia-card {
+  display: block;
+  font-family: 'Caveat', var(--font-headline), cursive;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: #3A342A;
+  background: rgba(253, 250, 240, 0.9);
+  border: 1px solid rgba(58, 52, 42, 0.28);
+  border-radius: 2px;
+  padding: 0.35rem 0.55rem;
+  /* Pinned at the knot, so the sway pivots where the thread holds it. */
+  transform-origin: 1.1rem 0;
+  rotate: var(--tag-tilt);
+  translate: var(--tag-drift) 0;
+  box-shadow: 0 3px 8px -5px rgba(40, 30, 16, 0.7);
+  /* The plague itself: the writing is going everywhere except on the object
+     currently being looked at. Opacity and blur, never a colour swap — the
+     text stays fully present for selection and for a screen reader. */
+  opacity: 0.4;
+  filter: blur(0.3px);
+  transition: opacity 420ms ease, filter 420ms ease;
+  animation: tag-sway 7s ease-in-out infinite;
+  animation-delay: var(--tag-delay);
+}
+
+[data-theme='book'] .insomnia-card.is-legible {
+  opacity: 1;
+  filter: none;
+}
+
+[data-theme='book'] .insomnia-card.is-still {
+  animation: none;
+}
+
+/* `rotate` is animated as its own property rather than through transform, so
+   it never clobbers the `translate` set alongside it. */
+@keyframes tag-sway {
+  0%, 100% { rotate: var(--tag-tilt); }
+  50%      { rotate: calc(var(--tag-tilt) + 1.5deg); }
+}
+
+/* ── The page ──
+   Fixed behind everything: the reader moves through the book, the sheet
+   under them does not slide away. */
+.book-page {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.book-page-ground {
+  position: absolute;
+  inset: 0;
+  transition: background var(--duration-chapter, 900ms) ease;
+}
+
+/* The laid grain. This is the detail that separates paper from a beige
+   rectangle, and it is why --texture-body is restored in this theme. */
+.book-page-grain {
+  position: absolute;
+  inset: 0;
+  background-image: var(--paper-grain);
+  mix-blend-mode: multiply;
+}
+
+/* Foxing. Bound to scroll depth, so the stock visibly ages as the reader
+   goes further in; multiply keeps the blooms in the paper rather than on
+   top of it, the way a real stain is part of the fibre. */
+.book-page-foxing {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+  transition: opacity 400ms linear;
+}
+
+/* The measured margin a text block sits inside. Two hairlines, not a box:
+   a book rules where the type starts, it does not draw a frame around it. */
+.book-page-margins {
+  position: absolute;
+  inset: 0;
+  transition: opacity var(--duration-chapter, 900ms) ease;
+  background-image:
+    linear-gradient(90deg, var(--ch-rule, rgba(74,48,32,0.18)) 0 1px, transparent 1px),
+    linear-gradient(-90deg, var(--ch-rule, rgba(74,48,32,0.18)) 0 1px, transparent 1px);
+  background-position: 6vw 0, right 6vw top;
+  background-size: 1px 100%, 1px 100%;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 900px) {
+  /* On a phone the margin rules would crowd the text block, so the page
+     keeps its grain and drops its ruling. */
+  .book-page-margins { display: none; }
+}
+
+/* The filter host itself takes no space. */
+.book-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* ── Ink on absorbent stock ──
+   Applied to the rule divs, which are pure graphics. `:where()` keeps the
+   specificity at zero so a component can always opt out. */
+[data-theme='book'] :where(.border-t-4, .border-t, .border-b-4) {
+  filter: url(#ink-bleed);
+}
+
+/* ── Set like a book, not like a page of UI ──
+   Justified with hyphenation and a real measure. Justification without
+   hyphens tears rivers through a narrow column, so the two ship together
+   or not at all. */
+[data-theme='book'] .blog-article-body p,
+[data-theme='book'] .font-sans.leading-relaxed {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  text-wrap: pretty;
+}
+
+/* Headings stop shouting. A book title is set, not weight-stacked. */
+[data-theme='book'] h1 {
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+/* ── The registro ──
+   The ribbon sewn into the spine, hanging from the top of the page and
+   lengthening as the reader goes deeper. */
+.book-ribbon {
+  position: fixed;
+  top: 0;
+  right: clamp(1rem, 3.2vw, 3rem);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.book-ribbon-tail {
+  width: 6px;
+  background: var(--ch-accent, #8C3A24);
+  opacity: 0.68;
+  transition: height 220ms var(--ease-surface, ease);
+  /* The forked end of a real registro. */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 9px), 0 100%);
+}
+
+.book-ribbon-label {
+  margin-top: 0.55rem;
+  writing-mode: vertical-rl;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.book-ribbon-numeral {
+  font-family: var(--font-headline);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+}
+
+@media (max-width: 900px) {
+  .book-ribbon-label { display: none; }
+}
+
+/* ── The annunciation ──
+   The canvas floats over the reference cards rather than behind them: a
+   butterfly that lands on the edge of a card has to be ON the card to read
+   as having landed. It never takes the pointer, so the cards underneath stay
+   fully hoverable and clickable. */
+.annunciation-host {
+  position: relative;
+}
+
+.annunciation-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* The scrollbar stops being a hard ink bar. */
+[data-theme='book'] ::-webkit-scrollbar-track { background: transparent; }
+[data-theme='book'] ::-webkit-scrollbar-thumb {
+  background: var(--color-rule);
+  border-radius: 999px;
 }
 
 /* ─── Reduced Motion ───────────────────────────────────────────────────────
@@ -289,12 +837,24 @@
      and the utility and so breaks a plain `hover:translate-` substring match.
      Only prefixed variants are listed — a bare `-translate-x-1/2` used for
      static centering must keep working on hover. */
+  /* .px-btn moves with `transform` — it is hand-written CSS. */
   .px-btn:hover,
-  .px-btn:active,
+  .px-btn:active {
+    transform: none !important;
+  }
+
+  /* The card presses move with `translate`, which Tailwind v4 emits as its
+     own property rather than folding into transform. Resetting transform
+     here did nothing, so every card still displaced under reduced motion.
+
+     These must stay in a separate rule from the transform reset above: put
+     both properties in one block and the minifier collapses them into
+     `transform: translate(0)`, which leaves `translate` untouched and
+     silently reintroduces the bug. */
   [class*='hover:translate-']:hover,
   [class*='hover:-translate-']:hover,
   [class*='active:translate-']:active,
   [class*='active:-translate-']:active {
-    transform: none !important;
+    translate: none !important;
   }
 }

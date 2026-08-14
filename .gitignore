@@ -28,6 +28,7 @@ dist-ssr
 # skill registry reappears in the repository on every regeneration.
 AGENTS.md
 .agents/
+exploration.md
 skills/
 skills-lock.json
 openspec/
