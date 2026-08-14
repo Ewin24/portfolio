@@ -665,6 +665,46 @@ html[data-theme='book'] {
   translate: none;
 }
 
+/* ── The little gold fish ──
+   The one object on the page you can take hold of. */
+.goldfish {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: clamp(1rem, 3vh, 2rem);
+}
+
+.goldfish-canvas {
+  width: clamp(150px, 22vw, 210px);
+  height: clamp(112px, 16vw, 152px);
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.goldfish-canvas:active {
+  cursor: grabbing;
+}
+
+/* The prompt is quiet and it goes away once the object has been touched:
+   an instruction that never leaves is an instruction nobody followed. */
+.goldfish-hint {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-indent: 0.3em;
+  color: var(--color-ink-muted);
+  opacity: 0.55;
+  transition: opacity 300ms ease;
+}
+
+.goldfish:hover .goldfish-hint,
+.goldfish:focus-within .goldfish-hint {
+  opacity: 0;
+}
+
 /* ── The postmark ──
    Struck rather than printed: a real cancellation lands crooked, sits over
    whatever was already on the paper, and is never quite fully inked. Hence

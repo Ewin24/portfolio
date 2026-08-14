@@ -3,6 +3,7 @@ import { ArrowDown, Mail } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useTheme } from '../../theme/ThemeContext'
+import { GoldFish } from '../book/GoldFish'
 import { FadeIn } from '../ui/FadeIn'
 import { workExperience, caseStudies } from '../../content'
 
@@ -53,7 +54,7 @@ function computeStats() {
 export function Hero() {
   const { user } = useApp()
   const { t } = useTranslation()
-  const { theme } = useTheme()
+  const { theme, stillness } = useTheme()
   const reduceMotion = useReducedMotion()
   const { yearsExp, systems, stackCount } = computeStats()
 
@@ -76,6 +77,10 @@ export function Hero() {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 pt-24 pb-16 w-full">
+
+        {/* The figure. It greets before the name does, because the object is
+            the thing a reader remembers after closing the page. */}
+        <GoldFish active={theme === 'book'} still={Boolean(reduceMotion) || stillness} />
 
         {/* Kicker */}
         <FadeIn>
