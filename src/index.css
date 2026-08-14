@@ -649,6 +649,94 @@ html[data-theme='book'] {
   50%      { rotate: calc(var(--tag-tilt) + 1.5deg); }
 }
 
+/* ── The chapter opening ──
+   Mostly air, on purpose. Editorial practice is explicit that a publication
+   where every spread carries the same density fatigues the reader, and that
+   space around an element signals importance more reliably than size. The
+   newspaper deck this replaces was 5rem tall; this is the rest before the
+   dense block, so it is allowed to cost a third of a screen. */
+[data-theme='book'] .chapter-opening {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-block: clamp(4rem, 14vh, 9rem) clamp(3rem, 9vh, 6rem);
+  margin-bottom: clamp(2rem, 5vh, 3.5rem);
+}
+
+/* The section's functional name, demoted to a running label — the book still
+   has to be navigable by someone looking for "Stack". */
+[data-theme='book'] .chapter-running {
+  font-family: var(--font-mono);
+  font-size: 0.5625rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  margin: 0 0 clamp(2rem, 6vh, 3.5rem);
+  /* The tracking adds a trailing gap that breaks optical centring. */
+  text-indent: 0.42em;
+}
+
+[data-theme='book'] .chapter-numeral {
+  font-family: var(--font-headline);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--color-accent);
+  margin: 0 0 clamp(0.75rem, 2vh, 1.25rem);
+  text-indent: 0.18em;
+}
+
+[data-theme='book'] .chapter-name {
+  font-family: var(--font-headline);
+  font-size: clamp(2rem, 5.5vw, 4rem);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  margin: 0;
+  max-width: 18ch;
+}
+
+/* The epigraph sits under a hairline, the way a chapter's standfirst does. */
+[data-theme='book'] .chapter-epigraph {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--color-ink-light);
+  max-width: 46ch;
+  margin: clamp(1.5rem, 4vh, 2.5rem) 0 0;
+  padding-top: clamp(1.25rem, 3vh, 2rem);
+  border-top: 1px solid var(--color-rule);
+}
+
+/* ── Measure ──
+   A book is a single-column manuscript grid. Prose gets a reading measure
+   instead of running the full width of a catalogue card. */
+[data-theme='book'] .blog-article-body {
+  max-width: 68ch;
+  margin-inline: auto;
+}
+
+/* ── The folio ──
+   A book counts its own pages. Derived from reading depth, so it advances
+   as the reader descends. */
+.book-folio {
+  position: fixed;
+  bottom: 1.15rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  font-family: var(--font-headline);
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  color: var(--color-ink-muted);
+  pointer-events: none;
+  opacity: 0.75;
+}
+
 /* ── The page ──
    Fixed behind everything: the reader moves through the book, the sheet
    under them does not slide away. */

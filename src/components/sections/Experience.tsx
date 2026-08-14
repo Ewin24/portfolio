@@ -1,5 +1,6 @@
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
+import { SectionOpening } from '../ui/SectionOpening'
 import { sortedExperience } from '../../content'
 import type { WorkExperience } from '../../types'
 
@@ -90,17 +91,11 @@ export function Experience() {
 
       {/* Section header */}
       <FadeIn>
-        <div className="mb-10">
-          <div className="border-t-4 border-rule mb-1" />
-          <div className="border-t border-rule mb-4" />
-          <h2 className="font-headline text-4xl md:text-5xl font-black text-ink leading-none">
-            {t('experience.title')}
-          </h2>
-          <p className="font-mono text-xs text-ink-muted mt-2">
-            {t('experience.subtitle')}
-          </p>
-          <div className="border-t-4 border-rule mt-4" />
-        </div>
+        <SectionOpening
+          section="experience"
+          title={t('experience.title')}
+          subtitle={t('experience.subtitle')}
+        />
       </FadeIn>
 
       {/* Timeline */}
