@@ -11,15 +11,15 @@ export function Contact() {
   return (
     <section id="contact" className="py-20 px-6 max-w-4xl mx-auto">
       <FadeIn>
-        <div className="border-2 border-ink shadow-pixel">
+        <div className="border-2 border-rule shadow-pixel">
           {/* Header periódico */}
-          <div className="border-b-4 border-ink p-6 bg-ink text-paper">
+          <div className="border-b-4 border-rule p-6 bg-ink text-paper">
             <div className="border-t-4 border-paper mb-1" />
             <div className="border-t border-paper mb-4" />
             <h2 className="font-headline text-4xl md:text-5xl font-black leading-none">
               {t('contact.title')}
             </h2>
-            <p className="font-mono text-xs text-paper/70 mt-2 uppercase tracking-widest">
+            <p className="font-mono text-xs text-paper opacity-70 mt-2 uppercase tracking-widest">
               {t('contact.subtitle')}
             </p>
           </div>

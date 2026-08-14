@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { ExternalLink, Lock, GitFork, Star, Code2 } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
@@ -30,10 +31,10 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
 
   return (
     <FadeIn delay={index * 0.1}>
-      <article className="border-2 border-ink bg-paper shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75 flex flex-col h-full">
+      <article className="border-2 border-rule bg-paper shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75 flex flex-col h-full">
 
         {/* Header del artículo */}
-        <div className="border-b-2 border-ink p-5">
+        <div className="border-b-2 border-rule p-5">
           <div className="flex items-start justify-between gap-3 mb-2">
             <div className="flex-1">
               {study.featured && (
@@ -88,7 +89,7 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
           </div>
 
           {/* Impacto */}
-          <div className="border-l-4 border-ink pl-3">
+          <div className="border-l-4 border-rule pl-3">
             <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
               {t('projects.impact')}
             </p>
@@ -166,8 +167,8 @@ function GitHubActivityWidget() {
   const recent = getFeaturedRepos(repos).slice(0, 4)
 
   return (
-    <div className="border-2 border-ink p-6 shadow-pixel bg-paper">
-      <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-ink">
+    <div className="border-2 border-rule p-6 shadow-pixel bg-paper">
+      <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-rule">
         <h3 className="font-headline text-lg font-bold">{t('projects.github')}</h3>
         <a
           href="https://github.com/Ewin24"
@@ -200,7 +201,7 @@ function GitHubActivityWidget() {
             <div className="flex items-center gap-2 shrink-0 text-ink-muted">
               {repo.language && (
                 <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 inline-block" style={{ backgroundColor: LANG_COLORS[repo.language] || '#888' }} />
+                  <span className="tech-dot w-2 h-2 inline-block" style={{ '--tech': LANG_COLORS[repo.language] || '#888' } as CSSProperties} />
                   <span className="font-mono text-[10px]">{repo.language}</span>
                 </span>
               )}
@@ -232,8 +233,8 @@ export function Projects() {
       {/* Section header estilo periódico */}
       <FadeIn>
         <div className="mb-10">
-          <div className="border-t-4 border-ink mb-1" />
-          <div className="border-t border-ink mb-4" />
+          <div className="border-t-4 border-rule mb-1" />
+          <div className="border-t border-rule mb-4" />
           <div className="flex items-baseline justify-between gap-4">
             <h2 className="font-headline text-4xl md:text-5xl font-black text-ink leading-none">
               {t('projects.title')}
@@ -245,7 +246,7 @@ export function Projects() {
           <p className="font-mono text-xs text-ink-muted mt-2 md:hidden">
             {t('projects.subtitle')}
           </p>
-          <div className="border-t-4 border-ink mt-4" />
+          <div className="border-t-4 border-rule mt-4" />
         </div>
       </FadeIn>
 

@@ -128,7 +128,7 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
               ? 'Buscar artículos…'
               : 'Search articles…'
           }
-          className="w-full border-2 border-ink bg-paper px-9 py-2.5 font-mono text-xs text-ink placeholder:text-ink-muted outline-none focus:bg-paper-dark transition-colors"
+          className="w-full border-2 border-rule bg-paper px-9 py-2.5 font-mono text-xs text-ink placeholder:text-ink-muted outline-none focus:bg-paper-dark transition-colors"
           aria-label={lang === 'es' ? 'Buscar artículos' : 'Search articles'}
         />
         {hasQuery && (
@@ -150,7 +150,7 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15 }}
-            className="border-x-2 border-b-2 border-ink bg-paper shadow-pixel-sm mt-0"
+            className="border-x-2 border-b-2 border-rule bg-paper shadow-pixel-sm mt-0"
           >
             {!isIndexed ? (
               <div className="p-4 text-center">

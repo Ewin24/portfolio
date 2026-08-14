@@ -192,7 +192,7 @@ export function BlogFilters() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.15 }}
-                className="absolute top-full left-0 mt-1 z-20 border-2 border-ink bg-paper shadow-pixel-sm min-w-[140px]"
+                className="absolute top-full left-0 mt-1 z-20 border-2 border-rule bg-paper shadow-pixel-sm min-w-[140px]"
               >
                 <button
                   onClick={() => handleCategorySelect(null)}
@@ -234,7 +234,7 @@ export function BlogFilters() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 transition={{ duration: 0.15 }}
-                className="absolute top-full left-0 mt-1 z-20 border-2 border-ink bg-paper shadow-pixel-sm p-3 flex flex-col gap-2"
+                className="absolute top-full left-0 mt-1 z-20 border-2 border-rule bg-paper shadow-pixel-sm p-3 flex flex-col gap-2"
               >
                 <label className="font-mono text-[9px] uppercase tracking-wider text-ink-muted">
                   {lang === 'es' ? 'Desde' : 'From'}
@@ -243,7 +243,7 @@ export function BlogFilters() {
                   type="date"
                   value={filter.dateRange?.start ?? ''}
                   onChange={(e) => handleDateStart(e.target.value)}
-                  className="border-2 border-ink bg-paper-dark font-mono text-[10px] px-2 py-1"
+                  className="border-2 border-rule bg-paper-dark font-mono text-[10px] px-2 py-1"
                 />
                 <label className="font-mono text-[9px] uppercase tracking-wider text-ink-muted">
                   {lang === 'es' ? 'Hasta' : 'To'}
@@ -252,7 +252,7 @@ export function BlogFilters() {
                   type="date"
                   value={filter.dateRange?.end ?? ''}
                   onChange={(e) => handleDateEnd(e.target.value)}
-                  className="border-2 border-ink bg-paper-dark font-mono text-[10px] px-2 py-1"
+                  className="border-2 border-rule bg-paper-dark font-mono text-[10px] px-2 py-1"
                 />
                 {filter.dateRange && (
                   <button
