@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
+import { useTheme } from '../../theme/ThemeContext'
 import type { Model } from './voxelModels'
 
 interface Props {
@@ -11,6 +12,19 @@ interface Props {
   hint: string
   size?: 'lead' | 'inline'
 }
+
+/** How long the entry assembly takes, from first paint to rest (design D10). */
+const ENTRY_MS = 700
+const STRIKE_RATE = 0.004
+const RETURN_RATE = 0.0016
+const IDLE_YAW_RATE = 0.00013
+const DRAG_YAW_RATE = 0.012
+/** Per-frame velocity decay after release — proportionate under stillness (D7). */
+const DAMPING = 0.94
+const DAMPING_STILL = 0.86
+const RELEASE_CAP = 0.05
+const RELEASE_CAP_STILL = RELEASE_CAP / 2
+const VELOCITY_EPS = 0.0006
 
 /**
  * A voxel object you can take hold of, rendered by hand.
@@ -28,8 +42,19 @@ interface Props {
  * simply never turns on its own — the press still works, because that is
  * content rather than ornament.
  *
+ * The render loop is demand-driven: a single `busy` predicate — visible, and
+ * dragging, or settling, or mid-transition, or mid-entry, or simply not
+ * stillness-locked — decides whether another frame is scheduled. That one
+ * rule replaces a `still` special case that used to schedule a frame and
+ * cancel it in the same tick, leaving nothing painted once an async resize
+ * cleared the canvas behind it.
+ *
  * Flat fills only. The art direction this follows shoots the extraordinary
- * as ordinary, so metal that glints would be the wrong object.
+ * as ordinary, so metal that glints would be the wrong object. Occlusion is
+ * baked per-voxel, quantised to three steps, and released as the object
+ * melts; the contact shadow is a hard-edged diamond, coloured from the
+ * chapter's own shadow token rather than its ink, so it never inverts to a
+ * highlight in the two dark chapters.
  */
 export function VoxelFigure({
   build,
@@ -40,32 +65,45 @@ export function VoxelFigure({
   size = 'inline',
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const model = useMemo(() => (active ? build() : null), [active, build])
+  const { chapter } = useTheme()
+  // Read from the React object, not getComputedStyle — no per-frame recalc.
+  const glowRef = useRef(chapter.glow)
+
+  useEffect(() => {
+    glowRef.current = chapter.glow
+  }, [chapter.glow])
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas || !active || !model) return
+    if (!canvas || !active) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const { voxels, palette, reach } = model
-
+    let model: Model | null = null
     let width = 0
     let height = 0
     let scale = 1
     let frame = 0
     let last = performance.now()
+    let looping = false
 
+    let visible = false
     let yaw = -0.5
     let dragging = false
     let lastX = 0
+    /** Yaw change carried into the release, decayed each frame. */
+    let vYaw = 0
 
-    /** 0 = at rest, 1 = worked. */
-    let phase = 0
+    /** 0 = at rest, 1 = worked (or, before entry finishes, alternate). */
+    let phase = still ? 0 : 1
     let working = false
     let holdUntil = 0
+    /** Entry plays once; scrolling away and back must not replay it. */
+    let entered = still
+    let entryStart: number | null = null
 
     const resize = () => {
+      if (!model) return
       const rect = canvas.getBoundingClientRect()
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
       width = rect.width
@@ -75,7 +113,7 @@ export function VoxelFigure({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       // Framed off the model's own reach, so a bigger object is given a
       // bigger stage instead of being squeezed into the same box.
-      scale = Math.max(3, Math.min(width, height * 1.5) / (reach * 2.6))
+      scale = Math.max(3, Math.min(width, height * 1.5) / (model.reach * 2.6))
     }
 
     const COS30 = Math.cos(Math.PI / 6)
@@ -87,8 +125,10 @@ export function VoxelFigure({
       const rx = x * c - z * s
       const rz = x * s + z * c
       return {
+        // Shifted down from centre (design D4): a diamond shadow's lower
+        // vertex needs headroom below the object at the 150px inline size.
         sx: width / 2 + (rx - rz) * COS30 * scale,
-        sy: height / 2 + ((rx + rz) * SIN30 - y) * scale,
+        sy: height * 0.46 + ((rx + rz) * SIN30 - y) * scale,
         depth: rx + rz + y,
       }
     }
@@ -102,18 +142,43 @@ export function VoxelFigure({
       ctx.fill()
     }
 
+    const isBusy = () =>
+      visible &&
+      (dragging ||
+        working ||
+        Math.abs(vYaw) > VELOCITY_EPS ||
+        phase > 0 ||
+        !entered ||
+        !still)
+
     const draw = (now: number) => {
-      const dt = Math.min(now - last, 48)
+      // The rAF timestamp can predate the performance.now() call that seeded
+      // `last` in requestDraw() (it marks when the frame began, not when the
+      // callback runs) — clamp so a mid-strike frame never sees negative dt
+      // and reads phase backwards past zero.
+      const dt = Math.max(0, Math.min(now - last, 48))
       last = now
 
-      if (!dragging && !still) yaw += dt * 0.00013
+      if (!model) return
+
+      if (!dragging && !still) yaw += dt * IDLE_YAW_RATE
+
+      if (!dragging && vYaw !== 0) {
+        yaw += vYaw
+        vYaw *= still ? DAMPING_STILL : DAMPING
+        if (Math.abs(vYaw) < VELOCITY_EPS) vYaw = 0
+      }
 
       if (working) {
-        phase = Math.min(1, phase + dt * 0.004)
+        phase = Math.min(1, phase + dt * STRIKE_RATE)
         if (phase >= 1 && now > holdUntil) working = false
+      } else if (!entered) {
+        if (entryStart === null) entryStart = now
+        phase = Math.max(0, 1 - (now - entryStart) / ENTRY_MS)
+        if (phase <= 0) entered = true
       } else if (phase > 0) {
         // Returning is slower than going: gold pours fast and sets slowly.
-        phase = Math.max(0, phase - dt * 0.0016)
+        phase = Math.max(0, phase - dt * RETURN_RATE)
       }
 
       ctx.clearRect(0, 0, width, height)
@@ -121,7 +186,20 @@ export function VoxelFigure({
       const t =
         phase < 0.5 ? 2 * phase * phase : 1 - Math.pow(-2 * phase + 2, 2) / 2
 
-      const drawn = voxels.map((v) => {
+      // Contact shadow first, before the painter's sort: a hard-edged
+      // diamond at the ground plane, growing as the object comes apart.
+      const { footprint, fills } = model
+      const shadowScale = 1 + 0.35 * t
+      const shx = (footprint.hx + 0.6) * shadowScale
+      const shz = (footprint.hz + 0.6) * shadowScale
+      const sN = project(0, footprint.y, -shz)
+      const sE = project(shx, footprint.y, 0)
+      const sS = project(0, footprint.y, shz)
+      const sW = project(-shx, footprint.y, 0)
+      ctx.globalAlpha = 1
+      quad([sN, sE, sS, sW], glowRef.current)
+
+      const drawn = model.voxels.map((v) => {
         const x = v.x + (v.ax - v.x) * t
         const y = v.y + (v.ay - v.y) * t
         const z = v.z + (v.az - v.z) * t
@@ -139,24 +217,41 @@ export function VoxelFigure({
         const pxyz = project(x + 1, y + 1, z + 1)
         const pxz = project(x + 1, y, z + 1)
 
-        const tone = palette.tones[v.tone] ?? palette.tones[0]
+        const toneFills = fills[v.tone] ?? fills[0]
+        // Occlusion releases toward the exposed value as the object melts.
+        const eff = (face: number) => Math.round(v.ao[face] * (1 - t))
 
-        quad([py, pxy, pxyz, pyz], tone[0])
-        quad([pz, pxz, pxyz, pyz], tone[1])
-        quad([px, pxy, pxyz, pxz], tone[2])
+        quad([py, pxy, pxyz, pyz], toneFills[0][eff(0)])
+        quad([pz, pxz, pxyz, pyz], toneFills[1][eff(1)])
+        quad([px, pxy, pxyz, pxz], toneFills[2][eff(2)])
       }
 
+      if (isBusy()) {
+        frame = requestAnimationFrame(draw)
+      } else {
+        looping = false
+      }
+    }
+
+    const requestDraw = () => {
+      if (looping) return
+      looping = true
+      last = performance.now()
       frame = requestAnimationFrame(draw)
     }
 
     const onDown = (e: PointerEvent) => {
       dragging = true
+      vYaw = 0
       lastX = e.clientX
       canvas.setPointerCapture(e.pointerId)
+      requestDraw()
     }
     const onMove = (e: PointerEvent) => {
       if (!dragging) return
-      yaw += (e.clientX - lastX) * 0.012
+      const delta = (e.clientX - lastX) * DRAG_YAW_RATE
+      yaw += delta
+      vYaw = delta
       lastX = e.clientX
     }
     const onUp = (e: PointerEvent) => {
@@ -166,11 +261,15 @@ export function VoxelFigure({
       } catch {
         // The pointer may already be gone; releasing is best-effort.
       }
+      const cap = still ? RELEASE_CAP_STILL : RELEASE_CAP
+      vYaw = Math.max(-cap, Math.min(cap, vYaw))
+      requestDraw()
     }
     const strike = () => {
       if (working || phase > 0) return
       working = true
       holdUntil = performance.now() + 420
+      requestDraw()
     }
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -179,10 +278,6 @@ export function VoxelFigure({
       }
     }
 
-    resize()
-    const ro = new ResizeObserver(resize)
-    ro.observe(canvas)
-
     canvas.addEventListener('pointerdown', onDown)
     canvas.addEventListener('pointermove', onMove)
     canvas.addEventListener('pointerup', onUp)
@@ -190,17 +285,37 @@ export function VoxelFigure({
     canvas.addEventListener('click', strike)
     canvas.addEventListener('keydown', onKey)
 
-    if (still) {
-      draw(performance.now())
-      cancelAnimationFrame(frame)
-    } else {
-      last = performance.now()
-      frame = requestAnimationFrame(draw)
-    }
+    const ro = new ResizeObserver(() => {
+      resize()
+      // A resize must always repaint — the canvas resize just cleared it,
+      // and without this the loop being idle (e.g. a settled still figure)
+      // would leave nothing on screen until the next interaction.
+      requestDraw()
+    })
+    ro.observe(canvas)
+
+    // Off-screen figures are never built (D11): the model is resolved only
+    // once the canvas actually enters the viewport.
+    const io = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0]
+        if (!entry) return
+        const nowVisible = entry.isIntersecting
+        if (nowVisible && !model) {
+          model = build()
+          resize()
+        }
+        visible = nowVisible
+        if (visible) requestDraw()
+      },
+      { threshold: 0.01 },
+    )
+    io.observe(canvas)
 
     return () => {
       cancelAnimationFrame(frame)
       ro.disconnect()
+      io.disconnect()
       canvas.removeEventListener('pointerdown', onDown)
       canvas.removeEventListener('pointermove', onMove)
       canvas.removeEventListener('pointerup', onUp)
@@ -208,7 +323,7 @@ export function VoxelFigure({
       canvas.removeEventListener('click', strike)
       canvas.removeEventListener('keydown', onKey)
     }
-  }, [active, still, model])
+  }, [active, still, build])
 
   if (!active) return null
 

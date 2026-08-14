@@ -11,6 +11,11 @@
  * Each model also declares where its voxels go in its ALTERNATE state — the
  * fish melts, the alembic pours, the letter opens. That second arrangement is
  * what turns a mascot into a scene.
+ *
+ * Occlusion is baked here, once, at build time — not recomputed per frame.
+ * Each voxel gets a 0-2 darkening level per drawn face (crevice vs exposed),
+ * and every palette tone gets its three quantised variants precomputed into
+ * `fills`. The renderer only ever indexes into that table.
  */
 
 export interface Voxel {
@@ -23,6 +28,8 @@ export interface Voxel {
   ax: number
   ay: number
   az: number
+  /** Baked occlusion level (0-2) per drawn face: [top, side, dark]. */
+  ao: [number, number, number]
 }
 
 export interface Palette {
@@ -35,6 +42,10 @@ export interface Model {
   palette: Palette
   /** Half-extent used to frame the object. */
   reach: number
+  /** Quantised darkened fills, precomputed: [tone][face 0-2][level 0-2]. */
+  fills: string[][][]
+  /** Ground-plane footprint the contact shadow is drawn from. */
+  footprint: { hx: number; hz: number; y: number }
 }
 
 const GOLD: [string, string, string] = ['#E3B24A', '#C08C28', '#8A5F16']
@@ -44,6 +55,95 @@ const COPPER: [string, string, string] = ['#C2703C', '#A15628', '#6E3617']
 const PAPER: [string, string, string] = ['#F0E4C6', '#D8C8A2', '#A89770']
 const INK: [string, string, string] = ['#6E4A22', '#573A1B', '#3B2712']
 const WAX: [string, string, string] = ['#9C3327', '#7E2820', '#551A15']
+
+/** Quantised occlusion factors — a JND step, not a gradient (design D2). */
+const AO_FACTORS = [1, 0.88, 0.76]
+
+/** Multiplicative darken, kept a flat fill — never brighter than the base tone. */
+function darken(hex: string, factor: number): string {
+  const n = parseInt(hex.slice(1), 16)
+  const r = Math.floor(((n >> 16) & 255) * factor)
+  const g = Math.floor(((n >> 8) & 255) * factor)
+  const b = Math.floor((n & 255) * factor)
+  return `rgb(${r}, ${g}, ${b})`
+}
+
+function buildFills(palette: Palette): string[][][] {
+  return palette.tones.map((tone) => tone.map((hex) => AO_FACTORS.map((f) => darken(hex, f))))
+}
+
+/**
+ * How enclosed a drawn face is, counted from the neighbours that would sit
+ * beside it just outside the voxel — a concave corner collects several, a
+ * face standing in open air collects none. Quantised to 0-2 (design D3).
+ */
+function aoLevel(occ: Set<string>, x: number, y: number, z: number, face: number): number {
+  const key = (ax: number, ay: number, az: number) => `${ax},${ay},${az}`
+  let neighbours: Array<[number, number, number]>
+
+  if (face === 0) {
+    // Top face (+y): tangents in the x/z plane at the layer above.
+    neighbours = [
+      [x + 1, y + 1, z],
+      [x - 1, y + 1, z],
+      [x, y + 1, z + 1],
+      [x, y + 1, z - 1],
+    ]
+  } else if (face === 1) {
+    // Side face (+z): tangents in the x/y plane at the layer ahead.
+    neighbours = [
+      [x + 1, y, z + 1],
+      [x - 1, y, z + 1],
+      [x, y + 1, z + 1],
+      [x, y - 1, z + 1],
+    ]
+  } else {
+    // Dark face (+x): tangents in the y/z plane at the layer beside.
+    neighbours = [
+      [x + 1, y + 1, z],
+      [x + 1, y - 1, z],
+      [x + 1, y, z + 1],
+      [x + 1, y, z - 1],
+    ]
+  }
+
+  const count = neighbours.filter(([nx, ny, nz]) => occ.has(key(nx, ny, nz))).length
+  if (count === 0) return 0
+  if (count <= 2) return 1
+  return 2
+}
+
+function computeFootprint(voxels: Voxel[]): { hx: number; hz: number; y: number } {
+  const minY = Math.min(...voxels.map((v) => v.y))
+  const floor = voxels.filter((v) => v.y === minY)
+  const xs = floor.map((v) => v.x)
+  const zs = floor.map((v) => v.z)
+  const hx = (Math.max(...xs) - Math.min(...xs)) / 2 || 1
+  const hz = (Math.max(...zs) - Math.min(...zs)) / 2 || 1
+  return { hx, hz, y: minY }
+}
+
+/** Bakes occlusion, fills and footprint, and marks the build for D11. */
+function finalize(name: string, voxels: Voxel[], palette: Palette, reach: number): Model {
+  performance.mark(`voxel-build:${name}`)
+
+  const occ = new Set(voxels.map((v) => `${v.x},${v.y},${v.z}`))
+  for (const v of voxels) {
+    v.ao = [
+      aoLevel(occ, v.x, v.y, v.z, 0),
+      aoLevel(occ, v.x, v.y, v.z, 1),
+      aoLevel(occ, v.x, v.y, v.z, 2),
+    ]
+  }
+
+  return {
+    voxels,
+    palette,
+    reach,
+    fills: buildFills(palette),
+    footprint: computeFootprint(voxels),
+  }
+}
 
 /** Scatter an alternate arrangement evenly into a disc. */
 function poolInto(voxels: Voxel[], radius: number, floor: number) {
@@ -85,13 +185,13 @@ export function fishModel(): Model {
         if (!solid) continue
 
         const eye = x === -3 && y === 1 && Math.abs(z) === 1
-        voxels.push({ x, y, z, tone: eye ? 1 : 0, ax: 0, ay: 0, az: 0 })
+        voxels.push({ x, y, z, tone: eye ? 1 : 0, ax: 0, ay: 0, az: 0, ao: [0, 0, 0] })
       }
     }
   }
 
   poolInto(voxels, 6.4, -4.5)
-  return { voxels, palette: { tones: [GOLD, DARK] }, reach: 8 }
+  return finalize('fish', voxels, { tones: [GOLD, DARK] }, 8)
 }
 
 /**
@@ -101,7 +201,7 @@ export function fishModel(): Model {
 export function alembicModel(): Model {
   const voxels: Voxel[] = []
   const add = (x: number, y: number, z: number, tone: number) =>
-    voxels.push({ x, y, z, tone, ax: 0, ay: 0, az: 0 })
+    voxels.push({ x, y, z, tone, ax: 0, ay: 0, az: 0, ao: [0, 0, 0] })
 
   // Rounded copper body.
   for (let x = -4; x <= 4; x++)
@@ -132,7 +232,7 @@ export function alembicModel(): Model {
   }
 
   poolInto(voxels, 7, -5)
-  return { voxels, palette: { tones: [COPPER, GLASS] }, reach: 8 }
+  return finalize('alembic', voxels, { tones: [COPPER, GLASS] }, 8)
 }
 
 /**
@@ -142,7 +242,7 @@ export function alembicModel(): Model {
 export function letterModel(): Model {
   const voxels: Voxel[] = []
   const add = (x: number, y: number, z: number, tone: number) =>
-    voxels.push({ x, y, z, tone, ax: 0, ay: 0, az: 0 })
+    voxels.push({ x, y, z, tone, ax: 0, ay: 0, az: 0, ao: [0, 0, 0] })
 
   // The envelope: a flat slab.
   for (let x = -7; x <= 7; x++)
@@ -167,7 +267,7 @@ export function letterModel(): Model {
     v.ay = v.tone === 0 ? v.y : v.y + 3 + (i % 3) * 0.3
   })
 
-  return { voxels, palette: { tones: [PAPER, PAPER, WAX] }, reach: 8 }
+  return finalize('letter', voxels, { tones: [PAPER, PAPER, WAX] }, 8)
 }
 
 /**
@@ -177,7 +277,7 @@ export function letterModel(): Model {
 export function scrollModel(): Model {
   const voxels: Voxel[] = []
   const add = (x: number, y: number, z: number, tone: number) =>
-    voxels.push({ x, y, z, tone, ax: 0, ay: 0, az: 0 })
+    voxels.push({ x, y, z, tone, ax: 0, ay: 0, az: 0, ao: [0, 0, 0] })
 
   // A cylinder lying along X.
   for (let x = -7; x <= 7; x++)
@@ -195,5 +295,5 @@ export function scrollModel(): Model {
     v.az = angle * 2.4
   })
 
-  return { voxels, palette: { tones: [PAPER, INK] }, reach: 8 }
+  return finalize('scroll', voxels, { tones: [PAPER, INK] }, 8)
 }
