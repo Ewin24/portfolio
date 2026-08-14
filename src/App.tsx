@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft } from 'lucide-react'
 import { useApp } from './context/AppContext'
 import { useTranslation } from './hooks/useTranslation'
@@ -13,6 +13,7 @@ import { Education } from './components/sections/Education'
 import { Testimonials } from './components/sections/Testimonials'
 import { Contact } from './components/sections/Contact'
 import { Footer } from './components/sections/Footer'
+import { BookStage } from './components/book/BookStage'
 import { Loading } from './components/ui/Loading'
 
 /**
@@ -39,10 +40,10 @@ function BlogFallback({ minHeight, id }: { minHeight: string; id?: string }) {
       style={{ minHeight }}
       aria-busy="true"
     >
-      <div className="border-t-4 border-ink mb-1" />
-      <div className="border-t border-ink mb-4" />
+      <div className="border-t-4 border-rule mb-1" />
+      <div className="border-t border-rule mb-4" />
       <div className="h-10 w-64 bg-paper-dark" />
-      <div className="border-t-4 border-ink mt-4" />
+      <div className="border-t-4 border-rule mt-4" />
     </div>
   )
 }
@@ -74,9 +75,9 @@ function App() {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-paper">
-        <div className="border-2 border-ink shadow-pixel p-8 text-center max-w-md bg-paper">
-          <div className="border-t-4 border-ink mb-1" />
-          <div className="border-t border-ink mb-4" />
+        <div className="border-2 border-rule shadow-pixel p-8 text-center max-w-md bg-paper">
+          <div className="border-t-4 border-rule mb-1" />
+          <div className="border-t border-rule mb-4" />
           <p className="font-mono text-xs font-bold uppercase tracking-widest text-accent mb-2">
             Error
           </p>
@@ -87,7 +88,7 @@ function App() {
           >
             Reintentar
           </button>
-          <div className="border-t-4 border-ink mt-4" />
+          <div className="border-t-4 border-rule mt-4" />
         </div>
       </div>
     )
@@ -116,8 +117,14 @@ function App() {
     >
       {blogMode ? (
         <motion.div key="blog-full" {...fade} className="min-h-screen bg-paper">
+          {/* The article view carries the atmosphere too. Without it the page
+              surface is transparent in Book and the reader gets a flat
+              wash instead of a sky. No section ids exist here, so the stage
+              settles on the opening chapter. */}
+          <BookStage />
+
           {/* Back to portfolio bar */}
-          <div className="sticky top-0 z-50 bg-paper border-b-2 border-ink">
+          <div className="chrome-bar sticky top-0 z-50 bg-paper border-b-2 border-rule">
             <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
               <button
                 onClick={() => {
@@ -142,24 +149,34 @@ function App() {
         </motion.div>
       ) : (
         <motion.div key="portfolio" {...fade} className="min-h-screen bg-paper">
+          {/* Book's sky, dunes and airborne sand. Renders nothing at all
+              in the default newspaper theme. */}
+          <BookStage />
+
           <a href="#main" className="skip-link">
             {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
           </a>
           <Header />
-          <main id="main" tabIndex={-1}>
-            <Hero />
-            <About />
-            <Projects />
-            <Skills />
-            <Experience />
-            <Education />
-            <Testimonials />
-            <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
-              <BlogRoot />
-            </Suspense>
-            <Contact />
-          </main>
-          <Footer />
+
+          {/* The atmosphere layers sit at z-0, so the readable page is lifted
+              above them explicitly rather than relying on which elements
+              happen to be positioned. */}
+          <div className="relative z-10">
+            <main id="main" tabIndex={-1}>
+              <Hero />
+              <About />
+              <Projects />
+              <Skills />
+              <Experience />
+              <Education />
+              <Testimonials />
+              <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
+                <BlogRoot />
+              </Suspense>
+              <Contact />
+            </main>
+            <Footer />
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

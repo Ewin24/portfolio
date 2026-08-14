@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { ArrowRight, Tag } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../../components/ui/FadeIn'
@@ -34,7 +34,7 @@ export function Recommendations({ currentPost }: Props) {
 
   return (
     <FadeIn>
-      <div className="border-t-4 border-ink pt-6 mt-10 mb-8">
+      <div className="border-t-4 border-rule pt-6 mt-10 mb-8">
         <h3 className="font-headline text-xl md:text-2xl font-bold text-ink mb-5">
           {lang === 'es' ? 'Artículos relacionados' : 'Related posts'}
         </h3>
@@ -50,7 +50,7 @@ export function Recommendations({ currentPost }: Props) {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: i * 0.08 }}
-                className="border-2 border-ink bg-paper shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 flex flex-col"
+                className="border-2 border-rule bg-paper shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 flex flex-col"
               >
                 <button
                   onClick={() => handleSelect(post)}

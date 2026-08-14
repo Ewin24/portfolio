@@ -15,10 +15,10 @@ function ExperienceCard({ job, index }: { job: WorkExperience; index: number }) 
 
   return (
     <FadeIn delay={index * 0.1}>
-      <div className="grid md:grid-cols-[200px_1fr] gap-0 border-2 border-ink shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75">
+      <div className="grid md:grid-cols-[200px_1fr] gap-0 border-2 border-rule shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75">
 
         {/* Columna izquierda — metadata */}
-        <div className="border-b-2 md:border-b-0 md:border-r-2 border-ink p-5 bg-paper-dark flex flex-col gap-3">
+        <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-5 bg-paper-dark flex flex-col gap-3">
           <div>
             <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
               {job.period}
@@ -91,15 +91,15 @@ export function Experience() {
       {/* Section header */}
       <FadeIn>
         <div className="mb-10">
-          <div className="border-t-4 border-ink mb-1" />
-          <div className="border-t border-ink mb-4" />
+          <div className="border-t-4 border-rule mb-1" />
+          <div className="border-t border-rule mb-4" />
           <h2 className="font-headline text-4xl md:text-5xl font-black text-ink leading-none">
             {t('experience.title')}
           </h2>
           <p className="font-mono text-xs text-ink-muted mt-2">
             {t('experience.subtitle')}
           </p>
-          <div className="border-t-4 border-ink mt-4" />
+          <div className="border-t-4 border-rule mt-4" />
         </div>
       </FadeIn>
 

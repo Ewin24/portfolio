@@ -1,5 +1,5 @@
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import type { ComponentType } from 'react'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
+import type { ComponentType, CSSProperties } from 'react'
 import type { LucideProps } from 'lucide-react'
 import { ExternalLink } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
@@ -27,7 +27,7 @@ export function SkillHUD({ technology }: SkillHUDProps) {
   const shift = reduceMotion ? 0 : 10
 
   return (
-    <div className="border-2 border-ink bg-paper shadow-pixel p-6">
+    <div className="border-2 border-rule bg-paper shadow-pixel p-6">
       <AnimatePresence mode="wait">
         <motion.div
           key={technology.id}
@@ -42,8 +42,8 @@ export function SkillHUD({ technology }: SkillHUDProps) {
           {/* Header — icon + name */}
           <div className="flex items-center gap-4 mb-4 pb-4 border-b border-rule-light">
             <div
-              className="border-2 border-ink p-3 shrink-0"
-              style={{ backgroundColor: `${technology.color}18` }}
+              className="tech-chip border-2 border-rule p-3 shrink-0"
+              style={{ '--tech': technology.color } as CSSProperties}
             >
               <Icon
                 size={32}
@@ -70,8 +70,8 @@ export function SkillHUD({ technology }: SkillHUDProps) {
               {technology.milestones.map((ms, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <span
-                    className="w-3 h-3 mt-1 shrink-0"
-                    style={{ backgroundColor: technology.color }}
+                    className="tech-dot w-3 h-3 mt-1 shrink-0"
+                    style={{ '--tech': technology.color } as CSSProperties}
                   />
                   <p className="font-sans text-sm text-ink-light leading-relaxed">
                     {ms}

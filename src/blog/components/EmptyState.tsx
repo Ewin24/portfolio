@@ -50,7 +50,7 @@ export function EmptyState({ context, searchQuery = '' }: Props) {
 
   return (
     <FadeIn>
-      <div className="border-2 border-ink bg-paper-dark p-8 md:p-12 text-center">
+      <div className="border-2 border-rule bg-paper-dark p-8 md:p-12 text-center">
         <div className="max-w-md mx-auto">
           <h3 className="font-headline text-xl md:text-2xl font-bold text-ink mb-3">
             {title}

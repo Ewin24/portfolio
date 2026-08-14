@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'motion/react'
 import { ArrowDown, Mail } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
@@ -62,7 +62,7 @@ export function Hero() {
   ]
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-paper">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-paper">
 
       {/* Fondo: líneas tipográficas decorativas (newspaper columns ghost) */}
       <div
@@ -78,28 +78,28 @@ export function Hero() {
         {/* Kicker */}
         <FadeIn>
           <div className="flex items-center gap-4 mb-6">
-            <div className="border-t-4 border-ink flex-1 max-w-12" />
+            <div className="border-t-4 border-rule flex-1 max-w-12" />
             <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-ink-muted">
               {t('hero.greeting')}
             </span>
-            <div className="border-t-4 border-ink flex-1 max-w-12" />
+            <div className="border-t-4 border-rule flex-1 max-w-12" />
           </div>
         </FadeIn>
 
         {/* Nombre — el MASTHEAD */}
         <FadeIn delay={0.1}>
-          <div className="border-t-4 border-ink pt-4 mb-2">
+          <div className="border-t-4 border-rule pt-4 mb-2">
             <h1 className="font-headline font-black leading-none tracking-tight"
               style={{ fontSize: 'clamp(3rem, 10vw, 7rem)' }}>
               {user?.name || 'Edwin Trigos'}
             </h1>
           </div>
-          <div className="border-t border-ink mb-4" />
+          <div className="border-t border-rule mb-4" />
         </FadeIn>
 
         {/* Rol + subtitle en dos columnas estilo periódico */}
         <FadeIn delay={0.2}>
-          <div className="grid md:grid-cols-[1fr_2fr] gap-6 border-b-4 border-ink pb-8 mb-8">
+          <div className="grid md:grid-cols-[1fr_2fr] gap-6 border-b-4 border-rule pb-8 mb-8">
             <div>
               <p className="font-headline text-xl md:text-2xl font-bold italic text-accent leading-tight">
                 {t('hero.role')}
@@ -129,11 +129,11 @@ export function Hero() {
 
         {/* Stats — valores de negocio, no GitHub metrics */}
         <FadeIn delay={0.4}>
-          <div className="grid grid-cols-3 border-2 border-ink shadow-pixel-sm">
+          <div className="grid grid-cols-3 border-2 border-rule shadow-pixel-sm">
             {stats.map((stat, i) => (
               <div
                 key={stat.label}
-                className={`p-5 text-center ${i < stats.length - 1 ? 'border-r-2 border-ink' : ''}`}
+                className={`p-5 text-center ${i < stats.length - 1 ? 'border-r-2 border-rule' : ''}`}
               >
                 <motion.p
                   className="font-headline text-3xl md:text-4xl font-black text-ink leading-none"

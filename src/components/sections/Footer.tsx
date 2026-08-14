@@ -5,7 +5,7 @@ export function Footer() {
   const { t } = useTranslation()
 
   return (
-    <footer className="border-t-4 border-ink py-6 px-6 bg-paper-dark">
+    <footer id="footer" className="border-t-4 border-rule py-6 px-6 bg-paper-dark">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
 
         <p className="font-mono text-[11px] text-ink-muted uppercase tracking-wide">

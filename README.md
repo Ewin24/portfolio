@@ -34,7 +34,7 @@ Módulo de verificación de identidad con patrón Strategy: bot de voz + validac
 API REST en .NET 8 con Dapper + SQL Server. Patrones de resiliencia con Polly (circuit breaker + retry). Autenticación JWT, logging estructurado con Serilog, middleware de request/response logging.
 
 ### 📄 Sistema de Gestión de Nóminas (ERP Baguer / Cadena de Franquicias)
-Extensión del sistema de generación de documentos del ERP para 3 nuevos tipos de nómina cliente de franquicias. 21 plantillas Crystal Reports, enrutamiento dinámico, cero impacto en 45+ tipos de nómina legacy.
+Extensión del sistema de generación de documentos del ERP para 3 nuevos tipos de nómina de la cadena de franquicias. 21 plantillas Crystal Reports, enrutamiento dinámico, cero impacto en 45+ tipos de nómina legacy.
 
 ### 🖥️ Arquitectura UI para Módulo Administrativo (LOS)
 Reestructuración del módulo Admin en Panel de Control (monitoreo) + Módulo Administrar (configuración CRUD). Separación de responsabilidades alineada con la arquitectura limpia del backend.

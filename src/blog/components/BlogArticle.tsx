@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { ArrowLeft, ArrowRight, Calendar, Clock } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useBlogContext } from '../context/BlogContext'
@@ -82,8 +82,8 @@ export function BlogArticle() {
         </button>
 
         {/* Masthead style header */}
-        <div className="border-t-4 border-ink mb-1" />
-        <div className="border-t border-ink mb-6" />
+        <div className="border-t-4 border-rule mb-1" />
+        <div className="border-t border-rule mb-6" />
 
         {/* Headline */}
         <h1 className="font-headline text-3xl md:text-5xl lg:text-6xl font-black text-ink leading-[1.05] tracking-tight mb-4">
@@ -117,7 +117,7 @@ export function BlogArticle() {
           className="
             blog-article-body
             font-sans text-sm md:text-base text-ink-light leading-[1.75] space-y-5 max-w-3xl
-            [&_pre]:border-2 [&_pre]:border-ink [&_pre]:bg-paper-dark [&_pre]:p-4 [&_pre]:md:p-5
+            [&_pre]:border-2 [&_pre]:border-rule [&_pre]:bg-paper-dark [&_pre]:p-4 [&_pre]:md:p-5
             [&_pre]:overflow-x-auto [&_pre]:font-mono [&_pre]:text-[11px] [&_pre]:md:text-xs
             [&_pre]:leading-relaxed [&_pre]:shadow-pixel-sm [&_pre]:my-6 [&_pre]:-mx-2 [&_pre]:md:mx-0
             [&_pre_code]:whitespace-pre-wrap [&_pre_code]:break-words
@@ -126,7 +126,7 @@ export function BlogArticle() {
             [&_h2]:font-headline [&_h2]:text-xl [&_h2]:md:text-2xl [&_h2]:font-bold [&_h2]:text-ink [&_h2]:leading-tight [&_h2]:mt-8 [&_h2]:mb-3
             [&_h3]:font-headline [&_h3]:text-lg [&_h3]:md:text-xl [&_h3]:font-bold [&_h3]:text-ink [&_h3]:mt-6 [&_h3]:mb-2
             [&_strong]:font-bold [&_strong]:text-ink
-            [&_blockquote]:border-l-4 [&_blockquote]:border-ink [&_blockquote]:pl-4 [&_blockquote]:italic
+            [&_blockquote]:border-l-4 [&_blockquote]:border-rule [&_blockquote]:pl-4 [&_blockquote]:italic
             [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:space-y-1
             [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-1
             [&_li]:text-sm [&_li]:md:text-base [&_li]:leading-relaxed
@@ -136,21 +136,21 @@ export function BlogArticle() {
             [&_p:first-of-type::first-letter]:font-black [&_p:first-of-type::first-letter]:float-left
             [&_p:first-of-type::first-letter]:mr-2 [&_p:first-of-type::first-letter]:mt-1
             [&_p:first-of-type::first-letter]:leading-[0.8] [&_p:first-of-type::first-letter]:text-ink
-            [&_hr]:border-t-4 [&_hr]:border-ink [&_hr]:my-8
+            [&_hr]:border-t-4 [&_hr]:border-rule [&_hr]:my-8
           "
           dangerouslySetInnerHTML={{ __html: parseMarkdown(content) }}
         />
 
         {/* Bottom rule */}
-        <div className="border-t-4 border-ink mt-12 mb-1" />
-        <div className="border-t border-ink mb-6" />
+        <div className="border-t-4 border-rule mt-12 mb-1" />
+        <div className="border-t border-rule mb-6" />
 
         {/* Prev / Next navigation (fixes bug #4) */}
         <nav className="flex justify-between items-stretch gap-4 mb-10">
           {prevPost ? (
             <button
               onClick={handlePrev}
-              className="flex-1 flex flex-col items-start gap-1 border-2 border-ink bg-paper p-4 shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 text-left cursor-pointer"
+              className="flex-1 flex flex-col items-start gap-1 border-2 border-rule bg-paper p-4 shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 text-left cursor-pointer"
             >
               <span className="font-mono text-[9px] uppercase tracking-wider text-ink-muted flex items-center gap-1">
                 <ArrowLeft size={10} /> {lang === 'es' ? 'Anterior' : 'Previous'}
@@ -166,7 +166,7 @@ export function BlogArticle() {
           {nextPost ? (
             <button
               onClick={handleNext}
-              className="flex-1 flex flex-col items-end gap-1 border-2 border-ink bg-paper p-4 shadow-pixel-sm hover:shadow-none hover:-translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:-translate-x-0.5 active:translate-y-0.5 transition-all duration-75 text-right cursor-pointer"
+              className="flex-1 flex flex-col items-end gap-1 border-2 border-rule bg-paper p-4 shadow-pixel-sm hover:shadow-none hover:-translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:-translate-x-0.5 active:translate-y-0.5 transition-all duration-75 text-right cursor-pointer"
             >
               <span className="font-mono text-[9px] uppercase tracking-wider text-ink-muted flex items-center gap-1">
                 {lang === 'es' ? 'Siguiente' : 'Next'} <ArrowRight size={10} />
