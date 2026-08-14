@@ -161,7 +161,21 @@ export function VoxelFigure({
       const dt = Math.max(0, Math.min(now - last, 48))
       last = now
 
-      if (!model) return
+      // Invariant: `looping` means "a frame is scheduled and will run".
+      // Every exit from draw() — including this early one — MUST clear it
+      // before returning, or requestDraw() becomes a permanent no-op. This
+      // early return fires when the ResizeObserver's initial callback (which
+      // always fires once on observe(), synchronously with layout) wins the
+      // race against the IntersectionObserver that builds the model: the
+      // resize-triggered requestDraw() runs a frame before `model` exists,
+      // and without the reset below the IO's later requestDraw() would see
+      // `looping` still true and never schedule the frame that actually
+      // paints. Order between the two observers is not guaranteed, so this
+      // must be safe no matter which one wins.
+      if (!model) {
+        looping = false
+        return
+      }
 
       if (!dragging && !still) yaw += dt * IDLE_YAW_RATE
 
