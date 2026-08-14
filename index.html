@@ -31,8 +31,27 @@
     <meta name="twitter:image" content="https://avatars.githubusercontent.com/Ewin24" />
     <meta name="twitter:creator" content="@Ewin24" />
 
-    <!-- Theme — must match --color-paper in src/index.css -->
+    <!-- Theme — must match --color-paper in src/index.css.
+         ThemeProvider rewrites this to the current Book sky while that
+         theme is active. -->
     <meta name="theme-color" content="#FAFAF5" />
+
+    <!-- Theme boot.
+         Runs before first paint so a returning Book visitor never sees the
+         newspaper flash first. Deliberately inline and dependency-free: the
+         React bundle resolves far too late to prevent that flash. The storage
+         key is mirrored from THEME_STORAGE_KEY in src/theme/ThemeContext.tsx. -->
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('portfolio-theme') === 'book') {
+            document.documentElement.dataset.theme = 'book'
+          }
+        } catch (e) {
+          /* Blocked storage — the newspaper theme is the safe default. */
+        }
+      })()
+    </script>
 
     <!-- Hreflang -->
     <link rel="alternate" hreflang="en" href="https://ewin24.github.io/portfolio/?lang=en" />
@@ -179,9 +198,9 @@
     </script>
 
     <title>Edwin Trigos | Software Architect & Full Stack Developer</title>
-    <script type="module" crossorigin src="/portfolio/assets/index-PLfJPAEN.js"></script>
-    <link rel="modulepreload" crossorigin href="/portfolio/assets/FadeIn-DCOXfkMX.js">
-    <link rel="stylesheet" crossorigin href="/portfolio/assets/index-DUAGVWC8.css">
+    <script type="module" crossorigin src="/portfolio/assets/index-BapzfloQ.js"></script>
+    <link rel="modulepreload" crossorigin href="/portfolio/assets/FadeIn-Bt1fwos9.js">
+    <link rel="stylesheet" crossorigin href="/portfolio/assets/index-Dmmhdftz.css">
   <script type="application/ld+json">
 [
   {
