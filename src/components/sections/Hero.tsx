@@ -3,7 +3,8 @@ import { ArrowDown, Mail } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useTheme } from '../../theme/ThemeContext'
-import { GoldFish } from '../book/GoldFish'
+import { VoxelFigure } from '../book/VoxelFigure'
+import { fishModel } from '../book/voxelModels'
 import { FadeIn } from '../ui/FadeIn'
 import { workExperience, caseStudies } from '../../content'
 
@@ -53,7 +54,7 @@ function computeStats() {
 
 export function Hero() {
   const { user } = useApp()
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
   const { theme, stillness } = useTheme()
   const reduceMotion = useReducedMotion()
   const { yearsExp, systems, stackCount } = computeStats()
@@ -80,7 +81,16 @@ export function Hero() {
 
         {/* The figure. It greets before the name does, because the object is
             the thing a reader remembers after closing the page. */}
-        <GoldFish active={theme === 'book'} still={Boolean(reduceMotion) || stillness} />
+        <VoxelFigure
+          build={fishModel}
+          size="lead"
+          active={theme === 'book'}
+          still={Boolean(reduceMotion) || stillness}
+          label={lang === 'es'
+            ? 'Pescadito de oro: arrastralo para girarlo, presionalo para fundirlo'
+            : 'Little gold fish: drag to turn it, press to melt it down'}
+          hint={lang === 'es' ? 'fundelo' : 'melt it'}
+        />
 
         {/* Kicker */}
         <FadeIn>

@@ -2,13 +2,17 @@ import { Mail, ArrowUpRight, MapPin } from 'lucide-react'
 import { GithubIcon } from '../ui/GithubIcon'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
+import { useReducedMotion } from 'motion/react'
 import { useTheme } from '../../theme/ThemeContext'
+import { VoxelFigure } from '../book/VoxelFigure'
+import { letterModel } from '../book/voxelModels'
 import { FadeIn } from '../ui/FadeIn'
 
 export function Contact() {
   const { user } = useApp()
   const { t, lang } = useTranslation()
-  const { theme } = useTheme()
+  const { theme, stillness } = useTheme()
+  const reduceMotion = useReducedMotion()
 
   return (
     <section id="contact" className="py-20 px-6 max-w-4xl mx-auto">
@@ -41,6 +45,20 @@ export function Contact() {
               thing that has actually been sent, and it carries the town's
               name because that is where this one was written.
             */}
+            {theme === 'book' && (
+              <VoxelFigure
+                build={letterModel}
+                active
+                still={Boolean(reduceMotion) || stillness}
+                label={
+                  lang === 'es'
+                    ? 'Carta lacrada: arrástrala para girarla, presiónala para abrirla'
+                    : 'Sealed letter: drag to turn it, press to open it'
+                }
+                hint={lang === 'es' ? 'ábrela' : 'open it'}
+              />
+            )}
+
             {theme === 'book' && (
               <div className="postmark" aria-hidden="true">
                 <span className="postmark-town">Macondo</span>

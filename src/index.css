@@ -665,30 +665,51 @@ html[data-theme='book'] {
   translate: none;
 }
 
-/* ── The little gold fish ──
-   The one object on the page you can take hold of. */
-.goldfish {
+/* ── The objects ──
+   The things in the book you can take hold of. */
+.figure {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
+}
+
+/* The lead object introduces the whole book, so it gets a stage rather than
+   a thumbnail. The first pass boxed it into 210x152 and the fish had no room
+   to turn without leaving the frame. */
+.figure-lead {
+  margin-bottom: clamp(1.5rem, 5vh, 3rem);
+}
+
+.figure-lead .figure-canvas {
+  width: min(100%, 420px);
+  height: clamp(210px, 30vh, 300px);
+}
+
+/* Chapter objects sit beside their content and stay modest. */
+.figure-inline {
   margin-bottom: clamp(1rem, 3vh, 2rem);
 }
 
-.goldfish-canvas {
-  width: clamp(150px, 22vw, 210px);
-  height: clamp(112px, 16vw, 152px);
+.figure-inline .figure-canvas {
+  width: min(100%, 260px);
+  height: clamp(150px, 20vh, 200px);
+}
+
+.figure-canvas {
   cursor: grab;
+  /* Vertical panning still belongs to the page; only the horizontal drag
+     is taken, so a thumb can scroll straight past the object. */
   touch-action: pan-y;
 }
 
-.goldfish-canvas:active {
+.figure-canvas:active {
   cursor: grabbing;
 }
 
 /* The prompt is quiet and it goes away once the object has been touched:
    an instruction that never leaves is an instruction nobody followed. */
-.goldfish-hint {
+.figure-hint {
   margin: 0;
   font-family: var(--font-mono);
   font-size: 0.5rem;
@@ -700,8 +721,8 @@ html[data-theme='book'] {
   transition: opacity 300ms ease;
 }
 
-.goldfish:hover .goldfish-hint,
-.goldfish:focus-within .goldfish-hint {
+.figure:hover .figure-hint,
+.figure:focus-within .figure-hint {
   opacity: 0;
 }
 

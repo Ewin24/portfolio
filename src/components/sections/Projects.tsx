@@ -6,6 +6,8 @@ import { useTranslation } from '../../hooks/useTranslation'
 import { useTheme } from '../../theme/ThemeContext'
 import { getFeaturedRepos } from '../../services/github'
 import { Crucible } from '../book/Crucible'
+import { VoxelFigure } from '../book/VoxelFigure'
+import { alembicModel } from '../book/voxelModels'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
 import { featuredCaseStudies } from '../../content'
@@ -229,7 +231,9 @@ function GitHubActivityWidget() {
 
 // ─── Section ────────────────────────────────────────────────────────────────
 export function Projects() {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
+  const { theme, stillness } = useTheme()
+  const reduceMotion = useReducedMotion()
 
   return (
     <section id="projects" className="py-20 px-6 max-w-7xl mx-auto">
@@ -242,6 +246,21 @@ export function Projects() {
           subtitle={t('projects.subtitle')}
           align="beside"
         />
+
+        {/* Melquíades' alembic: the vessel the workshop actually works in. */}
+        <div className="flex justify-center">
+          <VoxelFigure
+            build={alembicModel}
+            active={theme === 'book'}
+            still={Boolean(reduceMotion) || stillness}
+            label={
+              lang === 'es'
+                ? 'Alambique: arrástralo para girarlo, presiónalo para verterlo'
+                : 'Alembic: drag to turn it, press to pour it'
+            }
+            hint={lang === 'es' ? 'viértelo' : 'pour it'}
+          />
+        </div>
       </FadeIn>
 
       {/* Case Studies grid */}
