@@ -94,7 +94,12 @@ export function BlogList() {
   }
 
   const handleRead = (post: BlogPost) => {
-    window.location.hash = `#blog/article/${post.slug}`
+    // pushState + a manual hashchange rather than assigning location.hash.
+    // Same navigation, but it is the pattern App and BlogArticle already use,
+    // and assigning to location.hash trips the compiler's "this value cannot
+    // be modified" rule now that this component holds hooks.
+    history.pushState(null, '', `#blog/article/${post.slug}`)
+    window.dispatchEvent(new HashChangeEvent('hashchange'))
   }
 
   if (totalPosts === 0) {
