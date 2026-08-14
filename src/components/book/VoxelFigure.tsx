@@ -205,9 +205,15 @@ export function VoxelFigure({
       // Contact shadow first, before the painter's sort: a hard-edged
       // diamond at the ground plane, growing as the object comes apart.
       const { footprint, fills } = model
+      // The pad is proportional, not a constant. A fixed 0.6 gave the small
+      // fish a 17% overhang but the wide letter only 9%, and the letter is a
+      // solid rectangular slab — at 9% the diamond's corners fall inside its
+      // own side faces and the shadow is invisible for that model. Scaling
+      // the pad with the footprint gives every object the same relative
+      // overhang, so a shadow either reads for all three or for none.
       const shadowScale = 1 + 0.35 * t
-      const shx = (footprint.hx + 0.6) * shadowScale
-      const shz = (footprint.hz + 0.6) * shadowScale
+      const shx = (footprint.hx * 1.16 + 0.6) * shadowScale
+      const shz = (footprint.hz * 1.16 + 0.6) * shadowScale
       const sN = project(0, footprint.y, -shz)
       const sE = project(shx, footprint.y, 0)
       const sS = project(0, footprint.y, shz)
