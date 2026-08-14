@@ -1,8 +1,11 @@
 import type { CSSProperties } from 'react'
+import { useReducedMotion } from 'motion/react'
 import { ExternalLink, Lock, GitFork, Star, Code2 } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
+import { useTheme } from '../../theme/ThemeContext'
 import { getFeaturedRepos } from '../../services/github'
+import { Crucible } from '../book/Crucible'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
 import { featuredCaseStudies } from '../../content'
@@ -19,6 +22,8 @@ const LANG_COLORS: Record<string, string> = {
 function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
   const { lang } = useTranslation()
   const { t } = useTranslation()
+  const { theme, stillness } = useTheme()
+  const reduceMotion = useReducedMotion()
 
   const title    = lang === 'es' ? study.title    : study.titleEn
   const role     = lang === 'es' ? study.role     : study.roleEn
@@ -69,25 +74,23 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
         {/* Body del artículo */}
         <div className="p-5 flex-1 flex flex-col gap-4">
 
-          {/* Problema */}
-          <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-accent mb-1">
-              {t('projects.problem')}
-            </p>
-            <p className="font-sans text-sm text-ink-light leading-relaxed line-clamp-3">
-              {problem}
-            </p>
-          </div>
-
-          {/* Solución */}
-          <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
-              {t('projects.solution')}
-            </p>
-            <p className="font-sans text-sm text-ink-light leading-relaxed line-clamp-3">
-              {solution}
-            </p>
-          </div>
+          {/* Problema → Solución. En el libro es una transmutación. */}
+          <Crucible
+            active={theme === 'book'}
+            still={Boolean(reduceMotion) || stillness}
+            beforeLabel={t('projects.problem')}
+            afterLabel={t('projects.solution')}
+            before={
+              <p className="font-sans text-sm text-ink-light leading-relaxed line-clamp-3">
+                {problem}
+              </p>
+            }
+            after={
+              <p className="font-sans text-sm text-ink-light leading-relaxed line-clamp-3">
+                {solution}
+              </p>
+            }
+          />
 
           {/* Impacto */}
           <div className="border-l-4 border-rule pl-3">

@@ -665,6 +665,72 @@ html[data-theme='book'] {
   translate: none;
 }
 
+/* ── The founding ──
+   Quantities without names until you point at one. The label keeps its box
+   so nothing reflows when it arrives; only its ink comes and goes. */
+[data-theme='book'] .unnamed .unnamed-label {
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+[data-theme='book'] .unnamed:hover .unnamed-label,
+[data-theme='book'] .unnamed:focus-within .unnamed-label {
+  opacity: 1;
+}
+
+/* ── The crucible ──
+   Two states in one footprint, so the eye reads a transformation instead of
+   two facts stacked. Grid rather than absolute positioning: both faces stay
+   in flow, so the block is as tall as the taller of the two and nothing
+   below it moves when the change runs. */
+[data-theme='book'] .crucible {
+  outline-offset: 4px;
+}
+
+[data-theme='book'] .crucible-label {
+  position: relative;
+  display: block;
+  height: 1em;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+[data-theme='book'] .crucible-label-before,
+[data-theme='book'] .crucible-label-after {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  transition: opacity 300ms ease;
+}
+
+[data-theme='book'] .crucible-label-before { color: var(--color-accent); opacity: 1; }
+[data-theme='book'] .crucible-label-after  { color: var(--color-ink-muted); opacity: 0; }
+
+[data-theme='book'] .crucible.is-worked .crucible-label-before { opacity: 0; }
+[data-theme='book'] .crucible.is-worked .crucible-label-after  { opacity: 1; }
+
+[data-theme='book'] .crucible-stack {
+  display: grid;
+}
+
+[data-theme='book'] .crucible-face {
+  grid-area: 1 / 1;
+  transition: opacity 340ms ease;
+}
+
+[data-theme='book'] .crucible-before { opacity: 1; }
+[data-theme='book'] .crucible-after  { opacity: 0; }
+
+[data-theme='book'] .crucible.is-worked .crucible-before { opacity: 0; }
+[data-theme='book'] .crucible.is-worked .crucible-after  { opacity: 1; }
+
+/* Stillness variant: both states simply shown, nothing to hover for. */
+[data-theme='book'] .crucible-label.is-after { color: var(--color-ink-muted); }
+
 /* ── The lineage ──
    A tool that outlived several roles carries the count of them. Pointing at
    one dims every role it never touched, so the recurrence is read by what

@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import { ArrowDown, Mail } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
+import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../ui/FadeIn'
 import { workExperience, caseStudies } from '../../content'
 
@@ -52,6 +53,7 @@ function computeStats() {
 export function Hero() {
   const { user } = useApp()
   const { t } = useTranslation()
+  const { theme } = useTheme()
   const reduceMotion = useReducedMotion()
   const { yearsExp, systems, stackCount } = computeStats()
 
@@ -131,9 +133,24 @@ export function Hero() {
         <FadeIn delay={0.4}>
           <div className="grid grid-cols-3 border-2 border-rule shadow-pixel-sm">
             {stats.map((stat, i) => (
+              /*
+               * The founding: a world so recent that many things had no name
+               * yet, and to mention them you had to point.
+               *
+               * So in the book the quantities are there from the first frame
+               * and their names are not — you point at a number to learn what
+               * it counts. Applied to the stats and deliberately NOT to the
+               * headline: the h1 is the first thing a reader and a crawler
+               * both meet, and a name withheld there is a cost, not a joke.
+               *
+               * The label element is always in the DOM at full text, only
+               * faded. Nothing is withheld from a screen reader or a crawler.
+               */
               <div
                 key={stat.label}
-                className={`p-5 text-center ${i < stats.length - 1 ? 'border-r-2 border-rule' : ''}`}
+                className={`p-5 text-center${i < stats.length - 1 ? ' border-r-2 border-rule' : ''}${
+                  theme === 'book' ? ' unnamed' : ''
+                }`}
               >
                 <motion.p
                   className="font-headline text-3xl md:text-4xl font-black text-ink leading-none"
@@ -143,7 +160,7 @@ export function Hero() {
                 >
                   {stat.value}
                 </motion.p>
-                <p className="font-mono text-[11px] text-ink-muted mt-1 uppercase tracking-wide">
+                <p className="font-mono text-[11px] text-ink-muted mt-1 uppercase tracking-wide unnamed-label">
                   {stat.label}
                 </p>
               </div>
