@@ -49,6 +49,22 @@ export function PageLayer({ chapter, stillness }: Props) {
    */
   const depth = stillness ? 0.5 : scrolled
 
+  /**
+   * Published to the document root so the whole stylesheet can age with the
+   * reader, not just this component.
+   *
+   * The series built four separate Macondos to carry a hundred years: the
+   * same town, standing four times, each older than the last. That is the
+   * difference between ageing a page and merely tinting it — what has to
+   * change is the SAME furniture, wearing out, rather than a palette being
+   * swapped underneath it. So --age drives the ruling, the wear at the edges
+   * and the foxing together, and every one of them is the same element the
+   * reader met at the top, further gone.
+   */
+  useEffect(() => {
+    document.documentElement.style.setProperty('--age', depth.toFixed(3))
+  }, [depth])
+
   useEffect(() => {
     if (stillness) return
 
@@ -80,10 +96,13 @@ export function PageLayer({ chapter, stillness }: Props) {
         className="book-page-foxing"
         style={{ backgroundImage: FOXING, opacity: 0.1 + depth * 0.5 }}
       />
+      {/* The ruling wears away with use, so its opacity carries both the
+          chapter's own weight and how far the reader has come. */}
       <div
         className="book-page-margins"
-        style={{ opacity: chapter.marginOpacity }}
+        style={{ opacity: chapter.marginOpacity * (1 - depth * 0.75) }}
       />
+      <div className="book-page-wear" />
     </div>
   )
 }

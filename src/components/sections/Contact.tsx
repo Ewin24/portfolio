@@ -2,11 +2,13 @@ import { Mail, ArrowUpRight, MapPin } from 'lucide-react'
 import { GithubIcon } from '../ui/GithubIcon'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
+import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../ui/FadeIn'
 
 export function Contact() {
   const { user } = useApp()
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
+  const { theme } = useTheme()
 
   return (
     <section id="contact" className="py-20 px-6 max-w-4xl mx-auto">
@@ -29,6 +31,27 @@ export function Contact() {
             <p className="font-headline text-2xl md:text-3xl font-bold italic text-ink mb-8">
               {t('contact.cta')}
             </p>
+
+            {/*
+              The letter.
+              Macondo's mail is a running joke and a running grief: letters
+              are sent and answered years apart, and the answer arrives
+              anyway. So the contact block is postmarked. It is not a badge
+              or a status pill — it is the stamp a post office puts on a
+              thing that has actually been sent, and it carries the town's
+              name because that is where this one was written.
+            */}
+            {theme === 'book' && (
+              <div className="postmark" aria-hidden="true">
+                <span className="postmark-town">Macondo</span>
+                <span className="postmark-rule" />
+                <span className="postmark-note">
+                  {lang === 'es'
+                    ? 'toda carta encuentra respuesta'
+                    : 'every letter is answered'}
+                </span>
+              </div>
+            )}
 
             {/* Location */}
             <div className="flex items-center gap-2 font-mono text-xs text-ink-muted mb-8 pb-6 border-b border-rule-light">
