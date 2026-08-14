@@ -1,6 +1,7 @@
 import { useTheme } from '../../theme/ThemeContext'
 import { PageLayer } from './PageLayer'
 import { BookmarkRibbon } from './BookmarkRibbon'
+import { Folio } from './Folio'
 import { ParticleField } from '../book/ParticleField'
 
 /**
@@ -63,6 +64,7 @@ export function BookStage() {
       <PageLayer chapter={chapter} stillness={stillness} />
       <ParticleField chapter={chapter} stillness={stillness} />
       <BookmarkRibbon chapter={chapter} stillness={stillness} />
+      <Folio stillness={stillness} />
     </>
   )
 }

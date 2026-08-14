@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { getFeaturedRepos } from '../../services/github'
 import { FadeIn } from '../ui/FadeIn'
+import { SectionOpening } from '../ui/SectionOpening'
 import { featuredCaseStudies } from '../../content'
 import type { CaseStudy } from '../../types'
 
@@ -232,22 +233,12 @@ export function Projects() {
 
       {/* Section header estilo periódico */}
       <FadeIn>
-        <div className="mb-10">
-          <div className="border-t-4 border-rule mb-1" />
-          <div className="border-t border-rule mb-4" />
-          <div className="flex items-baseline justify-between gap-4">
-            <h2 className="font-headline text-4xl md:text-5xl font-black text-ink leading-none">
-              {t('projects.title')}
-            </h2>
-            <p className="font-mono text-xs text-ink-muted text-right max-w-xs hidden md:block">
-              {t('projects.subtitle')}
-            </p>
-          </div>
-          <p className="font-mono text-xs text-ink-muted mt-2 md:hidden">
-            {t('projects.subtitle')}
-          </p>
-          <div className="border-t-4 border-rule mt-4" />
-        </div>
+        <SectionOpening
+          section="projects"
+          title={t('projects.title')}
+          subtitle={t('projects.subtitle')}
+          align="beside"
+        />
       </FadeIn>
 
       {/* Case Studies grid */}

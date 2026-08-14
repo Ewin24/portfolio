@@ -1,5 +1,6 @@
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
+import { SectionOpening } from '../ui/SectionOpening'
 import { education } from '../../content'
 import type { Education as EducationType } from '../../types'
 
@@ -55,17 +56,11 @@ export function Education() {
 
       {/* Section header */}
       <FadeIn>
-        <div className="mb-10">
-          <div className="border-t-4 border-rule mb-1" />
-          <div className="border-t border-rule mb-4" />
-          <h2 className="font-headline text-4xl md:text-5xl font-black text-ink leading-none">
-            {t('education.title')}
-          </h2>
-          <p className="font-mono text-xs text-ink-muted mt-2">
-            {t('education.subtitle')}
-          </p>
-          <div className="border-t-4 border-rule mt-4" />
-        </div>
+        <SectionOpening
+          section="education"
+          title={t('education.title')}
+          subtitle={t('education.subtitle')}
+        />
       </FadeIn>
 
       {/* Timeline */}
