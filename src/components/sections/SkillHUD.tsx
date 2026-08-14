@@ -1,4 +1,4 @@
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import type { ComponentType } from 'react'
 import type { LucideProps } from 'lucide-react'
 import { ExternalLink } from 'lucide-react'

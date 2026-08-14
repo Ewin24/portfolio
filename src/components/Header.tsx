@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Menu, X, Globe } from 'lucide-react'
 import { useTranslation } from '../hooks/useTranslation'
 import { GithubIcon } from './ui/GithubIcon'

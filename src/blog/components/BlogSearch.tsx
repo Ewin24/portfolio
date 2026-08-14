@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { Search, X } from 'lucide-react'
 import MiniSearch from 'minisearch'
 import { useTranslation } from '../../hooks/useTranslation'

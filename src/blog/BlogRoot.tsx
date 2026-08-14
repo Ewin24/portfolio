@@ -1,5 +1,5 @@
 import { useLayoutEffect, type ReactNode } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { useTranslation } from '../hooks/useTranslation'
 import { BlogProvider, useBlogContext } from './context/BlogContext'
 import { useBlogNavigation } from './hooks/useBlogNavigation'
