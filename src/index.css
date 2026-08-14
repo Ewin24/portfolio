@@ -649,6 +649,159 @@ html[data-theme='book'] {
   50%      { rotate: calc(var(--tag-tilt) + 1.5deg); }
 }
 
+/* The pixel press is a newspaper idiom: a hard offset shove that answers a
+   click like a rubber stamp. A page does not shove itself when you point at
+   it, so the book keeps the shadow response and drops the displacement.
+
+   This is also a correctness fix, not only a stylistic one. The shove moved
+   a card four pixels the instant the pointer entered it, which slid the
+   lineage tags out from under the cursor and fired pointerleave immediately
+   — the tracking state was set and cleared in the same gesture, so hovering
+   a tag appeared to do nothing at all. */
+[data-theme='book'] [class*='hover:translate-']:hover,
+[data-theme='book'] [class*='hover:-translate-']:hover,
+[data-theme='book'] [class*='active:translate-']:active,
+[data-theme='book'] [class*='active:-translate-']:active {
+  translate: none;
+}
+
+/* ── The lineage ──
+   A tool that outlived several roles carries the count of them. Pointing at
+   one dims every role it never touched, so the recurrence is read by what
+   stays lit rather than by counting badges. */
+[data-theme='book'] .lineage-tag {
+  position: relative;
+  cursor: help;
+  padding-right: 1.35rem;
+}
+
+[data-theme='book'] .lineage-count {
+  position: absolute;
+  right: 0.3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+[data-theme='book'] .lineage-tag.is-tracked {
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+}
+
+[data-theme='book'] .lineage-tag.is-tracked .lineage-count {
+  color: var(--color-on-ink);
+}
+
+/* Roles the tracked tool never reached recede; the ones it survived stay.
+   Opacity rather than a colour change, so the dimming reads as depth of
+   field and not as a disabled state. */
+[data-theme='book'] .is-lineage-other {
+  opacity: 0.32;
+}
+
+[data-theme='book'] .is-lineage-kin {
+  box-shadow: var(--shadow-pixel-lg);
+}
+
+[data-theme='book'] .is-lineage-other,
+[data-theme='book'] .is-lineage-kin {
+  transition: opacity 260ms ease, box-shadow 260ms ease;
+}
+
+/* ── The ice ──
+   Frost over the portrait, cleared only where a hand is put on it. The sheet
+   is a real layer rather than a filter on the image, so the crystal texture
+   and the clearing can be composited independently. */
+[data-theme='book'] .ice-host {
+  position: relative;
+  isolation: isolate;
+}
+
+[data-theme='book'] .ice-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  /* Crystals: three overlapping conic sprays read as frost far better than
+     any single gradient, because real frost grows in branching directions
+     rather than radiating evenly. */
+  background-image:
+    repeating-conic-gradient(from 15deg at 30% 25%, rgba(255,255,255,0.55) 0deg 4deg, transparent 4deg 16deg),
+    repeating-conic-gradient(from 65deg at 72% 68%, rgba(255,255,255,0.45) 0deg 3deg, transparent 3deg 14deg),
+    repeating-conic-gradient(from 40deg at 20% 80%, rgba(255,255,255,0.40) 0deg 5deg, transparent 5deg 20deg),
+    linear-gradient(150deg, rgba(226,240,246,0.86), rgba(198,222,232,0.78));
+  backdrop-filter: blur(2.5px) saturate(0.6);
+  -webkit-backdrop-filter: blur(2.5px) saturate(0.6);
+  transition: opacity 700ms ease;
+}
+
+/* The cleared patch. The mask closes behind the hand rather than staying
+   wiped, so seeing the whole portrait means moving across it. */
+[data-theme='book'] .ice-sheet.is-touched {
+  mask-image: radial-gradient(
+    circle 74px at var(--hand-x) var(--hand-y),
+    transparent 0%,
+    transparent 38%,
+    rgba(0, 0, 0, 0.6) 62%,
+    black 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle 74px at var(--hand-x) var(--hand-y),
+    transparent 0%,
+    transparent 38%,
+    rgba(0, 0, 0, 0.6) 62%,
+    black 100%
+  );
+}
+
+/* ── The wind ──
+   The scattered copy is painted over the intact one, which stays in the DOM
+   for assistive tech. Both occupy the same box so the footer never changes
+   height as the letters leave. */
+[data-theme='book'] .wind-host {
+  position: relative;
+}
+
+[data-theme='book'] .wind-source {
+  visibility: hidden;
+}
+
+[data-theme='book'] .wind-scattered {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  [data-theme='book'] .wind-scattered {
+    flex-direction: row;
+  }
+}
+
+[data-theme='book'] .wind-line {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  white-space: pre-wrap;
+}
+
+/* Each letter is its own body once the wind takes it. `will-change` is
+   deliberately absent: promoting several hundred spans costs more than the
+   transform it would save. */
+[data-theme='book'] .wind-letter {
+  display: inline-block;
+  transition: transform 120ms linear, opacity 120ms linear;
+}
+
 /* ── The chapter opening ──
    Mostly air, on purpose. Editorial practice is explicit that a publication
    where every spread carries the same density fatigues the reader, and that

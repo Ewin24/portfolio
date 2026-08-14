@@ -1,5 +1,8 @@
+import { useReducedMotion } from 'motion/react'
 import { useTranslation } from '../../hooks/useTranslation'
+import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../ui/FadeIn'
+import { Decipher } from '../book/Decipher'
 import { SectionOpening } from '../ui/SectionOpening'
 import { education } from '../../content'
 import type { Education as EducationType } from '../../types'
@@ -8,6 +11,14 @@ const sorted = [...education].sort((a, b) => b.order - a.order)
 
 function EducationCard({ item, index }: { item: EducationType; index: number }) {
   const { lang } = useTranslation()
+  const { theme, stillness } = useTheme()
+  const reduceMotion = useReducedMotion()
+
+  // This section is the parchments: writing that arrives in a script the
+  // house cannot read yet, and gives itself up to whoever works at it.
+  const ciphered = theme === 'book'
+  const still = Boolean(reduceMotion) || stillness
+
   const degree = lang === 'es' ? item.degree : item.degreeEn
   const description = lang === 'es' ? item.description : item.descriptionEn
 
@@ -28,14 +39,24 @@ function EducationCard({ item, index }: { item: EducationType; index: number }) 
             )}
           </div>
           <p className="font-headline text-lg font-bold text-ink leading-tight">
-            {item.institution}
+            <Decipher
+              text={item.institution}
+              active={ciphered}
+              still={still}
+              delay={index * 90}
+            />
           </p>
         </div>
 
         {/* Right column — degree + description */}
         <div className="p-5">
           <p className="font-headline text-base font-bold italic text-ink-light mb-3">
-            {degree}
+            <Decipher
+              text={degree}
+              active={ciphered}
+              still={still}
+              delay={index * 90 + 260}
+            />
           </p>
           {description && (
             <p className="font-sans text-sm text-ink-light leading-relaxed">
