@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 
-interface Props {
+export interface TheWindProps {
   active: boolean
   still: boolean
   children: ReactNode
@@ -72,7 +72,7 @@ function scatter(text: string, progress: number, still: boolean) {
   })
 }
 
-export function TheWind({ active, still, children }: Props) {
+export function TheWind({ active, still, children }: TheWindProps) {
   const hostRef = useRef<HTMLDivElement>(null)
   const [progress, setProgress] = useState(0)
   const [lines, setLines] = useState<string[]>([])

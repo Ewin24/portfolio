@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react'
 import { useTheme } from '../../theme/ThemeContext'
-import type { Model } from './voxelModels'
+import type { VoxelModelName } from './attrs'
+import { MODELS, type Model } from './voxelModels'
 
-interface Props {
-  build: () => Model
+export interface VoxelFigureProps {
+  /** Which registered model to build (see `MODELS` in voxelModels.ts). */
+  model: VoxelModelName
   active: boolean
   still: boolean
   /** Read out to assistive tech and shown as the title. */
@@ -57,13 +59,13 @@ const VELOCITY_EPS = 0.0006
  * highlight in the two dark chapters.
  */
 export function VoxelFigure({
-  build,
+  model: modelName,
   active,
   still,
   label,
   hint,
   size = 'inline',
-}: Props) {
+}: VoxelFigureProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { chapter } = useTheme()
   // Read from the React object, not getComputedStyle — no per-frame recalc.
@@ -302,7 +304,7 @@ export function VoxelFigure({
         if (!entry) return
         const nowVisible = entry.isIntersecting
         if (nowVisible && !model) {
-          model = build()
+          model = MODELS[modelName]()
           resize()
         }
         visible = nowVisible
@@ -323,7 +325,7 @@ export function VoxelFigure({
       canvas.removeEventListener('click', strike)
       canvas.removeEventListener('keydown', onKey)
     }
-  }, [active, still, build])
+  }, [active, still, modelName])
 
   if (!active) return null
 

@@ -3,8 +3,7 @@ import { ArrowDown, Mail } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useTheme } from '../../theme/ThemeContext'
-import { VoxelFigure } from '../book/VoxelFigure'
-import { fishModel } from '../book/voxelModels'
+import { VoxelFigure } from '../book/lazy'
 import { FadeIn } from '../ui/FadeIn'
 import { workExperience, caseStudies } from '../../content'
 
@@ -82,7 +81,7 @@ export function Hero() {
         {/* The figure. It greets before the name does, because the object is
             the thing a reader remembers after closing the page. */}
         <VoxelFigure
-          build={fishModel}
+          model="fish"
           size="lead"
           active={theme === 'book'}
           still={Boolean(reduceMotion) || stillness}

@@ -2,7 +2,7 @@ import { useReducedMotion } from 'motion/react'
 import { GithubIcon } from '../ui/GithubIcon'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useTheme } from '../../theme/ThemeContext'
-import { TheWind } from '../book/TheWind'
+import { TheWind } from '../book/lazy'
 
 export function Footer() {
   const { t } = useTranslation()

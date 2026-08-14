@@ -4,7 +4,7 @@ import type { LucideProps } from 'lucide-react'
 import { useTheme } from '../../theme/ThemeContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { insomniaLabel } from '../../theme/labels'
-import { InsomniaTag } from '../book/InsomniaTag'
+import { InsomniaTag } from '../book/lazy'
 
 interface Technology {
   id: string

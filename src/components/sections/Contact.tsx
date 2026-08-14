@@ -4,8 +4,7 @@ import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useReducedMotion } from 'motion/react'
 import { useTheme } from '../../theme/ThemeContext'
-import { VoxelFigure } from '../book/VoxelFigure'
-import { letterModel } from '../book/voxelModels'
+import { VoxelFigure } from '../book/lazy'
 import { FadeIn } from '../ui/FadeIn'
 
 export function Contact() {
@@ -47,7 +46,7 @@ export function Contact() {
             */}
             {theme === 'book' && (
               <VoxelFigure
-                build={letterModel}
+                model="letter"
                 active
                 still={Boolean(reduceMotion) || stillness}
                 label={

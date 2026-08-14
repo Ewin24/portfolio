@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-interface Props {
+export interface DecipherProps {
   text: string
   /** Milliseconds before this line begins to give itself up. */
   delay?: number
@@ -45,7 +45,7 @@ export function Decipher({
   active,
   still,
   className = '',
-}: Props) {
+}: DecipherProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const [revealed, setRevealed] = useState(active && !still ? 0 : text.length)
 

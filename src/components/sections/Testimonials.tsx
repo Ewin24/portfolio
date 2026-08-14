@@ -4,7 +4,8 @@ import { useTranslation } from '../../hooks/useTranslation'
 import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
-import { Annunciation, ANNOUNCE_ATTR } from '../book/Annunciation'
+import { Annunciation } from '../book/lazy'
+import { ANNOUNCE_ATTR } from '../book/attrs'
 import { testimonials } from '../../content'
 
 export function Testimonials() {

@@ -3,7 +3,7 @@ import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../ui/FadeIn'
-import { TheIce } from '../book/TheIce'
+import { TheIce } from '../book/lazy'
 
 export function About() {
   const { user } = useApp()

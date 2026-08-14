@@ -1,6 +1,7 @@
 import { BookOpen, Newspaper } from 'lucide-react'
 import { useTheme } from '../../theme/ThemeContext'
 import { useTranslation } from '../../hooks/useTranslation'
+import { preloadBook } from './preload'
 
 interface Props {
   /** Mobile menu shows the full label; the header bar shows the icon only. */
@@ -27,6 +28,8 @@ export function BookToggle({ withLabel = false }: Props) {
     <button
       type="button"
       onClick={toggleTheme}
+      onPointerEnter={preloadBook}
+      onFocus={preloadBook}
       aria-pressed={reading}
       aria-label={label}
       title={label}

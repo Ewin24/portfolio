@@ -1,4 +1,5 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
+import { ANNOUNCE_ATTR } from './attrs'
 
 /**
  * The annunciation.
@@ -34,9 +35,6 @@ const WING = '#E8B93A'
 const EDGE = '#4A3610'
 const BODY = '#3E2D0C'
 
-/** Mark a card as something the butterflies can announce and land on. */
-export const ANNOUNCE_ATTR = 'data-announce'
-
 type Phase = 'wander' | 'seek' | 'landed'
 
 interface Butterfly {
@@ -56,21 +54,23 @@ interface Butterfly {
   angle: number
 }
 
-interface Props {
+export interface AnnunciationCanvasProps {
   /** Turns the whole layer off — the wrong theme. */
   active: boolean
   /** Under stillness they are drawn once, already at rest. */
   still: boolean
   /**
-   * The cards themselves. They render *inside* the host so their rects are
-   * measured in the same coordinate space as the canvas, and so the pointer
-   * listener that tracks hovering sits on their common ancestor.
+   * The card host, owned by the eager shim (`lazy.tsx`). The cards render
+   * *inside* it so their rects are measured in the same coordinate space as
+   * the canvas, and so the pointer listener that tracks hovering sits on
+   * their common ancestor — this component only takes a ref to it.
    */
-  children: ReactNode
+  hostRef: RefObject<HTMLDivElement | null>
 }
 
-export function Annunciation({ active, still, children }: Props) {
-  const hostRef = useRef<HTMLDivElement>(null)
+/** The canvas layer alone. The host div and the cards themselves stay in the
+ *  eager shim so the theme flip never remounts them (see `lazy.tsx`). */
+export function AnnunciationCanvas({ active, still, hostRef }: AnnunciationCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -412,20 +412,9 @@ export function Annunciation({ active, still, children }: Props) {
       host.removeEventListener('pointermove', onOver)
       host.removeEventListener('pointerleave', onLeave)
     }
-  }, [active, still])
+  }, [active, still, hostRef])
 
-  // The host is always rendered so the cards never remount when the theme
-  // flips; only the canvas comes and goes.
   return (
-    <div ref={hostRef} className="annunciation-host">
-      {active && (
-        <canvas
-          ref={canvasRef}
-          className="annunciation-canvas"
-          aria-hidden="true"
-        />
-      )}
-      {children}
-    </div>
+    <canvas ref={canvasRef} className="annunciation-canvas" aria-hidden="true" />
   )
 }

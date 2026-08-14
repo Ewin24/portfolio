@@ -18,6 +18,8 @@
  * `fills`. The renderer only ever indexes into that table.
  */
 
+import type { VoxelModelName } from './attrs'
+
 export interface Voxel {
   x: number
   y: number
@@ -296,4 +298,13 @@ export function scrollModel(): Model {
   })
 
   return finalize('scroll', voxels, { tones: [PAPER, INK] }, 8)
+}
+
+/** Name -> factory, so the eager `VoxelFigure` shim can ask for a model by
+ *  name without importing this (lazy) module's build code directly. */
+export const MODELS: Record<VoxelModelName, () => Model> = {
+  fish: fishModel,
+  alembic: alembicModel,
+  letter: letterModel,
+  scroll: scrollModel,
 }

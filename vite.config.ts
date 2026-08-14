@@ -472,4 +472,19 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    modulePreload: {
+      // The book layer's lazy boundary (src/components/book/lazy.tsx) adds
+      // several small dynamic-import points that share eager infrastructure
+      // (React, ThemeContext, useTranslation...). Rolldown's default chunk
+      // splitting extracts those into their own chunks once enough async
+      // entry points reference them, which would otherwise add new
+      // <link rel="modulepreload"> tags to every page's <head> — none of it
+      // crawler-visible content, but it would fail the GEO byte-diff gate
+      // and it is not something worth spending that budget on here. The
+      // browser still fetches these chunks exactly when it needs them;
+      // this only removes the upfront hint.
+      resolveDependencies: () => [],
+    },
+  },
 })

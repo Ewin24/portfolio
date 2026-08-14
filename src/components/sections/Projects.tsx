@@ -5,9 +5,7 @@ import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useTheme } from '../../theme/ThemeContext'
 import { getFeaturedRepos } from '../../services/github'
-import { Crucible } from '../book/Crucible'
-import { VoxelFigure } from '../book/VoxelFigure'
-import { alembicModel } from '../book/voxelModels'
+import { Crucible, VoxelFigure } from '../book/lazy'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
 import { featuredCaseStudies } from '../../content'
@@ -250,7 +248,7 @@ export function Projects() {
         {/* Melquíades' alembic: the vessel the workshop actually works in. */}
         <div className="flex justify-center">
           <VoxelFigure
-            build={alembicModel}
+            model="alembic"
             active={theme === 'book'}
             still={Boolean(reduceMotion) || stillness}
             label={

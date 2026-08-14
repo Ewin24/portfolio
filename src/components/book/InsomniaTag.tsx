@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 
-interface Props {
+export interface InsomniaTagProps {
   /** Stable index, so every tag keeps the same tilt across re-renders. */
   index: number
   text: string
@@ -24,7 +24,7 @@ interface Props {
  *     colour swap, so the text underneath is still selectable and still read
  *     by a screen reader at full strength.
  */
-export function InsomniaTag({ index, text, legible, still }: Props) {
+export function InsomniaTag({ index, text, legible, still }: InsomniaTagProps) {
   // Deterministic pseudo-jitter: same tag, same crookedness, every time.
   const tilt = ((index * 37) % 9) - 4
   const drift = ((index * 53) % 5) - 2

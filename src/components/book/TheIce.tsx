@@ -1,6 +1,6 @@
 import { useRef, useState, type ReactNode } from 'react'
 
-interface Props {
+export interface TheIceProps {
   active: boolean
   still: boolean
   children: ReactNode
@@ -25,7 +25,7 @@ interface Props {
  * reduced motion the frost simply never forms: an image a phone cannot
  * uncover would be a broken image, not a marvel.
  */
-export function TheIce({ active, still, children }: Props) {
+export function TheIce({ active, still, children }: TheIceProps) {
   const hostRef = useRef<HTMLDivElement>(null)
   const [hand, setHand] = useState<{ x: number; y: number } | null>(null)
 

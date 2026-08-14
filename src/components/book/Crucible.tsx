@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 
-interface Props {
+export interface CrucibleProps {
   active: boolean
   still: boolean
   /** What went into the crucible. */
@@ -40,7 +40,7 @@ export function Crucible({
   after,
   beforeLabel,
   afterLabel,
-}: Props) {
+}: CrucibleProps) {
   const [worked, setWorked] = useState(false)
 
   if (!active) {
