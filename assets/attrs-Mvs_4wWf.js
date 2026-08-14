@@ -1,0 +1,1 @@
+var e=`data-announce`;export{e as t};
