@@ -188,6 +188,7 @@ export function Experience() {
           section="experience"
           title={t('experience.title')}
           subtitle={t('experience.subtitle')}
+          rank="lead"
         />
       </FadeIn>
 

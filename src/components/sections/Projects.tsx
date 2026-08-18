@@ -315,6 +315,7 @@ export function Projects() {
           title={t('projects.title')}
           subtitle={t('projects.subtitle')}
           align="beside"
+          rank="lead"
         />
 
         {/* Melquíades' alembic: the vessel the workshop actually works in. */}

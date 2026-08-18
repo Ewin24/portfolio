@@ -16,6 +16,12 @@ interface Props {
    * headline, which is how Projects and Skills already read.
    */
   align?: 'below' | 'beside'
+  /**
+   * Newspaper only, expressed purely through headline scale, rule weight
+   * and section padding — never read before the book branch has already
+   * returned, so book output stays byte-identical for every value.
+   */
+  rank?: 'lead' | 'standard'
 }
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
@@ -45,6 +51,7 @@ export function SectionOpening({
   subtitle,
   section,
   align = 'below',
+  rank = 'standard',
 }: Props) {
   const { theme } = useTheme()
   const { lang } = useTranslation()
@@ -75,36 +82,33 @@ export function SectionOpening({
   }
 
   // ── Newspaper ──
+  const isLead = rank === 'lead'
+  const h2Class = isLead
+    ? 'font-headline text-5xl md:text-6xl font-black text-ink leading-none'
+    : 'font-headline text-4xl md:text-5xl font-black text-ink leading-none'
+
   return (
-    <div className="mb-10">
-      <div className="border-t-4 border-rule mb-1" />
-      <div className="border-t border-rule mb-4" />
+    <div data-opening-rank={rank} className={isLead ? 'mb-14' : 'mb-10'}>
+      <div className={isLead ? 'border-t-8 border-rule mb-1' : 'border-t-4 border-rule mb-1'} />
+      <div className={isLead ? 'border-t-2 border-rule mb-6' : 'border-t border-rule mb-4'} />
 
       {align === 'beside' ? (
-        <>
-          <div className="flex items-baseline justify-between gap-4">
-            <h2 className="font-headline text-4xl md:text-5xl font-black text-ink leading-none">
-              {title}
-            </h2>
-            {subtitle && (
-              <p className="font-mono text-xs text-ink-muted text-right max-w-xs hidden md:block">
-                {subtitle}
-              </p>
-            )}
-          </div>
+        <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 md:gap-8">
+          <h2 className={h2Class}>{title}</h2>
           {subtitle && (
-            <p className="font-mono text-xs text-ink-muted mt-2 md:hidden">
+            <p
+              data-deck
+              className="font-mono text-xs text-ink-muted text-left md:max-w-xs md:shrink-0 md:border-l-2 md:border-rule md:pl-4"
+            >
               {subtitle}
             </p>
           )}
-        </>
+        </div>
       ) : (
         <>
-          <h2 className="font-headline text-4xl md:text-5xl font-black text-ink leading-none">
-            {title}
-          </h2>
+          <h2 className={h2Class}>{title}</h2>
           {subtitle && (
-            <p className="font-mono text-xs text-ink-muted mt-2">{subtitle}</p>
+            <p data-deck className="font-mono text-xs text-ink-muted mt-2">{subtitle}</p>
           )}
         </>
       )}
