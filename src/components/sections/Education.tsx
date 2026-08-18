@@ -2,7 +2,7 @@ import { useReducedMotion } from 'motion/react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../ui/FadeIn'
-import { Decipher } from '../book/lazy'
+import { Decipher, VoxelFigure } from '../book/lazy'
 import { SectionOpening } from '../ui/SectionOpening'
 import { education } from '../../content'
 import type { Education as EducationType } from '../../types'
@@ -70,7 +70,9 @@ function EducationCard({ item, index }: { item: EducationType; index: number }) 
 }
 
 export function Education() {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
+  const { theme, stillness } = useTheme()
+  const reduceMotion = useReducedMotion()
 
   return (
     <section id="education" className="py-20 px-6 max-w-5xl mx-auto">
@@ -82,6 +84,30 @@ export function Education() {
           title={t('education.title')}
           subtitle={t('education.subtitle')}
         />
+
+        {/*
+          The parchments themselves.
+
+          Melquiades leaves the history of the family written in a script
+          nobody in the house can read, and it stays rolled up for a century
+          until someone finally sits down and works at it. The cards below
+          are already that text - they arrive ciphered and give themselves
+          up as you read. This is the roll they came off: press it and it
+          unrolls.
+        */}
+        <div className="flex justify-center">
+          <VoxelFigure
+            model="scroll"
+            active={theme === 'book'}
+            still={Boolean(reduceMotion) || stillness}
+            label={
+              lang === 'es'
+                ? 'Pergamino: arrastralo para girarlo, presionalo para desenrollarlo'
+                : 'Parchment: drag to turn it, press to unroll it'
+            }
+            hint={lang === 'es' ? 'desenrollalo' : 'unroll it'}
+          />
+        </div>
       </FadeIn>
 
       {/* Timeline */}

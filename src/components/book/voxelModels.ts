@@ -57,6 +57,8 @@ const COPPER: [string, string, string] = ['#C2703C', '#A15628', '#6E3617']
 const PAPER: [string, string, string] = ['#F0E4C6', '#D8C8A2', '#A89770']
 const INK: [string, string, string] = ['#6E4A22', '#573A1B', '#3B2712']
 const WAX: [string, string, string] = ['#9C3327', '#7E2820', '#551A15']
+/** The wound edge of a roll — paper in its own shadow, never ink. */
+const SEAM: [string, string, string] = ['#C2AC7E', '#A08A5F', '#786443']
 
 /** Quantised occlusion factors — a JND step, not a gradient (design D2). */
 const AO_FACTORS = [1, 0.88, 0.76]
@@ -273,31 +275,106 @@ export function letterModel(): Model {
 }
 
 /**
- * A rolled parchment. Nobody in the house can read it yet; the alternate
- * state unrolls it.
+ * The parchments.
+ *
+ * The first version of this was a hollow cylinder, and it read as a crate:
+ * a one-voxel wall stair-steps into terraces that the isometric camera
+ * flattens into shelves, which is the same failure the alembic's neck had.
+ * Its unroll was worse — measured at 24874 painted pixels at rest against
+ * 24704 open, a 0.7% change nobody could see. A press that does nothing is
+ * a press that shouldn't be there.
+ *
+ * So the object is the scroll already lying open: a written sheet with a
+ * solid roll at either end, which is the one scroll silhouette that survives
+ * this resolution. Volume is not conserved between the two states of any
+ * model here, but a roll unwinding into a flat page is the one case where it
+ * cannot be faked — a solid ring of paper unrolls to a ribbon four times the
+ * frame, and framing both states then means framing neither.
+ *
+ * The press does the chapter instead. Melquiades' parchments give up their
+ * text to Aureliano at the very end, and reading them is what makes them go:
+ * the paper holds still and the INK lifts off it, drifting up and outward.
+ * The cards below this figure are already doing the same thing in type.
  */
 export function scrollModel(): Model {
   const voxels: Voxel[] = []
   const add = (x: number, y: number, z: number, tone: number) =>
     voxels.push({ x, y, z, tone, ax: 0, ay: 0, az: 0, ao: [0, 0, 0] })
 
-  // A cylinder lying along X.
-  for (let x = -7; x <= 7; x++)
-    for (let y = -3; y <= 3; y++)
-      for (let z = -3; z <= 3; z++) {
-        const r = Math.hypot(y, z)
-        if (r <= 3 && r >= 1.6) add(x, y, z, Math.abs(x) > 6 ? 1 : 0)
-      }
+  const GROUND = -4
+  const HALF_Z = 6
+  const ROLL_R = 3
+  const ROLL_X = 9
 
-  // Alternate: unrolled into a flat sheet.
-  voxels.forEach((v) => {
-    const angle = Math.atan2(v.y, v.z)
-    v.ax = v.x
-    v.ay = -2.5
-    v.az = angle * 2.4
+  // The two rolls: solid, axis along Z, resting on the ground. Solid because
+  // hollow is what broke the first attempt — under this camera a thin wall
+  // has no curvature to show, only the steps it was built from.
+  for (let side = -1; side <= 1; side += 2) {
+    const cx = ROLL_X * side
+    const cy = GROUND + ROLL_R
+    for (let z = -HALF_Z; z <= HALF_Z; z++)
+      for (let dx = -ROLL_R; dx <= ROLL_R; dx++)
+        for (let dy = -ROLL_R; dy <= ROLL_R; dy++) {
+          if (Math.hypot(dx, dy) > ROLL_R + 0.35) continue
+          // The core, shown only on the two circular faces: it is what you
+          // actually see looking at the end of a roll, and it is the one
+          // mark that separates paper wound around itself from a log sawn
+          // to length. It was an annulus first, and 1.4 to 2.7 lands on an
+          // integer grid as a plus sign — the rolls read as first-aid boxes.
+          // Filling it in was not enough either: under 2.2 the grid still
+          // returns a cross with a fat middle. 2.55 is the first radius that
+          // picks up the (2,1) cells and closes into a disc.
+          const cap = Math.abs(z) === HALF_Z
+          const core = cap && Math.hypot(dx, dy) < 2.55
+          add(cx + dx, cy + dy, z, core ? 2 : 0)
+        }
+  }
+
+  // The sheet between them, running under both rolls the way paper does.
+  for (let x = -8; x <= 8; x++)
+    for (let z = -HALF_Z; z <= HALF_Z; z++) add(x, GROUND, z, 0)
+
+  // The writing. Ragged right edges and gaps for words: a flush block of ink
+  // reads as a painted rectangle, and lines of unequal length read as text
+  // long before any glyph is legible.
+  const lines = [-4, -2, 0, 2, 4]
+  lines.forEach((z, i) => {
+    const last = 6 - ((i * 3) % 4)
+    for (let x = -6; x <= last; x++) {
+      if ((x + i * 3 + 12) % 5 === 4) continue // word gap
+      const hit = voxels.find((v) => v.x === x && v.y === GROUND && v.z === z)
+      if (hit) hit.tone = 1
+    }
   })
 
-  return finalize('scroll', voxels, { tones: [PAPER, INK] }, 8)
+  // Alternate: the paper stays exactly where it is and the text leaves it.
+  //
+  // Only tone 1 flies, and that is why the wound edge is tone 2 rather than
+  // more ink. Sharing a tone with the writing made the rings on both rolls
+  // fly too, and they start nine units out: measured, the ink filled the
+  // whole 260x180 frame and was cut off on three sides at once.
+  // Rising, spreading outward from the middle of the page — the drift is
+  // seeded off the voxel index so it is fixed per build, never per frame.
+  voxels.forEach((v, i) => {
+    // Everything that is not writing holds still — tested against tone 1
+    // and not against tone 0, because the seam is a third tone and an
+    // is-it-paper check sent all four rings flying with the text.
+    if (v.tone !== 1) {
+      v.ax = v.x
+      v.ay = v.y
+      v.az = v.z
+      return
+    }
+    // Measured: a lift of 4-7.5 units drove the ink off the top of the
+    // canvas — the frame is 260x180, so this object spends its budget on
+    // width and has almost no headroom left to rise into.
+    const lift = 3.2 + ((i * 13) % 7) * 0.42
+    v.ax = v.x * 1.2 + (((i * 7) % 5) - 2) * 0.6
+    v.ay = v.y + lift
+    v.az = v.z * 1.2 + (((i * 11) % 5) - 2) * 0.55
+  })
+
+  return finalize('scroll', voxels, { tones: [PAPER, INK, SEAM] }, 15)
 }
 
 /** Name -> factory, so the eager `VoxelFigure` shim can ask for a model by
