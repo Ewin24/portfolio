@@ -121,12 +121,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
    * luminance swings between chapters are the very thing that setting exists
    * to prevent, and an instant swap would be worse than a slow one.
    *
-   * The sections are not in the DOM when this first runs — App renders a
-   * loading screen until the GitHub fetch resolves — and #blog is swapped
-   * for a different element later still, when its lazy chunk lands. Binding
-   * once would therefore observe nothing on load and a detached node after
-   * the blog arrives, so the target set is re-scanned on DOM changes and
-   * rebound only when it actually differs.
+   * Sections mount immediately — there is no loading gate — but #blog is
+   * swapped for a different element later, when its lazy chunk lands.
+   * Binding once would miss that swap entirely, so the target set is
+   * re-scanned on DOM changes and rebound only when it actually differs.
    */
   useEffect(() => {
     const root = document.documentElement

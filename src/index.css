@@ -289,6 +289,48 @@
   }
 }
 
+/* ─── Case-study card shell — 2-track row alignment ──────────────────────
+   The card is restructured to exactly 2 children (header, body+footer
+   shell), so a subgrid with 2 implicit tracks aligns the same landmark
+   across every card in a row without a fixed child count to keep in sync
+   with the breakpoint. Flex column is the baseline for every browser and
+   for the book theme; subgrid is progressive enhancement, newspaper only. */
+@layer components {
+  .card-shell-outer,
+  .card-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+}
+
+@supports (grid-template-rows: subgrid) {
+  html:not([data-theme='book']) :is(.card-shell, .card-shell-outer) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    height: auto;
+  }
+}
+
+/* ─── Lead case study — column span only ───────────────────────────────────
+   Gated in JS (theme !== 'book'), never applied in the book theme, so this
+   class carries only measure — no colour, radius, blur or shadow token that
+   would need a separate identity guard. No base rule: below 768px the grid
+   itself is single-column, and an unconditional span would force a second
+   implicit column, breaking "every card shares left/width" on mobile. */
+@media (min-width: 768px) {
+  .lead-track {
+    grid-column: span 2 / span 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lead-track {
+    grid-column: span 3 / span 3;
+  }
+}
+
 /* ─── Third-party brand colour ─────────────────────────────────────────────
    Technology brand colours (React blue, AWS orange, .NET purple) are fixed
    by their owners and were tuned in Skills.tsx to clear 3:1 against paper
