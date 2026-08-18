@@ -484,6 +484,24 @@ html[data-theme='book'] {
   -webkit-backdrop-filter: blur(12px) saturate(1.08);
 }
 
+/* A card with a moving figure inside it cannot afford a blurred backdrop.
+   The canvas repaints every frame, which invalidates the backdrop behind it,
+   which makes the browser recompute a 12px blur over the whole card every
+   frame. Measured at the contact card: 33.3ms per frame with it and 16.7ms
+   without — a spinning object at half frame rate, which is the one place the
+   figures could not afford to lose.
+
+   It is only ever this case. The same measurement across hero, projects and
+   education came back at 16.7ms either way, because in those sections the
+   figure sits beside the cards rather than inside one.
+
+   The veil stays and carries the legibility on its own; captured side by
+   side at this section, the two are indistinguishable. */
+[data-theme='book'] :where(.border-2, .border-4):not(.bg-ink):not(.bg-accent):has(.figure-canvas) {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 /* ── The press becomes a lift ──
    The newspaper answers a click by shoving the card 4px down-right into the
    space its own hard shadow occupied. Book has no hard shadow to fall
@@ -725,9 +743,12 @@ html[data-theme='book'] {
   margin-bottom: clamp(1.5rem, 5vh, 3rem);
 }
 
+/* A turning object needs a roughly square frame: it swings as wide as it is
+   tall. The letterboxed 420x270 was costing the figures a third of their
+   size, because the vertical edge is what the framing hits first. */
 .figure-lead .figure-canvas {
-  width: min(100%, 420px);
-  height: clamp(210px, 30vh, 300px);
+  width: min(100%, 460px);
+  height: clamp(290px, 42vh, 400px);
 }
 
 /* Chapter objects sit beside their content and stay modest. */
@@ -736,8 +757,8 @@ html[data-theme='book'] {
 }
 
 .figure-inline .figure-canvas {
-  width: min(100%, 260px);
-  height: clamp(150px, 20vh, 200px);
+  width: min(100%, 320px);
+  height: clamp(230px, 30vh, 290px);
 }
 
 .figure-canvas {
