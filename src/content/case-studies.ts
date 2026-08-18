@@ -24,6 +24,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'fabricas-credit-los',
     slug: 'sistema-originacion-credito-los',
     featured: true,
+    lead: true,
     order: 1,
 
     title: 'Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC',

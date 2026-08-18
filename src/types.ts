@@ -59,6 +59,13 @@ export interface CaseStudy {
   /** Mostrar este proyecto destacado al tope de la sección */
   featured: boolean
 
+  /**
+   * Marca el caso de estudio líder de la sección Proyectos (newspaper only).
+   * Debe haber exactamente uno en `caseStudies`. `featured` es `true` en
+   * las 9 entradas y no puede discriminar por sí solo.
+   */
+  lead?: true
+
   title: string
   titleEn: string
 

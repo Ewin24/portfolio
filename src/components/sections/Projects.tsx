@@ -9,7 +9,20 @@ import { Crucible, VoxelFigure } from '../book/lazy'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
 import { featuredCaseStudies } from '../../content'
+import { clampToSentence } from '../../lib/text'
 import type { CaseStudy } from '../../types'
+
+/**
+ * Tuned for the narrowest measure — 375px single column, ~48ch × 3 lines —
+ * so the cut does not have to re-fire at a wider breakpoint. Nothing is
+ * lost when a card clamps: the remainder stays in the DOM in a sr-only
+ * sibling, both for screen readers and for the pre-render.
+ */
+const SECONDARY_BUDGET = 140
+
+/** The lead's problem/solution columns are ~570px wide at 1440px — wider
+ *  measure, wider budget. Newspaper only; the book theme never sees it. */
+const LEAD_BUDGET = 300
 
 const LANG_COLORS: Record<string, string> = {
   TypeScript: '#3178c6', JavaScript: '#f7df1e', Python: '#3572A5',
@@ -25,6 +38,12 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
   const { theme, stillness } = useTheme()
   const reduceMotion = useReducedMotion()
 
+  // Gate 2 of 2: `study.lead` is `true` in the data regardless of theme —
+  // the ordering gate in Projects() keeps it out of the lead slot in book,
+  // but the class/copy application here must refuse it independently too,
+  // or a future call site that skips the reorder silently widens it.
+  const isLead = theme !== 'book' && study.lead === true
+
   const title    = lang === 'es' ? study.title    : study.titleEn
   const role     = lang === 'es' ? study.role     : study.roleEn
   const problem  = lang === 'es' ? study.problem  : study.problemEn
@@ -35,18 +54,56 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
     ? (lang === 'es' ? 'Cliente Confidencial' : 'Confidential Client')
     : study.company
 
-  return (
-    <FadeIn delay={index * 0.1}>
-      <article className="border-2 border-rule bg-paper shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75 flex flex-col h-full">
+  const budget = isLead ? LEAD_BUDGET : SECONDARY_BUDGET
+  const clampClass = isLead ? 'line-clamp-4' : 'line-clamp-3'
+  const problemClamp = clampToSentence(problem, budget)
+  const solutionClamp = clampToSentence(solution, budget)
 
-        {/* Header del artículo */}
+  const crucible = (
+    <Crucible
+      active={theme === 'book'}
+      still={Boolean(reduceMotion) || stillness}
+      beforeLabel={t('projects.problem')}
+      afterLabel={t('projects.solution')}
+      before={
+        <>
+          <p data-copy="problem" className={`font-sans text-sm text-ink-light leading-relaxed ${clampClass}`}>
+            {problemClamp.head}
+          </p>
+          {problemClamp.rest && <span className="sr-only">{problemClamp.rest}</span>}
+        </>
+      }
+      after={
+        <>
+          <p data-copy="solution" className={`font-sans text-sm text-ink-light leading-relaxed ${clampClass}`}>
+            {solutionClamp.head}
+          </p>
+          {solutionClamp.rest && <span className="sr-only">{solutionClamp.rest}</span>}
+        </>
+      }
+    />
+  )
+
+  return (
+    <FadeIn delay={index * 0.1} className={isLead ? 'card-shell-outer lead-track' : 'card-shell-outer'}>
+      <article
+        data-card={isLead ? 'lead' : 'secondary'}
+        className={`border-2 border-rule bg-paper hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75 card-shell${
+          isLead ? ' shadow-pixel-lg' : ' shadow-pixel'
+        }`}
+      >
+
+        {/* Header del artículo — track 1 del subgrid */}
         <div className="border-b-2 border-rule p-5">
           <div className="flex items-start justify-between gap-3 mb-2">
             <div className="flex-1">
-              {study.featured && (
+              {isLead && (
                 <span className="kicker">{t('projects.featured')}</span>
               )}
-              <h3 className="font-headline text-xl font-bold text-ink leading-tight">
+              <h3 className={isLead
+                ? 'font-headline text-3xl md:text-4xl font-bold text-ink leading-tight'
+                : 'font-headline text-xl font-bold text-ink leading-tight'
+              }>
                 {title}
               </h3>
             </div>
@@ -71,94 +128,87 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
           <p className="font-mono text-xs text-ink-muted mt-1 italic">{role}</p>
         </div>
 
-        {/* Body del artículo */}
-        <div className="p-5 flex-1 flex flex-col gap-4">
+        {/* Cuerpo + pie + disclaimer — track 2 del subgrid, un único hijo */}
+        <div className="flex-1 flex flex-col">
+          <div className="p-5 flex-1 flex flex-col gap-4">
 
-          {/* Problema → Solución. En el libro es una transmutación. */}
-          <Crucible
-            active={theme === 'book'}
-            still={Boolean(reduceMotion) || stillness}
-            beforeLabel={t('projects.problem')}
-            afterLabel={t('projects.solution')}
-            before={
-              <p className="font-sans text-sm text-ink-light leading-relaxed line-clamp-3">
-                {problem}
-              </p>
-            }
-            after={
-              <p className="font-sans text-sm text-ink-light leading-relaxed line-clamp-3">
-                {solution}
-              </p>
-            }
-          />
+            {/* Problema → Solución. En el libro es una transmutación.
+                Lead: columna dividida por una regla vertical, no un
+                bloque genérico — mismos tokens, solo cambia la medida. */}
+            {isLead ? (
+              <div className="grid md:grid-cols-2 gap-x-6 gap-y-4 [&>*:nth-child(2)]:md:border-l-2 [&>*:nth-child(2)]:md:border-rule [&>*:nth-child(2)]:md:pl-4">
+                {crucible}
+              </div>
+            ) : crucible}
 
-          {/* Impacto */}
-          <div className="border-l-4 border-rule pl-3">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
-              {t('projects.impact')}
-            </p>
-            <p className="font-sans text-sm font-semibold text-ink leading-snug">
-              {impact}
-            </p>
+            {/* Impacto */}
+            <div className="border-l-4 border-rule pl-3">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
+                {t('projects.impact')}
+              </p>
+              <p className="font-sans text-sm font-semibold text-ink leading-snug">
+                {impact}
+              </p>
+            </div>
+
+            {/* Architecture Diagram (si existe) */}
+            {study.architectureDiagram && (
+              <div className="border border-rule-light p-3 bg-paper-dark">
+                <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink-muted mb-1">
+                  {t('projects.architecture')}
+                </p>
+                <p className="font-mono text-[10px] text-ink-light leading-relaxed">
+                  {study.architectureDiagram}
+                </p>
+              </div>
+            )}
           </div>
 
-          {/* Architecture Diagram (si existe) */}
-          {study.architectureDiagram && (
-            <div className="border border-rule-light p-3 bg-paper-dark">
-              <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink-muted mb-1">
-                {t('projects.architecture')}
-              </p>
-              <p className="font-mono text-[10px] text-ink-light leading-relaxed">
-                {study.architectureDiagram}
+          {/* Footer: stack + links */}
+          <div className="border-t-2 border-rule-light p-4 flex items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-1.5">
+              {study.stack.slice(0, 4).map((tech) => (
+                <span key={tech} className="skill-tag text-[10px]">{tech}</span>
+              ))}
+              {study.stack.length > 4 && (
+                <span className="font-mono text-[10px] text-ink-muted self-center">
+                  +{study.stack.length - 4}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              {study.demoUrl && (
+                <a href={study.demoUrl} target="_blank" rel="noopener noreferrer"
+                  className="font-mono text-[10px] font-bold uppercase tracking-wide text-accent hover:text-accent-dark flex items-center gap-1 transition-colors"
+                >
+                  {t('projects.viewDemo')} <ExternalLink size={10} />
+                </a>
+              )}
+              {study.githubUrl && (
+                <a href={study.githubUrl} target="_blank" rel="noopener noreferrer"
+                  className="font-mono text-[10px] font-bold uppercase tracking-wide text-ink-light hover:text-ink flex items-center gap-1 transition-colors"
+                >
+                  {t('projects.viewRepo')} <ExternalLink size={10} />
+                </a>
+              )}
+              {study.hasNDA && !study.githubUrl && (
+                <span className="font-mono text-[10px] text-ink-muted flex items-center gap-1">
+                  <Lock size={9} /> {lang === 'es' ? 'Privado' : 'Private'}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* NDA disclaimer */}
+          {study.hasNDA && (
+            <div className="border-t border-rule-light px-4 py-2 bg-paper-dark">
+              <p className="font-mono text-[10px] text-ink-muted italic">
+                {t('projects.nda')}
               </p>
             </div>
           )}
         </div>
-
-        {/* Footer: stack + links */}
-        <div className="border-t-2 border-rule-light p-4 flex items-center justify-between gap-3">
-          <div className="flex flex-wrap gap-1.5">
-            {study.stack.slice(0, 4).map((tech) => (
-              <span key={tech} className="skill-tag text-[10px]">{tech}</span>
-            ))}
-            {study.stack.length > 4 && (
-              <span className="font-mono text-[10px] text-ink-muted self-center">
-                +{study.stack.length - 4}
-              </span>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-            {study.demoUrl && (
-              <a href={study.demoUrl} target="_blank" rel="noopener noreferrer"
-                className="font-mono text-[10px] font-bold uppercase tracking-wide text-accent hover:text-accent-dark flex items-center gap-1 transition-colors"
-              >
-                {t('projects.viewDemo')} <ExternalLink size={10} />
-              </a>
-            )}
-            {study.githubUrl && (
-              <a href={study.githubUrl} target="_blank" rel="noopener noreferrer"
-                className="font-mono text-[10px] font-bold uppercase tracking-wide text-ink-light hover:text-ink flex items-center gap-1 transition-colors"
-              >
-                {t('projects.viewRepo')} <ExternalLink size={10} />
-              </a>
-            )}
-            {study.hasNDA && !study.githubUrl && (
-              <span className="font-mono text-[10px] text-ink-muted flex items-center gap-1">
-                <Lock size={9} /> {lang === 'es' ? 'Privado' : 'Private'}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* NDA disclaimer */}
-        {study.hasNDA && (
-          <div className="border-t border-rule-light px-4 py-2 bg-paper-dark">
-            <p className="font-mono text-[10px] text-ink-muted italic">
-              {t('projects.nda')}
-            </p>
-          </div>
-        )}
       </article>
     </FadeIn>
   )
@@ -232,11 +282,28 @@ function GitHubActivityWidget() {
   )
 }
 
+// The only study architecture-owned end to end (4 schemas, 30+ tables, a
+// 23-state machine, 27 SPs, 114+ endpoints), and the only one whose impact
+// is entirely numeric — the story a hiring reader must hit first. Not the
+// lowest `order` (`harmony-music-oss`, a triaged fork): `order` is display
+// sequence, not ownership, and overloading it repeats the `featured` defect
+// (`true` on all 9 entries) this field was added to fix.
+const lead = featuredCaseStudies.find((study) => study.lead) ?? featuredCaseStudies[0]
+
+// Ordering gate (1 of 2): only newspaper puts the lead first. Book keeps
+// `featuredCaseStudies` untouched — see the class-application gate in
+// CaseStudyCard for the second half of the guard.
+const leadFirstCaseStudies = [
+  lead,
+  ...featuredCaseStudies.filter((study) => study.id !== lead.id),
+]
+
 // ─── Section ────────────────────────────────────────────────────────────────
 export function Projects() {
   const { t, lang } = useTranslation()
   const { theme, stillness } = useTheme()
   const reduceMotion = useReducedMotion()
+  const studies = theme === 'book' ? featuredCaseStudies : leadFirstCaseStudies
 
   return (
     <section id="projects" className="py-20 px-6 max-w-7xl mx-auto">
@@ -268,7 +335,7 @@ export function Projects() {
 
       {/* Case Studies grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-        {featuredCaseStudies.map((study, i) => (
+        {studies.map((study, i) => (
           <CaseStudyCard key={study.id} study={study} index={i} />
         ))}
       </div>

@@ -47,7 +47,10 @@ export function Crucible({
     return (
       <>
         <div>
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-accent mb-1">
+          <p
+            data-landmark="problem"
+            className="font-mono text-[10px] font-bold uppercase tracking-widest text-accent mb-1"
+          >
             {beforeLabel}
           </p>
           {before}
