@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useTheme } from '../../theme/ThemeContext'
 import type { VoxelModelName } from './attrs'
-import { MODELS, type Model } from './voxelModels'
+import { MODELS, type Model, type Voxel } from './voxelModels'
 
 export interface VoxelFigureProps {
   /** Which registered model to build (see `MODELS` in voxelModels.ts). */
@@ -27,6 +27,11 @@ const DAMPING_STILL = 0.86
 const RELEASE_CAP = 0.05
 const RELEASE_CAP_STILL = RELEASE_CAP / 2
 const VELOCITY_EPS = 0.0006
+/** Leaves the object a breath of air inside its frame. */
+const FRAME_MARGIN = 0.92
+/** Azimuth of the one light in this scene, in the rotated frame. */
+const LIGHT_X = -0.34
+const LIGHT_Z = 0.94
 
 /**
  * A voxel object you can take hold of, rendered by hand.
@@ -78,6 +83,9 @@ export function VoxelFigure({
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas || !active) return
+
+    const COS30 = Math.cos(Math.PI / 6)
+    const SIN30 = Math.sin(Math.PI / 6)
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
@@ -113,13 +121,21 @@ export function VoxelFigure({
       canvas.width = Math.round(width * dpr)
       canvas.height = Math.round(height * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      // Framed off the model's own reach, so a bigger object is given a
-      // bigger stage instead of being squeezed into the same box.
-      scale = Math.max(3, Math.min(width, height * 1.5) / (model.reach * 2.6))
+      // Framed off what the object actually occupies, at its worst yaw and
+      // in both of its arrangements. The half-extent used to be a number
+      // typed in per model, and measured, three of the four figures were
+      // being cut off by their own canvas.
+      //
+      // The three limits are the three edges that can catch it: the sides,
+      // the top and the bottom. `r` is a ground-plane radius, so the widest
+      // the object can ever project is at 45 degrees — hence the SQRT2.
+      const { wide, top, bottom } = model.bounds
+      scale = Math.max(
+        3,
+        FRAME_MARGIN *
+          Math.min(width / 2 / wide, (height * 0.46) / top, (height * 0.54) / bottom),
+      )
     }
-
-    const COS30 = Math.cos(Math.PI / 6)
-    const SIN30 = Math.sin(Math.PI / 6)
 
     const project = (x: number, y: number, z: number) => {
       const c = Math.cos(yaw)
@@ -142,6 +158,58 @@ export function VoxelFigure({
       ctx.closePath()
       ctx.fillStyle = fill
       ctx.fill()
+    }
+
+    /**
+     * The hot path: a quad from loose numbers, batched by colour.
+     *
+     * Canvas2D charges per fill() far more than per pixel. The letter's
+     * envelope is a slab thirty-five voxels by twenty-five, so its top alone
+     * was some nine hundred separate fills of the SAME colour, and measured,
+     * that one figure took the page from 60fps to 30 on its own — with the
+     * canvas showing about a screenful of pixels in total, so it was never
+     * fill rate.
+     *
+     * Runs of one colour are collected into a single path and flushed when
+     * the colour changes. That preserves the painter's order exactly: two
+     * quads only ever share a batch if nothing of another colour was drawn
+     * between them.
+     */
+    let penFill = ''
+
+    const flush = () => {
+      if (!penFill) return
+      ctx.fillStyle = penFill
+      ctx.fill()
+      penFill = ''
+    }
+
+    const face = (
+      x1: number, y1: number, x2: number, y2: number,
+      x3: number, y3: number, x4: number, y4: number,
+      fill: string,
+      flip: boolean,
+    ) => {
+      if (fill !== penFill) {
+        flush()
+        ctx.beginPath()
+        penFill = fill
+      }
+      // One path, many subpaths, filled with the nonzero rule — so every
+      // subpath in a batch has to wind the same way or an overlap cancels
+      // itself out and leaves a hole. The winding of each face kind is fixed
+      // for the whole frame, so the caller just says which way to go round.
+      ctx.moveTo(x1, y1)
+      if (flip) {
+        ctx.lineTo(x4, y4)
+        ctx.lineTo(x3, y3)
+        ctx.lineTo(x2, y2)
+      } else {
+        ctx.lineTo(x2, y2)
+        ctx.lineTo(x3, y3)
+        ctx.lineTo(x4, y4)
+      }
+      ctx.closePath()
     }
 
     const isBusy = () =>
@@ -221,32 +289,121 @@ export function VoxelFigure({
       ctx.globalAlpha = 1
       quad([sN, sE, sS, sW], glowRef.current)
 
-      const drawn = model.voxels.map((v) => {
+      // Which vertical faces the camera can see, decided once per frame.
+      // The cube's corners rotate with the yaw but the cube does not know it
+      // has turned, so the pair facing the lens has to be chosen here.
+      const cYaw = Math.cos(yaw)
+      const sYaw = Math.sin(yaw)
+      // Model +x and +z as they land in the rotated frame.
+      const ax0 = cYaw, ax1 = sYaw
+      const az0 = -sYaw, az1 = cYaw
+      // Depth grows along rx + rz, so a face is turned toward the viewer
+      // exactly when its rotated normal sums positive.
+      const xFace = ax0 + ax1 > 0 ? 3 : 4
+      const zFace = az0 + az1 > 0 ? 1 : 2
+      // A fixed light, in the rotated frame rather than the model's. The
+      // shading used to be nailed to the model — +z always the lit side and
+      // +x always the shadowed one — so it turned with the object, which is
+      // exactly what makes a render look painted instead of lit. The lit
+      // side is now whichever one is really facing the light.
+      const xLit = (xFace === 3 ? 1 : -1) * (ax0 * LIGHT_X + ax1 * LIGHT_Z)
+      const zLit = (zFace === 1 ? 1 : -1) * (az0 * LIGHT_X + az1 * LIGHT_Z)
+      const xShade = xLit >= zLit ? 1 : 2
+      const zShade = xLit >= zLit ? 2 : 1
+
+      // Buried faces are only buried while the object is whole. Culling them
+      // is what pays for the detail: a solid model spends most of its voxels
+      // on an inside that nobody ever sees.
+      const solid = t === 0
+      const topBit = 1
+      const xBit = 1 << xFace
+      const zBit = 1 << zFace
+      const hiddenAll = topBit | xBit | zBit
+
+      // Depth is rx + rz + y, which is separable too; project() would have
+      // built and thrown away an object per voxel just to read one field.
+      const depthX = cYaw + sYaw
+      const depthZ = cYaw - sYaw
+
+      const drawn: Array<{ v: Voxel; x: number; y: number; z: number; depth: number }> = []
+      for (const v of model.voxels) {
+        if (solid && (v.buried & hiddenAll) === hiddenAll) continue
         const x = v.x + (v.ax - v.x) * t
         const y = v.y + (v.ay - v.y) * t
         const z = v.z + (v.az - v.z) * t
-        return { v, x, y, z, depth: project(x, y, z).depth }
-      })
+        drawn.push({ v, x, y, z, depth: x * depthX + z * depthZ + y })
+      }
 
       drawn.sort((a, b) => a.depth - b.depth)
 
+      // The projection is affine and separable, so a cube's eight corners are
+      // one origin plus three constant screen steps. Calling project() per
+      // corner meant eight multiplies and eight fresh objects for every voxel
+      // — a thousand voxels cost eight thousand allocations a frame, and the
+      // letter alone was taking the page from 60fps to 30. These are the same
+      // numbers, arrived at by adding.
+      const stepXx = (cYaw - sYaw) * COS30 * scale
+      const stepXy = (cYaw + sYaw) * SIN30 * scale
+      const stepZx = -(cYaw + sYaw) * COS30 * scale
+      const stepZy = (cYaw - sYaw) * SIN30 * scale
+      const stepYy = -scale
+      const originX = width / 2
+      const originY = height * 0.46
+      const release = 1 - t
+      // Winding of each face kind, constant for the frame: the cross product
+      // of the two steps that sweep it out.
+      const flipTop = stepXx * stepZy - stepXy * stepZx < 0
+      const flipZ = stepXx * stepYy < 0
+      const flipX = stepZx * stepYy < 0
+
       for (const { v, x, y, z } of drawn) {
-        const px = project(x + 1, y, z)
-        const py = project(x, y + 1, z)
-        const pz = project(x, y, z + 1)
-        const pxy = project(x + 1, y + 1, z)
-        const pyz = project(x, y + 1, z + 1)
-        const pxyz = project(x + 1, y + 1, z + 1)
-        const pxz = project(x + 1, y, z + 1)
+        // Corner (x, y, z) of the cube; the other seven are steps from here.
+        const bx = originX + x * stepXx + z * stepZx
+        const by = originY + x * stepXy + z * stepZy + y * stepYy
 
         const toneFills = fills[v.tone] ?? fills[0]
-        // Occlusion releases toward the exposed value as the object melts.
-        const eff = (face: number) => Math.round(v.ao[face] * (1 - t))
+        const ao = v.ao
 
-        quad([py, pxy, pxyz, pyz], toneFills[0][eff(0)])
-        quad([pz, pxz, pxyz, pyz], toneFills[1][eff(1)])
-        quad([px, pxy, pxyz, pxz], toneFills[2][eff(2)])
+        if (!solid || !(v.buried & topBit)) {
+          // Top: the y-step, then across x and z.
+          const ax = bx, ay = by + stepYy
+          face(
+            ax, ay,
+            ax + stepXx, ay + stepXy,
+            ax + stepXx + stepZx, ay + stepXy + stepZy,
+            ax + stepZx, ay + stepZy,
+            toneFills[0][Math.round(ao[0] * release)],
+            flipTop,
+          )
+        }
+        if (!solid || !(v.buried & zBit)) {
+          // The z-facing wall, at z + 1 or at z depending on which way it looks.
+          const ax = zFace === 1 ? bx + stepZx : bx
+          const ay = zFace === 1 ? by + stepZy : by
+          face(
+            ax, ay,
+            ax + stepXx, ay + stepXy,
+            ax + stepXx, ay + stepXy + stepYy,
+            ax, ay + stepYy,
+            toneFills[zShade][Math.round(ao[zFace] * release)],
+            flipZ,
+          )
+        }
+        if (!solid || !(v.buried & xBit)) {
+          const ax = xFace === 3 ? bx + stepXx : bx
+          const ay = xFace === 3 ? by + stepXy : by
+          face(
+            ax, ay,
+            ax + stepZx, ay + stepZy,
+            ax + stepZx, ay + stepZy + stepYy,
+            ax, ay + stepYy,
+            toneFills[xShade][Math.round(ao[xFace] * release)],
+            flipX,
+          )
+        }
       }
+
+      flush()
 
       if (isBusy()) {
         frame = requestAnimationFrame(draw)
