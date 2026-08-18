@@ -1,7 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft } from 'lucide-react'
-import { useApp } from './context/AppContext'
 import { useTranslation } from './hooks/useTranslation'
 import { Header } from './components/Header'
 import { Hero } from './components/sections/Hero'
@@ -14,7 +13,6 @@ import { Testimonials } from './components/sections/Testimonials'
 import { Contact } from './components/sections/Contact'
 import { Footer } from './components/sections/Footer'
 import { BookStage } from './components/book/lazy'
-import { Loading } from './components/ui/Loading'
 
 /**
  * The blog carries the heaviest dependencies in the app: every post body
@@ -49,7 +47,6 @@ function BlogFallback({ minHeight, id }: { minHeight: string; id?: string }) {
 }
 
 function App() {
-  const { loading, error } = useApp()
   const { lang } = useTranslation()
   const reduceMotion = useReducedMotion()
   const [blogMode, setBlogMode] = useState(false)
@@ -69,30 +66,6 @@ function App() {
       window.removeEventListener('popstate', check)
     }
   }, [])
-
-  if (loading) return <Loading />
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-paper">
-        <div className="border-2 border-rule shadow-pixel p-8 text-center max-w-md bg-paper">
-          <div className="border-t-4 border-rule mb-1" />
-          <div className="border-t border-rule mb-4" />
-          <p className="font-mono text-xs font-bold uppercase tracking-widest text-accent mb-2">
-            Error
-          </p>
-          <p className="font-sans text-sm text-ink-light">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-6 px-btn px-btn-outline text-xs cursor-pointer"
-          >
-            Reintentar
-          </button>
-          <div className="border-t-4 border-rule mt-4" />
-        </div>
-      </div>
-    )
-  }
 
   const fade = {
     initial: { opacity: 0 },

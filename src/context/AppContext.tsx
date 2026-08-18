@@ -2,11 +2,15 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from '
 import type { GitHubUser, GitHubRepo, Language } from '../types'
 import { getUser, getRepos } from '../services/github'
 
+/**
+ * GitHub is enrichment, never a gate. Every consumer renders from static
+ * fallbacks first (`user?.name || 'Edwin Trigos'`, `repos` starting as `[]`),
+ * so the fetch has no loading or error state to expose: the page is already
+ * complete when it starts, and stays complete if it never lands.
+ */
 interface AppContextType {
   user: GitHubUser | null
   repos: GitHubRepo[]
-  loading: boolean
-  error: string | null
   lang: Language
   setLang: (lang: Language) => void
 }
@@ -16,8 +20,6 @@ const AppContext = createContext<AppContextType | null>(null)
 export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<GitHubUser | null>(null)
   const [repos, setRepos] = useState<GitHubRepo[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [lang, setLang] = useState<Language>(() => {
     const saved = localStorage.getItem('portfolio-lang')
     if (saved === 'es' || saved === 'en') return saved
@@ -35,16 +37,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setUser(userData)
         setRepos(repoData)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch GitHub data')
-      } finally {
-        setLoading(false)
+        // Rate limits and offline visitors are GitHub's problem, not the
+        // reader's. The avatar falls back to initials and the activity
+        // widget hides itself; nothing else on the page notices.
+        console.warn('GitHub data unavailable, rendering without it:', err)
       }
     }
     fetchData()
   }, [])
 
   return (
-    <AppContext.Provider value={{ user, repos, loading, error, lang, setLang }}>
+    <AppContext.Provider value={{ user, repos, lang, setLang }}>
       {children}
     </AppContext.Provider>
   )

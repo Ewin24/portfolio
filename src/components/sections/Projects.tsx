@@ -170,6 +170,11 @@ function GitHubActivityWidget() {
   const { t } = useTranslation()
   const recent = getFeaturedRepos(repos).slice(0, 4)
 
+  // Before the fetch lands — and forever, if GitHub rate-limits us — there is
+  // nothing to list. An empty framed card with a heading and a "view all" link
+  // reads as broken; no card at all reads as a page that never had one.
+  if (recent.length === 0) return null
+
   return (
     <div className="border-2 border-rule p-6 shadow-pixel bg-paper">
       <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-rule">
