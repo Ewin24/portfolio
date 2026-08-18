@@ -976,6 +976,18 @@ html[data-theme='book'] {
    height as the letters leave. */
 [data-theme='book'] .wind-host {
   position: relative;
+  /* The letters are meant to drift out of the box. What they are not meant
+     to do is make the page scroll sideways, and measured at 1440px the
+     footer was handing back 62px of horizontal overflow — a scrollbar,
+     because a handful of them had blown past the right edge.
+
+     Clipped on one axis only: `clip` is the single value that may pair with
+     `visible`, so the drift keeps its vertical freedom while the horizontal
+     escape is bounded, and `clip` — unlike `hidden` — does not turn the
+     host into a scroll container of its own. */
+  overflow-x: clip;
+  overflow-y: visible;
+  overflow-clip-margin: 2rem;
 }
 
 [data-theme='book'] .wind-source {
