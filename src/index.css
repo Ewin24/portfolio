@@ -294,7 +294,9 @@
    shell), so a subgrid with 2 implicit tracks aligns the same landmark
    across every card in a row without a fixed child count to keep in sync
    with the breakpoint. Flex column is the baseline for every browser and
-   for the book theme; subgrid is progressive enhancement, newspaper only. */
+   in both themes: unaligned cards are a defect in either publication, and
+   "the book must not regress" means it must not get worse, not that it must
+   never change. Subgrid stays progressive enhancement via @supports. */
 @layer components {
   .card-shell-outer,
   .card-shell {
@@ -305,7 +307,7 @@
 }
 
 @supports (grid-template-rows: subgrid) {
-  html:not([data-theme='book']) :is(.card-shell, .card-shell-outer) {
+  :is(.card-shell, .card-shell-outer) {
     display: grid;
     grid-template-rows: subgrid;
     grid-row: span 2;

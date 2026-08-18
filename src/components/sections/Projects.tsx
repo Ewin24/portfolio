@@ -13,16 +13,24 @@ import { clampToSentence } from '../../lib/text'
 import type { CaseStudy } from '../../types'
 
 /**
- * Tuned for the narrowest measure — 375px single column, ~48ch × 3 lines —
- * so the cut does not have to re-fire at a wider breakpoint. Nothing is
- * lost when a card clamps: the remainder stays in the DOM in a sr-only
+ * Tuned for the narrowest MEASURE, which is not the narrowest VIEWPORT. The
+ * first cut assumed 375px single column at ~48ch; both halves were wrong.
+ * Measured in a browser, the tightest column is at 1024px, where three grid
+ * tracks squeeze each card to 309px and copy renders at ~32 characters a line
+ * — a 375px phone is actually WIDER per card, at 327px. Three lines of 32 is
+ * 96, so a 140-character budget overflowed the line-clamp-3 box at every
+ * breakpoint except 1440px and the browser then re-cut the text mid-word,
+ * reintroducing the exact defect this truncation exists to prevent.
+ *
+ * Nothing is lost when a card clamps: the remainder stays in the DOM in a sr-only
  * sibling, both for screen readers and for the pre-render.
  */
-const SECONDARY_BUDGET = 140
+const SECONDARY_BUDGET = 96
 
-/** The lead's problem/solution columns are ~570px wide at 1440px — wider
- *  measure, wider budget. Newspaper only; the book theme never sees it. */
-const LEAD_BUDGET = 300
+/** The lead only splits into two columns from md up. Below that it is a
+ *  single column at the same ~32ch measure as any other card, and it clamps at
+ *  four lines — so 4 x 32 = 128 is the ceiling, not the desktop measure. */
+const LEAD_BUDGET = 124
 
 const LANG_COLORS: Record<string, string> = {
   TypeScript: '#3178c6', JavaScript: '#f7df1e', Python: '#3572A5',
