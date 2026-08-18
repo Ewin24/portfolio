@@ -21,10 +21,16 @@
  *   - `testimonials` becomes the yellow butterflies, the sign that someone
  *     else has been near.
  *
- * Contrast: every `ink` and every `accent` was measured against its own
- * chapter's mid page stop — the surface text actually sits on once the veil
- * is applied — and clears 4.5:1. The two darkest chapters invert to light
- * text on a dark ground rather than dimming text against it.
+ * Contrast: every `ink`, `inkMuted` and `accent` is measured against its own
+ * chapter's mid page stop — the surface text actually sits on once the veil is
+ * applied — and clears 4.5:1. The two darkest chapters invert to light text on
+ * a dark ground rather than dimming text against it.
+ *
+ * inkMuted is in that list because it was once left out of it. The first pass
+ * verified ink and accent only, and inkMuted shipped failing in nine of the
+ * ten chapters — as low as 3.02:1 — which is the colour that paints the
+ * running labels, the epigraph, the folio and every metadata line. A palette
+ * role that is never measured is a palette role that drifts.
  */
 
 export type ChapterId =
@@ -90,7 +96,7 @@ export const CHAPTERS: Chapter[] = [
     page: ['#FDFBF4', '#F6F0E0', '#EDE4CE'],
     ink: '#2E2416',
     inkLight: '#544632',
-    inkMuted: '#7D6C52',
+    inkMuted: '#7C6B51',
     onInk: '#FDFBF4',
     accent: '#8C3A24',
     rule: 'rgba(46, 36, 22, 0.16)',
@@ -108,7 +114,7 @@ export const CHAPTERS: Chapter[] = [
     page: ['#F8FAFB', '#EDF2F3', '#DFE8EA'],
     ink: '#22303A',
     inkLight: '#44545F',
-    inkMuted: '#6B7B85',
+    inkMuted: '#5E6E78',
     onInk: '#F8FAFB',
     accent: '#2E6C86',
     rule: 'rgba(34, 48, 58, 0.16)',
@@ -126,7 +132,7 @@ export const CHAPTERS: Chapter[] = [
     page: ['#F5E7C8', '#EBD5A8', '#DCBE84'],
     ink: '#3A2A14',
     inkLight: '#5C4526',
-    inkMuted: '#87693F',
+    inkMuted: '#745934',
     onInk: '#F8ECD2',
     accent: '#8A4A16',
     rule: 'rgba(58, 42, 20, 0.20)',
@@ -146,7 +152,7 @@ export const CHAPTERS: Chapter[] = [
     page: ['#FBF8EE', '#F4EFE0', '#E9E2CE'],
     ink: '#3A342A',
     inkLight: '#5D5546',
-    inkMuted: '#877E6C',
+    inkMuted: '#746C5C',
     onInk: '#FBF8EE',
     accent: '#A03A2E',
     rule: 'rgba(58, 52, 42, 0.16)',
@@ -165,7 +171,7 @@ export const CHAPTERS: Chapter[] = [
     page: ['#EADCC0', '#DCC8A2', '#C6AE84'],
     ink: '#332414',
     inkLight: '#553F26',
-    inkMuted: '#7E6440',
+    inkMuted: '#685133',
     onInk: '#F2E6CC',
     accent: '#7E3B1C',
     rule: 'rgba(51, 36, 20, 0.20)',
@@ -183,7 +189,7 @@ export const CHAPTERS: Chapter[] = [
     page: ['#F0E2C0', '#E3D0A4', '#CFB77F'],
     ink: '#3B2E18',
     inkLight: '#5E4C2C',
-    inkMuted: '#8A7248',
+    inkMuted: '#6B5735',
     onInk: '#F4E8CC',
     accent: '#7A4A12',
     rule: 'rgba(59, 46, 24, 0.20)',
@@ -202,7 +208,7 @@ export const CHAPTERS: Chapter[] = [
     page: ['#FBF0CE', '#F5E3A8', '#E9CE7A'],
     ink: '#3E3212',
     inkLight: '#5F4F20',
-    inkMuted: '#8A7638',
+    inkMuted: '#76642E',
     onInk: '#FBF2D6',
     accent: '#8A5A12',
     rule: 'rgba(62, 50, 18, 0.20)',
@@ -240,7 +246,7 @@ export const CHAPTERS: Chapter[] = [
     page: ['#FFFFFF', '#F8F4E9', '#EFE7D4'],
     ink: '#332B1E',
     inkLight: '#574C39',
-    inkMuted: '#82755D',
+    inkMuted: '#7B6E57',
     onInk: '#FFFDF7',
     accent: '#8A4522',
     rule: 'rgba(51, 43, 30, 0.16)',
@@ -258,7 +264,7 @@ export const CHAPTERS: Chapter[] = [
     page: ['#241F1C', '#191512', '#0E0B09'],
     ink: '#D8CDBA',
     inkLight: '#B0A694',
-    inkMuted: '#847C6E',
+    inkMuted: '#877E70',
     onInk: '#191512',
     accent: '#C9A268',
     rule: 'rgba(216, 205, 186, 0.16)',

@@ -136,6 +136,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       return
     }
 
+    /** True once the reader has reached the true bottom of the document. */
+    let atEnd = false
+
     let observer: IntersectionObserver | null = null
     let bound: HTMLElement[] = []
     let pending = 0
@@ -160,6 +163,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
       observer = new IntersectionObserver(
         (records) => {
+          // At the true bottom the last chapter owns the light. #contact
+          // still crosses the middle band down there, so without this the
+          // observer fires after the end-of-document trigger and takes the
+          // chapter straight back to IX — measured: remaining=0 and the
+          // ribbon still read "The Letter".
+          if (atEnd) return
+
           const hit = records.find((record) => record.isIntersecting)
           if (!hit) return
 
@@ -189,11 +199,47 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     applyChapter(OPENING_CHAPTER, root)
     bind()
 
+    /**
+     * The last chapter needs its own trigger.
+     *
+     * The observer only reports a section that crosses a band carved out of
+     * the middle of the viewport, and the footer is 66px tall. Scrolled to
+     * the very bottom it sits at 834-900 in a 900px window while the band is
+     * 405-495, so it never crosses and chapter X never fires — measured. The
+     * book had no ending: the ribbon stayed on IX at the true bottom.
+     *
+     * Reaching the end of the document IS reaching the last chapter, so that
+     * is what triggers it. Only the entry is forced; scrolling back up lets
+     * the observer take over again on the next crossing, with no restore
+     * logic to keep in sync.
+     */
+    const LAST = CHAPTERS[CHAPTERS.length - 1]
+    let endFrame = 0
+
+    const onScrollEnd = () => {
+      cancelAnimationFrame(endFrame)
+      endFrame = requestAnimationFrame(() => {
+        const doc = document.documentElement
+        const remaining = doc.scrollHeight - window.innerHeight - window.scrollY
+        const nowAtEnd = remaining <= 4
+        if (nowAtEnd === atEnd) return
+        atEnd = nowAtEnd
+        if (!nowAtEnd) return
+        applyChapter(LAST, root)
+        setObservedChapter(LAST)
+      })
+    }
+
+    window.addEventListener('scroll', onScrollEnd, { passive: true })
+    onScrollEnd()
+
     const mutations = new MutationObserver(scheduleBind)
     mutations.observe(document.body, { childList: true, subtree: true })
 
     return () => {
       cancelAnimationFrame(pending)
+      cancelAnimationFrame(endFrame)
+      window.removeEventListener('scroll', onScrollEnd)
       mutations.disconnect()
       observer?.disconnect()
     }
