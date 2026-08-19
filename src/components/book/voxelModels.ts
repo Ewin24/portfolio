@@ -98,7 +98,14 @@ const GOLD_PALE: [string, string, string] = ['#F8E0A4', '#D9BA6C', '#9B7C36']
 /** Fins, gill line, the edges where gold is thin. */
 const GOLD_DEEP: [string, string, string] = ['#C79A34', '#966E17', '#5F400A']
 const DARK: [string, string, string] = ['#2A1E0C', '#241A0A', '#1B1307']
-const GLASS: [string, string, string] = ['#DDEBEA', '#B0CBCA', '#7C9EA0']
+/**
+ * Glass, darkened from the near-white it used to be. Measured against the
+ * page it sits on: 1.05:1 — the receiver had no edge at all and had read as
+ * a pale lump against the paper since the day it was built. Nobody had
+ * measured it against the BACKGROUND; every check had been against the
+ * things next to it.
+ */
+const GLASS: [string, string, string] = ['#A8C4C1', '#87A5A3', '#5E7B7C']
 const COPPER: [string, string, string] = ['#D6803F', '#A55524', '#66300F']
 /**
  * Azogue: the quicksilver Melquiades brings with the laboratory.
@@ -108,7 +115,21 @@ const COPPER: [string, string, string] = ['#D6803F', '#A55524', '#66300F']
  * is darker than copper itself; no light-silver value can separate from both
  * at once. A brighter lit top face keeps the tone triple from reading flat.
  */
-const QUICKSILVER: [string, string, string] = ['#3A3D38', '#2C2F2B', '#1E201D']
+/**
+ * Azogue: the quicksilver that came with the laboratory.
+ *
+ * Its three faces used to be near-black within a hair of each other, and a
+ * pool whose surface is the same value as its walls is not a pool — it is a
+ * hole. It read, exactly as reported, as a shadow moving inside the pot.
+ *
+ * A liquid's TOP face is its surface and has to be the lightest of the
+ * three; that one relationship is what turns a dark mass into something with
+ * a level. The side keeps the contrast the dark version was chosen for —
+ * 2.59:1 against copper, 6.02:1 against the page it falls across — while the
+ * surface clears 3.16:1 against the page and stands 1.9:1 clear of its own
+ * walls.
+ */
+const QUICKSILVER: [string, string, string] = ['#6E8189', '#46555C', '#2E3A40']
 const PAPER: [string, string, string] = ['#F3E8CD', '#D6C49B', '#9E8B63']
 const INK: [string, string, string] = ['#6E4A22', '#573A1B', '#3B2712']
 const WAX: [string, string, string] = ['#A63A2C', '#7E2820', '#4E1712']
@@ -619,7 +640,10 @@ export function alembicModel(): Model {
     const inNeck = y >= -1 && y <= 3 && neck <= 2.6
     if (bulb > 1 && !inNeck) return null
     if (inNeck) {
-      if (neck > 1.5) return 1
+      // Bore widened from 1.5. The throat is the one part of the receiver
+      // you can see into from this camera, so it is where the arriving
+      // charge has to be visible; a narrower ring shows more of it.
+      if (neck > 2.2) return 1
       throatCells.push([x, y, z])
       return null
     }
@@ -657,10 +681,15 @@ export function alembicModel(): Model {
   // So the travel is shown where it can honestly be seen: falling through
   // the open air between the end of the spout and the mouth of the
   // receiver. A pipe hides what runs inside it. That is what pipes are.
+  // SIX drops, not forty-eight. Forty-eight voxels packed into a gap two and
+  // a half units tall is not a stream, it is a solid black lump hanging in
+  // mid-air beside the receiver — which is what it looked like, and what was
+  // reported as a shadow moving where nothing should be moving. Drops need
+  // air between them or they are a bar.
   const DRIP_X = 18
-  const DRIP_TOP = 5.6
-  const DRIP_BOTTOM = 3.2
-  const falling = Math.max(1, Math.min(charge.length >> 3, 48))
+  const DRIP_TOP = 6.4
+  const DRIP_BOTTOM = 2.2
+  const falling = 6
   charge.forEach((v, i) => {
     if (i < falling) {
       const f = i / falling
