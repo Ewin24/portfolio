@@ -32,6 +32,12 @@ const FRAME_MARGIN = 0.92
 /** Azimuth of the one light in this scene, in the rotated frame. */
 const LIGHT_X = -0.34
 const LIGHT_Z = 0.94
+/** Clamped zoom range and step (design D3) — below 1 there is nothing to
+ *  see that framing did not already show; above 2.5 there is no pan to
+ *  follow it with. */
+const MIN_ZOOM = 1.0
+const MAX_ZOOM = 2.5
+const ZOOM_STEP = 1.25
 
 /**
  * A voxel object you can take hold of, rendered by hand.
@@ -92,6 +98,9 @@ export function VoxelFigure({
     let model: Model | null = null
     let width = 0
     let height = 0
+    /** The framing computation alone — unchanged by zoom. */
+    let baseScale = 1
+    /** What the draw loop actually reads every frame. */
     let scale = 1
     let frame = 0
     let last = performance.now()
@@ -103,6 +112,16 @@ export function VoxelFigure({
     let lastX = 0
     /** Yaw change carried into the release, decayed each frame. */
     let vYaw = 0
+
+    /** Clamped multiplier on `baseScale`. Resets on remount, not on resize. */
+    let zoom = 1
+    /** Active touch points, for pinch. */
+    const pointers = new Map<number, { x: number; y: number }>()
+    let pinching = false
+    let pinchStartDist = 0
+    let pinchStartZoom = 1
+
+    const clampZoom = (z: number) => Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, z))
 
     /** 0 = at rest, 1 = worked (or, before entry finishes, alternate). */
     let phase = still ? 0 : 1
@@ -130,11 +149,14 @@ export function VoxelFigure({
       // the top and the bottom. `r` is a ground-plane radius, so the widest
       // the object can ever project is at 45 degrees — hence the SQRT2.
       const { wide, top, bottom } = model.bounds
-      scale = Math.max(
+      baseScale = Math.max(
         3,
         FRAME_MARGIN *
           Math.min(width / 2 / wide, (height * 0.46) / top, (height * 0.54) / bottom),
       )
+      // Reapply the current zoom factor over the freshly measured frame —
+      // zoom itself does not reset on resize, only on remount.
+      scale = baseScale * zoom
     }
 
     const project = (x: number, y: number, z: number) => {
@@ -419,7 +441,34 @@ export function VoxelFigure({
       frame = requestAnimationFrame(draw)
     }
 
+    /**
+     * Sets `scale = baseScale * zoom` and asks for a frame. The draw loop
+     * never multiplies by zoom itself — it only ever reads `scale`, exactly
+     * as it did before zoom existed, so nothing was added to the hot path.
+     * `requestDraw()` is a no-op while a frame is already scheduled.
+     */
+    const applyZoom = () => {
+      scale = baseScale * zoom
+      requestDraw()
+    }
+
+    const pinchDist = (a: { x: number; y: number }, b: { x: number; y: number }) =>
+      Math.hypot(a.x - b.x, a.y - b.y)
+
     const onDown = (e: PointerEvent) => {
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+      if (pointers.size === 2) {
+        // A second contact point ends any yaw drag and starts a pinch.
+        dragging = false
+        pinching = true
+        const [a, b] = [...pointers.values()]
+        pinchStartDist = pinchDist(a, b)
+        pinchStartZoom = zoom
+        return
+      }
+      if (pointers.size > 2) return // a third touch is ignored entirely
+
       dragging = true
       vYaw = 0
       lastX = e.clientX
@@ -427,6 +476,19 @@ export function VoxelFigure({
       requestDraw()
     }
     const onMove = (e: PointerEvent) => {
+      if (pointers.has(e.pointerId)) {
+        pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+      }
+
+      if (pinching) {
+        if (pointers.size < 2) return
+        const [a, b] = [...pointers.values()]
+        const dist = pinchDist(a, b)
+        zoom = clampZoom(pinchStartZoom * (dist / Math.max(1, pinchStartDist)))
+        applyZoom()
+        return
+      }
+
       if (!dragging) return
       const delta = (e.clientX - lastX) * DRAG_YAW_RATE
       yaw += delta
@@ -434,6 +496,16 @@ export function VoxelFigure({
       lastX = e.clientX
     }
     const onUp = (e: PointerEvent) => {
+      pointers.delete(e.pointerId)
+
+      if (pinching) {
+        // Dropping below two pointers ends the pinch — deliberately without
+        // resuming yaw drag on whichever pointer is left, which would read
+        // as an unrequested jump.
+        if (pointers.size < 2) pinching = false
+        return
+      }
+
       dragging = false
       try {
         canvas.releasePointerCapture(e.pointerId)
@@ -450,10 +522,36 @@ export function VoxelFigure({
       holdUntil = performance.now() + 420
       requestDraw()
     }
+    const onWheel = (e: WheelEvent) => {
+      // A bare wheel is page scroll, full stop — never hijacked. Only the
+      // modifier gesture (which a trackpad pinch also arrives as) zooms.
+      if (!e.ctrlKey && !e.metaKey) return
+      e.preventDefault()
+      zoom = clampZoom(zoom * (e.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP))
+      applyZoom()
+    }
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault()
         strike()
+        return
+      }
+      if (e.key === '+' || e.key === '=') {
+        e.preventDefault()
+        zoom = clampZoom(zoom * ZOOM_STEP)
+        applyZoom()
+        return
+      }
+      if (e.key === '-' || e.key === '_') {
+        e.preventDefault()
+        zoom = clampZoom(zoom / ZOOM_STEP)
+        applyZoom()
+        return
+      }
+      if (e.key === '0') {
+        e.preventDefault()
+        zoom = 1
+        applyZoom()
       }
     }
 
@@ -462,6 +560,7 @@ export function VoxelFigure({
     canvas.addEventListener('pointerup', onUp)
     canvas.addEventListener('pointercancel', onUp)
     canvas.addEventListener('click', strike)
+    canvas.addEventListener('wheel', onWheel, { passive: false })
     canvas.addEventListener('keydown', onKey)
 
     const ro = new ResizeObserver(() => {
@@ -500,6 +599,7 @@ export function VoxelFigure({
       canvas.removeEventListener('pointerup', onUp)
       canvas.removeEventListener('pointercancel', onUp)
       canvas.removeEventListener('click', strike)
+      canvas.removeEventListener('wheel', onWheel)
       canvas.removeEventListener('keydown', onKey)
     }
   }, [active, still, modelName])
