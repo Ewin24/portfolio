@@ -723,7 +723,15 @@ export function letterModel(): Model {
   // connected to). The seal below is carved afterward on the same grid and
   // overwrites the flap's upper slice inside its disc, so the seal stays
   // proud and gains thickness too.
-  const foldAt = (x: number) => -1.5 + Math.abs(x) * 0.72
+  // Flat across the middle, then sloping. A purely pointed fold cuts under
+  // a round seal no matter where the point is put — the disc always spills
+  // past a slope somewhere — and the seal then floats over a one-voxel void
+  // with the envelope's top face at the bottom of it. Clipping the seal to
+  // the flap instead was tried and made it worse: it came out as a red
+  // splinter following the fold line rather than a seal. The flap reaches
+  // under the wax; the wax does not retreat to the flap.
+  const foldAt = (x: number) =>
+    Math.abs(x) <= 3 ? -4.5 : -4.5 + (Math.abs(x) - 3) * 0.95
   f.carve([-13, 13, 1, 2, -9, 9], (x, _y, z) => {
     const fold = foldAt(x)
     if (z < fold) return null
@@ -735,7 +743,11 @@ export function letterModel(): Model {
   // stays on the table while the flap opens. Every line sits at z <= -3,
   // strictly below every possible fold value (fold(x) >= -1.5 everywhere),
   // so no address voxel is ever inside the flap's box.
-  const lines: Array<[number, number]> = [[-7, 6], [-5, 1], [-3, -3]]
+  // The last line stops at x = -5: the flap's flat tip now reaches z = -4.5
+  // across |x| <= 3 and slopes from there, so a line running to x = -3 would
+  // put an address voxel inside the flap's box and trip the disjointness
+  // invariant below.
+  const lines: Array<[number, number]> = [[-7, 6], [-5, 1], [-3, -5]]
   lines.forEach(([z, last], line) => {
     g.carve([-11, last, 1, 1, z, z], (x) =>
       (x + line * 3 + 60) % 7 >= 5 ? null : 4,
@@ -745,9 +757,9 @@ export function letterModel(): Model {
   // Wax seal, at the point where the folds meet — on the flap grid, since it
   // lifts with the flap.
   f.carve([-5, 5, 2, 3, -7, 3], (x, y, z) => {
-    const r = Math.hypot(x, z + 1.5)
-    if (r > 4) return null
-    if (y === 3 && r > 3.1) return null
+    const r = Math.hypot(x, z + 1)
+    if (r > 3.6) return null
+    if (y === 3 && r > 2.8) return null
     return 2
   })
 
