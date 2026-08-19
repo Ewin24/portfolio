@@ -1060,6 +1060,18 @@ html[data-theme='book'] {
   margin-inline: auto;
 }
 
+/* ── What has already been deciphered ──
+   A solid square, the same shape already used as a bullet elsewhere on the
+   site (cf. Experience.tsx achievements) — shape, not hue, so the signal
+   survives reduced motion and every colour-vision deficiency. */
+[data-theme='book'] .read-mark {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--color-ink);
+}
+
 /* ── The page ──
    Fixed behind everything: the reader moves through the book, the sheet
    under them does not slide away. */

@@ -6,6 +6,8 @@ export interface DecipherProps {
   delay?: number
   active: boolean
   still: boolean
+  /** Already read — arrives deciphered on first paint, same as `still`. */
+  deciphered?: boolean
   className?: string
 }
 
@@ -44,13 +46,15 @@ export function Decipher({
   delay = 0,
   active,
   still,
+  deciphered = false,
   className = '',
 }: DecipherProps) {
   const ref = useRef<HTMLSpanElement>(null)
-  const [revealed, setRevealed] = useState(active && !still ? 0 : text.length)
+  const settled = still || deciphered
+  const [revealed, setRevealed] = useState(active && !settled ? 0 : text.length)
 
   useEffect(() => {
-    if (!active || still) {
+    if (!active || still || deciphered) {
       setRevealed(text.length)
       return
     }
@@ -98,7 +102,7 @@ export function Decipher({
       clearTimeout(timer)
       cancelAnimationFrame(frame)
     }
-  }, [text, delay, active, still])
+  }, [text, delay, active, still, deciphered])
 
   if (!active) return <span className={className}>{text}</span>
 

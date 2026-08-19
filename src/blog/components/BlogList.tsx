@@ -7,6 +7,7 @@ import { FadeIn } from '../../components/ui/FadeIn'
 import { Decipher } from '../../components/book/lazy'
 import { useBlogContext } from '../context/BlogContext'
 import { EmptyState } from './EmptyState'
+import { readPosts, markRead } from '../readState'
 import type { BlogPost } from '../types'
 
 const PAGE_SIZE = 6
@@ -21,6 +22,7 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
   // The manuscripts: everything already written, waiting to be deciphered.
   const ciphered = theme === 'book'
   const still = Boolean(reduceMotion) || stillness
+  const read = ciphered && readPosts().has(post.slug)
 
   const title = lang === 'es' ? post.title : post.titleEn
   const excerpt = lang === 'es' ? post.excerpt : post.excerptEn
@@ -39,13 +41,18 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
           </div>
 
           {/* Title */}
-          <h3 className="font-headline text-lg font-bold text-ink leading-tight line-clamp-2">
+          <h3 className="font-headline text-lg font-bold text-ink leading-tight line-clamp-2 flex items-center gap-1.5">
+            {read && <span className="read-mark" aria-hidden="true" />}
             <Decipher
               text={title}
               active={ciphered}
               still={still}
+              deciphered={read}
               delay={(index % 6) * 110}
             />
+            {read && (
+              <span className="sr-only">{lang === 'es' ? 'Leído' : 'Read'}</span>
+            )}
           </h3>
 
           {/* Excerpt */}
@@ -94,6 +101,7 @@ export function BlogList() {
   }
 
   const handleRead = (post: BlogPost) => {
+    markRead(post.slug)
     // pushState + a manual hashchange rather than assigning location.hash.
     // Same navigation, but it is the pattern App and BlogArticle already use,
     // and assigning to location.hash trips the compiler's "this value cannot
