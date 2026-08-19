@@ -810,6 +810,16 @@ html[data-theme='book'] {
    in flow, so the block is as tall as the taller of the two and nothing
    below it moves when the change runs. */
 [data-theme='book'] .crucible {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: inherit;
+  color: inherit;
+  cursor: pointer;
   outline-offset: 4px;
 }
 
@@ -863,7 +873,7 @@ html[data-theme='book'] {
    stays lit rather than by counting badges. */
 [data-theme='book'] .lineage-tag {
   position: relative;
-  cursor: help;
+  cursor: pointer;
   padding-right: 1.35rem;
 }
 

@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useTheme } from '../../theme/ThemeContext'
+import { useLatch, type LatchBinding } from '../../hooks/useLatch'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
 import { sortedExperience } from '../../content'
@@ -39,7 +40,7 @@ interface CardProps {
   index: number
   lineage: Map<string, number>
   tracked: string | null
-  onTrack: (tech: string | null) => void
+  bind: (tech: string) => LatchBinding
   showLineage: boolean
 }
 
@@ -48,7 +49,7 @@ function ExperienceCard({
   index,
   lineage,
   tracked,
-  onTrack,
+  bind,
   showLineage,
 }: CardProps) {
   const { lang } = useTranslation()
@@ -119,14 +120,7 @@ function ExperienceCard({
                   className={`skill-tag text-[10px] lineage-tag${
                     tracked === tech ? ' is-tracked' : ''
                   }`}
-                  // over/out rather than enter/leave: the bubbling pair is
-                  // delivered far more reliably, and the non-bubbling pair
-                  // could not be reproduced in an automated pointer test at
-                  // all, which means it was equally unverifiable.
-                  onPointerOver={() => onTrack(tech)}
-                  onPointerOut={() => onTrack(null)}
-                  onFocus={() => onTrack(tech)}
-                  onBlur={() => onTrack(null)}
+                  {...bind(tech)}
                   aria-label={`${tech} — ${generations} ${
                     lang === 'es' ? 'generaciones' : 'generations'
                   }`}
@@ -171,7 +165,8 @@ function ExperienceCard({
 export function Experience() {
   const { t } = useTranslation()
   const { theme } = useTheme()
-  const [tracked, setTracked] = useState<string | null>(null)
+  const latch = useLatch<string>()
+  const tracked = latch.active
 
   const lineage = useMemo(() => countLineage(sortedExperience), [])
   const showLineage = theme === 'book'
@@ -201,7 +196,7 @@ export function Experience() {
             index={i}
             lineage={lineage}
             tracked={tracked}
-            onTrack={setTracked}
+            bind={latch.bind}
             showLineage={showLineage}
           />
         ))}

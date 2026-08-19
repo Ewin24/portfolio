@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import { useLatch } from '../../hooks/useLatch'
 
 export interface CrucibleProps {
   active: boolean
@@ -41,7 +42,10 @@ export function Crucible({
   beforeLabel,
   afterLabel,
 }: CrucibleProps) {
-  const [worked, setWorked] = useState(false)
+  // Called unconditionally, above both early returns — only the interactive
+  // branch below ever uses the result (Rules of Hooks).
+  const latch = useLatch<'worked'>()
+  const worked = latch.active === 'worked'
 
   if (!active) {
     return (
@@ -84,13 +88,10 @@ export function Crucible({
   }
 
   return (
-    <div
+    <button
+      type="button"
       className={`crucible${worked ? ' is-worked' : ''}`}
-      onPointerOver={() => setWorked(true)}
-      onPointerOut={() => setWorked(false)}
-      onFocus={() => setWorked(true)}
-      onBlur={() => setWorked(false)}
-      tabIndex={0}
+      {...latch.bind('worked')}
     >
       <p className="crucible-label">
         <span className="crucible-label-before">{beforeLabel}</span>
@@ -101,6 +102,6 @@ export function Crucible({
         <div className="crucible-face crucible-before">{before}</div>
         <div className="crucible-face crucible-after">{after}</div>
       </div>
-    </div>
+    </button>
   )
 }
