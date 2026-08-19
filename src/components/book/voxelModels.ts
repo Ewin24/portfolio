@@ -492,9 +492,14 @@ export function alembicModel(): Model {
   // short of the throat rather than plunging into it, so a 2-voxel drip gap
   // stays visible and the neck no longer plugs the one opening the sight
   // line was widened to see through.
+  // Outer radius 5.0 at the base, to clear the lip's inner 7.4 with the
+  // margin the sight line needs, closing on the chimney's 3.1 at the top so
+  // the cap never ends narrower than the pipe it feeds.
+  const CAP_WALL = (y: number) => 3.95 - (y - 2) * 0.271
+
   const NECK: readonly Pt[] = [
     [0, 13, 0], [3, 15, 0], [8, 14, 0], [12, 12, 0],
-    [15, 9, 0], [17, 6, 0], [18, 7, 0],
+    [15, 9, 0], [17, 6, 0], [18, 8, 0],
   ]
 
   // The pot: a cauldron. WIDE and LOW, and that ratio is the whole read —
@@ -542,8 +547,16 @@ export function alembicModel(): Model {
   // needs (W >= 2.5, measured at apply time — see the alembic verification
   // pass). Narrowing the head necessarily detaches it from the pot's rim,
   // which is what the bridging struts below are for.
-  g.carve([-6, 6, 2, 5, -6, 6], (x, y, z) => {
-    const wall = 3.95 - (y - 2) * 0.45
+  // The cap runs y 2..9 and the chimney y 9..14, and that ratio is the
+  // whole read. It shipped the other way round — cap over four layers and
+  // chimney over ten — on the reasoning that the chimney could absorb the
+  // length the cap gave up when it shrank to clear the mouth. It cannot:
+  // a narrow column twice the height of the thing it stands on is a
+  // periscope, and the object came out as a pot with a periscope on it.
+  // Height was never what had to shrink. Only the BASE radius binds the
+  // sight line, so the cap can be as tall as it likes.
+  g.carve([-6, 6, 2, 9, -6, 6], (x, y, z) => {
+    const wall = CAP_WALL(y)
     return Math.abs(Math.hypot(x, z) - wall) < 1.05 ? 0 : null
   })
 
@@ -569,7 +582,7 @@ export function alembicModel(): Model {
   // read as a cap and not as more of the same curve. Extended down to y=5 —
   // the cap gave up length when it shrank, and the chimney took it, which
   // keeps the "bowl, cap, pipe" read intact with a shorter middle part.
-  g.carve([-4, 4, 5, 14, -4, 4], (x, _y, z) => {
+  g.carve([-4, 4, 9, 14, -4, 4], (x, _y, z) => {
     const r = Math.hypot(x, z)
     return r > 1.4 && r < 3.1 ? 0 : null
   })
@@ -577,9 +590,8 @@ export function alembicModel(): Model {
   // One course beaten into the cap. Copper sheet is worked in bands, and a
   // band is what stops a smooth taper from reading as poured plastic. Reads
   // off the same (now shorter) taper as the cap above it.
-  g.carve([-7, 7, 4, 4, -7, 7], (x, y, z) => {
-    const wall = 3.95 - (y - 2) * 0.45
-    return Math.abs(Math.hypot(x, z) - wall) < 1.75 ? 0 : null
+  g.carve([-7, 7, 5, 5, -7, 7], (x, y, z) => {
+    return Math.abs(Math.hypot(x, z) - CAP_WALL(y)) < 1.75 ? 0 : null
   })
 
   // Swan neck.
@@ -604,7 +616,7 @@ export function alembicModel(): Model {
   g.carve([12, 24, GROUND, 6, -7, 7], (x, y, z) => {
     const bulb = ellip(x, y, z, 18, -4.2, 0, 5.4, 4.9, 5.4)
     const neck = Math.hypot(x - 18, z)
-    const inNeck = y >= -1 && y <= 5 && neck <= 2.6
+    const inNeck = y >= -1 && y <= 3 && neck <= 2.6
     if (bulb > 1 && !inNeck) return null
     if (inNeck) {
       if (neck > 1.5) return 1
@@ -631,20 +643,33 @@ export function alembicModel(): Model {
   // Alternate: the charge climbs the neck and settles in the receiver. A
   // quarter of it is strung along the neck as a running thread, so the press
   // reads as travel rather than as the contents teleporting across the frame.
-  const inFlight = Math.max(1, Math.min(charge.length >> 2, 170))
+  // The visible half of the journey is the FALL, not the run.
+  //
+  // The thread used to be strung along the swan neck's centreline, and the
+  // swan neck is a SOLID tube of radius 2.1 — maximum deviation of the
+  // thread from that axis is 1.13, so the charge was inside the metal for
+  // the whole of its travel. Measured mid-strike: between 0 and 25
+  // quicksilver pixels at every yaw sampled. The pixels that did show at
+  // some angles were the painter's algorithm leaking through a solid, not
+  // the object being visible — which is worse than the angles showing
+  // nothing, because it made a broken criterion look satisfied.
+  //
+  // So the travel is shown where it can honestly be seen: falling through
+  // the open air between the end of the spout and the mouth of the
+  // receiver. A pipe hides what runs inside it. That is what pipes are.
+  const DRIP_X = 18
+  const DRIP_TOP = 5.6
+  const DRIP_BOTTOM = 3.2
+  const falling = Math.max(1, Math.min(charge.length >> 3, 48))
   charge.forEach((v, i) => {
-    if (i < inFlight) {
-      const at = (i / inFlight) * (NECK.length - 1)
-      const seg = Math.min(NECK.length - 2, Math.floor(at))
-      const f = at - seg
-      const from = NECK[seg]
-      const to = NECK[seg + 1]
-      v.ax = from[0] + (to[0] - from[0]) * f + (((i * 7) % 5) - 2) * 0.4
-      v.ay = from[1] + (to[1] - from[1]) * f
-      v.az = from[2] + (to[2] - from[2]) * f + (((i * 11) % 5) - 2) * 0.4
+    if (i < falling) {
+      const f = i / falling
+      v.ax = DRIP_X + (((i * 7) % 3) - 1) * 0.6
+      v.ay = DRIP_TOP - f * (DRIP_TOP - DRIP_BOTTOM)
+      v.az = (((i * 11) % 3) - 1) * 0.6
       return
     }
-    const cell = inside[(i - inFlight) % Math.max(1, inside.length)]
+    const cell = inside[(i - falling) % Math.max(1, inside.length)]
     if (!cell) return
     v.ax = cell[0]
     v.ay = cell[1]
