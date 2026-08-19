@@ -100,8 +100,15 @@ const GOLD_DEEP: [string, string, string] = ['#C79A34', '#966E17', '#5F400A']
 const DARK: [string, string, string] = ['#2A1E0C', '#241A0A', '#1B1307']
 const GLASS: [string, string, string] = ['#DDEBEA', '#B0CBCA', '#7C9EA0']
 const COPPER: [string, string, string] = ['#D6803F', '#A55524', '#66300F']
-/** Azogue: the quicksilver Melquiades brings with the laboratory. */
-const QUICKSILVER: [string, string, string] = ['#CFD2CA', '#A3A69E', '#70736B']
+/**
+ * Azogue: the quicksilver Melquiades brings with the laboratory.
+ *
+ * Darkened past copper on purpose — measured. Clearing 3:1 against both the
+ * glass it settles in and the copper it starts in requires L <= 0.067, which
+ * is darker than copper itself; no light-silver value can separate from both
+ * at once. A brighter lit top face keeps the tone triple from reading flat.
+ */
+const QUICKSILVER: [string, string, string] = ['#3A3D38', '#2C2F2B', '#1E201D']
 const PAPER: [string, string, string] = ['#F3E8CD', '#D6C49B', '#9E8B63']
 const INK: [string, string, string] = ['#6E4A22', '#573A1B', '#3B2712']
 const WAX: [string, string, string] = ['#A63A2C', '#7E2820', '#4E1712']
@@ -481,10 +488,13 @@ export function fishModel(): Model {
 export function alembicModel(): Model {
   const g = grid()
   const GROUND = -9
-  // Out over the pot, then down onto the mouth of the receiver.
+  // Out over the pot, then down toward the mouth of the receiver — stopping
+  // short of the throat rather than plunging into it, so a 2-voxel drip gap
+  // stays visible and the neck no longer plugs the one opening the sight
+  // line was widened to see through.
   const NECK: readonly Pt[] = [
     [0, 13, 0], [3, 15, 0], [8, 14, 0], [12, 12, 0],
-    [15, 9, 0], [17, 6, 0], [18, 3, 0],
+    [15, 9, 0], [17, 6, 0], [18, 7, 0],
   ]
 
   // The pot: a cauldron. WIDE and LOW, and that ratio is the whole read —
@@ -509,9 +519,14 @@ export function alembicModel(): Model {
 
   // The lip: a flat ring that overhangs the head by a good margin. This is
   // the joint that says pot and head are two things bolted together.
-  g.carve([-10, 10, -1, 0, -10, 10], (x, _y, z) => {
+  //
+  // Widened from the original 6.2-8.8: the inequality that keeps the charge
+  // visible (design D4) is `R_head_outer < R_mouth_inner`, and once the head
+  // shrank to clear it, the mouth still had to open far enough for the ring
+  // to bind the sight-line budget rather than the head.
+  g.carve([-11, 11, -1, 0, -11, 11], (x, _y, z) => {
     const r = Math.hypot(x, z)
-    return r > 6.2 && r < 8.8 ? 0 : null
+    return r > 7.4 && r < 9.4 ? 0 : null
   })
 
   // Head: a SHORT cap, then a straight chimney. The cap was a tall cone
@@ -519,22 +534,51 @@ export function alembicModel(): Model {
   // continues whatever the pot was doing — the object stayed a hood however
   // the pot beneath it was proportioned. Three parts of different kinds beat
   // two parts of the same kind: bowl, cap, pipe.
-  g.carve([-7, 7, 1, 8, -7, 7], (x, y, z) => {
-    const wall = 6 - (y - 1) * 0.52
+  //
+  // Raised and narrowed from base y=1/wall=6/outer=7.05: that outer radius
+  // sat inside the lip's old inner radius (6.2), so the head overhung its
+  // own mouth and hid the charge at every yaw. Outer 5.0 clears the widened
+  // lip's inner radius (7.4) with the margin the sight-line inequality
+  // needs (W >= 2.5, measured at apply time — see the alembic verification
+  // pass). Narrowing the head necessarily detaches it from the pot's rim,
+  // which is what the bridging struts below are for.
+  g.carve([-6, 6, 2, 5, -6, 6], (x, y, z) => {
+    const wall = 3.95 - (y - 2) * 0.45
     return Math.abs(Math.hypot(x, z) - wall) < 1.05 ? 0 : null
   })
 
+  // Bridging struts. A head narrow enough to clear the mouth has nothing
+  // under it at any height, so something has to carry it across — but a
+  // full annular shelf would close the sight line the lip just opened.
+  // Three, discontinuous, spread 120 degrees apart so no two ever sit
+  // opposite each other on the near-far axis at once.
+  const STRUT_ANGLES = [0, (2 * Math.PI) / 3, (4 * Math.PI) / 3]
+  const STRUT_HALF_WIDTH = 0.16 // radians — keeps each strut <= 2 cells wide
+  g.carve([-8, 8, 1, 1, -8, 8], (x, _y, z) => {
+    const r = Math.hypot(x, z)
+    if (r < 5 || r > 7.4) return null
+    const angle = Math.atan2(z, x)
+    const onStrut = STRUT_ANGLES.some((a) => {
+      const d = Math.abs(angle - a)
+      return Math.min(d, 2 * Math.PI - d) < STRUT_HALF_WIDTH
+    })
+    return onStrut ? 0 : null
+  })
+
   // The chimney: straight-sided, which is what makes the cap above the pot
-  // read as a cap and not as more of the same curve.
-  g.carve([-4, 4, 8, 14, -4, 4], (x, _y, z) => {
+  // read as a cap and not as more of the same curve. Extended down to y=5 —
+  // the cap gave up length when it shrank, and the chimney took it, which
+  // keeps the "bowl, cap, pipe" read intact with a shorter middle part.
+  g.carve([-4, 4, 5, 14, -4, 4], (x, _y, z) => {
     const r = Math.hypot(x, z)
     return r > 1.4 && r < 3.1 ? 0 : null
   })
 
   // One course beaten into the cap. Copper sheet is worked in bands, and a
-  // band is what stops a smooth taper from reading as poured plastic.
+  // band is what stops a smooth taper from reading as poured plastic. Reads
+  // off the same (now shorter) taper as the cap above it.
   g.carve([-7, 7, 4, 4, -7, 7], (x, y, z) => {
-    const wall = 6 - (y - 1) * 0.52
+    const wall = 3.95 - (y - 2) * 0.45
     return Math.abs(Math.hypot(x, z) - wall) < 1.75 ? 0 : null
   })
 
@@ -546,17 +590,32 @@ export function alembicModel(): Model {
   // Receiver: a round-bottomed flask with a straight neck. The bulb alone
   // was a ball of loose cubes that read as crushed ice; glassware is legible
   // because of the neck, which is the part a ball does not have.
-  const inside: Pt[] = []
+  //
+  // The throat (radius <= 1.5, the open bore inside the glass ring) used to
+  // be pure void — nothing drawn, and nowhere for the charge to land either,
+  // so every settled voxel drained straight to the bottom of the bulb, where
+  // the sight-line inequality says it cannot be seen. The throat cells are
+  // still never drawn (glass is transparent), but they are now landing spots
+  // for the charge, collected separately and ordered top-down so the
+  // destination fills flush with the rim first; only the remainder spills
+  // into the bulb below, same as before.
+  const throatCells: Pt[] = []
+  const bulbCells: Pt[] = []
   g.carve([12, 24, GROUND, 6, -7, 7], (x, y, z) => {
     const bulb = ellip(x, y, z, 18, -4.2, 0, 5.4, 4.9, 5.4)
     const neck = Math.hypot(x - 18, z)
     const inNeck = y >= -1 && y <= 5 && neck <= 2.6
     if (bulb > 1 && !inNeck) return null
-    if (inNeck) return neck > 1.5 ? 1 : null
+    if (inNeck) {
+      if (neck > 1.5) return 1
+      throatCells.push([x, y, z])
+      return null
+    }
     if (bulb > 0.58) return 1
-    if (y < -1) inside.push([x, y, z])
+    if (y < -1) bulbCells.push([x, y, z])
     return null
   })
+  const inside: Pt[] = [...throatCells.sort((a, b) => a[1] - b[1]), ...bulbCells]
 
   const vessel = g.emit()
 
@@ -612,7 +671,14 @@ export function alembicModel(): Model {
  * exactly where the folds meet — which is where a seal goes and why.
  */
 export function letterModel(): Model {
-  const g = grid()
+  // Two grids. The envelope (body + address) stays on the table; the flap
+  // and seal are what actually opens, so they get a second grid and one
+  // shared rigid map — the idiom the alembic's charge already uses. Proven
+  // disjoint below rather than assumed: `finalize` merges arrays without
+  // de-duplicating (`occ` is AO-only, `kept` is a plain filter), so a
+  // silent coincident cell would double-emit and double-shade.
+  const g = grid() // envelope: body (y -2..0) + address (y=1, z in {-7,-5,-3})
+  const f = grid() // flap + seal: y 1..2 (flap) and y 2..3 (seal), z >= fold(x) >= -1.5
 
   // Envelope. Deliberately the coarsest grid of the four: it is the only
   // model that is mostly one big flat face, and a flat face is all top
@@ -625,14 +691,25 @@ export function letterModel(): Model {
   // its two sloping folds left in shadow. Laid flat across the whole top it
   // was invisible — a slab with a diagonal scar on it. An envelope reads as
   // an envelope because you can watch the triangle come to a point.
+  //
+  // Thickened to two voxels in y (was a single slice, which is why the
+  // lifted sheet used to disintegrate into confetti — a one-voxel-thick
+  // triangle under any per-voxel jitter has no neighbours left to stay
+  // connected to). The seal below is carved afterward on the same grid and
+  // overwrites the flap's upper slice inside its disc, so the seal stays
+  // proud and gains thickness too.
   const foldAt = (x: number) => -1.5 + Math.abs(x) * 0.72
-  g.carve([-13, 13, 1, 1, -9, 9], (x, _y, z) => {
+  f.carve([-13, 13, 1, 2, -9, 9], (x, _y, z) => {
     const fold = foldAt(x)
     if (z < fold) return null
     return z < fold + 1.2 ? 3 : 0
   })
 
-  // The address: three ruled lines on the front, below the fold.
+  // The address: three ruled lines on the front, below the fold. Stays on
+  // the envelope grid, unmoved — it is written on the front, and the front
+  // stays on the table while the flap opens. Every line sits at z <= -3,
+  // strictly below every possible fold value (fold(x) >= -1.5 everywhere),
+  // so no address voxel is ever inside the flap's box.
   const lines: Array<[number, number]> = [[-7, 6], [-5, 1], [-3, -3]]
   lines.forEach(([z, last], line) => {
     g.carve([-11, last, 1, 1, z, z], (x) =>
@@ -640,26 +717,53 @@ export function letterModel(): Model {
     )
   })
 
-  // Wax seal, at the point where the folds meet.
-  g.carve([-5, 5, 2, 3, -7, 3], (x, y, z) => {
+  // Wax seal, at the point where the folds meet — on the flap grid, since it
+  // lifts with the flap.
+  f.carve([-5, 5, 2, 3, -7, 3], (x, y, z) => {
     const r = Math.hypot(x, z + 1.5)
     if (r > 4) return null
     if (y === 3 && r > 3.1) return null
     return 2
   })
 
-  const voxels = g.emit()
+  const envelope = g.emit()
+  const flap = f.emit()
 
-  // Alternate: the envelope stays on the table and everything folded over it
-  // — flap, seal and writing — lifts away as one sheet.
-  voxels.forEach((v, i) => {
-    if (v.y <= 0) return
-    v.ax = v.x * 1.06
-    v.ay = v.y + 5 + (i % 4) * 0.5
-    v.az = v.z * 1.06
+  // Standing invariant, asserted rather than assumed: the two grids must
+  // never share a cell. Dev-only — eliminated from the production bundle by
+  // `import.meta.env.DEV`.
+  if (import.meta.env.DEV) {
+    const envelopeCells = new Set(envelope.map((v) => `${v.x},${v.y},${v.z}`))
+    for (const v of flap) {
+      if (envelopeCells.has(`${v.x},${v.y},${v.z}`)) {
+        throw new Error(
+          `letterModel: envelope/flap grid collision at (${v.x}, ${v.y}, ${v.z})`,
+        )
+      }
+    }
+  }
+
+  // Alternate: one rigid hinge about the far edge, applied identically to
+  // every flap voxel — a linear map keeps the sheet connected at every t by
+  // construction, which is what a per-voxel jitter term (the old
+  // `(i % 4) * 0.5`) cannot guarantee. The envelope never moves.
+  const HINGE_Y = 1
+  const HINGE_Z = 9
+  const LIFT = 2
+  const THETA = (60 * Math.PI) / 180
+  const cosT = Math.cos(THETA)
+  const sinT = Math.sin(THETA)
+  flap.forEach((v) => {
+    const dy = v.y - HINGE_Y
+    const dz = v.z - HINGE_Z
+    v.ax = v.x
+    v.ay = HINGE_Y + dy * cosT - dz * sinT + LIFT
+    v.az = HINGE_Z + dy * sinT + dz * cosT
   })
 
-  return finalize('letter', voxels, { tones: [PAPER, PAPER, WAX, SEAM, INK] })
+  return finalize('letter', [...envelope, ...flap], {
+    tones: [PAPER, PAPER, WAX, SEAM, INK],
+  })
 }
 
 /**
