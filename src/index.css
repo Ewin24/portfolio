@@ -909,6 +909,9 @@ html[data-theme='book'] {
 [data-theme='book'] .ice-host {
   position: relative;
   isolation: isolate;
+  /* Vertical drags still belong to the page and wipe along the way; only
+     the horizontal drag is claimed for wiping. */
+  touch-action: pan-y;
 }
 
 [data-theme='book'] .ice-sheet {
@@ -946,6 +949,12 @@ html[data-theme='book'] {
     rgba(0, 0, 0, 0.6) 62%,
     black 100%
   );
+}
+
+/* Nobody touched it — the portrait clears itself so it is never permanently
+   obscured. Terminal: it never re-forms once faded. */
+[data-theme='book'] .ice-sheet.is-thawed {
+  opacity: 0;
 }
 
 /* ── The wind ──
