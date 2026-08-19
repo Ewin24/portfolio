@@ -21,13 +21,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<GitHubUser | null>(null)
   const [repos, setRepos] = useState<GitHubRepo[]>([])
   const [lang, setLang] = useState<Language>(() => {
-    const saved = localStorage.getItem('portfolio-lang')
-    if (saved === 'es' || saved === 'en') return saved
+    try {
+      const saved = localStorage.getItem('portfolio-lang')
+      if (saved === 'es' || saved === 'en') return saved
+    } catch {
+      // Private mode or blocked storage — fall through to the browser locale.
+    }
     return navigator.language.startsWith('es') ? 'es' : 'en'
   })
 
   useEffect(() => {
-    localStorage.setItem('portfolio-lang', lang)
+    try {
+      localStorage.setItem('portfolio-lang', lang)
+    } catch {
+      // Persistence is a nicety; the language still applies for this session.
+    }
   }, [lang])
 
   useEffect(() => {
