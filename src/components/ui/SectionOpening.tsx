@@ -1,14 +1,13 @@
 import { useTheme } from '../../theme/ThemeContext'
-import { useTranslation } from '../../hooks/useTranslation'
-import { CHAPTERS } from '../../theme/chapters'
 
 interface Props {
   /** The functional name of the section. Always shown. */
   title: string
   subtitle?: string
   /**
-   * DOM id of the section this opens, used to find its chapter.
-   * Omit for a section the book has no chapter for.
+   * DOM id of the section this opens. Kept for callers that already pass
+   * it; the book opening no longer looks anything up by it — the palette
+   * swap under the reader is the only chapter announcement now.
    */
   section?: string
   /**
@@ -24,8 +23,6 @@ interface Props {
   rank?: 'lead' | 'standard'
 }
 
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
-
 /**
  * How a section announces itself, in whichever publication is running.
  *
@@ -39,43 +36,28 @@ const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
  *   Newspaper — the deck it already had. Dense, ruled, immediate. A reader
  *   scans a newspaper, so the section names itself and gets out of the way.
  *
- *   Book — a chapter opening. The numeral, the chapter's own name, and the
- *   section title demoted to a running label above it. Editorial practice is
- *   explicit that a publication where every spread has the same density
- *   fatigues the reader, and that space around an element signals importance
- *   more reliably than size does. So this one is mostly air: it is the rest
- *   before the dense block that follows, and the pacing is the point.
+ *   Book — a chapter opening. The chapter change is already announced by the
+ *   palette swapping under the reader as they cross the boundary; naming it
+ *   again in type would be a second announcement. So the opening carries only
+ *   the section's own functional title, inside the same generous air.
+ *   Editorial practice is explicit that a publication where every spread has
+ *   the same density fatigues the reader, and that space around an element
+ *   signals importance more reliably than size does. So this one is mostly
+ *   air: it is the rest before the dense block that follows, and the pacing
+ *   is the point.
  */
 export function SectionOpening({
   title,
   subtitle,
-  section,
   align = 'below',
   rank = 'standard',
 }: Props) {
   const { theme } = useTheme()
-  const { lang } = useTranslation()
 
   if (theme === 'book') {
-    const index = CHAPTERS.findIndex((entry) => entry.section === section)
-    const chapter = index >= 0 ? CHAPTERS[index] : null
-
     return (
       <div className="chapter-opening">
-        <p className="chapter-running">{title}</p>
-
-        {chapter && (
-          <>
-            <p className="chapter-numeral">{ROMAN[index]}</p>
-            <h2 className="chapter-name">
-              {lang === 'es' ? chapter.label.es : chapter.label.en}
-            </h2>
-          </>
-        )}
-
-        {/* No chapter for this section — the title carries the opening. */}
-        {!chapter && <h2 className="chapter-name">{title}</h2>}
-
+        <h2 className="chapter-name">{title}</h2>
         {subtitle && <p className="chapter-epigraph">{subtitle}</p>}
       </div>
     )

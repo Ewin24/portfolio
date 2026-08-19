@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
-import type { Chapter } from '../../theme/chapters'
-import { CHAPTERS } from '../../theme/chapters'
-import { useTranslation } from '../../hooks/useTranslation'
 
 interface Props {
-  chapter: Chapter
   stillness: boolean
 }
 
@@ -13,17 +9,12 @@ interface Props {
  *
  * It replaces the scarf that used to track progress here, and the difference
  * is not cosmetic: a scarf is a character's possession, a ribbon is part of
- * the book's own construction. It hangs from the top of the page, lengthens
- * as you read deeper, and carries the chapter's name and number the way a
- * running head does.
- *
- * The number is the chapter's position in the book, set in small caps
- * roman, because that is how a book numbers its own parts.
+ * the book's own construction. It hangs from the top of the page and
+ * lengthens as you read deeper — genuine scroll progress, nothing declared
+ * about which chapter you are in. The palette swapping under the reader
+ * already announces that.
  */
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
-
-export function BookmarkRibbon({ chapter, stillness }: Props) {
-  const { lang } = useTranslation()
+export function BookmarkRibbon({ stillness }: Props) {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
@@ -47,9 +38,6 @@ export function BookmarkRibbon({ chapter, stillness }: Props) {
     }
   }, [stillness])
 
-  const index = CHAPTERS.findIndex((entry) => entry.id === chapter.id)
-  const numeral = ROMAN[index] ?? ''
-
   // The ribbon always shows some length, or it reads as broken rather than
   // as "you have only just begun".
   const length = 18 + progress * 64
@@ -60,12 +48,6 @@ export function BookmarkRibbon({ chapter, stillness }: Props) {
         className="book-ribbon-tail"
         style={{ height: `${length}vh` }}
       />
-      <div className="book-ribbon-label">
-        <span className="book-ribbon-numeral">{numeral}</span>
-        <span className="book-ribbon-name">
-          {lang === 'es' ? chapter.label.es : chapter.label.en}
-        </span>
-      </div>
     </div>
   )
 }

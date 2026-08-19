@@ -791,49 +791,6 @@ html[data-theme='book'] {
   opacity: 0;
 }
 
-/* ── The postmark ──
-   Struck rather than printed: a real cancellation lands crooked, sits over
-   whatever was already on the paper, and is never quite fully inked. Hence
-   the rotation, the multiply, and an opacity short of solid. */
-[data-theme='book'] .postmark {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-  margin-bottom: 2rem;
-  padding: 0.55rem 1.1rem;
-  border: 2px solid var(--color-accent);
-  border-radius: 3px;
-  rotate: -4deg;
-  opacity: 0.72;
-  mix-blend-mode: multiply;
-  color: var(--color-accent);
-}
-
-[data-theme='book'] .postmark-town {
-  font-family: var(--font-headline);
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  text-indent: 0.24em;
-}
-
-[data-theme='book'] .postmark-rule {
-  width: 100%;
-  height: 1px;
-  background: currentColor;
-  opacity: 0.6;
-}
-
-[data-theme='book'] .postmark-note {
-  font-family: var(--font-mono);
-  font-size: 0.5rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  text-indent: 0.16em;
-}
-
 /* ── The founding ──
    Quantities without names until you point at one. The label keeps its box
    so nothing reflows when it arrives; only its ink comes and goes. */
@@ -1064,29 +1021,6 @@ html[data-theme='book'] {
   margin-bottom: clamp(2rem, 5vh, 3.5rem);
 }
 
-/* The section's functional name, demoted to a running label — the book still
-   has to be navigable by someone looking for "Stack". */
-[data-theme='book'] .chapter-running {
-  font-family: var(--font-mono);
-  font-size: 0.5625rem;
-  letter-spacing: 0.42em;
-  text-transform: uppercase;
-  color: var(--color-ink-muted);
-  margin: 0 0 clamp(2rem, 6vh, 3.5rem);
-  /* The tracking adds a trailing gap that breaks optical centring. */
-  text-indent: 0.42em;
-}
-
-[data-theme='book'] .chapter-numeral {
-  font-family: var(--font-headline);
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: var(--color-accent);
-  margin: 0 0 clamp(0.75rem, 2vh, 1.25rem);
-  text-indent: 0.18em;
-}
-
 [data-theme='book'] .chapter-name {
   font-family: var(--font-headline);
   font-size: clamp(2rem, 5.5vw, 4rem);
@@ -1099,7 +1033,6 @@ html[data-theme='book'] {
   max-width: 18ch;
 }
 
-/* The epigraph sits under a hairline, the way a chapter's standfirst does. */
 [data-theme='book'] .chapter-epigraph {
   font-family: var(--font-sans);
   font-size: 0.875rem;
@@ -1108,8 +1041,6 @@ html[data-theme='book'] {
   color: var(--color-ink-light);
   max-width: 46ch;
   margin: clamp(1.5rem, 4vh, 2.5rem) 0 0;
-  padding-top: clamp(1.25rem, 3vh, 2rem);
-  border-top: 1px solid var(--color-rule);
 }
 
 /* ── Measure ──
@@ -1118,29 +1049,6 @@ html[data-theme='book'] {
 [data-theme='book'] .blog-article-body {
   max-width: 68ch;
   margin-inline: auto;
-}
-
-/* ── The folio ──
-   A book counts its own pages. Derived from reading depth, so it advances
-   as the reader descends. */
-.book-folio {
-  position: fixed;
-  bottom: 1.15rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 30;
-  font-family: var(--font-headline);
-  font-size: 0.75rem;
-  letter-spacing: 0.22em;
-  color: var(--color-ink-muted);
-  pointer-events: none;
-  /* A folio is printed ON the leaf, so it needs the leaf under it. Without
-     this it floated over whatever card happened to be scrolling past, which
-     on a phone is most of the time. */
-  padding: 0.15rem 0.6rem;
-  border-radius: 2px;
-  background: var(--ch-page-1, #FDFBF4);
-  box-shadow: 0 0 12px 6px var(--ch-page-1, #FDFBF4);
 }
 
 /* ── The page ──
@@ -1271,30 +1179,6 @@ html[data-theme='book'] {
   transition: height 220ms var(--ease-surface, ease);
   /* The forked end of a real registro. */
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 9px), 0 100%);
-}
-
-.book-ribbon-label {
-  margin-top: 0.55rem;
-  writing-mode: vertical-rl;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.5625rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: var(--color-ink-muted);
-}
-
-.book-ribbon-numeral {
-  font-family: var(--font-headline);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  color: var(--color-accent);
-}
-
-@media (max-width: 900px) {
-  .book-ribbon-label { display: none; }
 }
 
 /* ── The annunciation ──

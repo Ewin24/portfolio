@@ -60,7 +60,6 @@ export interface Chapter {
   id: ChapterId
   /** DOM id of the section that triggers this chapter. */
   section: string
-  label: { es: string; en: string }
   /** Vertical gradient stops of the page ground, top to bottom. */
   page: [string, string, string]
   ink: string
@@ -92,7 +91,6 @@ export const CHAPTERS: Chapter[] = [
     // Twenty houses of mud and cane beside a river of polished stones, and a
     // world so recent that most things had no name yet. The brightest paper
     // in the book, because nothing has aged.
-    label: { es: 'La fundación', en: 'The Founding' },
     page: ['#FDFBF4', '#F6F0E0', '#EDE4CE'],
     ink: '#2E2416',
     inkLight: '#544632',
@@ -110,7 +108,6 @@ export const CHAPTERS: Chapter[] = [
     section: 'about',
     // The travelling fair, and a block of ice presented as the great
     // invention of the age. The only chapter lit cold instead of warm.
-    label: { es: 'El hielo', en: 'The Ice' },
     page: ['#F8FAFB', '#EDF2F3', '#DFE8EA'],
     ink: '#22303A',
     inkLight: '#44545F',
@@ -128,7 +125,6 @@ export const CHAPTERS: Chapter[] = [
     section: 'projects',
     // The alchemy workshop: crucibles, an oil lamp, the patient work of
     // turning raw material into something that holds. Where things get built.
-    label: { es: 'El laboratorio', en: 'The Workshop' },
     page: ['#F5E7C8', '#EBD5A8', '#DCBE84'],
     ink: '#3A2A14',
     inkLight: '#5C4526',
@@ -148,7 +144,6 @@ export const CHAPTERS: Chapter[] = [
     // a written label tied to every object, naming the thing and what it is
     // for. A skills grid is that defence, so this chapter is drained of
     // colour — the pallor of a town that has not slept.
-    label: { es: 'La peste del insomnio', en: 'The Insomnia Plague' },
     page: ['#FBF8EE', '#F4EFE0', '#E9E2CE'],
     ink: '#3A342A',
     inkLight: '#5D5546',
@@ -167,7 +162,6 @@ export const CHAPTERS: Chapter[] = [
     // Generations repeating the same handful of names, each one convinced it
     // is starting fresh. Rain falls through this chapter: the downpour that
     // lasted years, under which the family simply kept going.
-    label: { es: 'La estirpe', en: 'The Lineage' },
     page: ['#EADCC0', '#DCC8A2', '#C6AE84'],
     ink: '#332414',
     inkLight: '#553F26',
@@ -185,7 +179,6 @@ export const CHAPTERS: Chapter[] = [
     section: 'education',
     // Parchments written in a language nobody in the house can read yet, and
     // the years spent learning to read them. That is what study is.
-    label: { es: 'Los pergaminos', en: 'The Parchments' },
     page: ['#F0E2C0', '#E3D0A4', '#CFB77F'],
     ink: '#3B2E18',
     inkLight: '#5E4C2C',
@@ -204,7 +197,6 @@ export const CHAPTERS: Chapter[] = [
     // Yellow butterflies arriving ahead of someone, so the house always knew
     // he was coming. A reference is exactly that: proof that another person
     // was here, and left a trace of it.
-    label: { es: 'Las mariposas amarillas', en: 'The Yellow Butterflies' },
     page: ['#FBF0CE', '#F5E3A8', '#E9CE7A'],
     ink: '#3E3212',
     inkLight: '#5F4F20',
@@ -224,7 +216,6 @@ export const CHAPTERS: Chapter[] = [
     // First inversion. The manuscripts themselves: everything that happened,
     // written down before it happened, waiting to be deciphered. Ink on the
     // page rather than page under the ink.
-    label: { es: 'Los manuscritos', en: 'The Manuscripts' },
     page: ['#2E2A24', '#231F1A', '#171410'],
     ink: '#E8DCC4',
     inkLight: '#C4B79E',
@@ -242,7 +233,6 @@ export const CHAPTERS: Chapter[] = [
     section: 'contact',
     // A letter that waits years for an answer, and is answered anyway. The
     // page goes bright again: clean paper, nothing written on it yet.
-    label: { es: 'La carta', en: 'The Letter' },
     page: ['#FFFFFF', '#F8F4E9', '#EFE7D4'],
     ink: '#332B1E',
     inkLight: '#574C39',
@@ -260,7 +250,6 @@ export const CHAPTERS: Chapter[] = [
     section: 'footer',
     // Second inversion, and the last page. The wind that carries the town off
     // the map the moment the parchments are finished being read.
-    label: { es: 'El viento', en: 'The Wind' },
     page: ['#241F1C', '#191512', '#0E0B09'],
     ink: '#D8CDBA',
     inkLight: '#B0A694',

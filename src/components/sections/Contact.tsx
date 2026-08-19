@@ -39,10 +39,8 @@ export function Contact() {
               The letter.
               Macondo's mail is a running joke and a running grief: letters
               are sent and answered years apart, and the answer arrives
-              anyway. So the contact block is postmarked. It is not a badge
-              or a status pill — it is the stamp a post office puts on a
-              thing that has actually been sent, and it carries the town's
-              name because that is where this one was written.
+              anyway. Drag it to turn it, press it to open it — the
+              recognition is in the handling, not in a printed stamp.
             */}
             {theme === 'book' && (
               <VoxelFigure
@@ -56,18 +54,6 @@ export function Contact() {
                 }
                 hint={lang === 'es' ? 'ábrela' : 'open it'}
               />
-            )}
-
-            {theme === 'book' && (
-              <div className="postmark" aria-hidden="true">
-                <span className="postmark-town">Macondo</span>
-                <span className="postmark-rule" />
-                <span className="postmark-note">
-                  {lang === 'es'
-                    ? 'toda carta encuentra respuesta'
-                    : 'every letter is answered'}
-                </span>
-              </div>
             )}
 
             {/* Location */}
