@@ -540,6 +540,76 @@ html[data-theme='xp'] {
   inset: 0;
 }
 
+/* ── Desktop-icon layer ──
+   The launcher icons sit on the desktop surface (z:1) below the windows
+   (z:10+), as a left-aligned column that leaves room for the header. */
+[data-theme='xp'] .xp-desktop-icons-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* 64px clears the fixed header (h-14 = 56px + gap) so the top icons are
+     never hidden beneath it. */
+  padding: 64px 0 0 12px;
+  pointer-events: none;
+}
+
+[data-theme='xp'] .xp-desktop-icons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  pointer-events: auto;
+}
+
+[data-theme='xp'] .xp-desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 76px;
+  padding: 6px 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-desktop-icon-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #ECE9D8;
+  color: #000;
+  border: 1px solid #808080;
+  box-shadow:
+    inset -1px -1px 0 #808080,
+    inset 1px 1px 0 #FFFFFF;
+}
+
+[data-theme='xp'] .xp-desktop-icon-label {
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.15;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+  max-width: 76px;
+  overflow-wrap: anywhere;
+}
+
+[data-theme='xp'] .xp-desktop-icon:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme='xp'] .xp-desktop-icon:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme='xp'] .xp-desktop-icon:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: -2px;
+}
+
 /* ── Section neutralisers ──
    The newspaper Hero forces min-h-screen and wide paddings that fight the
    desktop metaphor. Inside the XP shell these are relaxed so the sections
@@ -738,6 +808,13 @@ html[data-theme='xp'] {
     inset -1px -1px 0 #FFFFFF;
 }
 
+[data-theme='xp'] .xp-taskbar .xp-start-btn[aria-expanded='true'] {
+  background: #FFFFFF;
+  box-shadow:
+    inset 1px 1px 0 #808080,
+    inset -1px -1px 0 #FFFFFF;
+}
+
 [data-theme='xp'] .xp-taskbar .xp-window-label {
   display: inline-flex;
   align-items: center;
@@ -774,10 +851,10 @@ html[data-theme='xp'] {
   padding: 0 6px;
 }
 
-/* ── Start menu panel (decorative in this slice) ──
-   The markup exists and is gated by `open`, which the Start button always
-   reports as false in this change. When a later polish PR flips the flag
-   the panel renders on this chrome. */
+/* ── Start menu panel ──
+   The functional XP Start menu: a raised grey panel anchored above the Start
+   button, listing the 7 app menuitems under a "Programs" group header and a
+   "My Computer" easter egg footer. */
 [data-theme='xp'] .xp-startmenu {
   position: fixed;
   bottom: 40px;
@@ -791,6 +868,93 @@ html[data-theme='xp'] {
     inset -1px -1px 0 #808080,
     inset 1px 1px 0 #FFFFFF,
     2px 2px 0 rgba(0, 0, 0, 0.3);
+  padding: 0 0 8px;
+}
+
+[data-theme='xp'] .xp-startmenu-header {
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #FFFFFF;
+  background: linear-gradient(180deg, #3a6ea5 0%, #00008b 100%);
+  border-bottom: 2px solid #808080;
+}
+
+[data-theme='xp'] .xp-startmenu-group {
+  padding: 6px 4px;
+}
+
+[data-theme='xp'] .xp-startmenu-group-label {
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #316AC5;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+[data-theme='xp'] .xp-startmenu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #000;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-startmenu-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+[data-theme='xp'] .xp-startmenu-item:hover {
+  background: #316AC5;
+  color: #FFFFFF;
+}
+
+[data-theme='xp'] .xp-startmenu-item:focus-visible {
+  outline: 2px solid #316AC5;
+  outline-offset: -2px;
+}
+
+[data-theme='xp'] .xp-startmenu-footer {
+  border-top: 1px solid #D4D0C8;
+  padding: 6px 4px 0;
+}
+
+[data-theme='xp'] .xp-startmenu-easteregg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #000;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-startmenu-easteregg:hover {
+  background: #316AC5;
+  color: #FFFFFF;
+}
+
+[data-theme='xp'] .xp-startmenu-easteregg:focus-visible {
+  outline: 2px solid #316AC5;
+  outline-offset: -2px;
 }
 
 /* ── Skip link / focus ring land on the XP blue ── */
