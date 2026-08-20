@@ -1235,6 +1235,374 @@ html[data-theme='book'] {
   border-radius: 999px;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   WINDOWS XP THEME (Luna)
+   ═══════════════════════════════════════════════════════════════════════════
+
+   An alternate skin that turns the portfolio into a Windows XP desktop.
+   Like the Book theme, it never touches a component: it restates the same
+   Tailwind CSS variables the newspaper @theme block defines, so every
+   shared component repaints without an edit. The newspaper @theme block
+   (lines 8-48) stays untouched — this block only overrides under
+   [data-theme='xp'].
+
+   The structural rules below paint the XP chrome: beveled 2px borders
+   (light #f4f7fb top/left, dark #808080 bottom/right, inverted on press),
+   the Luna desktop gradient, the taskbar, the window chrome and the
+   header-as-titlebar hybrid. Windows are STATIC chrome frames in this
+   change — no drag, no interactive start menu.                          */
+
+html[data-theme='xp'] {
+  /* Painted behind the whole desktop so an overscroll bounce does not
+     flash a white gap below the fixed Luna gradient. */
+  background-color: #3a6ea5;
+}
+
+[data-theme='xp'] {
+  /* ── Shape: an OS panel, not a page ──
+     Windows XP is brutally square. Corners drop to 0 and the laid paper
+     texture goes away; the surface is a flat, solid panel. */
+  --radius-surface:   0px;
+  --radius-pill:      0px;
+  --texture-body:     none;
+  --ease-surface:     cubic-bezier(0.1, 0.9, 0.2, 1);
+  --duration-surface: 120ms;
+
+  /* ── Type: the Windows system stack ──
+     Tahoma first, then Segoe UI on modern Windows, then a generic
+     sans-serif. These are system faces with no @font-face request, so the
+     XP theme never adds a font download over the newspaper baseline. */
+  --font-sans:      Tahoma, 'Segoe UI', sans-serif;
+  --font-headline:  Tahoma, 'Segoe UI', sans-serif;
+  --font-mono:      'Courier New', monospace;
+
+  /* ── Colour: the XP Luna chrome ──
+     Paper is the classic XP toolbar grey; ink is pure black (the strongest
+     possible contrast on that grey). The accent becomes XP's selection
+     blue, which repaints the shared focus ring and ::selection without a
+     single base rule changing. */
+  --color-paper:       #ECE9D8;   /* toolbar / window face */
+  --color-paper-dark:  #D4D0C8;   /* bevel shadow grey / alt surface */
+  --color-ink:         #000000;
+  --color-ink-light:   #3A3A3A;
+  --color-ink-muted:   #5A5A5A;   /* 5.65:1 on paper */
+  --color-rule:        #7A7A7A;
+  --color-rule-light:  #D4D0C8;
+  --color-accent:      #316AC5;   /* XP blue — focus ring, selection, taskbar */
+  --color-accent-dark: #2A57A3;
+  --color-on-ink:      #000000;   /* text that sits on an ink fill */
+
+  /* ── Elevation: a drop, not a pixel step ──
+     XP panels float with a soft shadow rather than a hard offset, so the
+     pixel shadows become tight drops. */
+  --shadow-pixel-sm:  0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-pixel:     0 2px 4px rgba(0, 0, 0, 0.30);
+  --shadow-pixel-lg:  0 4px 8px rgba(0, 0, 0, 0.30);
+  --shadow-pixel-xl:  0 8px 16px rgba(0, 0, 0, 0.30);
+}
+
+/* ── Scrollbar: XP's thin grey bar ── */
+[data-theme='xp'] ::-webkit-scrollbar {
+  width: 10px;
+}
+[data-theme='xp'] ::-webkit-scrollbar-track {
+  background: #ECE9D8;
+}
+[data-theme='xp'] ::-webkit-scrollbar-thumb {
+  background: #7A7A7A;
+  border: 1px solid #D4D0C8;
+}
+
+/* ── Raised pixel buttons become XP face buttons ──
+   The newspaper .px-btn is solid ink with a pixel shadow. On XP it becomes
+   the classic raised grey face: paper fill, 2px bevel, black text and a
+   pressed state that inverts the bevel. */
+[data-theme='xp'] .px-btn {
+  background: #ECE9D8;
+  color: #000;
+  border: 2px solid #808080;
+  box-shadow:
+    inset -1px -1px 0 #808080,
+    inset 1px 1px 0 #FFFFFF,
+    inset -2px -2px 0 #D4D0C8,
+    inset 2px 2px 0 #FFFFFF;
+  text-shadow: none;
+}
+
+[data-theme='xp'] .px-btn:hover {
+  box-shadow:
+    inset -1px -1px 0 #808080,
+    inset 1px 1px 0 #FFFFFF,
+    inset -2px -2px 0 #D4D0C8,
+    inset 2px 2px 0 #FFFFFF;
+}
+
+[data-theme='xp'] .px-btn:active {
+  background: #D4D0C8;
+  box-shadow:
+    inset 1px 1px 0 #808080,
+    inset -1px -1px 0 #FFFFFF,
+    inset 2px 2px 0 #D4D0C8,
+    inset -2px -2px 0 #FFFFFF;
+}
+
+[data-theme='xp'] .px-btn-outline {
+  background: transparent;
+}
+
+[data-theme='xp'] .px-badge,
+[data-theme='xp'] .skill-tag {
+  background: #ECE9D8;
+  color: #000;
+  border-color: #7A7A7A;
+}
+
+/* ── Header becomes a title bar ──
+   The fixed top bar is restyled as an XP title bar: Luna-tinted, a beveled
+   bottom edge, and dark text. Navigation stays intact — only the chrome
+   changes. The newspaper header has no .xp-header class, so this block is
+   inert outside the XP theme. */
+[data-theme='xp'] .xp-header {
+  background: linear-gradient(180deg, #3a6ea5 0%, #00008b 100%);
+  border-bottom: 2px solid #808080;
+  box-shadow:
+    inset 0 1px 0 #f4f7fb,
+    inset 0 -1px 0 #808080;
+}
+
+[data-theme='xp'] .xp-header a,
+[data-theme='xp'] .xp-header .nav-link {
+  color: #FFFFFF;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+[data-theme='xp'] .xp-header .nav-link:hover {
+  color: #FFE7A6;
+}
+
+[data-theme='xp'] .xp-header .px-btn,
+[data-theme='xp'] .xp-header button {
+  background: #ECE9D8;
+  color: #000;
+  border-color: #808080;
+}
+
+[data-theme='xp'] .xp-header .px-btn:hover,
+[data-theme='xp'] .xp-header button:hover {
+  background: #FFFFFF;
+  color: #000;
+}
+
+/* ── Desktop ──
+   XPShell mounts a full-bleed Luna gradient behind the windows. The
+   gradient runs vertically from the bright Luna top (#3a6ea5) to the deep
+   XP blue (#00008b); white text on the top end reads 5.31:1, so the
+   desktop carries light text only. A 48px padding-bottom keeps the fixed
+   taskbar from covering the last window. */
+[data-theme='xp'] .xp-desktop {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #3a6ea5 0%, #00008b 100%);
+  color: #FFFFFF;
+  padding-bottom: 48px;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 64px;
+}
+
+/* ── Section neutralisers ──
+   The newspaper Hero forces min-h-screen and wide paddings that fight the
+   desktop metaphor. Inside the XP shell these are relaxed so the sections
+   sit comfortably inside their windows. */
+[data-theme='xp'] .xp-desktop section {
+  max-width: 100%;
+}
+
+[data-theme='xp'] .xp-desktop #hero {
+  min-height: 0;
+}
+
+/* ── Window chrome ──
+   A static XP window: a 2px beveled frame with a title bar, the three
+   window controls on the right, and a paper body. No drag — frames are
+   static in this change. */
+[data-theme='xp'] .xp-window {
+  background: #ECE9D8;
+  border: 2px solid;
+  border-color: #f4f7fb #808080 #808080 #f4f7fb;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+  margin-bottom: 16px;
+}
+
+[data-theme='xp'] .xp-window-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 32px;
+  padding: 0 4px 0 8px;
+  background: #0054e3; /* solid zone — white title reads 6.22:1 here */
+  color: #FFFFFF;
+  user-select: none;
+}
+
+[data-theme='xp'] .xp-window-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme='xp'] .xp-window-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* The three window controls are real buttons with raised bevel faces and
+   black glyphs (17.2:1), not gradient text. */
+[data-theme='xp'] .xp-window-controls button {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ECE9D8;
+  color: #000;
+  border: 1px solid #808080;
+  box-shadow:
+    inset -1px -1px 0 #808080,
+    inset 1px 1px 0 #FFFFFF;
+  font-size: 9px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-window-controls button:active {
+  background: #D4D0C8;
+  box-shadow:
+    inset 1px 1px 0 #808080,
+    inset -1px -1px 0 #FFFFFF;
+}
+
+[data-theme='xp'] .xp-window-body {
+  background: #ECE9D8;
+  color: #000;
+  padding: 16px;
+  max-width: 900px;
+}
+
+/* ── Taskbar ──
+   Fixed to the bottom: an XP-blue surface (white text reads 5.25:1 on
+   #316AC5), a Start button, one label per open window, and a clock. */
+[data-theme='xp'] .xp-taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  background: linear-gradient(180deg, #316AC5 0%, #1E4FA0 100%);
+  border-top: 2px solid #f4f7fb;
+  box-shadow: 0 -1px 0 #808080;
+}
+
+[data-theme='xp'] .xp-taskbar .xp-start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  background: #ECE9D8;
+  color: #000;
+  border: 2px solid #f4f7fb;
+  box-shadow:
+    inset -1px -1px 0 #808080,
+    inset 1px 1px 0 #FFFFFF;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-taskbar .xp-start-btn:active {
+  background: #D4D0C8;
+  box-shadow:
+    inset 1px 1px 0 #808080,
+    inset -1px -1px 0 #FFFFFF;
+}
+
+[data-theme='xp'] .xp-taskbar .xp-window-label {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  flex: 0 1 auto;
+  height: 26px;
+  padding: 0 10px;
+  background: #ECE9D8;
+  color: #000;
+  border: 2px solid #f4f7fb;
+  box-shadow:
+    inset -1px -1px 0 #808080,
+    inset 1px 1px 0 #FFFFFF;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme='xp'] .xp-taskbar .xp-window-label[data-active='true'] {
+  background: #FFFFFF;
+  box-shadow:
+    inset 1px 1px 0 #808080,
+    inset -1px -1px 0 #FFFFFF;
+}
+
+[data-theme='xp'] .xp-taskbar .xp-clock {
+  margin-left: auto;
+  color: #FFFFFF;
+  font-size: 12px;
+  white-space: nowrap;
+  padding: 0 6px;
+}
+
+/* ── Start menu panel (decorative in this slice) ──
+   The markup exists and is gated by `open`, which the Start button always
+   reports as false in this change. When a later polish PR flips the flag
+   the panel renders on this chrome. */
+[data-theme='xp'] .xp-startmenu {
+  position: fixed;
+  bottom: 40px;
+  left: 8px;
+  width: 240px;
+  z-index: 59;
+  background: #ECE9D8;
+  color: #000;
+  border: 2px solid #f4f7fb;
+  box-shadow:
+    inset -1px -1px 0 #808080,
+    inset 1px 1px 0 #FFFFFF,
+    2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ── Skip link / focus ring land on the XP blue ── */
+[data-theme='xp'] ::selection {
+  background: #316AC5;
+  color: #FFFFFF;
+}
+
+[data-theme='xp'] :focus-visible {
+  outline: 2px solid #316AC5;
+  outline-offset: 1px;
+}
+
 /* ─── Reduced Motion ───────────────────────────────────────────────────────
    Safety net for CSS transitions and animations. Framer Motion components
    read the same preference through useReducedMotion(); this covers everything
