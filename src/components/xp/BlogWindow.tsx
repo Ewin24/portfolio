@@ -1,4 +1,6 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
+import { useTranslation } from '../../hooks/useTranslation'
+import { Tabs } from './Tabs'
 
 /**
  * The blog carries the heaviest dependencies (post bodies, MiniSearch index,
@@ -21,11 +23,46 @@ function BlogFallback({ minHeight }: { minHeight: string }) {
   )
 }
 
-/** The Blog window content, loaded lazily. */
+/**
+ * The Blog window content (design D2/D6).
+ *
+ * Renders the reusable Tabs bar with two panels. The "Articles" panel mounts
+ * the lazy BlogRoot chunk (list, search, article router). Switching tabs uses
+ * `aria-hidden`/`hidden` (NOT conditional render), so the BlogRoot subtree
+ * stays mounted — the MiniSearch index and post bodies are never re-fetched
+ * when the visitor flips between tabs (spec Risk 5).
+ */
 export function BlogWindow() {
+  const { t } = useTranslation()
+  const [active, setActive] = useState('articles')
+
   return (
-    <Suspense fallback={<BlogFallback minHeight="24rem" />}>
-      <BlogRoot />
-    </Suspense>
+    <Tabs
+      idPrefix="blog"
+      label={t('nav.blog')}
+      active={active}
+      onChange={setActive}
+      tabs={[
+        {
+          key: 'articles',
+          label: t('blog.articles'),
+          content: (
+            <Suspense fallback={<BlogFallback minHeight="24rem" />}>
+              <BlogRoot />
+            </Suspense>
+          ),
+        },
+        {
+          key: 'reading',
+          label: t('blog.reading'),
+          content: (
+            <div className="xp-blog-reading" role="group" aria-label={t('blog.reading')}>
+              <p className="xp-blog-reading-hint">{t('blog.title')}</p>
+              <p className="xp-blog-reading-sub">{t('blog.subtitle')}</p>
+            </div>
+          ),
+        },
+      ]}
+    />
   )
 }

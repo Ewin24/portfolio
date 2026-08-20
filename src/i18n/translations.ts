@@ -118,6 +118,8 @@ export type TranslationKeys = {
   'blog.backToList': string
   'blog.prevArticle': string
   'blog.nextArticle': string
+  'blog.articles': string
+  'blog.reading': string
   // Testimonials
   'testimonials.title': string
   'testimonials.subtitle': string
@@ -264,6 +266,8 @@ const translations: Record<Language, TranslationKeys> = {
     'blog.backToList': 'Volver a artículos',
     'blog.prevArticle': 'Anterior',
     'blog.nextArticle': 'Siguiente',
+    'blog.articles': 'Artículos',
+    'blog.reading': 'Lectura',
 
     // Testimonials
     'testimonials.title': 'Referencias',
@@ -412,6 +416,8 @@ const translations: Record<Language, TranslationKeys> = {
     'blog.backToList': 'Back to articles',
     'blog.prevArticle': 'Previous',
     'blog.nextArticle': 'Next',
+    'blog.articles': 'Articles',
+    'blog.reading': 'Reading',
 
     // Testimonials
     'testimonials.title': 'References',

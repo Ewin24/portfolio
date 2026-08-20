@@ -4,12 +4,11 @@ import type { TranslationKeys } from '../../i18n/translations'
 import { Hero } from '../sections/Hero'
 import { About } from '../sections/About'
 import { Projects } from '../sections/Projects'
-import { Skills } from '../sections/Skills'
-import { Experience } from '../sections/Experience'
 import { Education } from '../sections/Education'
 import { Testimonials } from '../sections/Testimonials'
 import { Contact } from '../sections/Contact'
 import { BlogWindow } from './BlogWindow'
+import { SkillsExperienceWindow } from './SkillsExperienceWindow'
 
 export type AppId =
   | 'about'
@@ -56,12 +55,7 @@ export const APP_REGISTRY: AppEntry[] = [
     id: 'skills-experience',
     titleKey: 'nav.skills',
     icon: <Layers size={14} />,
-    render: () => (
-      <>
-        <Skills />
-        <Experience />
-      </>
-    ),
+    render: () => <SkillsExperienceWindow />,
   },
   {
     id: 'education',
