@@ -2,7 +2,11 @@ import { useState, useEffect, lazy, Suspense } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from './hooks/useTranslation'
+import { useTheme } from './theme/ThemeContext'
 import { Header } from './components/Header'
+import { XPShell } from './components/xp/XPShell'
+import { Taskbar } from './components/xp/Taskbar'
+import { Window } from './components/xp/Window'
 import { Hero } from './components/sections/Hero'
 import { About } from './components/sections/About'
 import { Projects } from './components/sections/Projects'
@@ -46,9 +50,17 @@ function BlogFallback({ minHeight, id }: { minHeight: string; id?: string }) {
 }
 
 function App() {
-  const { lang } = useTranslation()
+  const { lang, t } = useTranslation()
+  const { theme } = useTheme()
   const reduceMotion = useReducedMotion()
   const [blogMode, setBlogMode] = useState(false)
+
+  // The XP desktop metaphor lives inside App: when the XP theme is active the
+  // Hero renders inside the first window, the other sections follow in the
+  // shell as plain frames, and the taskbar docks at the bottom. Wrapping the
+  // remaining sections in window chrome is a later slice; the newspaper
+  // branch below stays byte-identical.
+  const xp = theme === 'xp'
 
   // Watch hash changes for blog full-page mode
   useEffect(() => {
@@ -125,19 +137,44 @@ function App() {
               happen to be positioned. */}
           <div className="relative z-10">
             <main id="main" tabIndex={-1}>
-              <Hero />
-              <About />
-              <Projects />
-              <Skills />
-              <Experience />
-              <Education />
-              <Testimonials />
-              <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
-                <BlogRoot />
-              </Suspense>
-              <Contact />
+              {xp ? (
+                <XPShell>
+                  <Window title={t('nav.about')}>
+                    <Hero />
+                  </Window>
+                  <About />
+                  <Projects />
+                  <Skills />
+                  <Experience />
+                  <Education />
+                  <Testimonials />
+                  <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
+                    <BlogRoot />
+                  </Suspense>
+                  <Contact />
+                </XPShell>
+              ) : (
+                <>
+                  <Hero />
+                  <About />
+                  <Projects />
+                  <Skills />
+                  <Experience />
+                  <Education />
+                  <Testimonials />
+                  <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
+                    <BlogRoot />
+                  </Suspense>
+                  <Contact />
+                </>
+              )}
             </main>
             <Footer />
+            {xp && (
+              <Taskbar
+                windows={[{ id: 'home', title: t('nav.about'), active: true }]}
+              />
+            )}
           </div>
         </motion.div>
       )}

@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Menu, X, Globe } from 'lucide-react'
 import { useTranslation } from '../hooks/useTranslation'
 import { GithubIcon } from './ui/GithubIcon'
+import { ThemeToggle } from './xp/ThemeToggle'
 
 const NAV_ITEMS = [
   { key: 'nav.about'      as const, href: '#about' },
@@ -29,7 +30,7 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-150 ${
+      className={`xp-header fixed top-0 left-0 right-0 z-50 transition-all duration-150 ${
         scrolled
           ? 'bg-paper border-b-2 border-rule shadow-pixel-sm'
           : 'bg-paper/90 backdrop-blur-sm'
@@ -60,6 +61,7 @@ export function Header() {
 
         {/* Acciones */}
         <div className="hidden md:flex items-center gap-2">
+          <ThemeToggle />
           <button
             onClick={toggleLang}
             className="flex items-center gap-1.5 border-2 border-rule px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover:bg-ink hover:text-paper transition-colors cursor-pointer"
@@ -109,6 +111,7 @@ export function Header() {
                 </a>
               ))}
               <div className="flex items-center gap-2 pt-2">
+                <ThemeToggle withLabel />
                 <button
                   onClick={toggleLang}
                   className="flex items-center gap-1.5 border-2 border-rule px-3 py-1 font-mono text-[10px] font-bold uppercase text-ink cursor-pointer"
