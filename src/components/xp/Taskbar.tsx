@@ -1,28 +1,17 @@
 import { useEffect, useState } from 'react'
-
-interface TaskbarWindow {
-  id: string
-  title: string
-  active?: boolean
-}
-
-interface TaskbarProps {
-  windows: TaskbarWindow[]
-}
+import { useWindowManager } from './WindowManager'
+import { useTranslation } from '../../hooks/useTranslation'
+import type { AppId } from './registry'
 
 /**
  * The Windows XP taskbar: a Start button, one label per open window, and a
- * clock on the right.
- *
- * The Start button is a real focusable button with the correct accessibility
- * contract (aria-haspopup, aria-expanded), but in this change `startOpen` is
- * always false — the Start menu is decorative and opens nothing. A later
- * polish slice flips the flag.
- *
- * The clock ticks every 30 seconds and formats with Intl.DateTimeFormat so it
- * follows the visitor's locale and language.
+ * clock. Window labels are real buttons that restore/focus/minimize their
+ * window via the manager. The Start menu itself is wired in Slice B; here the
+ * Start button stays inert (startOpen is always false).
  */
-export function Taskbar({ windows }: TaskbarProps) {
+export function Taskbar() {
+  const { apps, openSet, order, states, activeId, restore, focus, minimize } = useWindowManager()
+  const { t } = useTranslation()
   const [startOpen] = useState(false)
   const [now, setNow] = useState(() => new Date())
 
@@ -35,6 +24,21 @@ export function Taskbar({ windows }: TaskbarProps) {
     hour: 'numeric',
     minute: '2-digit',
   }).format(now)
+
+  // Order the labels by z-order so the active window is last (rightmost).
+  const openWindows = order.filter((id) => openSet.has(id))
+
+  const onLabelClick = (id: AppId) => {
+    const state = states[id]
+    if (state === 'minimized') {
+      restore(id)
+      focus(id)
+    } else if (activeId !== id) {
+      focus(id)
+    } else {
+      minimize(id)
+    }
+  }
 
   return (
     <div className="xp-taskbar">
@@ -50,15 +54,17 @@ export function Taskbar({ windows }: TaskbarProps) {
       </button>
 
       <div role="list" aria-label="Open windows">
-        {windows.map((w) => (
-          <span
-            key={w.id}
+        {openWindows.map((id) => (
+          <button
+            key={id}
+            type="button"
             role="listitem"
             className="xp-window-label"
-            data-active={w.active ? 'true' : 'false'}
+            data-active={activeId === id ? 'true' : 'false'}
+            onClick={() => onLabelClick(id)}
           >
-            {w.title}
-          </span>
+            {t(apps[id].titleKey)}
+          </button>
         ))}
       </div>
 

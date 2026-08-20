@@ -6,7 +6,9 @@ import { useTheme } from './theme/ThemeContext'
 import { Header } from './components/Header'
 import { XPShell } from './components/xp/XPShell'
 import { Taskbar } from './components/xp/Taskbar'
-import { Window } from './components/xp/Window'
+import { WindowManagerProvider } from './components/xp/WindowManager'
+import { DesktopWindows } from './components/xp/DesktopWindows'
+import { APP_REGISTRY } from './components/xp/registry'
 import { Hero } from './components/sections/Hero'
 import { About } from './components/sections/About'
 import { Projects } from './components/sections/Projects'
@@ -50,7 +52,7 @@ function BlogFallback({ minHeight, id }: { minHeight: string; id?: string }) {
 }
 
 function App() {
-  const { lang, t } = useTranslation()
+  const { lang } = useTranslation()
   const { theme } = useTheme()
   const reduceMotion = useReducedMotion()
   const [blogMode, setBlogMode] = useState(false)
@@ -137,37 +139,12 @@ function App() {
           <div className="relative z-10">
             <main id="main" tabIndex={-1}>
               {xp ? (
-                <XPShell>
-                  <Window title={t('nav.about')}>
-                    <Hero />
-                  </Window>
-                  <Window title={t('nav.about')}>
-                    <About />
-                  </Window>
-                  <Window title={t('nav.projects')}>
-                    <Projects />
-                  </Window>
-                  <Window title={t('nav.skills')}>
-                    <Skills />
-                  </Window>
-                  <Window title={t('nav.experience')}>
-                    <Experience />
-                  </Window>
-                  <Window title={t('nav.education')}>
-                    <Education />
-                  </Window>
-                  <Window title={t('nav.testimonials')}>
-                    <Testimonials />
-                  </Window>
-                  <Window title={t('nav.blog')}>
-                    <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
-                      <BlogRoot />
-                    </Suspense>
-                  </Window>
-                  <Window title={t('nav.contact')}>
-                    <Contact />
-                  </Window>
-                </XPShell>
+                <WindowManagerProvider apps={APP_REGISTRY}>
+                  <XPShell>
+                    <DesktopWindows />
+                  </XPShell>
+                  <Taskbar />
+                </WindowManagerProvider>
               ) : (
                 <>
                   <Hero />
@@ -185,21 +162,6 @@ function App() {
               )}
             </main>
             <Footer />
-            {xp && (
-              <Taskbar
-                windows={[
-                  { id: 'hero', title: t('nav.about') },
-                  { id: 'about', title: t('nav.about') },
-                  { id: 'projects', title: t('nav.projects') },
-                  { id: 'skills', title: t('nav.skills') },
-                  { id: 'experience', title: t('nav.experience') },
-                  { id: 'education', title: t('nav.education') },
-                  { id: 'testimonials', title: t('nav.testimonials') },
-                  { id: 'blog', title: t('nav.blog') },
-                  { id: 'contact', title: t('nav.contact') },
-                ]}
-              />
-            )}
           </div>
         </motion.div>
       )}
