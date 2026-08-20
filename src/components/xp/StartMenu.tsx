@@ -76,8 +76,25 @@ export function StartMenu({ open, onClose, startButtonRef }: StartMenuProps) {
     closeAndReturnFocus()
   }
 
+  // Roving arrow navigation across the 7 menuitems (design a11y).
+  const onMenuKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'Home' && e.key !== 'End') return
+    e.preventDefault()
+    const items = Array.from(
+      menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? [],
+    )
+    if (!items.length) return
+    const current = items.indexOf(document.activeElement as HTMLElement)
+    let next = 0
+    if (e.key === 'ArrowDown') next = current < 0 ? 0 : (current + 1) % items.length
+    else if (e.key === 'ArrowUp') next = current < 0 ? items.length - 1 : (current - 1 + items.length) % items.length
+    else if (e.key === 'Home') next = 0
+    else if (e.key === 'End') next = items.length - 1
+    items[next].focus()
+  }
+
   return (
-    <div ref={menuRef} className="xp-startmenu" role="menu" aria-label="Start menu" id="xp-startmenu">
+    <div ref={menuRef} className="xp-startmenu" role="menu" aria-label="Start menu" id="xp-startmenu" onKeyDown={onMenuKeyDown}>
       <div className="xp-startmenu-header">Portfolio</div>
 
       <div className="xp-startmenu-group" role="group" aria-label="Programs">
