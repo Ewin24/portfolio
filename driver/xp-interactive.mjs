@@ -169,6 +169,85 @@ async function run() {
       } finally { await ctx.close() }
     }
 
+    // ── 4b. REGRESSION: real pointer clicks on the window-control buttons ──
+    // The title bar's onPointerDown calls setPointerCapture; without
+    // stopPropagation on the control buttons, the pointer capture redirects the
+    // click to the title bar and Close/Minimize/Maximize are pointer-inert.
+    // This section clicks the REAL buttons (not the __XPMANAGER__ seam) with
+    // force-click AND raw mouse down/up and asserts the window actually changes.
+    {
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])
+      try {
+        await page.evaluate(() => { window.__XPMANAGER__.open('projects') })
+        await page.waitForTimeout(300)
+
+        // Close via real pointer: force-click on the actual Close button.
+        await page.locator('.xp-window:has(#projects) .xp-window-controls button[aria-label="Close"]')
+          .click({ force: true })
+        await page.waitForTimeout(300)
+        const closed = await page.evaluate(() => ({
+          wins: document.querySelectorAll('.xp-window').length,
+          hasProjects: [...document.querySelectorAll('.xp-window')].some((w) => w.querySelector('#projects')),
+        }))
+        check('real pointer: Close button removes the window', closed.wins === 1 && !closed.hasProjects, JSON.stringify(closed))
+
+        // Reopen, then Close again via RAW mouse down/up on the button coords.
+        await page.evaluate(() => { window.__XPMANAGER__.open('projects') })
+        await page.waitForTimeout(300)
+        const closeBox = await page.locator('.xp-window:has(#projects) .xp-window-controls button[aria-label="Close"]').boundingBox()
+        await page.mouse.move(closeBox.x + closeBox.width / 2, closeBox.y + closeBox.height / 2)
+        await page.mouse.down()
+        await page.mouse.up()
+        await page.waitForTimeout(300)
+        const closedRaw = await page.evaluate(() => ({
+          wins: document.querySelectorAll('.xp-window').length,
+          hasProjects: [...document.querySelectorAll('.xp-window')].some((w) => w.querySelector('#projects')),
+        }))
+        check('real pointer: raw mouse down/up on Close removes window', closedRaw.wins === 1 && !closedRaw.hasProjects, JSON.stringify(closedRaw))
+
+        // Minimize via real button click.
+        await page.evaluate(() => { window.__XPMANAGER__.open('projects') })
+        await page.waitForTimeout(300)
+        await page.locator('.xp-window:has(#projects) .xp-window-controls button[aria-label="Minimize"]').click({ force: true })
+        await page.waitForTimeout(300)
+        const min = await page.evaluate(() => {
+          const p = [...document.querySelectorAll('.xp-window')].find((w) => w.querySelector('#projects'))
+          return { display: p ? getComputedStyle(p).display : null }
+        })
+        check('real pointer: Minimize button hides the window', min.display === 'none', JSON.stringify(min))
+
+        // Restore then Maximize via real button click; second click restores.
+        await page.evaluate(() => { window.__XPMANAGER__.restore('projects') })
+        await page.waitForTimeout(200)
+        await page.locator('.xp-window:has(#projects) .xp-window-controls button[aria-label="Maximize"]').click({ force: true })
+        await page.waitForTimeout(300)
+        const max = await page.evaluate(() => {
+          const p = [...document.querySelectorAll('.xp-window')].find((w) => w.querySelector('#projects'))
+          const r = p.getBoundingClientRect()
+          return { left: r.left, right: r.right, w: r.width }
+        })
+        check('real pointer: Maximize button fills desktop width', max.left <= 1 && max.right >= 1024 - 1, JSON.stringify(max))
+        await page.locator('.xp-window:has(#projects) .xp-window-controls button[aria-label="Maximize"]').click({ force: true })
+        await page.waitForTimeout(300)
+        const restoredW = await page.evaluate(() => {
+          const p = [...document.querySelectorAll('.xp-window')].find((w) => w.querySelector('#projects'))
+          return p ? p.getBoundingClientRect().width : null
+        })
+        check('real pointer: second Maximize click restores prior rect', restoredW !== null && restoredW < 1024, `w=${restoredW}`)
+
+        // Guard: clicking a control must NOT drag the window (capture must not
+        // engage on the buttons). Record x before/after a control click.
+        const posBefore = await page.evaluate(() => {
+          const p = [...document.querySelectorAll('.xp-window')].find((w) => w.querySelector('#projects'))
+          return p ? p.getBoundingClientRect().x : null
+        })
+        await page.locator('.xp-window:has(#projects) .xp-window-controls button[aria-label="Close"]').click({ force: true })
+        await page.waitForTimeout(300)
+        const closedNoDrag = await page.evaluate(() => document.querySelectorAll('.xp-window').length)
+        check('real pointer: control click does not drag window', closedNoDrag === 1, `wins=${closedNoDrag} posBefore=${posBefore}`)
+      } finally { await ctx.close() }
+    }
+
     // ── 5. Start menu: role=menu + 7 menuitem + aria-expanded; entry opens+closes; Esc/outside ──
     {
       const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])

@@ -184,13 +184,31 @@ export function Window({ id }: WindowProps) {
           <span>{title}</span>
         </div>
         <div className="xp-window-controls">
-          <button type="button" aria-label="Minimize" onClick={() => minimize(id)}>
+          {/* The title bar's onPointerDown captures the pointer to start a drag;
+              without stopPropagation here, setPointerCapture would redirect the
+              click to the title bar and these buttons would be pointer-inert. */}
+          <button
+            type="button"
+            aria-label="Minimize"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => minimize(id)}
+          >
             <Minus size={10} strokeWidth={2.5} />
           </button>
-          <button type="button" aria-label="Maximize" onClick={() => toggleMaximize(id)}>
+          <button
+            type="button"
+            aria-label="Maximize"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => toggleMaximize(id)}
+          >
             <Square size={8} strokeWidth={2.5} />
           </button>
-          <button type="button" aria-label="Close" onClick={() => handleClose(id)}>
+          <button
+            type="button"
+            aria-label="Close"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => handleClose(id)}
+          >
             <X size={10} strokeWidth={2.5} />
           </button>
         </div>

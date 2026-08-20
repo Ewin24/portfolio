@@ -13,6 +13,12 @@ import type { AppEntry, AppId } from './registry'
 /** Height of the fixed taskbar in px — the drag clamp subtracts it (spec). */
 export const TASKBAR_HEIGHT = 40
 
+/** Height of the fixed page header (h-14 = 56px) that overlays the top of the
+ *  desktop. A maximized window must start below it so its titlebar controls
+ *  (Close/Maximize/Minimize) are not covered by the header and stay
+ *  pointer-reachable. Matches the y:64 offset already used for default windows. */
+export const HEADER_HEIGHT = 56
+
 export interface Rect {
   x: number
   y: number
@@ -216,7 +222,12 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
           maximizedRects: { ...s.maximizedRects, [id]: prior },
           rects: {
             ...s.rects,
-            [id]: { x: 0, y: 0, w: desktop.w, h: Math.max(0, desktop.h - TASKBAR_HEIGHT) },
+            [id]: {
+              x: 0,
+              y: HEADER_HEIGHT,
+              w: desktop.w,
+              h: Math.max(0, desktop.h - HEADER_HEIGHT - TASKBAR_HEIGHT),
+            },
           },
         }
       })
