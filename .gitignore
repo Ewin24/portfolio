@@ -36,3 +36,7 @@ sdd/
 
 # SDD workflow artifacts
 .atl/
+
+# Playwright regression snapshots — regenerated each run, only the baseline is committed
+driver/.baseline/current-*.png
+scratchpad/
