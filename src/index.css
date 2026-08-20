@@ -1440,7 +1440,13 @@ html[data-theme='xp'] {
   gap: 8px;
   height: 32px;
   padding: 0 4px 0 8px;
-  background: #0054e3; /* solid zone — white title reads 6.22:1 here */
+  /* D2 title-bar gradient. The solid dark zone (#0054e3) runs 0%->80% of the
+     bar and carries the white title text (6.22:1); the #4a8fe8->#7eb6ff tail
+     is decorative only and carries zero text. The glyph band of the title
+     (roughly 25-75% of the 32px bar) sits entirely inside the solid zone, so
+     white on the tail never matters. Window controls are separate raised
+     button faces, not gradient text. */
+  background: linear-gradient(180deg, #0054e3 0%, #0054e3 80%, #4a8fe8 80%, #7eb6ff 100%);
   color: #FFFFFF;
   user-select: none;
 }
