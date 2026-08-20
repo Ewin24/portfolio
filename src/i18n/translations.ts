@@ -1,6 +1,6 @@
 import type { Language } from '../types'
 
-type TranslationKeys = {
+export type TranslationKeys = {
   // Nav
   'nav.about': string
   'nav.projects': string
