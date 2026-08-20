@@ -102,10 +102,12 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
   }, [])
 
   const [state, setState] = useState<WindowManagerState>(() => {
-    const defaultW = Math.max(0, (typeof window !== 'undefined' ? window.innerWidth : 1024) - 80)
+    const defaultW = Math.max(0, (typeof window !== 'undefined' ? window.innerWidth : 1024) - 124)
     const defaultH = 480
-    // y:64 clears the fixed header (h-14 = 56px + a small gap).
-    const defaultRect: Rect = { x: 24, y: 64, w: defaultW, h: defaultH }
+    // x:100 clears the desktop-icon column (left:12 + 76px wide + gap), y:64
+    // clears the fixed header (h-14 = 56px + a small gap). Width leaves a
+    // right margin so the window stays inside the desktop.
+    const defaultRect: Rect = { x: 100, y: 64, w: defaultW, h: defaultH }
     return {
       openSet: new Set<AppId>(['about']),
       activeId: 'about',
@@ -129,9 +131,9 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
     (id: AppId) => {
       setState((s) => {
         if (s.openSet.has(id)) return s
-        const w = Math.max(0, desktop.w - 80)
+        const w = Math.max(0, desktop.w - 124)
         const defaultRect: Rect = {
-          x: 24 + (s.order.length % 4) * 20,
+          x: 100 + (s.order.length % 4) * 20,
           y: 64 + (s.order.length % 4) * 20,
           w,
           h: 480,

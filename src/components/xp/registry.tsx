@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { User, FolderKanban, Layers, GraduationCap, MessageSquareQuote, FileText, Mail } from 'lucide-react'
 import type { TranslationKeys } from '../../i18n/translations'
 import { Hero } from '../sections/Hero'
 import { About } from '../sections/About'
@@ -37,6 +38,7 @@ export const APP_REGISTRY: AppEntry[] = [
   {
     id: 'about',
     titleKey: 'nav.about',
+    icon: <User size={14} />,
     render: () => (
       <>
         <Hero />
@@ -47,11 +49,13 @@ export const APP_REGISTRY: AppEntry[] = [
   {
     id: 'projects',
     titleKey: 'nav.projects',
+    icon: <FolderKanban size={14} />,
     render: () => <Projects />,
   },
   {
     id: 'skills-experience',
     titleKey: 'nav.skills',
+    icon: <Layers size={14} />,
     render: () => (
       <>
         <Skills />
@@ -62,21 +66,25 @@ export const APP_REGISTRY: AppEntry[] = [
   {
     id: 'education',
     titleKey: 'nav.education',
+    icon: <GraduationCap size={14} />,
     render: () => <Education />,
   },
   {
     id: 'testimonials',
     titleKey: 'nav.testimonials',
+    icon: <MessageSquareQuote size={14} />,
     render: () => <Testimonials />,
   },
   {
     id: 'blog',
     titleKey: 'nav.blog',
+    icon: <FileText size={14} />,
     render: () => <BlogWindow />,
   },
   {
     id: 'contact',
     titleKey: 'nav.contact',
+    icon: <Mail size={14} />,
     render: () => <Contact />,
   },
 ]
