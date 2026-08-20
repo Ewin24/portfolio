@@ -1,19 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useWindowManager } from './WindowManager'
+import { StartMenu } from './StartMenu'
 import { useTranslation } from '../../hooks/useTranslation'
 import type { AppId } from './registry'
 
 /**
- * The Windows XP taskbar: a Start button, one label per open window, and a
- * clock. Window labels are real buttons that restore/focus/minimize their
- * window via the manager. The Start menu itself is wired in Slice B; here the
- * Start button stays inert (startOpen is always false).
+ * The Windows XP taskbar (design D4): a functional Start button that toggles
+ * the StartMenu, one label per open window, and a clock. Window labels are
+ * real buttons that restore/focus/minimize their window via the manager.
+ * The Start button carries `aria-haspopup=menu` + `aria-expanded`, and focus
+ * returns to it whenever the menu closes.
  */
 export function Taskbar() {
   const { apps, openSet, order, states, activeId, restore, focus, minimize } = useWindowManager()
   const { t } = useTranslation()
-  const [startOpen] = useState(false)
+  const [startOpen, setStartOpen] = useState(false)
   const [now, setNow] = useState(() => new Date())
+  const startBtnRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const id = window.setInterval(() => setNow(new Date()), 30_000)
@@ -40,18 +43,30 @@ export function Taskbar() {
     }
   }
 
+  const toggleStart = () => {
+    setStartOpen((v) => {
+      const next = !v
+      if (!next) startBtnRef.current?.focus()
+      return next
+    })
+  }
+
   return (
     <div className="xp-taskbar">
       <button
+        ref={startBtnRef}
         type="button"
         className="xp-start-btn"
         aria-haspopup="menu"
         aria-expanded={startOpen}
-        onClick={() => {}}
+        aria-controls="xp-startmenu"
+        onClick={toggleStart}
       >
         <span aria-hidden="true">🪟</span>
         Start
       </button>
+
+      <StartMenu open={startOpen} onClose={() => setStartOpen(false)} startButtonRef={startBtnRef} />
 
       <div role="list" aria-label="Open windows">
         {openWindows.map((id) => (
