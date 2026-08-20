@@ -56,10 +56,9 @@ function App() {
   const [blogMode, setBlogMode] = useState(false)
 
   // The XP desktop metaphor lives inside App: when the XP theme is active the
-  // Hero renders inside the first window, the other sections follow in the
-  // shell as plain frames, and the taskbar docks at the bottom. Wrapping the
-  // remaining sections in window chrome is a later slice; the newspaper
-  // branch below stays byte-identical.
+  // Hero renders inside the first window, the other sections follow in their
+  // own windows, and the taskbar docks at the bottom. The newspaper branch
+  // below stays byte-identical.
   const xp = theme === 'xp'
 
   // Watch hash changes for blog full-page mode
@@ -142,16 +141,32 @@ function App() {
                   <Window title={t('nav.about')}>
                     <Hero />
                   </Window>
-                  <About />
-                  <Projects />
-                  <Skills />
-                  <Experience />
-                  <Education />
-                  <Testimonials />
-                  <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
-                    <BlogRoot />
-                  </Suspense>
-                  <Contact />
+                  <Window title={t('nav.about')}>
+                    <About />
+                  </Window>
+                  <Window title={t('nav.projects')}>
+                    <Projects />
+                  </Window>
+                  <Window title={t('nav.skills')}>
+                    <Skills />
+                  </Window>
+                  <Window title={t('nav.experience')}>
+                    <Experience />
+                  </Window>
+                  <Window title={t('nav.education')}>
+                    <Education />
+                  </Window>
+                  <Window title={t('nav.testimonials')}>
+                    <Testimonials />
+                  </Window>
+                  <Window title={t('nav.blog')}>
+                    <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
+                      <BlogRoot />
+                    </Suspense>
+                  </Window>
+                  <Window title={t('nav.contact')}>
+                    <Contact />
+                  </Window>
                 </XPShell>
               ) : (
                 <>
@@ -172,7 +187,17 @@ function App() {
             <Footer />
             {xp && (
               <Taskbar
-                windows={[{ id: 'home', title: t('nav.about'), active: true }]}
+                windows={[
+                  { id: 'hero', title: t('nav.about') },
+                  { id: 'about', title: t('nav.about') },
+                  { id: 'projects', title: t('nav.projects') },
+                  { id: 'skills', title: t('nav.skills') },
+                  { id: 'experience', title: t('nav.experience') },
+                  { id: 'education', title: t('nav.education') },
+                  { id: 'testimonials', title: t('nav.testimonials') },
+                  { id: 'blog', title: t('nav.blog') },
+                  { id: 'contact', title: t('nav.contact') },
+                ]}
               />
             )}
           </div>
