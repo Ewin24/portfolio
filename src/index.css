@@ -1498,8 +1498,49 @@ html[data-theme='xp'] {
 [data-theme='xp'] .xp-window-body {
   background: #ECE9D8;
   color: #000;
-  padding: 16px;
+  padding: 0;
   max-width: 900px;
+}
+
+/* ── XP window content width ──
+   The newspaper sections carry their own horizontal spacing (px-6 +
+   max-w-* mx-auto), so the window body adds none of its own. If it did, the
+   extra window/desktop padding would steal width below the newspaper card
+   grids' minimum content width and force horizontal scroll at 375px. The
+   sections keep their own padding inside the window body. */
+[data-theme='xp'] .xp-window-body section {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── XP card grids stay within the window ──
+   The newspaper case-study grid uses an auto-sized single column, which
+   resolves to the card's max-content and overflows any container narrower
+   than the widest unbreakable token. Inside the XP window body the available
+   width is smaller, so the tracks must be allowed to shrink (minmax(0,1fr)),
+   and flex/grid card items must be able to shrink below their content
+   min-size (min-width:0). This keeps the XP desktop from scrolling
+   horizontally while the newspaper branch is untouched. */
+[data-theme='xp'] .xp-window-body #projects .grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+[data-theme='xp'] .xp-window-body .card-shell-outer,
+[data-theme='xp'] .xp-window-body .card-shell-outer * {
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  [data-theme='xp'] .xp-window-body #projects .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  [data-theme='xp'] .xp-window-body #projects .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 /* ── Taskbar ──
