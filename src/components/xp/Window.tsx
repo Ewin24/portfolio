@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Minus, Square, X } from 'lucide-react'
 import { useWindowManager } from './WindowManager'
 import { useTheme } from '../../theme/ThemeContext'
@@ -10,6 +10,23 @@ interface WindowProps {
 }
 
 const DRAG_STEP = 8 // px per arrow key (design D3)
+
+/** True below 640px (Tailwind `sm`) — drag is disabled on mobile (design D8). */
+const MOBILE_QUERY = '(max-width: 639px)'
+
+function useIsMobile(): boolean {
+  const [mobile, setMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia(MOBILE_QUERY).matches : false,
+  )
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_QUERY)
+    const sync = () => setMobile(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+  return mobile
+}
 
 /**
  * An interactive Windows XP window bound to the shared WindowManager.
@@ -25,6 +42,7 @@ export function Window({ id }: WindowProps) {
     useWindowManager()
   const { stillness } = useTheme()
   const { t } = useTranslation()
+  const isMobile = useIsMobile()
 
   const app = apps[id]
   const title = app ? t(app.titleKey) : id
@@ -39,7 +57,7 @@ export function Window({ id }: WindowProps) {
 
   const onTitlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
-      if (stillness) return
+      if (stillness || isMobile) return
       // Focus on pointer-down, then begin a drag from the current pointer pos.
       focus(id)
       const el = titlebarRef.current
@@ -52,18 +70,18 @@ export function Window({ id }: WindowProps) {
       }
       dragRef.current = { startX: e.clientX, startY: e.clientY }
     },
-    [focus, id, stillness],
+    [focus, id, stillness, isMobile],
   )
 
   const onTitlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
-      if (stillness || !dragRef.current) return
+      if (stillness || isMobile || !dragRef.current) return
       const dx = e.clientX - dragRef.current.startX
       const dy = e.clientY - dragRef.current.startY
       dragRef.current = { startX: e.clientX, startY: e.clientY }
       drag(id, dx, dy)
     },
-    [drag, id, stillness],
+    [drag, id, stillness, isMobile],
   )
 
   const onTitlePointerUp = useCallback(() => {
@@ -71,30 +89,57 @@ export function Window({ id }: WindowProps) {
     dragRef.current = null
   }, [])
 
+  // Focus safety net (design a11y / spec Risk 6): closing a window must never
+  // leave focus on the removed node. Compute the next topmost title bar before
+  // the close unmounts this window, then focus it (or blur) on the next frame.
+  const handleClose = useCallback(
+    (targetId: AppId) => {
+      const titlebars = [...document.querySelectorAll<HTMLElement>('.xp-window .xp-window-titlebar')]
+      close(targetId)
+      requestAnimationFrame(() => {
+        const next = titlebars.find((tb) => tb.isConnected)
+        if (next) next.focus()
+        else (document.activeElement as HTMLElement | null)?.blur()
+      })
+    },
+    [close],
+  )
+
+  // Esc on the title bar closes the active window with the same focus safety.
+  const onEscClose = useCallback(() => {
+    const titlebars = [...document.querySelectorAll<HTMLElement>('.xp-window .xp-window-titlebar')]
+    closeActive()
+    requestAnimationFrame(() => {
+      const next = titlebars.find((tb) => tb.isConnected)
+      if (next) next.focus()
+      else (document.activeElement as HTMLElement | null)?.blur()
+    })
+  }, [closeActive])
+
   const onTitleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key === 'ArrowLeft') {
         e.preventDefault()
-        if (!stillness && state !== 'maximized') drag(id, -DRAG_STEP, 0)
+        if (!stillness && !isMobile && state !== 'maximized') drag(id, -DRAG_STEP, 0)
       } else if (e.key === 'ArrowRight') {
         e.preventDefault()
-        if (!stillness && state !== 'maximized') drag(id, DRAG_STEP, 0)
+        if (!stillness && !isMobile && state !== 'maximized') drag(id, DRAG_STEP, 0)
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
-        if (!stillness && state !== 'maximized') drag(id, 0, -DRAG_STEP)
+        if (!stillness && !isMobile && state !== 'maximized') drag(id, 0, -DRAG_STEP)
       } else if (e.key === 'ArrowDown') {
         e.preventDefault()
-        if (!stillness && state !== 'maximized') drag(id, 0, DRAG_STEP)
+        if (!stillness && !isMobile && state !== 'maximized') drag(id, 0, DRAG_STEP)
       } else if (e.key === 'Enter') {
         e.preventDefault()
         if (state === 'minimized') restore(id)
         else focus(id)
       } else if (e.key === 'Escape') {
         e.preventDefault()
-        closeActive()
+        onEscClose()
       }
     },
-    [drag, id, restore, focus, closeActive, stillness, state],
+    [drag, id, restore, focus, onEscClose, stillness, isMobile, state],
   )
 
   // Window style: absolute positioning from the manager rect. When minimized
@@ -128,7 +173,7 @@ export function Window({ id }: WindowProps) {
         tabIndex={0}
         role="button"
         aria-label={title}
-        style={{ cursor: stillness ? 'default' : 'move' }}
+        style={{ cursor: stillness || isMobile ? 'default' : 'move' }}
         onPointerDown={onTitlePointerDown}
         onPointerMove={onTitlePointerMove}
         onPointerUp={onTitlePointerUp}
@@ -145,7 +190,7 @@ export function Window({ id }: WindowProps) {
           <button type="button" aria-label="Maximize" onClick={() => toggleMaximize(id)}>
             <Square size={8} strokeWidth={2.5} />
           </button>
-          <button type="button" aria-label="Close" onClick={() => close(id)}>
+          <button type="button" aria-label="Close" onClick={() => handleClose(id)}>
             <X size={10} strokeWidth={2.5} />
           </button>
         </div>

@@ -1019,3 +1019,130 @@ html[data-theme='xp'] {
     translate: none !important;
   }
 }
+
+/* ── Tabs (design D6) ──
+   Reusable tab bar used by the skills-experience and blog windows: a raised
+   XP tab strip above a paper panel. The active tab reads as pressed; the
+   inactive panels stay in the DOM (hidden via `aria-hidden`/`hidden`) so a
+   tab swap never remounts the content (spec Risk 5 — blog MiniSearch). */
+[data-theme='xp'] .xp-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+[data-theme='xp'] .xp-tablist {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 6px 6px 0;
+  background: linear-gradient(180deg, #3a6ea5 0%, #316AC5 100%);
+  border-bottom: 2px solid #f4f7fb;
+  flex-shrink: 0;
+}
+
+[data-theme='xp'] .xp-tab {
+  appearance: none;
+  font-family: inherit;
+  font-size: 12px;
+  color: #FFFFFF;
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid transparent;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  padding: 5px 14px;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-tab:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='xp'] .xp-tab-active,
+[data-theme='xp'] .xp-tab[aria-selected='true'] {
+  background: #ECE9D8;
+  color: #000;
+  border-color: #f4f7fb;
+  font-weight: 700;
+}
+
+[data-theme='xp'] .xp-tab:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: -2px;
+}
+
+[data-theme='xp'] .xp-tabpanel {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #ECE9D8;
+  color: #000;
+}
+
+/* Blog "reading" tab is a lightweight panel; keep it pleasant. */
+[data-theme='xp'] .xp-blog-reading {
+  padding: 40px 24px;
+  text-align: center;
+}
+
+[data-theme='xp'] .xp-blog-reading-hint {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+[data-theme='xp'] .xp-blog-reading-sub {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #444;
+}
+
+/* ── Mobile fallback < 640px (design D8) ──
+   Below 640px the desktop stops being a draggable canvas: windows stack
+   full-width and scroll vertically, and drag is disabled (the Window
+   component also gates pointer/keyboard drag via matchMedia). `!important`
+   overrides the inline absolute positioning the manager applies on desktop. */
+@media (max-width: 639px) {
+  [data-theme='xp'] .xp-desktop {
+    min-height: 0;
+  }
+
+  [data-theme='xp'] .xp-window-layer {
+    position: static;
+  }
+
+  [data-theme='xp'] .xp-window {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    left: auto !important;
+    top: auto !important;
+    height: auto !important;
+    min-height: 40vh;
+    margin-bottom: 12px;
+  }
+
+  [data-theme='xp'] .xp-window-body {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* Let the stacked windows scroll on the document, never horizontally. */
+  [data-theme='xp'] .xp-desktop-icons-layer {
+    display: none;
+  }
+
+  [data-theme='xp'] .xp-taskbar {
+    position: sticky;
+    bottom: 0;
+  }
+
+  [data-theme='xp'] .xp-desktop {
+    overflow-x: hidden;
+  }
+
+  html,
+  body {
+    overflow-x: hidden;
+  }
+}
