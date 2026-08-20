@@ -2,16 +2,11 @@ import { Mail, ArrowUpRight, MapPin } from 'lucide-react'
 import { GithubIcon } from '../ui/GithubIcon'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useReducedMotion } from 'motion/react'
-import { useTheme } from '../../theme/ThemeContext'
-import { VoxelFigure } from '../book/lazy'
 import { FadeIn } from '../ui/FadeIn'
 
 export function Contact() {
   const { user } = useApp()
-  const { t, lang } = useTranslation()
-  const { theme, stillness } = useTheme()
-  const reduceMotion = useReducedMotion()
+  const { t } = useTranslation()
 
   return (
     <section id="contact" className="py-20 px-6 max-w-4xl mx-auto">
@@ -34,27 +29,6 @@ export function Contact() {
             <p className="font-headline text-2xl md:text-3xl font-bold italic text-ink mb-8">
               {t('contact.cta')}
             </p>
-
-            {/*
-              The letter.
-              Macondo's mail is a running joke and a running grief: letters
-              are sent and answered years apart, and the answer arrives
-              anyway. Drag it to turn it, press it to open it — the
-              recognition is in the handling, not in a printed stamp.
-            */}
-            {theme === 'book' && (
-              <VoxelFigure
-                model="letter"
-                active
-                still={Boolean(reduceMotion) || stillness}
-                label={
-                  lang === 'es'
-                    ? 'Carta lacrada: arrástrala para girarla, presiónala para abrirla'
-                    : 'Sealed letter: drag to turn it, press to open it'
-                }
-                hint={lang === 'es' ? 'ábrela' : 'open it'}
-              />
-            )}
 
             {/* Location */}
             <div className="flex items-center gap-2 font-mono text-xs text-ink-muted mb-8 pb-6 border-b border-rule-light">

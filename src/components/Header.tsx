@@ -1,9 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Menu, X, Globe } from 'lucide-react'
 import { useTranslation } from '../hooks/useTranslation'
-import { useTheme } from '../theme/ThemeContext'
-import { BookToggle } from './book/BookToggle'
 import { GithubIcon } from './ui/GithubIcon'
 
 const NAV_ITEMS = [
@@ -19,17 +17,9 @@ const NAV_ITEMS = [
 
 export function Header() {
   const { t, lang, toggleLang } = useTranslation()
-  const { theme, stillness } = useTheme()
   const reduceMotion = useReducedMotion()
   const [scrolled, setScrolled]   = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [veilRequested, setVeilRequested] = useState(false)
-  const lastY = useRef(0)
-
-  // Derived: the bar can only recede while Book is on, motion is welcome,
-  // and the mobile menu is closed. Deriving it means leaving any of those
-  // states never has to write the flag back through an effect.
-  const veiled = veilRequested && theme === 'book' && !stillness && !mobileOpen
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
@@ -37,55 +27,8 @@ export function Header() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  /**
-   * Breathing chrome.
-   *
-   * Book has no HUD, and a fixed navigation bar is the loudest thing on
-   * the page. So while the visitor is descending it steps back, and it
-   * returns the moment they show any intent to navigate — scrolling up,
-   * moving the pointer, or tabbing into it.
-   *
-   * It fades but never unmounts and never loses focusability: a hidden nav
-   * that a keyboard cannot reach is a broken nav, not a minimal one. The
-   * focusin listener is what guarantees a tabbing visitor sees where they
-   * are. Under reduced motion it simply never veils.
-   */
-  useEffect(() => {
-    if (theme !== 'book' || stillness || mobileOpen) return
-
-    let raf = 0
-    const onScroll = () => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => {
-        const y = window.scrollY
-        setVeilRequested(y > 140 && y > lastY.current + 4)
-        lastY.current = y
-      })
-    }
-    const reveal = () => setVeilRequested(false)
-
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('pointermove', reveal, { passive: true })
-    window.addEventListener('focusin', reveal)
-
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('pointermove', reveal)
-      window.removeEventListener('focusin', reveal)
-    }
-  }, [theme, stillness, mobileOpen])
-
   return (
     <header
-      style={{
-        opacity: veiled ? 0 : 1,
-        pointerEvents: veiled ? 'none' : 'auto',
-        // Inline transition wins over the utility below, so the bar's own
-        // scrolled-state fades are restated here instead of being dropped.
-        transition:
-          'opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease',
-      }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-150 ${
         scrolled
           ? 'bg-paper border-b-2 border-rule shadow-pixel-sm'
@@ -117,7 +60,6 @@ export function Header() {
 
         {/* Acciones */}
         <div className="hidden md:flex items-center gap-2">
-          <BookToggle />
           <button
             onClick={toggleLang}
             className="flex items-center gap-1.5 border-2 border-rule px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink hover:bg-ink hover:text-paper transition-colors cursor-pointer"
@@ -166,9 +108,6 @@ export function Header() {
                   {t(item.key)}
                 </a>
               ))}
-              <div className="pt-2">
-                <BookToggle withLabel />
-              </div>
               <div className="flex items-center gap-2 pt-2">
                 <button
                   onClick={toggleLang}

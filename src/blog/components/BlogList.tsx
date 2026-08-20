@@ -1,13 +1,11 @@
 import { useState } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { motion } from 'motion/react'
 import { Clock, Tag, ArrowRight } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../../components/ui/FadeIn'
-import { Decipher } from '../../components/book/lazy'
 import { useBlogContext } from '../context/BlogContext'
 import { EmptyState } from './EmptyState'
-import { readPosts, markRead } from '../readState'
+import { markRead } from '../readState'
 import type { BlogPost } from '../types'
 
 const PAGE_SIZE = 6
@@ -16,13 +14,6 @@ const PAGE_SIZE = 6
 
 function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRead: () => void }) {
   const { lang } = useTranslation()
-  const { theme, stillness } = useTheme()
-  const reduceMotion = useReducedMotion()
-
-  // The manuscripts: everything already written, waiting to be deciphered.
-  const ciphered = theme === 'book'
-  const still = Boolean(reduceMotion) || stillness
-  const read = ciphered && readPosts().has(post.slug)
 
   const title = lang === 'es' ? post.title : post.titleEn
   const excerpt = lang === 'es' ? post.excerpt : post.excerptEn
@@ -42,17 +33,7 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
 
           {/* Title */}
           <h3 className="font-headline text-lg font-bold text-ink leading-tight line-clamp-2 flex items-center gap-1.5">
-            {read && <span className="read-mark" aria-hidden="true" />}
-            <Decipher
-              text={title}
-              active={ciphered}
-              still={still}
-              deciphered={read}
-              delay={(index % 6) * 110}
-            />
-            {read && (
-              <span className="sr-only">{lang === 'es' ? 'Leído' : 'Read'}</span>
-            )}
+            {title}
           </h3>
 
           {/* Excerpt */}

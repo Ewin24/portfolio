@@ -1,15 +1,10 @@
-import { useReducedMotion } from 'motion/react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../ui/FadeIn'
-import { TheIce } from '../book/lazy'
 
 export function About() {
   const { user } = useApp()
   const { t } = useTranslation()
-  const { theme, stillness } = useTheme()
-  const reduceMotion = useReducedMotion()
 
   return (
     <section id="about" className="py-20 px-6 max-w-5xl mx-auto">
@@ -19,7 +14,6 @@ export function About() {
           {/* Columna foto */}
           <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-8 bg-paper-dark flex flex-col items-center justify-start gap-4">
             {user?.avatar_url ? (
-              <TheIce active={theme === 'book'} still={Boolean(reduceMotion) || stillness}>
               <div className="border-4 border-rule shadow-pixel overflow-hidden">
                 {/* width/height match w-36 h-36 (144px) so the box is
                     reserved before the remote avatar arrives — no layout shift */}
@@ -34,7 +28,6 @@ export function About() {
                   style={{ imageRendering: 'pixelated' }}
                 />
               </div>
-              </TheIce>
             ) : (
               <div className="w-36 h-36 border-4 border-rule bg-paper-dark flex items-center justify-center">
                 <span className="font-headline text-4xl font-black text-ink-muted">ET</span>

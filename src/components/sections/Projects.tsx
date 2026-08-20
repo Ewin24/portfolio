@@ -1,11 +1,8 @@
 import type { CSSProperties } from 'react'
-import { useReducedMotion } from 'motion/react'
 import { ExternalLink, Lock, GitFork, Star, Code2 } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useTheme } from '../../theme/ThemeContext'
 import { getFeaturedRepos } from '../../services/github'
-import { Crucible, VoxelFigure } from '../book/lazy'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
 import { featuredCaseStudies } from '../../content'
@@ -43,14 +40,10 @@ const LANG_COLORS: Record<string, string> = {
 function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
   const { lang } = useTranslation()
   const { t } = useTranslation()
-  const { theme, stillness } = useTheme()
-  const reduceMotion = useReducedMotion()
 
-  // Gate 2 of 2: `study.lead` is `true` in the data regardless of theme —
-  // the ordering gate in Projects() keeps it out of the lead slot in book,
-  // but the class/copy application here must refuse it independently too,
-  // or a future call site that skips the reorder silently widens it.
-  const isLead = theme !== 'book' && study.lead === true
+  // `study.lead` is `true` in the data and the newspaper always puts the lead
+  // first, so the lead treatment applies whenever the study is flagged lead.
+  const isLead = study.lead === true
 
   const title    = lang === 'es' ? study.title    : study.titleEn
   const role     = lang === 'es' ? study.role     : study.roleEn
@@ -68,28 +61,29 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
   const solutionClamp = clampToSentence(solution, budget)
 
   const crucible = (
-    <Crucible
-      active={theme === 'book'}
-      still={Boolean(reduceMotion) || stillness}
-      beforeLabel={t('projects.problem')}
-      afterLabel={t('projects.solution')}
-      before={
-        <>
-          <p data-copy="problem" className={`font-sans text-sm text-ink-light leading-relaxed ${clampClass}`}>
-            {problemClamp.head}
-          </p>
-          {problemClamp.rest && <span className="sr-only">{problemClamp.rest}</span>}
-        </>
-      }
-      after={
-        <>
-          <p data-copy="solution" className={`font-sans text-sm text-ink-light leading-relaxed ${clampClass}`}>
-            {solutionClamp.head}
-          </p>
-          {solutionClamp.rest && <span className="sr-only">{solutionClamp.rest}</span>}
-        </>
-      }
-    />
+    <>
+      <div>
+        <p
+          data-landmark="problem"
+          className="font-mono text-[10px] font-bold uppercase tracking-widest text-accent mb-1"
+        >
+          {t('projects.problem')}
+        </p>
+        <p data-copy="problem" className={`font-sans text-sm text-ink-light leading-relaxed ${clampClass}`}>
+          {problemClamp.head}
+        </p>
+        {problemClamp.rest && <span className="sr-only">{problemClamp.rest}</span>}
+      </div>
+      <div>
+        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
+          {t('projects.solution')}
+        </p>
+        <p data-copy="solution" className={`font-sans text-sm text-ink-light leading-relaxed ${clampClass}`}>
+          {solutionClamp.head}
+        </p>
+        {solutionClamp.rest && <span className="sr-only">{solutionClamp.rest}</span>}
+      </div>
+    </>
   )
 
   return (
@@ -308,10 +302,8 @@ const leadFirstCaseStudies = [
 
 // ─── Section ────────────────────────────────────────────────────────────────
 export function Projects() {
-  const { t, lang } = useTranslation()
-  const { theme, stillness } = useTheme()
-  const reduceMotion = useReducedMotion()
-  const studies = theme === 'book' ? featuredCaseStudies : leadFirstCaseStudies
+  const { t } = useTranslation()
+  const studies = leadFirstCaseStudies
 
   return (
     <section id="projects" className="py-20 px-6 max-w-7xl mx-auto">
@@ -325,21 +317,6 @@ export function Projects() {
           align="beside"
           rank="lead"
         />
-
-        {/* Melquíades' alembic: the vessel the workshop actually works in. */}
-        <div className="flex justify-center">
-          <VoxelFigure
-            model="alembic"
-            active={theme === 'book'}
-            still={Boolean(reduceMotion) || stillness}
-            label={
-              lang === 'es'
-                ? 'Alambique: arrástralo para girarlo, presiónalo para verterlo'
-                : 'Alembic: drag to turn it, press to pour it'
-            }
-            hint={lang === 'es' ? 'viértelo' : 'pour it'}
-          />
-        </div>
       </FadeIn>
 
       {/* Case Studies grid */}

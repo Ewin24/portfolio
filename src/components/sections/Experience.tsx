@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useTheme } from '../../theme/ThemeContext'
 import { useLatch, type LatchBinding } from '../../hooks/useLatch'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
@@ -164,12 +163,12 @@ function ExperienceCard({
 
 export function Experience() {
   const { t } = useTranslation()
-  const { theme } = useTheme()
   const latch = useLatch<string>()
   const tracked = latch.active
 
   const lineage = useMemo(() => countLineage(sortedExperience), [])
-  const showLineage = theme === 'book'
+  // The lineage was a Book-only flourish; outside Book it is never shown.
+  const showLineage = false
 
   return (
     <section

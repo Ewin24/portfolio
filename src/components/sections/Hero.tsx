@@ -2,8 +2,6 @@ import { motion, useReducedMotion } from 'motion/react'
 import { ArrowDown, Mail } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useTheme } from '../../theme/ThemeContext'
-import { VoxelFigure } from '../book/lazy'
 import { FadeIn } from '../ui/FadeIn'
 import { workExperience, caseStudies } from '../../content'
 
@@ -53,8 +51,7 @@ function computeStats() {
 
 export function Hero() {
   const { user } = useApp()
-  const { t, lang } = useTranslation()
-  const { theme, stillness } = useTheme()
+  const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
   const { yearsExp, systems, stackCount } = computeStats()
 
@@ -77,19 +74,6 @@ export function Hero() {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 pt-24 pb-16 w-full">
-
-        {/* The figure. It greets before the name does, because the object is
-            the thing a reader remembers after closing the page. */}
-        <VoxelFigure
-          model="fish"
-          size="lead"
-          active={theme === 'book'}
-          still={Boolean(reduceMotion) || stillness}
-          label={lang === 'es'
-            ? 'Pescadito de oro: arrastralo para girarlo, presionalo para fundirlo'
-            : 'Little gold fish: drag to turn it, press to melt it down'}
-          hint={lang === 'es' ? 'fundelo' : 'melt it'}
-        />
 
         {/* Kicker */}
         <FadeIn>
@@ -162,9 +146,7 @@ export function Hero() {
                */
               <div
                 key={stat.label}
-                className={`p-5 text-center${i < stats.length - 1 ? ' border-r-2 border-rule' : ''}${
-                  theme === 'book' ? ' unnamed' : ''
-                }`}
+                className={`p-5 text-center${i < stats.length - 1 ? ' border-r-2 border-rule' : ''}`}
               >
                 <motion.p
                   className="font-headline text-3xl md:text-4xl font-black text-ink leading-none"

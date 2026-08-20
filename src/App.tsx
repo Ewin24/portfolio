@@ -12,7 +12,6 @@ import { Education } from './components/sections/Education'
 import { Testimonials } from './components/sections/Testimonials'
 import { Contact } from './components/sections/Contact'
 import { Footer } from './components/sections/Footer'
-import { BookStage } from './components/book/lazy'
 
 /**
  * The blog carries the heaviest dependencies in the app: every post body
@@ -90,12 +89,6 @@ function App() {
     >
       {blogMode ? (
         <motion.div key="blog-full" {...fade} className="min-h-screen bg-paper">
-          {/* The article view carries the atmosphere too. Without it the page
-              surface is transparent in Book and the reader gets a flat
-              wash instead of a sky. No section ids exist here, so the stage
-              settles on the opening chapter. */}
-          <BookStage />
-
           {/* Back to portfolio bar */}
           <div className="chrome-bar sticky top-0 z-50 bg-paper border-b-2 border-rule">
             <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
@@ -122,10 +115,6 @@ function App() {
         </motion.div>
       ) : (
         <motion.div key="portfolio" {...fade} className="min-h-screen bg-paper">
-          {/* Book's sky, dunes and airborne sand. Renders nothing at all
-              in the default newspaper theme. */}
-          <BookStage />
-
           <a href="#main" className="skip-link">
             {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
           </a>
