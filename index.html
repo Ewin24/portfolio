@@ -32,20 +32,22 @@
     <meta name="twitter:creator" content="@Ewin24" />
 
     <!-- Theme — must match --color-paper in src/index.css.
-         ThemeProvider rewrites this to the current Book sky while that
+         ThemeProvider rewrites this to the XP desktop value while that
          theme is active. -->
     <meta name="theme-color" content="#FAFAF5" />
 
     <!-- Theme boot.
-         Runs before first paint so a returning Book visitor never sees the
+         Runs before first paint so a returning XP visitor never sees the
          newspaper flash first. Deliberately inline and dependency-free: the
          React bundle resolves far too late to prevent that flash. The storage
-         key is mirrored from THEME_STORAGE_KEY in src/theme/ThemeContext.tsx. -->
+         key is mirrored from THEME_STORAGE_KEY in src/theme/ThemeContext.tsx.
+         Only an explicit 'xp' is honoured; every other value (including a
+         stale 'book') leaves the default newspaper untouched. -->
     <script>
       (function () {
         try {
-          if (localStorage.getItem('portfolio-theme') === 'book') {
-            document.documentElement.dataset.theme = 'book'
+          if (localStorage.getItem('portfolio-theme') === 'xp') {
+            document.documentElement.dataset.theme = 'xp'
           }
         } catch (e) {
           /* Blocked storage — the newspaper theme is the safe default. */
@@ -198,7 +200,7 @@
     </script>
 
     <title>Edwin Trigos | Software Architect & Full Stack Developer</title>
-    <script type="module" crossorigin src="/portfolio/assets/index-Dk5vUED3.js"></script>
+    <script type="module" crossorigin src="/portfolio/assets/index-HNHsr-qz.js"></script>
     <link rel="stylesheet" crossorigin href="/portfolio/assets/index-DW3g_pHg.css">
   <script type="application/ld+json">
 [
