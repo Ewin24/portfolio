@@ -15,7 +15,7 @@ export function DesktopIcons() {
 
   return (
     <div className="xp-desktop-icons" role="toolbar" aria-label="Desktop">
-      {APP_REGISTRY.map((app) => (
+      {APP_REGISTRY.filter((app) => !app.hidden).map((app) => (
         <button
           key={app.id}
           type="button"

@@ -35,6 +35,11 @@ export interface WindowManagerValue {
   activeId: AppId | null
   /** Z-order — last entry is the topmost window. */
   order: AppId[]
+  /** The app id most recently opened via `open()` — cleared by `focus()`.
+   *  Drives the mount-focus effect so a freshly opened window (e.g. Help via
+   *  "?") can take keyboard focus without stealing it from the initial `about`
+   *  mount or the click/icon focus paths (design D7). */
+  justOpened: AppId | null
   states: Partial<Record<AppId, WinState>>
   /** Current (restored) rect per window. */
   rects: Partial<Record<AppId, Rect>>
@@ -63,6 +68,7 @@ interface WindowManagerState {
   openSet: Set<AppId>
   activeId: AppId | null
   order: AppId[]
+  justOpened: AppId | null
   states: Partial<Record<AppId, WinState>>
   rects: Partial<Record<AppId, Rect>>
   maximizedRects: Partial<Record<AppId, Rect>>
@@ -182,6 +188,7 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
       openSet: new Set<AppId>(['about']),
       activeId: 'about',
       order: ['about'],
+      justOpened: null,
       states: { about: 'open' },
       rects: { about: defaultRect },
       maximizedRects: {},
@@ -193,7 +200,9 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
       // Bring the id to the top of the z-order if it is open.
       if (!s.openSet.has(id)) return s
       const order = s.order.includes(id) ? [...s.order.filter((o) => o !== id), id] : [...s.order, id]
-      return { ...s, activeId: id, order }
+      // A manual focus (icon/Start/taskbar/pointerdown) clears justOpened so a
+      // click path never triggers the mount-focus steal (design D7).
+      return { ...s, activeId: id, order, justOpened: null }
     })
   }, [])
 
@@ -201,26 +210,33 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
     (id: AppId) => {
       setState((s) => {
         if (s.openSet.has(id)) return s
-        // Squared default (design D2): every open cascades +20px from a base
-        // y:8 (header gone), wrapping after 4 windows via the order length.
-        const { w, h } = defaultSize(desktop.w, desktop.h)
-        const defaultRect: Rect = {
-          x: 100 + (s.order.length % 4) * 20,
-          y: 8 + (s.order.length % 4) * 20,
-          w,
-          h,
+        // If the app declares a fixed default rect (e.g. Help 400×300
+        // centered), use it; otherwise cascade the squared default (design D2).
+        const app = appMap[id]
+        let rect: Rect
+        if (app?.defaultRect) {
+          rect = app.defaultRect(desktop.w, desktop.h)
+        } else {
+          const { w, h } = defaultSize(desktop.w, desktop.h)
+          rect = {
+            x: 100 + (s.order.length % 4) * 20,
+            y: 8 + (s.order.length % 4) * 20,
+            w,
+            h,
+          }
         }
         return {
           ...s,
           openSet: new Set(s.openSet).add(id),
           order: [...s.order, id],
           activeId: id,
+          justOpened: id,
           states: { ...s.states, [id]: 'open' },
-          rects: { ...s.rects, [id]: defaultRect },
+          rects: { ...s.rects, [id]: rect },
         }
       })
     },
-    [desktop.w, desktop.h],
+    [desktop.w, desktop.h, appMap],
   )
 
   const close = useCallback((id: AppId) => {
@@ -362,6 +378,7 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
       openSet: state.openSet,
       activeId: state.activeId,
       order: state.order,
+      justOpened: state.justOpened,
       states: state.states,
       rects: state.rects,
       maximizedRects: state.maximizedRects,

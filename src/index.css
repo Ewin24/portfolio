@@ -744,6 +744,80 @@ html[data-theme='xp'] {
 [data-theme='xp'] .xp-resize-se { bottom: -2px; right: -2px; cursor: se-resize; }
 [data-theme='xp'] .xp-resize-sw { bottom: -2px; left: -2px; cursor: sw-resize; }
 
+/* ── Help window content (design D5, Slice 3) ──
+   The compact "?" Help body: a keyboard-shortcut list and a "Return to
+   newspaper" button. Rendered inside the standard .xp-window-body, which owns
+   its own scroll/height. */
+[data-theme='xp'] .xp-help {
+  padding: 14px 16px;
+  color: #000;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+[data-theme='xp'] .xp-help-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+[data-theme='xp'] .xp-help-shortcuts ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+[data-theme='xp'] .xp-help-shortcuts li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+[data-theme='xp'] .xp-help-shortcuts kbd {
+  flex: 0 0 auto;
+  min-width: 92px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  background: #F4F4F0;
+  border: 1px solid #808080;
+  border-bottom-width: 2px;
+  border-radius: 2px;
+  padding: 2px 6px;
+}
+
+[data-theme='xp'] .xp-help-return-row {
+  margin-top: 16px;
+  text-align: right;
+}
+
+[data-theme='xp'] .xp-help-return {
+  background: #ECE9D8;
+  color: #000;
+  border: 1px solid #808080;
+  box-shadow:
+    inset -1px -1px 0 #808080,
+    inset 1px 1px 0 #FFFFFF;
+  font-size: 12px;
+  padding: 5px 14px;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-help-return:active {
+  background: #D4D0C8;
+  box-shadow:
+    inset 1px 1px 0 #808080,
+    inset -1px -1px 0 #FFFFFF;
+}
+
+[data-theme='xp'] .xp-help-return:focus-visible {
+  outline: 2px solid #316AC5;
+  outline-offset: -2px;
+}
+
 /* ── XP window content width ──
    The newspaper sections carry their own horizontal spacing (px-6 +
    max-w-* mx-auto), so the window body adds none of its own. If it did, the

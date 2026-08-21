@@ -660,6 +660,75 @@ async function run() {
         check('tray GitHub has noopener noreferrer', ghRel === 'noopener noreferrer', `rel=${ghRel}`)
       } finally { await ctx.close() }
     }
+
+    // ── 15. "?" Help window (Slice 3, S3.1 RED) ──
+    // Clicking the "?" control on a window opens a compact Help window
+    // (shortcuts + return to newspaper) in the open-set; its Close removes it;
+    // "Return to newspaper" flips the theme back to newspaper; help is a hidden
+    // registry app (no desktop icon) so the icon/menu counts stay at 7.
+    {
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])
+      try {
+        const helpBtn = page.locator('.xp-window-controls button[aria-label="Help"]')
+        check('help: "?" button present in controls', await helpBtn.count() === 1, `count=${await helpBtn.count()}`)
+
+        // help is a hidden registry app: still 7 desktop icons, none for help.
+        check('help: desktop still shows 7 icons', await page.locator('.xp-desktop-icon').count() === 7)
+        check('help: no help desktop icon', await page.locator('.xp-desktop-icon[data-app="help"]').count() === 0)
+
+        // Click "?" on the default window opens the Help window in the open-set.
+        await helpBtn.first().click()
+        await page.waitForTimeout(300)
+        const opened = await page.evaluate(() => ({
+          openIds: window.__XPMANAGER__?.openSet ? [...window.__XPMANAGER__.openSet] : null,
+          helpWindows: [...document.querySelectorAll('.xp-window:has(#xp-help)')].length,
+        }))
+        check('help: "?" opens Help in open-set', !!opened.openIds && opened.openIds.includes('help'), JSON.stringify(opened))
+        check('help: Help window renders', opened.helpWindows === 1, JSON.stringify(opened))
+
+        // Help window body: keyboard-shortcut content + return-to-newspaper.
+        check('help: shortcuts list present', await page.locator('#xp-help .xp-help-shortcuts').count() === 1)
+        const ret = page.locator('#xp-help .xp-help-return')
+        check('help: return-to-newspaper button present', await ret.count() === 1)
+
+        // Closing Help via its own controls removes it from the open-set.
+        await page.locator('.xp-window:has(#xp-help) .xp-window-controls button[aria-label="Close"]').click({ force: true })
+        await page.waitForTimeout(300)
+        const closed = await page.evaluate(() => ({
+          openIds: window.__XPMANAGER__?.openSet ? [...window.__XPMANAGER__.openSet] : null,
+          helpWindows: [...document.querySelectorAll('.xp-window:has(#xp-help)')].length,
+        }))
+        check('help: Close removes Help from open-set',
+          !!closed.openIds && !closed.openIds.includes('help') && closed.helpWindows === 0, JSON.stringify(closed))
+      } finally { await ctx.close() }
+    }
+    {
+      // "Return to newspaper" flips the theme from XP back to the newspaper.
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])
+      try {
+        await page.locator('.xp-window-controls button[aria-label="Help"]').first().click()
+        await page.waitForTimeout(300)
+        await page.locator('#xp-help .xp-help-return').click()
+        await page.waitForTimeout(400)
+        const theme = await page.evaluate(() => ({
+          root: document.documentElement.dataset.theme ?? null,
+          stored: localStorage.getItem('portfolio-theme'),
+        }))
+        check('help: "Return to newspaper" flips theme',
+          theme.root !== 'xp' && theme.stored === 'newspaper', JSON.stringify(theme))
+      } finally { await ctx.close() }
+    }
+    {
+      // Focus safety (design D7): the initial `about` mount must NOT steal focus.
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])
+      try {
+        const focused = await page.evaluate(() => {
+          const a = document.activeElement
+          return a ? a.getAttribute('aria-label') : null
+        })
+        check('help: initial about mount does not steal focus', focused === null, `focused=${focused}`)
+      } finally { await ctx.close() }
+    }
   } finally {
     await browser.close()
   }

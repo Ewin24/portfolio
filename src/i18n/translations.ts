@@ -134,6 +134,20 @@ export type TranslationKeys = {
   // Footer
   'footer.built': string
   'footer.activity': string
+  // XP Help window (Slice 3)
+  'window.help': string
+  'help.shortcutsTitle': string
+  'help.drag': string
+  'help.dragDesc': string
+  'help.resize': string
+  'help.resizeDesc': string
+  'help.shiftArrow': string
+  'help.shiftArrowDesc': string
+  'help.enter': string
+  'help.enterDesc': string
+  'help.esc': string
+  'help.escDesc': string
+  'help.return': string
 }
 
 const translations: Record<Language, TranslationKeys> = {
@@ -285,6 +299,21 @@ const translations: Record<Language, TranslationKeys> = {
     // Footer
     'footer.built': 'Construido con',
     'footer.activity': 'Actividad técnica vía GitHub API',
+
+    // XP Help window (Slice 3)
+    'window.help': 'Ayuda',
+    'help.shortcutsTitle': 'Atajos de teclado',
+    'help.drag': 'Arrastrar',
+    'help.dragDesc': 'Mantén la barra de título y arrastra para mover la ventana',
+    'help.resize': 'Redimensionar',
+    'help.resizeDesc': 'Arrastra cualquiera de los 8 bordes o esquinas',
+    'help.shiftArrow': 'Mayús + Flechas',
+    'help.shiftArrowDesc': 'Redimensionar ±8px con el teclado',
+    'help.enter': 'Enter',
+    'help.enterDesc': 'Enfocar o restaurar la ventana',
+    'help.esc': 'Esc',
+    'help.escDesc': 'Cerrar la ventana activa',
+    'help.return': 'Volver al periódico',
   },
 
   en: {
@@ -435,6 +464,21 @@ const translations: Record<Language, TranslationKeys> = {
     // Footer
     'footer.built': 'Built with',
     'footer.activity': 'Technical activity via GitHub API',
+
+    // XP Help window (Slice 3)
+    'window.help': 'Help',
+    'help.shortcutsTitle': 'Keyboard shortcuts',
+    'help.drag': 'Drag',
+    'help.dragDesc': 'Hold the title bar and drag to move the window',
+    'help.resize': 'Resize',
+    'help.resizeDesc': 'Drag any of the 8 edges or corners',
+    'help.shiftArrow': 'Shift + Arrows',
+    'help.shiftArrowDesc': 'Resize by ±8px with the keyboard',
+    'help.enter': 'Enter',
+    'help.enterDesc': 'Focus or restore the window',
+    'help.esc': 'Esc',
+    'help.escDesc': 'Close the active window',
+    'help.return': 'Return to newspaper',
   },
 }
 

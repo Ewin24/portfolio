@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Minus, Square, X } from 'lucide-react'
+import { Minus, Square, X, CircleHelp } from 'lucide-react'
 import { useWindowManager, type ResizeDir } from './WindowManager'
 import { useTheme } from '../../theme/ThemeContext'
 import { useTranslation } from '../../hooks/useTranslation'
@@ -42,7 +42,7 @@ function useIsMobile(): boolean {
  * inert — the window never moves.
  */
 export function Window({ id }: WindowProps) {
-  const { apps, states, rects, order, activeId, focus, drag, resize, minimize, restore, toggleMaximize, close, closeActive } =
+  const { apps, states, rects, order, activeId, openSet, justOpened, open, focus, drag, resize, minimize, restore, toggleMaximize, close, closeActive } =
     useWindowManager()
   const { stillness } = useTheme()
   const { t } = useTranslation()
@@ -59,6 +59,18 @@ export function Window({ id }: WindowProps) {
   const titlebarRef = useRef<HTMLDivElement>(null)
 
   const active = activeId === id
+
+  // Mount-focus mechanism (design D7): when a window is opened via `open()` it
+  // is marked `justOpened`; if it is also the active window, focus its title
+  // bar on mount. The initial `about` mount (justOpened stays null) and the
+  // click/icon/Start/taskbar paths (which call `focus()` and clear justOpened)
+  // never steal focus — only a freshly opened window, e.g. Help via "?", gets
+  // the keyboard focus.
+  useEffect(() => {
+    if (active && justOpened === id && titlebarRef.current) {
+      titlebarRef.current.focus()
+    }
+  }, [active, justOpened, id])
 
   const onTitlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -240,6 +252,21 @@ export function Window({ id }: WindowProps) {
           {/* The title bar's onPointerDown captures the pointer to start a drag;
               without stopPropagation here, setPointerCapture would redirect the
               click to the title bar and these buttons would be pointer-inert. */}
+          <button
+            type="button"
+            aria-label="Help"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => {
+              // "?" opens the Help window (design D5). On first open `open()`
+              // marks it `justOpened` so the mount-focus effect takes keyboard
+              // focus; when it is already open we just focus/bring it to front
+              // (which clears justOpened, so no remount focus steal).
+              if (openSet.has('help')) focus('help')
+              else open('help')
+            }}
+          >
+            <CircleHelp size={12} strokeWidth={2.5} />
+          </button>
           <button
             type="button"
             aria-label="Minimize"
