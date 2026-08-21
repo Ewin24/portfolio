@@ -462,6 +462,72 @@ async function run() {
           trapCheck.wins === 1 || (trapCheck.activeConnected && !trapCheck.activeRole), JSON.stringify(trapCheck))
       } finally { await ctx.close() }
     }
+
+    // ── 12. Squared default geometry (Slice 1, S1.1 RED) ──
+    // A window MUST open at w=min(0.5×desktopW,480), h=min(0.6×desktopH,420);
+    // `about` opens on mount at that size; every subsequent open cascades +20px
+    // from a base y:8 (the header is gone in XP).
+    {
+      // @1440×900: about ≈ 480×420, base y=8.
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[3])
+      try {
+        const r = await page.locator('.xp-window').first().boundingBox()
+        check('squared: about @1440 ≈ 480×420',
+          r && Math.abs(r.width - 480) <= 2 && Math.abs(r.height - 420) <= 2, JSON.stringify(r))
+        check('squared: about base y=8 (header gone)',
+          r && Math.abs(r.y - 8) <= 2, `y=${r?.y}`)
+      } finally { await ctx.close() }
+    }
+    {
+      // @768×1024: opening a second window cascades +20px from the prior top-left.
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[1])
+      try {
+        const first = await page.locator('.xp-window').first().boundingBox()
+        await page.evaluate(() => { window.__XPMANAGER__.open('projects') })
+        await page.waitForTimeout(300)
+        const wins = await page.locator('.xp-window').all()
+        const second = wins[1] ? await wins[1].boundingBox() : null
+        check('cascade: second window top-left = prior + 20px',
+          first && second && Math.abs(second.x - (first.x + 20)) <= 2 && Math.abs(second.y - (first.y + 20)) <= 2,
+          `first=${JSON.stringify(first)} second=${JSON.stringify(second)}`)
+      } finally { await ctx.close() }
+    }
+
+    // ── 13. Tray utilities + header removal (Slice 1, S1.2 RED) ──
+    // In XP the fixed Header must not render; its utilities live in a taskbar
+    // tray (role=toolbar) left of the clock: ThemeToggle + lang switch + GitHub.
+    {
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])
+      try {
+        check('header absent in XP', await page.locator('.xp-header').count() === 0,
+          `count=${await page.locator('.xp-header').count()}`)
+        check('tray renders with role=toolbar', await page.locator('.xp-tray[role="toolbar"]').count() === 1)
+        check('tray has ThemeToggle (aria-pressed)',
+          await page.locator('.xp-tray button[aria-pressed]').count() === 1)
+
+        // Lang toggle: the tray lang button's aria-label flips EN<->ES.
+        const langBtn = page.locator('.xp-tray button[aria-label]').filter({ hasText: /^[A-Z]{2}$/ })
+        const langCount = await langBtn.count()
+        const langBefore = langCount ? await langBtn.first().getAttribute('aria-label') : null
+        if (langCount) {
+          await langBtn.first().click()
+          await page.waitForTimeout(200)
+        }
+        const langAfter = langCount ? await langBtn.first().getAttribute('aria-label') : null
+        check('tray lang toggle flips lang',
+          langBefore !== null && langAfter !== null && langBefore !== langAfter,
+          `${langBefore} -> ${langAfter}`)
+
+        // GitHub link: reuse the existing URL + new tab.
+        const gh = page.locator('.xp-tray a[href="https://github.com/Ewin24"]')
+        const ghCount = await gh.count()
+        check('tray GitHub link present', ghCount === 1, `count=${ghCount}`)
+        const ghTarget = ghCount ? await gh.first().getAttribute('target') : null
+        const ghRel = ghCount ? await gh.first().getAttribute('rel') : null
+        check('tray GitHub opens new tab', ghTarget === '_blank', `target=${ghTarget}`)
+        check('tray GitHub has noopener noreferrer', ghRel === 'noopener noreferrer', `rel=${ghRel}`)
+      } finally { await ctx.close() }
+    }
   } finally {
     await browser.close()
   }

@@ -480,42 +480,6 @@ html[data-theme='xp'] {
   border-color: #7A7A7A;
 }
 
-/* ── Header becomes a title bar ──
-   The fixed top bar is restyled as an XP title bar: Luna-tinted, a beveled
-   bottom edge, and dark text. Navigation stays intact — only the chrome
-   changes. The newspaper header has no .xp-header class, so this block is
-   inert outside the XP theme. */
-[data-theme='xp'] .xp-header {
-  background: linear-gradient(180deg, #3a6ea5 0%, #00008b 100%);
-  border-bottom: 2px solid #808080;
-  box-shadow:
-    inset 0 1px 0 #f4f7fb,
-    inset 0 -1px 0 #808080;
-}
-
-[data-theme='xp'] .xp-header a,
-[data-theme='xp'] .xp-header .nav-link {
-  color: #FFFFFF;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
-}
-
-[data-theme='xp'] .xp-header .nav-link:hover {
-  color: #FFE7A6;
-}
-
-[data-theme='xp'] .xp-header .px-btn,
-[data-theme='xp'] .xp-header button {
-  background: #ECE9D8;
-  color: #000;
-  border-color: #808080;
-}
-
-[data-theme='xp'] .xp-header .px-btn:hover,
-[data-theme='xp'] .xp-header button:hover {
-  background: #FFFFFF;
-  color: #000;
-}
-
 /* ── Desktop ──
    XPShell mounts a full-bleed Luna gradient behind the windows. The
    gradient runs vertically from the bright Luna top (#3a6ea5) to the deep
@@ -547,9 +511,9 @@ html[data-theme='xp'] {
   position: absolute;
   inset: 0;
   z-index: 1;
-  /* 64px clears the fixed header (h-14 = 56px + gap) so the top icons are
-     never hidden beneath it. */
-  padding: 64px 0 0 12px;
+  /* 16px because the fixed header is gone in XP (design D3) — the top icons
+     no longer need to clear a 56px bar. */
+  padding: 16px 0 0 12px;
   pointer-events: none;
 }
 
@@ -790,8 +754,10 @@ html[data-theme='xp'] {
   gap: 6px;
   height: 28px;
   padding: 0 10px;
-  background: #ECE9D8;
-  color: #000;
+  /* Classic Luna green Start (design D4): the vertical gradient keeps the
+     raised bevel face, with white text for contrast. */
+  background: linear-gradient(180deg, #3c8928, #2f6d1f);
+  color: #fff;
   border: 2px solid #f4f7fb;
   box-shadow:
     inset -1px -1px 0 #808080,
@@ -801,15 +767,23 @@ html[data-theme='xp'] {
   cursor: pointer;
 }
 
+[data-theme='xp'] .xp-taskbar .xp-start-btn:hover {
+  /* Soft green glow on hover (design D4). */
+  box-shadow:
+    inset -1px -1px 0 #808080,
+    inset 1px 1px 0 #FFFFFF,
+    0 0 6px rgba(120, 220, 90, 0.6);
+}
+
 [data-theme='xp'] .xp-taskbar .xp-start-btn:active {
-  background: #D4D0C8;
+  background: linear-gradient(180deg, #2f6d1f, #3c8928);
   box-shadow:
     inset 1px 1px 0 #808080,
     inset -1px -1px 0 #FFFFFF;
 }
 
 [data-theme='xp'] .xp-taskbar .xp-start-btn[aria-expanded='true'] {
-  background: #FFFFFF;
+  background: linear-gradient(180deg, #2f6d1f, #3c8928);
   box-shadow:
     inset 1px 1px 0 #808080,
     inset -1px -1px 0 #FFFFFF;
@@ -843,8 +817,46 @@ html[data-theme='xp'] {
     inset -1px -1px 0 #FFFFFF;
 }
 
-[data-theme='xp'] .xp-taskbar .xp-clock {
+[data-theme='xp'] .xp-tray {
+  /* Pushes the tray (and the clock after it) to the far right, left of the
+     clock (design D3). DOM order: Start → labels → tray → clock. */
   margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+[data-theme='xp'] .xp-tray .xp-tray-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 8px;
+  background: #ECE9D8;
+  color: #000;
+  border: 2px solid #f4f7fb;
+  box-shadow:
+    inset -1px -1px 0 #808080,
+    inset 1px 1px 0 #FFFFFF;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-tray .xp-tray-btn:hover {
+  background: #FFFFFF;
+}
+
+[data-theme='xp'] .xp-tray .xp-tray-btn:active {
+  background: #D4D0C8;
+  box-shadow:
+    inset 1px 1px 0 #808080,
+    inset -1px -1px 0 #FFFFFF;
+}
+
+[data-theme='xp'] .xp-taskbar .xp-clock {
   color: #FFFFFF;
   font-size: 12px;
   white-space: nowrap;

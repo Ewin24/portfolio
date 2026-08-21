@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useWindowManager } from './WindowManager'
 import { StartMenu } from './StartMenu'
+import { Tray } from './Tray'
 import { useTranslation } from '../../hooks/useTranslation'
 import type { AppId } from './registry'
 
@@ -82,6 +83,8 @@ export function Taskbar() {
           </button>
         ))}
       </div>
+
+      <Tray />
 
       <div className="xp-clock" role="timer" aria-label="Clock">
         {time}

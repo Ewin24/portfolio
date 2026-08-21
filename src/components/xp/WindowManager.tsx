@@ -13,11 +13,11 @@ import type { AppEntry, AppId } from './registry'
 /** Height of the fixed taskbar in px — the drag clamp subtracts it (spec). */
 export const TASKBAR_HEIGHT = 40
 
-/** Height of the fixed page header (h-14 = 56px) that overlays the top of the
- *  desktop. A maximized window must start below it so its titlebar controls
- *  (Close/Maximize/Minimize) are not covered by the header and stay
- *  pointer-reachable. Matches the y:64 offset already used for default windows. */
-export const HEADER_HEIGHT = 56
+/** Height of the fixed page header in px. The XP theme hides the header
+ *  (design D3), so a maximized window now fills to y:0 — the top clamp no
+ *  longer needs to clear a 56px bar. Newspaper keeps its own header; this
+ *  constant only drives XP window geometry. */
+export const HEADER_HEIGHT = 0
 
 export interface Rect {
   x: number
@@ -79,6 +79,17 @@ interface WindowManagerProviderProps {
   children: ReactNode
 }
 
+/** Default squared window size (design D2): w = min(0.5×desktopW, 480),
+ *  h = min(0.6×desktopH, 420). Applies to `about` on mount and every
+ *  subsequent open; later opens cascade +20px from a base y:8 (the header
+ *  is gone in XP). */
+function defaultSize(desktopW: number, desktopH: number): { w: number; h: number } {
+  return {
+    w: Math.max(0, Math.min(desktopW * 0.5, 480)),
+    h: Math.max(0, Math.min(desktopH * 0.6, 420)),
+  }
+}
+
 /**
  * Owns all window state for the XP desktop in-memory (spec decision #5:
  * session-only, reload resets to the single default `about` window).
@@ -108,12 +119,12 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
   }, [])
 
   const [state, setState] = useState<WindowManagerState>(() => {
-    const defaultW = Math.max(0, (typeof window !== 'undefined' ? window.innerWidth : 1024) - 124)
-    const defaultH = 480
-    // x:100 clears the desktop-icon column (left:12 + 76px wide + gap), y:64
-    // clears the fixed header (h-14 = 56px + a small gap). Width leaves a
-    // right margin so the window stays inside the desktop.
-    const defaultRect: Rect = { x: 100, y: 64, w: defaultW, h: defaultH }
+    const desktopW = typeof window !== 'undefined' ? window.innerWidth : 1024
+    const desktopH = typeof window !== 'undefined' ? window.innerHeight : 768
+    // Squared default (design D2): x:100 clears the desktop-icon column
+    // (left:12 + 76px wide + gap), y:8 because the header is gone in XP.
+    const { w, h } = defaultSize(desktopW, desktopH)
+    const defaultRect: Rect = { x: 100, y: 8, w, h }
     return {
       openSet: new Set<AppId>(['about']),
       activeId: 'about',
@@ -137,12 +148,14 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
     (id: AppId) => {
       setState((s) => {
         if (s.openSet.has(id)) return s
-        const w = Math.max(0, desktop.w - 124)
+        // Squared default (design D2): every open cascades +20px from a base
+        // y:8 (header gone), wrapping after 4 windows via the order length.
+        const { w, h } = defaultSize(desktop.w, desktop.h)
         const defaultRect: Rect = {
           x: 100 + (s.order.length % 4) * 20,
-          y: 64 + (s.order.length % 4) * 20,
+          y: 8 + (s.order.length % 4) * 20,
           w,
-          h: 480,
+          h,
         }
         return {
           ...s,
@@ -154,7 +167,7 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
         }
       })
     },
-    [desktop.w],
+    [desktop.w, desktop.h],
   )
 
   const close = useCallback((id: AppId) => {

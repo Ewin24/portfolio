@@ -131,7 +131,7 @@ function App() {
           <a href="#main" className="skip-link">
             {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
           </a>
-          <Header />
+          {!xp && <Header />}
 
           {/* The atmosphere layers sit at z-0, so the readable page is lifted
               above them explicitly rather than relying on which elements
