@@ -47,9 +47,17 @@ export interface WindowManagerValue {
   toggleMaximize: (id: AppId) => void
   focus: (id: AppId) => void
   drag: (id: AppId, dx: number, dy: number) => void
+  resize: (id: AppId, dx: number, dy: number, dir: ResizeDir) => void
   setRect: (id: AppId, rect: Rect) => void
   closeActive: () => void
 }
+
+/** Which edge/corner of a window a resize drag acts on (design D1). */
+export type ResizeDir = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw'
+
+/** Minimum window size (spec M0) — resize clamps w/h to at least these. */
+export const MIN_W = 320
+export const MIN_H = 240
 
 interface WindowManagerState {
   openSet: Set<AppId>
@@ -64,6 +72,51 @@ const WindowManagerContext = createContext<WindowManagerValue | null>(null)
 
 /** Clamp a drag offset so a window stays inside the desktop, minus the taskbar. */
 function clampDrag(x: number, y: number, w: number, h: number, desktopW: number, desktopH: number): Rect {
+  const maxX = Math.max(0, desktopW - w)
+  const maxY = Math.max(0, desktopH - TASKBAR_HEIGHT - h)
+  return {
+    x: Math.min(Math.max(0, x), maxX),
+    y: Math.min(Math.max(0, y), maxY),
+    w,
+    h,
+  }
+}
+
+/**
+ * Resize clamp (design D1 / spec M0): size-then-position. First apply the
+ * directional delta to w/h and clamp each to [MIN, desktop]; then re-clamp
+ * x/y so the window stays within the desktop (top 0, left 0, right desktopW,
+ * bottom desktopH−40px). North/west edges give way at the limits — shrinking
+ * an anchored edge pulls x/y back toward 0 rather than pushing the opposite
+ * edge off-screen. Pure: same inputs always produce the same rect.
+ */
+function clampResize(
+  rect: Rect,
+  dx: number,
+  dy: number,
+  dir: ResizeDir,
+  desktopW: number,
+  desktopH: number,
+): Rect {
+  const east = dir.includes('e')
+  const west = dir.includes('w')
+  const north = dir.includes('n')
+  const south = dir.includes('s')
+
+  let { x, y, w, h } = rect
+  if (east) w += dx
+  if (west) w -= dx
+  if (south) h += dy
+  if (north) h -= dy
+
+  // Size clamp first (minimum + desktop bounds).
+  w = Math.min(Math.max(MIN_W, w), desktopW)
+  h = Math.min(Math.max(MIN_H, h), desktopH - TASKBAR_HEIGHT)
+
+  // Position clamp after size, so the anchored (n/w) edges re-anchor.
+  if (west) x = Math.min(x + (rect.w - w), desktopW - w)
+  if (north) y = Math.min(y + (rect.h - h), desktopH - TASKBAR_HEIGHT - h)
+
   const maxX = Math.max(0, desktopW - w)
   const maxY = Math.max(0, desktopH - TASKBAR_HEIGHT - h)
   return {
@@ -269,6 +322,22 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
     [desktop.w, desktop.h, stillness],
   )
 
+  const resize = useCallback(
+    (id: AppId, dx: number, dy: number, dir: ResizeDir) => {
+      // Reduced motion makes resize inert; only 'open' windows resize (a
+      // maximized window is fixed to the desktop). The <640px gate lives in
+      // Window.tsx via useIsMobile (design D1).
+      if (stillness) return
+      setState((s) => {
+        if (!s.openSet.has(id) || s.states[id] !== 'open') return s
+        const cur = s.rects[id] ?? { x: 24, y: 24, w: MIN_W, h: MIN_H }
+        const next = clampResize(cur, dx, dy, dir, desktop.w, desktop.h)
+        return { ...s, rects: { ...s.rects, [id]: next } }
+      })
+    },
+    [desktop.w, desktop.h, stillness],
+  )
+
   const closeActive = useCallback(() => {
     setState((s) => {
       if (s.activeId === null) return s
@@ -303,10 +372,11 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
       toggleMaximize,
       focus,
       drag,
+      resize,
       setRect,
       closeActive,
     }),
-    [appMap, state, open, close, minimize, restore, toggleMaximize, focus, drag, setRect, closeActive],
+    [appMap, state, open, close, minimize, restore, toggleMaximize, focus, drag, resize, setRect, closeActive],
   )
 
   // Test seam for the ambient Playwright driver: lets Slice A exercise open/
@@ -322,12 +392,13 @@ export function WindowManagerProvider({ apps, children }: WindowManagerProviderP
       restore,
       toggleMaximize,
       focus,
+      resize,
     }
     ;(window as unknown as Record<string, unknown>).__XPMANAGER__ = seam
     return () => {
       delete (window as unknown as Record<string, unknown>).__XPMANAGER__
     }
-  }, [state, open, close, minimize, restore, toggleMaximize, focus])
+  }, [state, open, close, minimize, restore, toggleMaximize, focus, resize])
 
   return (
     <WindowManagerContext.Provider value={value}>{children}</WindowManagerContext.Provider>

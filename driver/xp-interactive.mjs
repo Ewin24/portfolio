@@ -493,6 +493,138 @@ async function run() {
       } finally { await ctx.close() }
     }
 
+    // ── 14. 8-handle resize + clamps + gates (Slice 2, S2.1 RED) ──
+    // Dragging an edge/corner handle mutates w/h; result clamps to ≥320×240
+    // and stays inside the desktop (top 0, left 0, right desktopW, bottom
+    // desktopH−40px). Inert when maximized / <640px / reduced motion. The
+    // titlebar Shift+Arrows resize the active window ±8px.
+    {
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])
+      try {
+        const win = page.locator('.xp-window')
+        const se = page.locator('.xp-resize-handle.xp-resize-se')
+        check('resize: se handle present', await se.count() === 1, `count=${await se.count()}`)
+
+        const before = await win.first().boundingBox()
+        const seBox = await se.boundingBox()
+        const sx = seBox.x + seBox.width / 2
+        const sy = seBox.y + seBox.height / 2
+        // Grow se by +400/+400: width/height increase but stay in desktop bounds.
+        await page.mouse.move(sx, sy)
+        await page.mouse.down()
+        await page.mouse.move(sx + 400, sy + 400, { steps: 15 })
+        await page.mouse.up()
+        await page.waitForTimeout(200)
+        const grown = await win.first().boundingBox()
+        const desktopW = 1024
+        const desktopH = 768
+        check('resize: se drag grows w', grown.width > before.width + 300, `before=${before.width} after=${grown.width}`)
+        check('resize: se drag grows h', grown.height > before.height + 300, `before=${before.height} after=${grown.height}`)
+        check('resize: right stays <= desktopW', grown.x + grown.width <= desktopW + 0.5, JSON.stringify(grown))
+        check('resize: bottom stays <= desktopH-40', grown.y + grown.height <= desktopH - TASKBAR_H + 0.5, JSON.stringify(grown))
+
+        // Inward corner drag → clamped to min 320×240.
+        const se2 = page.locator('.xp-resize-handle.xp-resize-se')
+        const se2Box = await se2.boundingBox()
+        await page.mouse.move(se2Box.x + se2Box.width / 2, se2Box.y + se2Box.height / 2)
+        await page.mouse.down()
+        await page.mouse.move(se2Box.x - 2000, se2Box.y - 2000, { steps: 15 })
+        await page.mouse.up()
+        await page.waitForTimeout(200)
+        const min = await win.first().boundingBox()
+        check('resize: inward corner min w>=320', min.width >= 320 - 0.5, `w=${min.width}`)
+        check('resize: inward corner min h>=240', min.height >= 240 - 0.5, `h=${min.height}`)
+      } finally { await ctx.close() }
+    }
+    {
+      // West handle: shrinking must re-clamp x so the window stays at left>=0.
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])
+      try {
+        const win = page.locator('.xp-window')
+        const wHandle = page.locator('.xp-resize-handle.xp-resize-w')
+        check('resize: w handle present', await wHandle.count() === 1, `count=${await wHandle.count()}`)
+        // Shrink w a lot: the east edge should stay put and x must not go negative.
+        const wBox = await wHandle.boundingBox()
+        await page.mouse.move(wBox.x + wBox.width / 2, wBox.y + wBox.height / 2)
+        await page.mouse.down()
+        await page.mouse.move(wBox.x - 3000, wBox.y, { steps: 15 })
+        await page.mouse.up()
+        await page.waitForTimeout(200)
+        const after = await win.first().boundingBox()
+        check('resize: w shrink keeps x>=0', after.x >= -0.5, `x=${after.x}`)
+        check('resize: w shrink keeps w>=320', after.width >= 320 - 0.5, `w=${after.width}`)
+      } finally { await ctx.close() }
+    }
+    {
+      // Keyboard: Shift+Arrow on the focused titlebar resizes ±8px.
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])
+      try {
+        const win = page.locator('.xp-window')
+        const before = await win.first().boundingBox()
+        await win.first().locator('.xp-window-titlebar').focus()
+        await page.keyboard.press('Shift+ArrowRight')
+        await page.waitForTimeout(150)
+        const after = await win.first().boundingBox()
+        check('resize: Shift+Right grows w by ~8px',
+          Math.abs(after.width - before.width - 8) <= 2, `before=${before.width} after=${after.width}`)
+      } finally { await ctx.close() }
+    }
+    {
+      // Inert: maximized window ignores resize handles; <640px hides them.
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])
+      try {
+        await page.evaluate(() => window.__XPMANAGER__.toggleMaximize('about'))
+        await page.waitForTimeout(250)
+        const seMax = page.locator('.xp-resize-handle.xp-resize-se')
+        const seCount = await seMax.count()
+        const win = page.locator('.xp-window')
+        const before = await win.first().boundingBox()
+        if (seCount) {
+          const sb = await seMax.boundingBox()
+          await page.mouse.move(sb.x + sb.width / 2, sb.y + sb.height / 2)
+          await page.mouse.down()
+          await page.mouse.move(sb.x + 200, sb.y + 200, { steps: 8 })
+          await page.mouse.up()
+          await page.waitForTimeout(200)
+        }
+        const after = await win.first().boundingBox()
+        check('resize: maximized window rect unchanged',
+          before.width === after.width && before.height === after.height,
+          `before=${JSON.stringify(before)} after=${JSON.stringify(after)}`)
+      } finally { await ctx.close() }
+    }
+    {
+      // Inert: <640px has no visible resize handles (mobile fallback).
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[0])
+      try {
+        const handles = page.locator('.xp-resize-handle')
+        const visible = await handles.evaluateAll((els) => els.filter((el) => {
+          const s = getComputedStyle(el)
+          return s.display !== 'none' && s.visibility !== 'hidden'
+        }).length)
+        check('resize: no visible handles below 640px', visible === 0, `visible=${visible}`)
+      } finally { await ctx.close() }
+    }
+    {
+      // Inert: reduced motion leaves the rect unchanged when a handle is dragged.
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2], { reducedMotion: 'reduce' })
+      try {
+        const win = page.locator('.xp-window')
+        const se = page.locator('.xp-resize-handle.xp-resize-se')
+        const sb = await se.boundingBox()
+        const before = await win.first().boundingBox()
+        await page.mouse.move(sb.x + sb.width / 2, sb.y + sb.height / 2)
+        await page.mouse.down()
+        await page.mouse.move(sb.x + 200, sb.y + 200, { steps: 8 })
+        await page.mouse.up()
+        await page.waitForTimeout(200)
+        const after = await win.first().boundingBox()
+        check('reduced-motion: resize inert',
+          before.width === after.width && before.height === after.height,
+          `before=${JSON.stringify(before)} after=${JSON.stringify(after)}`)
+      } finally { await ctx.close() }
+    }
+
     // ── 13. Tray utilities + header removal (Slice 1, S1.2 RED) ──
     // In XP the fixed Header must not render; its utilities live in a taskbar
     // tray (role=toolbar) left of the clock: ThemeToggle + lang switch + GitHub.

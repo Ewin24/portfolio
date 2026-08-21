@@ -599,7 +599,9 @@ html[data-theme='xp'] {
   border: 2px solid;
   border-color: #f4f7fb #808080 #808080 #f4f7fb;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
-  overflow: hidden;
+  /* No overflow:hidden here — the resize handles straddle the 2px border
+     (top:-2px etc.) and would be clipped by it. The body keeps its own
+     overflow:auto + fixed height (design D6). */
 }
 
 /* The active window stands out: a bright bevel top edge and a tighter drop. */
@@ -625,6 +627,13 @@ html[data-theme='xp'] {
   color: #FFFFFF;
   user-select: none;
   cursor: move;
+  /* z-index 40 beats both the resize handles (30) AND the window-body content
+     (the Hero carries `relative z-10`, so a z2 titlebar would lose to it) —
+     the titlebar drag + controls win every overlap band. The top n-strip's
+     in-titlebar band yields to the titlebar; full n-resize stays reachable via
+     Shift+Up and the bottom/side strips + corners (design D6). */
+  position: relative;
+  z-index: 40;
 }
 
 [data-theme='xp'] .xp-window-title {
@@ -687,6 +696,53 @@ html[data-theme='xp'] {
   outline: 2px solid #316AC5;
   outline-offset: -2px;
 }
+
+/* ── Resize handles (design D6, Slice 2) ──
+   Eight absolutely-positioned zones (6px border strips / 16px corners) that
+   drive the manager's resize(id,dx,dy,dir). Strips straddle the 2px border
+   (top:-2px etc.); each carries the matching resize cursor. They sit at
+   z-index 30, above the window-body content (which uses z-10) but below the
+   titlebar (z-index 40), so the titlebar drag + controls win their overlap
+   bands. Hidden below 640px where the desktop stops being a draggable
+   canvas. */
+[data-theme='xp'] .xp-resize-handle {
+  position: absolute;
+  /* 30 beats the window-body content (Hero carries `relative z-10`) so the
+     strips/corners are pointer-clickable; the titlebar sits at 40 so drag and
+     the window controls still win their overlap bands (design D6). */
+  z-index: 30;
+  touch-action: none;
+}
+
+[data-theme='xp'] .xp-resize-n,
+[data-theme='xp'] .xp-resize-s {
+  left: 8px;
+  right: 8px;
+  height: 6px;
+}
+[data-theme='xp'] .xp-resize-n { top: -2px; cursor: n-resize; }
+[data-theme='xp'] .xp-resize-s { bottom: -2px; cursor: s-resize; }
+
+[data-theme='xp'] .xp-resize-e,
+[data-theme='xp'] .xp-resize-w {
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+}
+[data-theme='xp'] .xp-resize-e { right: -2px; cursor: e-resize; }
+[data-theme='xp'] .xp-resize-w { left: -2px; cursor: w-resize; }
+
+[data-theme='xp'] .xp-resize-ne,
+[data-theme='xp'] .xp-resize-nw,
+[data-theme='xp'] .xp-resize-se,
+[data-theme='xp'] .xp-resize-sw {
+  width: 16px;
+  height: 16px;
+}
+[data-theme='xp'] .xp-resize-ne { top: -2px; right: -2px; cursor: ne-resize; }
+[data-theme='xp'] .xp-resize-nw { top: -2px; left: -2px; cursor: nw-resize; }
+[data-theme='xp'] .xp-resize-se { bottom: -2px; right: -2px; cursor: se-resize; }
+[data-theme='xp'] .xp-resize-sw { bottom: -2px; left: -2px; cursor: sw-resize; }
 
 /* ── XP window content width ──
    The newspaper sections carry their own horizontal spacing (px-6 +
@@ -1137,6 +1193,12 @@ html[data-theme='xp'] {
     height: auto;
     max-height: none;
     overflow: visible;
+  }
+
+  /* Resize handles are hidden below 640px — the desktop stops being a
+     draggable canvas and windows stack full-width (design D6). */
+  [data-theme='xp'] .xp-resize-handle {
+    display: none;
   }
 
   /* Let the stacked windows scroll on the document, never horizontally. */

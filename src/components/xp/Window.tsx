@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Minus, Square, X } from 'lucide-react'
-import { useWindowManager } from './WindowManager'
+import { useWindowManager, type ResizeDir } from './WindowManager'
 import { useTheme } from '../../theme/ThemeContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import type { AppId } from './registry'
@@ -10,6 +10,10 @@ interface WindowProps {
 }
 
 const DRAG_STEP = 8 // px per arrow key (design D3)
+
+/** The 8 resize handle zones, in DOM order (design D6). Border strips straddle
+ *  the 2px window border; corners sit at the 16px diagonal bands. */
+const RESIZE_HANDLES: ResizeDir[] = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 
 /** True below 640px (Tailwind `sm`) — drag is disabled on mobile (design D8). */
 const MOBILE_QUERY = '(max-width: 639px)'
@@ -38,7 +42,7 @@ function useIsMobile(): boolean {
  * inert — the window never moves.
  */
 export function Window({ id }: WindowProps) {
-  const { apps, states, rects, order, activeId, focus, drag, minimize, restore, toggleMaximize, close, closeActive } =
+  const { apps, states, rects, order, activeId, focus, drag, resize, minimize, restore, toggleMaximize, close, closeActive } =
     useWindowManager()
   const { stillness } = useTheme()
   const { t } = useTranslation()
@@ -51,6 +55,7 @@ export function Window({ id }: WindowProps) {
   const rect = rects[id]
 
   const dragRef = useRef<{ startX: number; startY: number } | null>(null)
+  const resizeRef = useRef<{ startX: number; startY: number; dir: ResizeDir } | null>(null)
   const titlebarRef = useRef<HTMLDivElement>(null)
 
   const active = activeId === id
@@ -89,6 +94,44 @@ export function Window({ id }: WindowProps) {
     dragRef.current = null
   }, [])
 
+  // Resize is inert when stillness/mobile (mirror of drag) — the manager's
+  // resize() also guards stillness and non-'open' states (design D6).
+  const inert = stillness || isMobile || state === 'maximized'
+
+  const onHandlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>, dir: ResizeDir) => {
+      // stopPropagation keeps the handle from hitting the window's
+      // onPointerDown (which would focus + start a drag/capture on the window).
+      e.stopPropagation()
+      if (inert) return
+      focus(id)
+      const el = e.currentTarget
+      try {
+        el.setPointerCapture(e.pointerId)
+      } catch {
+        /* capture unsupported — resize still works via move/up */
+      }
+      resizeRef.current = { startX: e.clientX, startY: e.clientY, dir }
+    },
+    [inert, focus, id],
+  )
+
+  const onHandlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (inert || !resizeRef.current) return
+      const { startX, startY, dir } = resizeRef.current
+      const dx = e.clientX - startX
+      const dy = e.clientY - startY
+      resizeRef.current = { startX: e.clientX, startY: e.clientY, dir }
+      resize(id, dx, dy, dir)
+    },
+    [inert, resize, id],
+  )
+
+  const onHandlePointerUp = useCallback(() => {
+    resizeRef.current = null
+  }, [])
+
   // Focus safety net (design a11y / spec Risk 6): closing a window must never
   // leave focus on the removed node. Compute the next topmost title bar before
   // the close unmounts this window, then focus it (or blur) on the next frame.
@@ -118,18 +161,28 @@ export function Window({ id }: WindowProps) {
 
   const onTitleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLDivElement>) => {
+      const gated = !stillness && !isMobile && state !== 'maximized'
+      if (e.shiftKey && gated && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+        // Shift+Arrow resizes the active window ±8px (design D6, S2.4).
+        e.preventDefault()
+        const resizeDir: ResizeDir = e.key === 'ArrowRight' ? 'e' : e.key === 'ArrowLeft' ? 'w' : e.key === 'ArrowUp' ? 'n' : 's'
+        const dx = e.key === 'ArrowRight' ? DRAG_STEP : e.key === 'ArrowLeft' ? -DRAG_STEP : 0
+        const dy = e.key === 'ArrowDown' ? DRAG_STEP : e.key === 'ArrowUp' ? -DRAG_STEP : 0
+        resize(id, dx, dy, resizeDir)
+        return
+      }
       if (e.key === 'ArrowLeft') {
         e.preventDefault()
-        if (!stillness && !isMobile && state !== 'maximized') drag(id, -DRAG_STEP, 0)
+        if (gated) drag(id, -DRAG_STEP, 0)
       } else if (e.key === 'ArrowRight') {
         e.preventDefault()
-        if (!stillness && !isMobile && state !== 'maximized') drag(id, DRAG_STEP, 0)
+        if (gated) drag(id, DRAG_STEP, 0)
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
-        if (!stillness && !isMobile && state !== 'maximized') drag(id, 0, -DRAG_STEP)
+        if (gated) drag(id, 0, -DRAG_STEP)
       } else if (e.key === 'ArrowDown') {
         e.preventDefault()
-        if (!stillness && !isMobile && state !== 'maximized') drag(id, 0, DRAG_STEP)
+        if (gated) drag(id, 0, DRAG_STEP)
       } else if (e.key === 'Enter') {
         e.preventDefault()
         if (state === 'minimized') restore(id)
@@ -139,7 +192,7 @@ export function Window({ id }: WindowProps) {
         onEscClose()
       }
     },
-    [drag, id, restore, focus, onEscClose, stillness, isMobile, state],
+    [drag, id, restore, focus, onEscClose, stillness, isMobile, state, resize],
   )
 
   // Window style: absolute positioning from the manager rect. When minimized
@@ -213,6 +266,18 @@ export function Window({ id }: WindowProps) {
           </button>
         </div>
       </div>
+      {/* 8 resize handles (design D6): border strips + corners. aria-hidden
+          because resize is keyboard-reachable via the focusable titlebar. */}
+      {RESIZE_HANDLES.map((dir) => (
+        <div
+          key={dir}
+          className={`xp-resize-handle xp-resize-${dir}`}
+          aria-hidden="true"
+          onPointerDown={(e) => onHandlePointerDown(e, dir)}
+          onPointerMove={onHandlePointerMove}
+          onPointerUp={onHandlePointerUp}
+        />
+      ))}
       <div className="xp-window-body">{app?.render()}</div>
     </div>
   )
