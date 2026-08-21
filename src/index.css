@@ -494,6 +494,24 @@ html[data-theme='xp'] {
   color: #FFFFFF;
 }
 
+/* ── The XP theme is a browser-sized screen, not a scrollable page ──
+   The newspaper footer lives below the 100vh desktop canvas and would push
+   the document into scroll (painting a grey XP bar at the bottom). Inside
+   the XP metaphor the footer is page chrome, not desktop chrome, so it is
+   hidden, and on desktop widths the document itself is locked: windows
+   scroll internally (.xp-window-body is overflow:auto) while the canvas
+   never moves. The <640px fallback keeps document scroll so stacked windows
+   stay reachable. */
+[data-theme='xp'] #footer {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  html[data-theme='xp'] {
+    overflow: hidden;
+  }
+}
+
 /* ── Window layer ──
    Fills the whole desktop (border box = viewport) and is the positioning
    context for the absolutely-positioned windows. Because the desktop carries
