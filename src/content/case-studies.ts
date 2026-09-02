@@ -243,7 +243,7 @@ export const caseStudies: CaseStudy[] = [
     industry: 'Desarrollo Web',
 
     period: '2026 – Presente',
-    role: 'Frontend Developer & Designer',
+    role: 'Desarrollador Frontend y Diseñador',
     roleEn: 'Frontend Developer & Designer',
 
     problem:
