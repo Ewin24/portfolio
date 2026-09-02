@@ -3815,6 +3815,328 @@ Both classes have barriers now. The dev command boots the relay, a missing relay
 
 **Eleven rounds of review do not replace opening a browser.** The cheapest verification step in the entire project — run the dev command, click one entry — was the only one that found either defect. It is now a mandatory step at the end of every slice, before I call it done.`,
   },
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 16 — Semantic asymmetry vs. uniform interface
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'interfaz-uniforme-asimetria-semantica',
+    slug: 'interfaz-uniforme-no-arregla-asimetria-semantica',
+    title: 'Una interfaz uniforme no arregla una asimetría semántica',
+    titleEn: 'A Uniform Interface Does Not Fix a Semantic Asymmetry',
+    date: '2026-09-12',
+    tags: ['arquitectura', 'strategy-pattern', 'feature-flags', 'dotnet', 'integration'],
+    category: 'arquitectura',
+    featured: false,
+    excerpt:
+      'Dos proveedores externos de datos de riesgo, un refactor que parecía obvio y una interfaz uniforme que los unificaba. Uno de los dos devuelve una decisión; el otro devuelve variables y ningún campo de viabilidad. La interfaz hace que ambas formas compilen, pero no crea el dato que falta. Esto es cómo separé lo que sí se podía unificar de lo que había que dejar fallando en voz alta.',
+    excerptEn:
+      'Two external risk-data providers, one refactor that looked obvious, and a uniform interface to unify them. One provider returns a decision; the other returns variables and carries no viability field at all. The interface makes both shapes compile — it does not create the missing datum. Here is how I separated what could genuinely be unified from what had to fail out loud.',
+    content: `Un sistema de originación de crédito con el que trabajé consulta a dos proveedores externos de datos de riesgo. Durante meses asumí que eran dos instancias del mismo problema. No lo eran, y la diferencia no vivía en el código.
+
+El sistema los usa para dos cosas distintas. La primera es contactabilidad: dado un documento, obtener teléfonos y direcciones para poder comunicarse con el solicitante. La segunda es viabilidad: dado el mismo documento, decidir si el solicitante puede avanzar en el proceso de crédito.
+
+La contactabilidad ya era configurable de verdad, con un patrón strategy completo. Una interfaz \`IProveedorContactos\` expone una propiedad discriminadora que identifica al proveedor; hay una implementación real por cada uno, sin stubs; y un resolvedor mapea la central configurada a su implementación por diccionario, con una falla suave a un valor por defecto. En el contenedor de dependencias hay un registro por implementación más el resolvedor. Agregar un tercer proveedor es una clase nueva y un registro. Cero \`if\`.
+
+La viabilidad no. Ahí había un \`if\` literal comparando el nombre del proveedor configurado, y todo lo demás caía en un bloque heredado escrito en línea. No había interfaz común: el servicio llamaba directo a dos clientes con firmas distintas y objetos de respuesta distintos.
+
+Puesto así, el diagnóstico se escribe solo. La viabilidad es la contactabilidad con deuda técnica. Extraés la interfaz, movés las dos ramas a implementaciones, registrás en el contenedor y el \`if\` desaparece. Es el mismo refactor, en el mismo repositorio, hecho por la misma persona, con el ejemplo ya funcionando dos carpetas más allá.
+
+Ese diagnóstico era falso.
+
+**El enfoque equivocado**
+
+Mi plan era extraer una interfaz uniforme —llamémosla \`IEvaluadorViabilidad\`— con una operación \`EvaluarAsync\` que devolviera un resultado común, y hacer que las dos ramas encajaran ahí. Empecé por leer los dos contratos externos para definir el tipo de retorno. Ahí se cayó todo.
+
+Los dos proveedores no devuelven la misma clase de cosa.
+
+\`\`\`json
+// proveedor de DECISIÓN
+{ "viable": true, "motivo": "APROBADO", "puntaje": 720 }
+
+// proveedor de VARIABLES
+{ "nombre": "...", "rangoEdad": "26-35", "genero": "M",
+  "ingresoEstimado": 3200000, "variablesAdicionales": { } }
+\`\`\`
+
+El primero es un servicio de decisión: le preguntás por un documento y te contesta si el solicitante es viable, con un motivo. El dato que el sistema necesita viene en la respuesta.
+
+El segundo es un servicio de variables. Devuelve nombre, rango de edad, género, un estimador de ingreso y un diccionario abierto de variables adicionales que crece según el producto contratado. No trae ningún campo de viabilidad. No es que venga vacío, ni que venga con otro nombre: no existe.
+
+Una interfaz uniforme hace que las dos formas compilen. No crea el dato que falta.
+
+Esa es la parte incómoda, porque el refactor sí se puede hacer. Puedo escribir \`IEvaluadorViabilidad\`, puedo implementarla dos veces y puedo dejar el proyecto compilando esta misma tarde. La pregunta es qué devuelve la segunda implementación. Solo hay tres respuestas posibles y las tres son peores que no hacer nada.
+
+Devolver "viable" significa que el sistema aprueba crédito con un criterio que nadie definió. Devolver "no viable" significa que lo niega con un criterio que nadie definió, que además es la variante con consecuencias regulatorias. Caer de vuelta al otro proveedor convierte la configuración en mentira: el operador selecciona un proveedor, el sistema consulta otro, y nada en la respuesta lo delata.
+
+Ninguna de las tres es un problema de implementación. Las tres son la misma pregunta de negocio disfrazada de decisión técnica: qué combinación de rango de edad, género e ingreso estimado significa "viable" para este producto. Esa pregunta la responde alguien con autoridad sobre la política de crédito, no un desarrollador eligiendo un valor de retorno para que el compilador se calle.
+
+La simetría que yo había visto estaba en el sitio de llamada, no en el dominio. Las dos ramas se parecían porque las dos empiezan igual: consultar a un proveedor y decidir. El verbo "decidir" hacía trabajo distinto en cada lado. De un lado nombra un servicio que ya existe. Del otro nombra algo que todavía no está definido, y ninguna cantidad de indirección lo define.
+
+Hay una versión más general de este error y me la encuentro seguido. Cuando dos integraciones resuelven la misma necesidad, uno tiende a asumir que exponen la misma capacidad con distinta sintaxis. A veces es cierto y el adaptador es trivial. Otras veces una de las dos resuelve un problema estrictamente más chico, y el adaptador tiene que inventar la diferencia. Ese "inventar" es donde se cuela la regla de negocio sin dueño.
+
+\`\`\`text
+proveedor de DECISIÓN            proveedor de VARIABLES
+  consulta ──▶ { viable,           consulta ──▶ { nombre, rangoEdad,
+                 motivo }                         genero, ingresoEstimado,
+                                                  + diccionario abierto }
+        │                                    │
+        └──▶ el dato existe                  └──▶ el dato NO existe
+\`\`\`
+
+**La solución de dos velocidades**
+
+Dejé de tratarlo como un refactor único y lo traté como dos entregas con criterios distintos.
+
+Donde la semántica coincide, entregué la estrategia real. La contactabilidad ya tenía la forma correcta, así que el trabajo fue consolidarla y dejar el camino abierto para un tercer proveedor:
+
+\`\`\`csharp
+public interface IProveedorContactos
+{
+    string Central { get; }
+    Task<Contactos> ObtenerAsync(string documento);
+}
+
+public IProveedorContactos Resolver(string central) =>
+    _proveedores.FirstOrDefault(p => p.Central == central)
+    ?? _proveedores.First(p => p.Central == PorDefecto);
+\`\`\`
+
+Un resolvedor por diccionario en vez de un \`switch\` no es una preferencia estética. Es la diferencia entre "agregar un proveedor toca una clase nueva" y "agregar un proveedor toca todos los sitios donde alguien escribió una comparación de cadena".
+
+Donde la semántica no coincide, entregué una falla explícita detrás de un flag. El flag se lee de configuración, no de una constante compilada:
+
+\`\`\`csharp
+var habilitado = await _config.LeerEnteroConGuardaAsync(FlagRuteoViabilidad, 0);
+if (habilitado == 0) return await EvaluarPorRutaHeredadaAsync(solicitud);
+
+var activo = await _config.ObtenerProveedorActivoAsync(TipoServicio.Viabilidad);
+if (activo is null)
+{
+    _log.Advertencia("Configuración ausente; se usa la ruta heredada.");
+    return await EvaluarPorRutaHeredadaAsync(solicitud);
+}
+\`\`\`
+
+Con el flag apagado, el camino heredado corre exactamente igual que antes. Ese es el punto: la rama nueva puede existir en producción sin cambiar ningún comportamiento observable, y volver atrás no requiere un despliegue. Un flag que hay que redesplegar para apagar no es un kill switch, es un comentario optimista.
+
+Con el flag encendido y el proveedor de decisión activo, corre la decisión real. Con el flag encendido y el proveedor de variables activo, corre esto:
+
+\`\`\`csharp
+// El mapeo variables → {viable, motivo} es una regla de negocio sin definir.
+// Falla explícito: nunca aprueba, nunca niega, nunca cae al otro proveedor.
+return new Evaluacion
+{
+    Resultado = ResultadoEvaluacion.Error,
+    Motivo = "Mapeo de viabilidad no definido para este proveedor",
+};
+\`\`\`
+
+Esta es la pieza que más discutí conmigo mismo y la que más defiendo. No es una tarea a medio hacer: es la única salida honesta mientras el mapeo no exista. Un error explícito le dice al operador que la combinación que seleccionó no está soportada todavía. Una aprobación silenciosa no le dice nada y le entrega crédito a alguien sobre un criterio que inventó el compilador.
+
+El mismo criterio aplica cuando el proveedor falla por razones triviales. Si el cliente externo devuelve null o lanza una excepción, el resultado es un error explícito. Nunca una caída de vuelta al otro proveedor. Ese caso está sostenido por una prueba de regresión que verifica las dos mitades:
+
+\`\`\`csharp
+[Fact]
+public async Task ProveedorCaido_DevuelveError_YNuncaConsultaAlOtro()
+{
+    _variables.Setup(p => p.ConsultarAsync(It.IsAny<Solicitud>()))
+              .ThrowsAsync(new TimeoutException());
+    var r = await _servicio.EvaluarAsync(_solicitud);
+    Assert.Equal(ResultadoEvaluacion.Error, r.Resultado);
+    _decision.Verify(p => p.ConsultarAsync(It.IsAny<Solicitud>()), Times.Never);
+}
+\`\`\`
+
+La segunda mitad de esa prueba es la que importa. Verificar que devuelve error es fácil de escribir y fácil de satisfacer por accidente. Verificar que el otro proveedor no fue invocado ni una vez es lo que impide que alguien, dentro de seis meses y con muy buena intención, agregue un \`catch\` que "recupera" la operación consultando al proveedor de al lado.
+
+\`\`\`text
+                    ┌─ contactabilidad ────────────────────────────┐
+                    │ IProveedorContactos ──▶ resolvedor (dicc.)   │──▶ proveedor A
+solicitud ──▶ eval  │ tercer proveedor = 1 clase + 1 registro      │──▶ proveedor B
+              de    └──────────────────────────────────────────────┘
+              riesgo┌─ viabilidad ─────────────────────────────────┐
+                    │ flag = 0  ──▶ ruta heredada, sin cambios     │
+                    │ flag = 1 + proveedor-decisión ──▶ decisión   │
+                    │ flag = 1 + proveedor-variables ──▶ Error     │
+                    │ proveedor null o excepción ──▶ Error         │
+                    └──────────────────────────────────────────────┘
+\`\`\`
+
+**Impacto**
+
+La suite completa quedó en 474 de 474 pruebas verdes. El cambio se entregó como tres PRs encadenados de 888, 692 y 620 líneas: base de datos y configuración primero, API y pantalla de administración después, y el cableado del servicio al final. Los tres exceden el presupuesto de revisión de 400 líneas que uso por defecto, y los tres se marcaron como excepción explícita en vez de mezclarse en silencio. Ese es un costo real de revisión y prefiero pagarlo declarado antes que esconderlo partiendo el cambio por la mitad de una transacción.
+
+El resultado operativo es más chico de lo que parece y más útil de lo que suena. La contactabilidad quedó lista para un tercer proveedor sin tocar lógica de negocio. La viabilidad quedó en un estado donde encender el flag con el proveedor de variables activo rompe de forma controlada y visible, en vez de responder algo plausible. Y la pregunta que bloquea el avance dejó de ser un bloque de código sin escribir para convertirse en una regla de negocio con nombre y con dueño.
+
+Ese último punto es el que cambió el ritmo del proyecto. Mientras el mapeo fue "una tarea pendiente del backend", nadie fuera del equipo técnico lo vio. Cuando pasó a ser "falta definir qué variables determinan viabilidad para este producto", apareció en la conversación correcta, con las personas que sí pueden responderlo.
+
+También cambió la forma de estimar. Antes, el trabajo restante se veía como un refactor de una tarde. Ahora se ve como lo que es: una definición de política de crédito, más un día de implementación una vez que esa definición exista. La segunda estimación es incómoda y es la verdadera.
+
+**Lecciones**
+
+**La simetría del sitio de llamada no es simetría del dominio.** Dos ramas que empiezan igual pueden terminar en cosas incomparables. Antes de extraer una interfaz común comparo las formas de retorno, no las firmas de invocación. Si un lado trae el dato y el otro no lo tiene, no hay interfaz que arregle eso.
+
+**Una interfaz uniforme es una garantía de compilación, no una garantía semántica.** El compilador confirma que las dos implementaciones tienen la misma forma. No sabe si las dos significan lo mismo, y esa segunda pregunta era la única que importaba acá.
+
+**Una falla explícita es una salida de diseño.** Cuando el sistema no puede responder correctamente, responder "no puedo" es una respuesta válida y auditable. Aprobar o negar un crédito porque un mapeo no está definido es la catástrofe real, y es exactamente lo que produce una interfaz uniforme cuando la usás para tapar un dato faltante.
+
+**Un flag que no se puede apagar sin desplegar no es un kill switch.** El valor tiene que vivir donde alguien pueda cambiarlo en caliente, y el camino heredado tiene que quedar intacto mientras esté apagado. Si apagar el flag requiere el mismo procedimiento que revertir el cambio, el flag no compró nada.
+
+**Nombrar la pregunta abierta es progreso; esconderla detrás de una abstracción no lo es.** La abstracción hace que el problema desaparezca del código y siga existiendo en producción, que es el peor lugar posible para descubrirlo.`,
+    contentEn: `A loan origination system I worked on consults two external risk-data providers. For months I assumed they were two instances of the same problem. They were not, and the difference did not live in the code.
+
+The system uses them for two different things. The first is contactability: given an identity document, retrieve phone numbers and addresses so the applicant can be reached. The second is viability: given the same document, decide whether the applicant can move forward in the credit process.
+
+Contactability was genuinely config-driven, with a complete strategy pattern. An \`IProveedorContactos\` interface exposes a discriminator property that identifies the provider; there is one real implementation per provider, no stubs; and a resolver maps the configured bureau to its implementation through a dictionary, with a soft fallback to a default. Dependency injection holds one registration per implementation plus the resolver. Adding a third provider is one new class and one registration. Zero \`if\`.
+
+Viability was not. It had a literal \`if\` comparing the configured provider's name, and everything else fell through to a legacy block written inline. There was no shared interface: the service called two clients directly, with different signatures and different response objects.
+
+Put that way, the diagnosis writes itself. Viability is contactability with technical debt. Extract the interface, move both branches into implementations, register both for injection, and the \`if\` disappears. Same refactor, same repository, same person, with a working example two folders away.
+
+The diagnosis was wrong.
+
+**The wrong approach**
+
+My plan was to extract a uniform interface — call it \`IEvaluadorViabilidad\` — with an \`EvaluarAsync\` operation returning a shared result, and slot both branches into it. I started by reading the two external contracts to pin down the return type. That is where it collapsed.
+
+The two providers do not return the same kind of thing.
+
+\`\`\`json
+// proveedor de DECISIÓN
+{ "viable": true, "motivo": "APROBADO", "puntaje": 720 }
+
+// proveedor de VARIABLES
+{ "nombre": "...", "rangoEdad": "26-35", "genero": "M",
+  "ingresoEstimado": 3200000, "variablesAdicionales": { } }
+\`\`\`
+
+The first is a decision service. You ask it about a document and it tells you whether the applicant is viable, with a reason. The datum the system needs arrives in the response.
+
+The second is a variables service. It returns a name, an age range, a gender, an income estimate, and an open dictionary of additional variables that grows with the contracted product. It carries no viability field. Not empty, not renamed: absent.
+
+A uniform interface makes both shapes compile. It does not create the missing datum.
+
+That is the uncomfortable part, because the refactor is perfectly doable. I can write \`IEvaluadorViabilidad\`, implement it twice, and have the project compiling this afternoon. The question is what the second implementation returns. There are exactly three available answers and all three are worse than doing nothing.
+
+Returning "viable" means the system approves credit on a criterion nobody defined. Returning "not viable" means it denies credit on a criterion nobody defined, which is the variant with regulatory consequences. Falling back to the other provider turns the configuration into a lie: the operator selects one provider, the system queries another, and nothing in the response gives it away.
+
+None of the three is an implementation problem. All three are the same business question wearing a technical costume: which combination of age range, gender and estimated income means "viable" for this product. That question belongs to someone with authority over credit policy, not to a developer picking a return value to keep the compiler quiet.
+
+The symmetry I had seen lived at the call site, not in the domain. Both branches looked alike because both start the same way: consult a provider and decide. The verb "decide" was doing different work on each side. On one side it names a service that already exists. On the other it names something nobody has defined yet, and no amount of indirection defines it.
+
+There is a more general version of this mistake and I run into it often. When two integrations serve the same need, it is tempting to assume they expose the same capability with different syntax. Sometimes that is true and the adapter is trivial. Other times one of them solves a strictly smaller problem, and the adapter has to invent the difference. That act of inventing is exactly where an ownerless business rule slips in.
+
+\`\`\`text
+proveedor de DECISIÓN            proveedor de VARIABLES
+  consulta ──▶ { viable,           consulta ──▶ { nombre, rangoEdad,
+                 motivo }                         genero, ingresoEstimado,
+                                                  + diccionario abierto }
+        │                                    │
+        └──▶ el dato existe                  └──▶ el dato NO existe
+\`\`\`
+
+**The two-speed solution**
+
+I stopped treating it as a single refactor and treated it as two deliveries with different acceptance criteria.
+
+Where the semantics match, ship the real strategy. Contactability already had the right shape, so the work was consolidating it and leaving the door open for a third provider:
+
+\`\`\`csharp
+public interface IProveedorContactos
+{
+    string Central { get; }
+    Task<Contactos> ObtenerAsync(string documento);
+}
+
+public IProveedorContactos Resolver(string central) =>
+    _proveedores.FirstOrDefault(p => p.Central == central)
+    ?? _proveedores.First(p => p.Central == PorDefecto);
+\`\`\`
+
+A dictionary resolver instead of a \`switch\` is not an aesthetic preference. It is the difference between "adding a provider touches one new class" and "adding a provider touches every place where someone wrote a string comparison".
+
+Where the semantics do not match, ship an explicit failure behind a feature flag. The flag is read from configuration, not from a compiled constant:
+
+\`\`\`csharp
+var habilitado = await _config.LeerEnteroConGuardaAsync(FlagRuteoViabilidad, 0);
+if (habilitado == 0) return await EvaluarPorRutaHeredadaAsync(solicitud);
+
+var activo = await _config.ObtenerProveedorActivoAsync(TipoServicio.Viabilidad);
+if (activo is null)
+{
+    _log.Advertencia("Configuración ausente; se usa la ruta heredada.");
+    return await EvaluarPorRutaHeredadaAsync(solicitud);
+}
+\`\`\`
+
+With the flag off, the legacy path runs exactly as it did before. That is the point: the new branch can exist in production without changing a single observable behavior, and backing out does not require a deployment. A flag you have to redeploy to switch off is not a kill switch, it is an optimistic comment.
+
+With the flag on and the decision provider active, the real decision runs. With the flag on and the variables provider active, this runs:
+
+\`\`\`csharp
+// El mapeo variables → {viable, motivo} es una regla de negocio sin definir.
+// Falla explícito: nunca aprueba, nunca niega, nunca cae al otro proveedor.
+return new Evaluacion
+{
+    Resultado = ResultadoEvaluacion.Error,
+    Motivo = "Mapeo de viabilidad no definido para este proveedor",
+};
+\`\`\`
+
+This is the piece I argued with myself about the most, and the one I defend hardest. It is not a half-finished task: it is the only honest exit while the mapping does not exist. An explicit error tells the operator the combination they selected is not supported yet. A silent approval tells them nothing and hands credit to someone on a criterion the compiler invented.
+
+The same rule applies when the provider fails for trivial reasons. If the external client returns null or throws, the result is an explicit error. Never a fallback to the other provider. That case is held in place by a regression test that checks both halves:
+
+\`\`\`csharp
+[Fact]
+public async Task ProveedorCaido_DevuelveError_YNuncaConsultaAlOtro()
+{
+    _variables.Setup(p => p.ConsultarAsync(It.IsAny<Solicitud>()))
+              .ThrowsAsync(new TimeoutException());
+    var r = await _servicio.EvaluarAsync(_solicitud);
+    Assert.Equal(ResultadoEvaluacion.Error, r.Resultado);
+    _decision.Verify(p => p.ConsultarAsync(It.IsAny<Solicitud>()), Times.Never);
+}
+\`\`\`
+
+The second half of that test is the one that matters. Asserting that it returns an error is easy to write and easy to satisfy by accident. Asserting that the other provider was never invoked is what stops someone, six months from now and with excellent intentions, from adding a \`catch\` that "recovers" the operation by querying the provider next door.
+
+\`\`\`text
+                    ┌─ contactabilidad ────────────────────────────┐
+                    │ IProveedorContactos ──▶ resolvedor (dicc.)   │──▶ proveedor A
+solicitud ──▶ eval  │ tercer proveedor = 1 clase + 1 registro      │──▶ proveedor B
+              de    └──────────────────────────────────────────────┘
+              riesgo┌─ viabilidad ─────────────────────────────────┐
+                    │ flag = 0  ──▶ ruta heredada, sin cambios     │
+                    │ flag = 1 + proveedor-decisión ──▶ decisión   │
+                    │ flag = 1 + proveedor-variables ──▶ Error     │
+                    │ proveedor null o excepción ──▶ Error         │
+                    └──────────────────────────────────────────────┘
+\`\`\`
+
+**Impact**
+
+The full suite finished at 474 of 474 tests green. The change shipped as three chained pull requests of 888, 692 and 620 lines: database and configuration first, API and admin screen next, service wiring last. All three exceed the 400-line review budget I use by default, and all three were flagged as explicit exceptions rather than quietly merged. That is a real cost imposed on a reviewer, and I would rather pay it out loud than hide it by splitting the change through the middle of a transaction.
+
+The operational result is smaller than it sounds and more useful than it looks. Contactability is ready for a third provider without touching business logic. Viability sits in a state where turning the flag on with the variables provider active breaks in a controlled, visible way instead of answering something plausible. And the question blocking progress stopped being an unwritten block of code and became a business rule with a name and an owner.
+
+That last point is what changed the project's rhythm. While the mapping was "a pending backend task", nobody outside the technical team saw it. Once it became "we need to define which variables determine viability for this product", it showed up in the right conversation, with the people who can actually answer it.
+
+It also changed how the work is estimated. Before, the remaining effort looked like an afternoon of refactoring. Now it looks like what it is: a credit policy definition, plus a day of implementation once that definition exists. The second estimate is uncomfortable and it is the true one.
+
+**Lessons**
+
+**Symmetry at the call site is not symmetry in the domain.** Two branches that start alike can end in incomparable places. Before extracting a shared interface I now compare return shapes, not invocation signatures. If one side carries the datum and the other does not have it, no interface repairs that.
+
+**A uniform interface is a compilation guarantee, not a semantic one.** The compiler confirms both implementations have the same shape. It does not know whether they mean the same thing, and that second question was the only one that mattered here.
+
+**An explicit failure is a design output.** When the system cannot answer correctly, answering "I cannot" is a valid, auditable response. Approving or denying credit because a mapping is undefined is the actual catastrophe, and it is precisely what a uniform interface produces when you use it to paper over a missing datum.
+
+**A flag you cannot switch off without deploying is not a kill switch.** The value has to live somewhere a human can change it hot, and the legacy path has to stay intact while it is off. If switching the flag off takes the same procedure as reverting the change, the flag bought you nothing.
+
+**Naming the open question is progress; hiding it behind an abstraction is not.** The abstraction makes the problem disappear from the code while it keeps existing in production, which is the worst possible place to discover it.`,
+    relatedIds: ['clean-architecture-los', 'catalog-driven-decision-engine'],
+  },
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
