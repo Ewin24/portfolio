@@ -92,10 +92,24 @@ export async function manager(page) {
   return page.evaluate(() => window.__XPMANAGER__ ?? null)
 }
 
+/** Maximum number of `bands` entries returned by `pixelDiff`, to bound stdout. */
+export const BAND_CAP = 20
+
 /**
- * Pixel-diff two PNG files. Returns { diff, total, width, height, reason }.
- * Reads the PNGs as Node buffers, passes them into a headless page as data
- * URLs, and compares them pixel-by-pixel on a canvas.
+ * Pixel-diff two PNG files. Returns
+ * `{ diff, total, width, height, reason, firstDiffY, heightDelta, bands }`.
+ *
+ * `diff`, `total`, `width`, `height` and `reason` keep their original meaning,
+ * so the pass rule in `newspaper.mjs` is unchanged. The added keys exist so a
+ * baseline re-cut can attribute every differing region to an intended content
+ * change instead of absorbing an unexplained layout regression:
+ *
+ *  - A width mismatch is always chrome or layout, so it stays a hard `diff: -1`.
+ *  - A height mismatch no longer bails. The common prefix `min(hA, hB)` is
+ *    compared and `heightDelta` is reported, but `|heightDelta| * width` is
+ *    added to `diff` so a taller or shorter page can never silently pass.
+ *  - Consecutive differing rows collapse into `bands` (capped at `BAND_CAP`),
+ *    and the first differing row is reported as `firstDiffY`.
  */
 export async function pixelDiff(fileA, fileB) {
   const aBuf = fs.readFileSync(fileA)
@@ -105,7 +119,7 @@ export async function pixelDiff(fileA, fileB) {
   const browser = await openBrowser()
   try {
     const page = await browser.newPage()
-    const result = await page.evaluate(async ({ a, b }) => {
+    const result = await page.evaluate(async ({ a, b, bandCap }) => {
       const load = (src) => new Promise((resolve, reject) => {
         const img = new Image()
         img.onload = () => resolve(img)
@@ -114,25 +128,75 @@ export async function pixelDiff(fileA, fileB) {
       })
       const imgA = await load(a)
       const imgB = await load(b)
-      if (imgA.width !== imgB.width || imgA.height !== imgB.height) {
-        return { diff: -1, reason: `size mismatch ${imgA.width}x${imgA.height} vs ${imgB.width}x${imgB.height}` }
-      }
-      const c = document.createElement('canvas')
-      c.width = imgA.width
-      c.height = imgA.height
-      const g = c.getContext('2d')
-      g.drawImage(imgA, 0, 0)
-      const dA = g.getImageData(0, 0, c.width, c.height).data
-      g.drawImage(imgB, 0, 0)
-      const dB = g.getImageData(0, 0, c.width, c.height).data
-      let diff = 0
-      for (let i = 0; i < dA.length; i += 4) {
-        if (dA[i] !== dB[i] || dA[i + 1] !== dB[i + 1] || dA[i + 2] !== dB[i + 2] || dA[i + 3] !== dB[i + 3]) {
-          diff++
+      if (imgA.width !== imgB.width) {
+        return {
+          diff: -1,
+          total: imgA.width * imgA.height,
+          width: imgA.width,
+          height: imgA.height,
+          reason: `width mismatch ${imgA.width}x${imgA.height} vs ${imgB.width}x${imgB.height}`,
+          firstDiffY: 0,
+          heightDelta: imgB.height - imgA.height,
+          bands: [],
         }
       }
-      return { diff, total: dA.length / 4, width: imgA.width, height: imgA.height }
-    }, { a: aDataUrl, b: bDataUrl })
+      const width = imgA.width
+      const heightDelta = imgB.height - imgA.height
+      // Compare the common prefix; the surplus rows are charged to `diff` below.
+      const h = Math.min(imgA.height, imgB.height)
+      const c = document.createElement('canvas')
+      c.width = width
+      c.height = h
+      const g = c.getContext('2d')
+      g.drawImage(imgA, 0, 0)
+      const dA = g.getImageData(0, 0, width, h).data
+      g.clearRect(0, 0, width, h)
+      g.drawImage(imgB, 0, 0)
+      const dB = g.getImageData(0, 0, width, h).data
+      let diff = 0
+      let firstDiffY = null
+      let truncated = false
+      const bands = []
+      for (let y = 0; y < h; y++) {
+        const rowStart = y * width * 4
+        let rowDiff = 0
+        for (let x = 0; x < width; x++) {
+          const i = rowStart + x * 4
+          if (dA[i] !== dB[i] || dA[i + 1] !== dB[i + 1] || dA[i + 2] !== dB[i + 2] || dA[i + 3] !== dB[i + 3]) {
+            rowDiff++
+          }
+        }
+        if (rowDiff === 0) continue
+        diff += rowDiff
+        if (firstDiffY === null) firstDiffY = y
+        const last = bands[bands.length - 1]
+        if (last && last.y1 === y - 1) {
+          last.y1 = y
+          last.pixels += rowDiff
+        } else if (bands.length < bandCap) {
+          bands.push({ y0: y, y1: y, pixels: rowDiff })
+        } else {
+          truncated = true
+        }
+      }
+      const notes = []
+      if (heightDelta !== 0) {
+        // Keep the gate strict: an unseen tail is still a difference.
+        diff += Math.abs(heightDelta) * width
+        notes.push(`height delta ${heightDelta}`)
+      }
+      if (truncated) notes.push(`bands truncated at ${bandCap}`)
+      return {
+        diff,
+        total: width * h,
+        width,
+        height: h,
+        reason: notes.join('; '),
+        firstDiffY,
+        heightDelta,
+        bands,
+      }
+    }, { a: aDataUrl, b: bDataUrl, bandCap: BAND_CAP })
     return result
   } finally {
     await browser.close()
