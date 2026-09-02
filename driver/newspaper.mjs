@@ -79,13 +79,16 @@ async function run() {
           check(`[${lang}] newspaper pixel-identical @ ${vp.name}`,
             passes,
             `diff=${r.diff} total=${r.total} (${(ratio * 100).toFixed(4)}%) ${r.reason || ''}`)
-          if (!passes) {
-            reportRegions(lang, vp.name, r)
-            if (UPDATE) {
-              copyFileSync(cur, base)
-              recut.push(base)
-              console.log(`    RE-CUT ${base}`)
-            }
+          if (!passes) reportRegions(lang, vp.name, r)
+          // A deliberate re-cut must land on exactly 0 differing pixels, so it
+          // refreshes every capture that is not byte-identical — not only the
+          // ones the 0.1% rasterisation allowance already failed. Otherwise a
+          // tolerated difference survives the re-cut and the gate never
+          // converges on the 0 px that R8 requires.
+          if (UPDATE && r.diff !== 0) {
+            copyFileSync(cur, base)
+            recut.push(base)
+            console.log(`    RE-CUT ${base}`)
           }
         } finally { await ctx.close() }
       }
