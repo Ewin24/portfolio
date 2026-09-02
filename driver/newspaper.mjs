@@ -57,12 +57,9 @@ async function run() {
   try {
     for (const lang of LOCALES) {
       for (const vp of VIEWPORTS) {
-        const ctx = await browser.newContext({
-          viewport: { width: vp.width, height: vp.height },
-          locale: lang === 'es' ? 'es-ES' : 'en-US',
-          reducedMotion: 'reduce',
-        })
-        const page = await ctx.newPage()
+        // `newPage` also stubs `api.github.com` from the committed fixture, so
+        // the capture no longer depends on live third-party data.
+        const { ctx, page } = await newPage(browser, vp, lang, { reducedMotion: 'reduce' })
         try {
           await page.goto(BASE_URL, { waitUntil: 'networkidle' })
           const cur = `${shotPath(lang, vp.name)}`.replace('baseline-', 'current-')

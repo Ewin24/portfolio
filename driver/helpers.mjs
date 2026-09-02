@@ -30,12 +30,51 @@ export const APP_IDS = [
   'contact',
 ]
 
+/**
+ * Committed snapshot of the two `api.github.com` responses the app consumes
+ * (`src/services/github.ts`: `/users/:login` and `/users/:login/repos`),
+ * trimmed to the fields declared by `GitHubUser` / `GitHubRepo` in
+ * `src/types.ts` and to the 6 non-fork repositories that can reach
+ * `getFeaturedRepos`' top slice.
+ *
+ * `avatar_url` is deliberately empty: the real value points at a second
+ * third-party host (`avatars.githubusercontent.com`), and a pixel baseline that
+ * depends on it would be exactly as non-hermetic as one that depends on the
+ * API. With it empty, `About` renders its designed initials fallback and the
+ * capture reaches only one stubbed origin.
+ */
+const GITHUB_FIXTURE = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'fixtures', 'github-api.json'), 'utf8')
+)
+
+/**
+ * Serve `api.github.com` from the committed fixture.
+ *
+ * The page fetches live GitHub data for the repository panel in `#projects`.
+ * That made every capture depend on third-party state — the committed
+ * baselines were cut while the API was rate-limited, so the page rendered
+ * 295 px shorter than it does when the API answers. A visual baseline is only
+ * meaningful when the captured page is hermetic, so the drivers answer that
+ * origin themselves.
+ */
+export async function stubGitHubApi(ctx) {
+  await ctx.route('https://api.github.com/**', (route) => {
+    const { pathname } = new URL(route.request().url())
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(pathname.endsWith('/repos') ? GITHUB_FIXTURE.repos : GITHUB_FIXTURE.user),
+    })
+  })
+}
+
 export async function newPage(browser, viewport, lang, opts = {}) {
   const ctx = await browser.newContext({
     viewport: { width: viewport.width, height: viewport.height },
     locale: lang === 'es' ? 'es-ES' : 'en-US',
     reducedMotion: opts.reducedMotion ?? 'no-preference',
   })
+  await stubGitHubApi(ctx)
   const page = await ctx.newPage()
   return { ctx, page }
 }
