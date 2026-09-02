@@ -44,19 +44,19 @@ export const caseStudies: CaseStudy[] = [
       'The company had no digital loan origination system. Applications were processed manually, taking days to complete, with no identity verification or fraud detection. Each application required human review without automation, causing delays, reconciliation errors, and exposure to identity theft.',
 
     solution:
-      'Diseñé y construí el sistema completo desde cero. En la capa de datos: DDL con 4 esquemas lógicos (cfg/cat/fab/aud), 30+ tablas transaccionales, máquina de estados de 23 estados, y 27 stored procedures optimizados. En la capa de servicios: API REST en .NET con Clean Architecture — repositorios por esquema, servicios por dominio funcional (Estudio, Tercero, OTP, Biometría) y controladores por canal (Admin/Tienda/Web/Handoff). Implementé el SOVI (Sistema Orquestador de Validación de Identidad) con patrón Strategy para verificación por bot de voz + validación manual, con motor de decisiones catalog-driven (sin if/switch hardcodeados). Integré detección de fraude con análisis biométrico de fotografías y un flujo completo de auditoría INSERT-ONLY.',
+      'Diseñé y construí el sistema completo desde cero. En la capa de datos: DDL con 4 esquemas lógicos (cfg/cat/fab/aud), 30+ tablas transaccionales, máquina de estados de 23 estados, y 27 stored procedures optimizados. En la capa de servicios: API REST en .NET con Clean Architecture — repositorios por esquema, servicios por dominio funcional (Estudio, Tercero, OTP, Biometría) y controladores por canal (Admin/Tienda/Web/Handoff). Implementé el SOVI (Sistema Orquestador de Validación de Identidad) con patrón Strategy para verificación por bot de voz + validación manual, con motor de decisiones catalog-driven (sin if/switch hardcodeados). Integré detección de fraude con análisis biométrico de fotografías y un flujo completo de auditoría INSERT-ONLY. Más adelante hice configurable el proveedor de datos de riesgo mediante una interfaz de estrategia (`IProveedorContactos`) y un resolvedor que mapea por diccionario el proveedor configurado a su implementación —sumar un tercer proveedor es una clase nueva y un registro de inyección de dependencias, cero `if`—, detrás de un feature flag que funciona como kill switch sin redespliegue y con un stub de falla explícita para la rama cuyo mapeo semántico todavía no está definido: nunca aprueba ni niega en silencio, y nunca cae de vuelta al otro proveedor.',
     solutionEn:
-      'Designed and built the complete system from scratch. Data layer: DDL with 4 logical schemas (cfg/cat/fab/aud), 30+ transactional tables, 23-state state machine, and 27 optimized stored procedures. Service layer: REST API in .NET with Clean Architecture — repositories per schema, services per functional domain (Study, ThirdParty, OTP, Biometrics), controllers per channel (Admin/Store/Web/Handoff). Implemented SOVI (Identity Validation Orchestrator System) with Strategy pattern for voice bot verification + manual validation, with a catalog-driven decision engine (no hardcoded if/switch). Integrated fraud detection with biometric photo analysis and a complete INSERT-ONLY audit trail.',
+      'Designed and built the complete system from scratch. Data layer: DDL with 4 logical schemas (cfg/cat/fab/aud), 30+ transactional tables, 23-state state machine, and 27 optimized stored procedures. Service layer: REST API in .NET with Clean Architecture — repositories per schema, services per functional domain (Study, ThirdParty, OTP, Biometrics), controllers per channel (Admin/Store/Web/Handoff). Implemented SOVI (Identity Validation Orchestrator System) with Strategy pattern for voice bot verification + manual validation, with a catalog-driven decision engine (no hardcoded if/switch). Integrated fraud detection with biometric photo analysis and a complete INSERT-ONLY audit trail. Later I made the risk-data provider configurable through a strategy interface (`IProveedorContactos`) and a resolver that maps the configured provider to its implementation by dictionary —adding a third provider is one new class and one dependency-injection registration, zero `if`— behind a feature flag that acts as a kill switch without redeployment, and with an explicit-fail stub for the branch whose semantic mapping is not defined yet: it never silently approves or denies, and never falls back to the other provider.',
 
     impact:
-      '114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones.',
+      '114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones. 474/474 pruebas verdes tras hacer configurable el proveedor de datos de riesgo, entregado como 3 PRs encadenados.',
     impactEn:
-      '114+ API endpoints across 6 BFF layers (Admin/Core/Store/Web/Handoff/Util). 27 stored procedures in production. 23-state loan lifecycle with full traceability. Automated identity verification via voice bot with manual Plan B as a first-class citizen. Immutable audit trail of all operations.',
+      '114+ API endpoints across 6 BFF layers (Admin/Core/Store/Web/Handoff/Util). 27 stored procedures in production. 23-state loan lifecycle with full traceability. Automated identity verification via voice bot with manual Plan B as a first-class citizen. Immutable audit trail of all operations. 474/474 tests green after making the risk-data provider configurable, delivered as 3 chained PRs.',
 
     stack: ['.NET 8+', 'C#', 'Dapper', 'SQL Server', 'Clean Architecture', 'REST API', 'JWT', 'Strategy Pattern'],
     architectureDiagram: 'Arquitectura en 3 capas: BFFs (Admin/Tienda/Web/Handoff/Util) → Domain Services (Estudio, Tercero, OTP, Biometría) → Repositories por Schema (cfg/cat/fab/aud). Cada BFF inyecta los mismos servicios de dominio. Sin duplicación entre canales.',
     hasNDA: true,
-    tags: ['fintech', 'architecture', 'fullstack', 'los', 'ddd', 'dotnet'],
+    tags: ['fintech', 'architecture', 'fullstack', 'los', 'ddd', 'dotnet', 'strategy', 'feature-flags'],
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -242,7 +242,7 @@ export const caseStudies: CaseStudy[] = [
     companyAnon: false,
     industry: 'Desarrollo Web',
 
-    period: '2024 – Presente',
+    period: '2026 – Presente',
     role: 'Frontend Developer & Designer',
     roleEn: 'Frontend Developer & Designer',
 
@@ -252,19 +252,19 @@ export const caseStudies: CaseStudy[] = [
       'Developer portfolios show code but not business impact. Relying exclusively on the GitHub API to showcase projects hides the most valuable work: private enterprise systems under NDA. I needed a platform that sells engineering, not just public repositories.',
 
     solution:
-      'Diseñé una arquitectura híbrida: capa de contenido curado (casos de estudio en TypeScript con formato STAR, experiencia laboral, blog) como fuente principal de verdad, y API de GitHub como widget secundario de actividad. Implementé i18n nativo (ES/EN), design system editorial pixel-art con sombras pixeladas y tipografía de periódico, y animaciones con Framer Motion. Construido con React 19 + Vite + TypeScript + Tailwind CSS v4.',
+      'Diseñé una arquitectura híbrida: capa de contenido curado (casos de estudio en TypeScript con formato STAR, experiencia laboral, blog) como fuente principal de verdad, y API de GitHub como widget secundario de actividad. Implementé i18n nativo (ES/EN), design system editorial pixel-art con sombras pixeladas y tipografía de periódico, y animaciones con Framer Motion. Construido con React 19 + Vite + TypeScript + Tailwind CSS v4. Sobre esa base sumé un segundo tema seleccionable por `data-theme` —del periódico editorial a un escritorio interactivo estilo XP— con un WindowManager que es dueño de cada rectángulo, clamp y orden Z: ventanas arrastrables, redimensionado por 8 asas, menú de inicio, barra de tareas con bandeja de utilidades, pestañas dentro de una misma ventana y una ventana de ayuda fuera del registro visible.',
     solutionEn:
-      'Designed a hybrid architecture: curated content layer (STAR-format case studies in TypeScript, work experience, blog) as the primary source of truth, and GitHub API as a secondary activity widget. Implemented native i18n (ES/EN), pixel-art editorial design system with pixel shadows and newspaper typography, and Framer Motion animations. Built with React 19 + Vite + TypeScript + Tailwind CSS v4.',
+      'Designed a hybrid architecture: curated content layer (STAR-format case studies in TypeScript, work experience, blog) as the primary source of truth, and GitHub API as a secondary activity widget. Implemented native i18n (ES/EN), pixel-art editorial design system with pixel shadows and newspaper typography, and Framer Motion animations. Built with React 19 + Vite + TypeScript + Tailwind CSS v4. On top of that I added a second theme selected through `data-theme` —from the editorial newspaper to an interactive XP-style desktop— driven by a WindowManager that owns every rect, clamp and z-order: draggable windows, 8-handle resizing, a Start menu, a taskbar with a utilities tray, tabs inside a single window, and a Help window kept out of the visible registry.',
 
     impact:
-      'Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript.',
+      'Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript. El escritorio XP se construyó con TDD estricto contra un driver Playwright versionado —98/98 verificaciones, RED antes que GREEN en cada unidad de trabajo—, y un segundo driver versionado compara el tema periódico píxel a píxel en 4 viewports × 2 idiomas contra líneas base versionadas: exige 0 píxeles de diferencia, así que el diseño editorial no puede desviarse mientras evoluciona el segundo tema.',
     impactEn:
-      'Architecture that prioritizes business impact over source code. NDA-compliant case studies without exposing confidential information. Native i18n without external libraries. Custom design system that visually stands out from generic portfolios. Adding a case study = 1 TypeScript object.',
+      'Architecture that prioritizes business impact over source code. NDA-compliant case studies without exposing confidential information. Native i18n without external libraries. Custom design system that visually stands out from generic portfolios. Adding a case study = 1 TypeScript object. The XP desktop was built with strict TDD against a committed Playwright driver —98/98 checks, RED before GREEN on every work unit— and a second committed driver pixel-diffs the newspaper theme across 4 viewports × 2 locales against committed baselines: it demands 0 differing pixels, so the editorial design cannot drift while the second theme evolves.',
 
-    stack: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS v4', 'Framer Motion', 'GitHub API'],
+    stack: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS v4', 'Framer Motion', 'GitHub API', 'Playwright'],
     githubUrl: 'https://github.com/Ewin24',
     hasNDA: false,
-    tags: ['frontend', 'portfolio', 'architecture', 'react'],
+    tags: ['frontend', 'portfolio', 'architecture', 'react', 'testing', 'tdd', 'design-system'],
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -380,18 +380,61 @@ export const caseStudies: CaseStudy[] = [
       'Entities in the solidarity sector (cooperatives, employee funds) faced manual processes for SARLAFT, SARC, and SIAR risk management, with undigitized loan origination flows and regulatory monitoring. The monolithic web server became a bottleneck when processing heavy financial files synchronously, degrading the user experience.',
 
     solution:
-      'Diseñé y construí STARSOL desde cero como plataforma SaaS B2B en PHP con Laravel, implementando una arquitectura asíncrona con 3 background workers que procesan jobs simultáneamente, desacoplando completamente la carga de archivos del hilo principal del servidor web. Para la gestión avanzada de archivos, desarrollé una aplicación cliente en .NET MAUI con capacidad offline que se sincroniza con el backend en la nube. A nivel de infraestructura, aprovisioné entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad para el procesamiento de datos financieros sensibles.',
+      'Diseñé y construí STARSOL desde cero como plataforma SaaS B2B en PHP con Laravel, implementando una arquitectura asíncrona con 3 background workers que procesan jobs simultáneamente, desacoplando completamente la carga de archivos del hilo principal del servidor web. Para la gestión avanzada de archivos, desarrollé una aplicación cliente en .NET MAUI con capacidad offline que se sincroniza con el backend en la nube. A nivel de infraestructura, aprovisioné entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad para el procesamiento de datos financieros sensibles. En la v2 construí un módulo dedicado de ingesta regulatoria ADA/SICSES cuyo CsvStructureValidator detecta marcador, separador y fila de encabezado antes de validar —cuenta la fila de encabezado, nunca una fila de datos—, y en la v3 reestructuré la interfaz en 3 módulos.',
     solutionEn:
-      'Designed and built STARSOL from scratch as a B2B SaaS platform in PHP with Laravel, implementing an asynchronous architecture with 3 background workers processing jobs simultaneously, completely decoupling file uploads from the main web server thread. For advanced file management, developed a .NET MAUI client application with offline capability that syncs with the cloud backend. At the infrastructure level, provisioned high-availability environments on AWS with CI/CD practices, ensuring scalability for sensitive financial data processing.',
+      'Designed and built STARSOL from scratch as a B2B SaaS platform in PHP with Laravel, implementing an asynchronous architecture with 3 background workers processing jobs simultaneously, completely decoupling file uploads from the main web server thread. For advanced file management, developed a .NET MAUI client application with offline capability that syncs with the cloud backend. At the infrastructure level, provisioned high-availability environments on AWS with CI/CD practices, ensuring scalability for sensitive financial data processing. In v2 I built a dedicated ADA/SICSES regulatory ingestion module whose CsvStructureValidator detects marker, separator and header row before validating —it counts the header row, never a data row— and in v3 I restructured the interface into 3 modules.',
 
     impact:
-      'Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR.',
+      'Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR. El validador de estructura acepta 12 archivos reales de cliente (7 ADA + 5 SICSES) sin errores bloqueantes; activar una rama de validación de campos que nunca se había alcanzado en producción sacó a la luz tres desajustes de formato reales —fechas de 7 dígitos que perdían el cero inicial por coerción numérica, un valor monetario decimal contra una regla `integer`, y números de crédito con un espacio incrustado en uno de los formatos—, todos normalizados antes de validar para que el mismo crédito cargado por cualquiera de los dos formatos resuelva a un único identificador.',
     impactEn:
-      'Asynchronous architecture eliminated web server bottlenecks through 3 simultaneous workers. .NET MAUI client application with offline sync for financial file management. AWS cloud infrastructure with high availability and CI/CD. Complete B2B SaaS platform for the solidarity sector covering SARLAFT, SARC, and SIAR.',
+      'Asynchronous architecture eliminated web server bottlenecks through 3 simultaneous workers. .NET MAUI client application with offline sync for financial file management. AWS cloud infrastructure with high availability and CI/CD. Complete B2B SaaS platform for the solidarity sector covering SARLAFT, SARC, and SIAR. The structure validator accepts 12 real client files (7 ADA + 5 SICSES) with no blocking errors; switching on a field-validation branch that had never been reached in production surfaced three real format mismatches —7-digit dates losing their leading zero to numeric coercion, a decimal monetary value checked against an `integer` rule, and credit numbers carrying an embedded space in one of the formats— all normalized before validation so the same credit loaded through either format resolves to a single identifier.',
 
     stack: ['PHP', 'Laravel', 'AWS', '.NET MAUI', 'MySQL', 'Docker', 'CI/CD'],
     hasNDA: false,
-    tags: ['saas', 'fintech', 'architecture', 'cloud', 'laravel'],
+    tags: ['saas', 'fintech', 'architecture', 'cloud', 'laravel', 'regulatory', 'data-ingestion'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // PROYECTO 8 — ReaderSS (Lector RSS offline)
+  // Puertos y adaptadores en el navegador + relay en el borde
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'readerss',
+    slug: 'readerss-lector-rss-offline',
+    featured: true,
+    order: 8,
+
+    title: 'ReaderSS — Lector RSS con lectura offline y relay en el borde',
+    titleEn: 'ReaderSS — RSS Reader with Offline Reading and an Edge Relay',
+
+    company: 'Proyecto Personal (OSS)',
+    companyAnon: false,
+    industry: 'Open Source / Web',
+
+    period: '2026',
+    role: 'Arquitecto y Desarrollador Full Stack',
+    roleEn: 'Architect & Full Stack Developer',
+
+    problem:
+      'Los navegadores retiraron el soporte nativo de RSS y los lectores que sobrevivieron son servicios en la nube que se quedan con tu lista de fuentes. Una página en el navegador tampoco puede pedir un feed arbitrario: CORS lo bloquea. Y nada de eso funciona sin conexión, justo cuando más se lee.',
+    problemEn:
+      'Browsers dropped native RSS support, and the readers that survived are cloud services that keep your feed list for you. A browser page cannot fetch an arbitrary feed either: CORS blocks it. And none of it works offline, which is exactly when reading happens.',
+
+    solution:
+      'Construí el cliente con dominio, puertos y adaptadores tras un composition root, con IndexedDB como capa de datos. El acceso a los feeds pasa por un relay en Cloudflare Workers que resuelve CORS y agrega GET condicional, límites de tamaño y de tiempo, una guarda SSRF reaplicada en cada salto de redirección y una guarda de origen documentada explícitamente como no autenticante. Los parsers de RSS 2.0, RDF, Atom y JSON Feed normalizan todo a un único modelo de entrada; la sanitización con DOMPurify vive en un único punto de estrangulamiento antes de renderizar. Incluye importación y exportación OPML, estados de leído/no leído/destacado con marcas de tiempo por campo, y un refresco que reporta el fallo real de cada feed en lugar de un único error agregado.',
+    solutionEn:
+      'Built the client with a domain, ports and adapters behind a composition root, using IndexedDB as the data layer. Feed access goes through a Cloudflare Workers relay that solves CORS and adds conditional GET, size and time limits, an SSRF guard re-applied on every redirect hop, and an origin guard documented explicitly as non-authenticating. Parsers for RSS 2.0, RDF, Atom and JSON Feed normalize everything onto a single entry model; DOMPurify sanitisation lives at a single choke point before rendering. It ships OPML import and export, read/unread/starred state with per-field change timestamps, and a refresh that reports each feed\'s real failure instead of one aggregate error.',
+
+    impact:
+      '426 pruebas con ~95% de cobertura de sentencias contra una puerta exigida del 70%. Bundle de 248 kB en crudo y 88 kB comprimido. GitHub Actions ejecuta lint, typecheck y pruebas antes de desplegar a Cloudflare Workers. Repositorio público con licencia MIT.',
+    impactEn:
+      '426 tests at ~95% statement coverage against an enforced 70% gate. A 248 kB raw bundle, 88 kB gzipped. GitHub Actions runs lint, typecheck and tests before deploying to Cloudflare Workers. Public MIT-licensed repository.',
+
+    stack: ['TypeScript', 'React', 'Vite', 'IndexedDB', 'Cloudflare Workers', 'DOMPurify', 'Vitest', 'GitHub Actions'],
+    architectureDiagram: 'UI → services → ports → adapters (store IndexedDB, cliente del relay) → relay en Cloudflare Workers (CORS + GET condicional + guarda SSRF por salto) → origen del feed. Sanitización DOMPurify en un único punto de estrangulamiento antes de renderizar.',
+    githubUrl: 'https://github.com/Ewin24/ReaderSS',
+    hasNDA: false,
+    tags: ['open-source', 'oss', 'typescript', 'react', 'offline-first', 'cloudflare-workers', 'indexeddb', 'testing'],
   },
 ]
 

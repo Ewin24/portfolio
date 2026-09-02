@@ -55,13 +55,16 @@ export const workExperience: WorkExperience[] = [
     achievements: [
       'Lideré el diseño arquitectónico, desarrollo end-to-end y despliegue en la nube de STARSOL, una plataforma SaaS B2B para el sector solidario que gestiona el Sistema Integral de Administración de Riesgos (SARLAFT, SARC, SIAR), digitalizando y automatizando flujos complejos de originación de crédito y monitoreo normativo',
       'Diseñé una arquitectura asíncrona con 3 background workers procesando jobs simultáneamente para desacoplar tareas pesadas del hilo principal del servidor web (PHP/Laravel), eliminando cuellos de botella en el procesamiento de archivos financieros',      
+      'Desarrollé una aplicación cliente en .NET MAUI para gestión avanzada de archivos integrada con el ecosistema STARSOL, habilitando procesamiento offline y sincronización con el backend en la nube',
       'Orquesté el aprovisionamiento de entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad y seguridad para el procesamiento de datos financieros sensibles',
+      'Construí el módulo de ingesta regulatoria ADA/SICSES con un validador de estructura CSV que detecta marcador, separador y fila de encabezado antes de validar, verificado contra 12 archivos reales de cliente sin errores bloqueantes',
     ],
     achievementsEn: [
       'Led the architectural design, end-to-end development, and cloud deployment of STARSOL, a B2B SaaS platform for the solidarity sector managing the Integral Risk Management System (SARLAFT, SARC, SIAR), digitizing and automating complex loan origination and regulatory monitoring workflows',
       'Designed an asynchronous architecture with 3 background workers processing jobs simultaneously to decouple heavy tasks from the main web server thread (PHP/Laravel), eliminating bottlenecks in financial file processing',
       'Developed a .NET MAUI client application for advanced file management integrated with the STARSOL ecosystem, enabling offline processing and cloud backend synchronization',
       'Orchestrated high-availability environment provisioning on AWS with CI/CD practices, ensuring scalability and security for sensitive financial data processing',
+      'Built the ADA/SICSES regulatory ingestion module with a CSV structure validator that detects marker, separator and header row before validating, verified against 12 real client files with no blocking errors',
     ],
     stack: ['PHP', 'Laravel', 'AWS', '.NET MAUI', 'MySQL', 'Docker', 'CI/CD'],
     order: 4,
