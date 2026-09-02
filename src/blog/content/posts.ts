@@ -4137,6 +4137,317 @@ It also changed how the work is estimated. Before, the remaining effort looked l
 **Naming the open question is progress; hiding it behind an abstraction is not.** The abstraction makes the problem disappear from the code while it keeps existing in production, which is the worst possible place to discover it.`,
     relatedIds: ['clean-architecture-los', 'catalog-driven-decision-engine'],
   },
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 17 — Strict TDD against a committed Playwright driver
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'strict-tdd-committed-playwright-driver',
+    slug: 'tdd-estricto-contra-driver-playwright-versionado',
+    title: 'TDD estricto contra un driver Playwright versionado',
+    titleEn: 'Strict TDD Against a Committed Playwright Driver',
+    date: '2026-09-19',
+    tags: ['testing', 'tdd', 'playwright', 'react', 'ui'],
+    category: 'arquitectura',
+    featured: false,
+    excerpt:
+      'Construí un escritorio interactivo dentro de un portafolio cuyo otro tema no puede moverse un píxel, con dos drivers Playwright versionados: uno de comportamiento que creció en rojo primero hasta 98 verificaciones, y una puerta de píxeles. Escribir pruebas contra un driver versionado no era la línea de meta: la puerta llevaba meses aprobando todo lo que fallaba.',
+    excerptEn:
+      'I built an interactive desktop inside a portfolio whose other theme may not move a single pixel, using two committed Playwright drivers: a behaviour harness grown red-first to 98 checks, and a pixel gate. Writing tests against a committed driver was not the finish line — the gate had been passing every failure for months.',
+    content: `Este portafolio tiene dos temas visuales sobre el mismo contenido. El primero es un diseño editorial de periódico, con columnas, filetes y tipografía de prensa. El segundo es un escritorio interactivo inspirado en Windows XP: ventanas que se arrastran, se redimensionan desde ocho asas, se minimizan a la barra de tareas, se maximizan y se cierran; un menú de inicio funcional; pestañas que agrupan secciones relacionadas; una bandeja de utilidades; y una ventana de ayuda con los atajos de teclado.
+
+La restricción que ordenó todo el trabajo cabe en una línea: mientras el segundo tema evoluciona, el primero no puede moverse un píxel.
+
+Ahí empieza el problema. Una interacción de escritorio no tiene una costura natural para pruebas unitarias. Puedo llamar al reductor que calcula el rectángulo de una ventana después de un arrastre y verificar la aritmética. Lo hice, y está bien que exista. Pero esa prueba no dice nada sobre lo único que de verdad importa: que al presionar el puntero sobre la barra de título el evento llegue efectivamente hasta ese reductor.
+
+Los defectos de este tipo de trabajo viven exactamente en esa brecha. Un evento que nunca llega. Un elemento tapado por otro que se queda con el clic. Una actualización de estado que React agrupa en el mismo lote y que borra un marcador antes de que un efecto alcance a leerlo. Ninguno de los tres se puede expresar como prueba unitaria del reductor, porque en los tres casos el reductor está correcto.
+
+La segunda mitad del problema es la simétrica. El tema periódico casi no tiene comportamiento que probar: su corrección es visual. No existe una función a la que preguntarle si el diseño sigue intacto. Y era justamente el activo que no podía romperse, precisamente porque nadie iba a estar mirándolo mientras el trabajo ocurría en el otro tema.
+
+**El enfoque equivocado**
+
+Consideré dos caminos antes de decidir, y descarté los dos.
+
+El primero fue extender la aprobación por captura de pantalla a todo el sitio, escritorio incluido. Es tentador porque parece uniforme: una sola herramienta, una sola disciplina. Falla por una razón concreta. En una superficie que está en construcción activa, cada cambio intencional se ve idéntico a una regresión. Cada porción de trabajo habría producido decenas de diferencias para aprobar a ojo, y aprobar a ojo decenas de veces seguidas convierte la puerta en un sello de goma. Una puerta que se aprueba por costumbre ya dejó de ser una puerta.
+
+El segundo fue confiar en la verificación manual: abrir el navegador, hacer clic, mirar. Sirve para descubrir, y de hecho descubrió cosas que ninguna otra técnica encontró. No sirve para demostrar. No puedo demostrar con un clic que la ventana recién abierta recibió el foco de teclado y que la ventana que ya estaba abierta no se lo robó, y mucho menos puedo demostrarlo dos veces seguidas, en dos idiomas y en cuatro anchos de pantalla.
+
+Hubo un tercer error, más difícil de ver, que sostuve durante meses sin notarlo: creer que un driver versionado que pasa en verde es la línea de meta.
+
+**La solución**
+
+Dos drivers versionados en el repositorio, con trabajos distintos y expectativas opuestas.
+
+\`\`\`
+                  +-- xp-interactive.mjs --> real clicks in a real browser
+                  |      98 behaviour checks; grows with the feature
+localhost:4193 ---+
+                  +-- newspaper.mjs -------> 4 viewports x 2 locales
+                         8 captures -> pixelDiff -> committed baselines
+                         passes only at 0 differing pixels
+\`\`\`
+
+\`xp-interactive.mjs\` es un arnés de comportamiento. Hace clic sobre la interfaz real en un navegador real, y creció junto con la funcionalidad, siempre en rojo primero: 58 verificaciones, luego 64, luego 88, y hoy 98. Se espera que cambie cada vez que cambia el escritorio; si nunca cambiara, sería sospechoso.
+
+La disciplina concreta es que cada unidad de trabajo empieza escribiendo la afirmación que falla. Antes de que existiera el arrastre con límites, el driver ya intentaba mover una ventana dos mil píxeles hacia afuera y exigía que siguiera dentro del escritorio:
+
+\`\`\`js
+await page.mouse.move(sx, sy)
+await page.mouse.down()
+await page.mouse.move(sx + 2000, sy + 2000, { steps: 20 })
+await page.mouse.up()
+const pos = await win.evaluate((el) => el.getBoundingClientRect())
+check('drag: bottom <= desktop bottom - 40px', pos.bottom <= desktopH - TASKBAR_H + 0.5)
+check('drag: no negative left/top', pos.left >= -0.5 && pos.top >= -0.5)
+\`\`\`
+
+Esa verificación falló primero por la razón correcta —la ventana se salía de la pantalla— y solo después se volvió verde. El orden importa: escribir la afirmación contra el código sin arreglar es lo único que demuestra que la afirmación mide lo que creo que mide.
+
+Para que ese tipo de afirmación sea escribible, la geometría tiene un solo dueño. El \`WindowManager\` posee los rectángulos, los límites y el apilamiento en z. Redimensionar es una sola operación, \`resize(id, dx, dy, dir)\`, que alimenta las ocho asas; los límites se aplican primero al tamaño y después a la posición, para que los bordes anclados al norte y al oeste cedan al llegar al mínimo en lugar de empujar la ventana fuera del escritorio:
+
+\`\`\`ts
+// Size clamp first (minimum + desktop bounds).
+w = Math.min(Math.max(MIN_W, w), desktopW)
+h = Math.min(Math.max(MIN_H, h), desktopH - TASKBAR_HEIGHT)
+
+// Position clamp after size, so the anchored (n/w) edges re-anchor.
+if (west) x = Math.min(x + (rect.w - w), desktopW - w)
+if (north) y = Math.min(y + (rect.h - h), desktopH - TASKBAR_HEIGHT - h)
+\`\`\`
+
+Si cada ventana hiciera su propia aritmética de límites, la misma regla existiría ocho veces y el driver tendría que verificarla ocho veces. Con un solo dueño hay una regla y una verificación. Lo mismo aplica al foco: el apilamiento en z, la ventana activa y el conjunto de ventanas abiertas son un único estado, así que "hacer clic en la ventana de abajo la trae al frente" es una afirmación de una línea.
+
+\`newspaper.mjs\` hace lo contrario. No prueba comportamiento: prueba invariancia. Captura la página completa en cuatro anchos y dos idiomas —ocho capturas— y las compara píxel a píxel contra líneas base versionadas. Se espera que no cambie nunca. Cuando cambia, o alguien tocó el periódico sin querer, o alguien cambió el texto a propósito y debe justificar cada región distinta antes de recortar las líneas base.
+
+**El impacto**
+
+El arnés de comportamiento terminó en 98 de 98, y encontró cosas que la revisión no encontró.
+
+El caso más limpio es un defecto de lote de estado. Al abrir la ventana de ayuda, el mecanismo de foco marca la ventana recién abierta y un efecto de montaje le entrega el foco de teclado a su barra de título:
+
+\`\`\`tsx
+useEffect(() => {
+  if (active && justOpened === id && titlebarRef.current) {
+    titlebarRef.current.focus()
+  }
+}, [active, justOpened, id])
+// open(id) marks justOpened = id; focus(id) clears it. Calling both from the
+// same handler clears the marker inside one batched update, so this never runs.
+\`\`\`
+
+El manejador original llamaba a \`open('help')\` y enseguida a \`focus('help')\`. Las dos actualizaciones caían en el mismo lote de React, \`focus\` limpiaba el marcador antes de que el efecto lo leyera, y el foco nunca llegaba. Una prueba unitaria del reductor habría pasado sin observaciones, porque \`open\` sí escribe el marcador. El defecto solo existe en la composición.
+
+Antes de eso, un ciclo de verificación encontró algo peor, y la lección está en por qué el driver no lo había visto. Los botones de la ventana —minimizar, maximizar, cerrar— eran inertes al puntero real: la captura de puntero sobre la barra de título desviaba el clic, y una ventana maximizada quedaba por debajo del encabezado del sitio. El driver versionado no lo detectaba porque ejercitaba esos tres botones a través de una costura de pruebas en lugar de hacer clic sobre los botones. La costura hacía la prueba fácil de escribir, y por eso mismo la hacía probar otra cosa.
+
+Y después vino lo que de verdad cambió mi forma de trabajar. Este mismo ciclo demostró que el driver versionado estaba mintiendo.
+
+\`\`\`
+size mismatch --> { diff: -1 }             // no 'total' key in the result
+                        |
+                        v
+   ratio = r.total ? diff / total : 0      // total undefined -> ratio = 0
+                        |
+                        v
+   passes = diff === 0 || ratio <= 0.001   // 0 <= 0.001 -> PASS
+                        |
+                        v
+   "-3/63956015 differing pixels ... ALL PASSED"    exit 0
+\`\`\`
+
+Eran dos mitades, y las dos hacían falta. La comparación devolvía un valor centinela cuando las dos imágenes no tenían las mismas dimensiones, y ese retorno no incluía el campo \`total\`. El consumidor calculaba la proporción con un ternario sobre \`total\`:
+
+\`\`\`js
+// driver/helpers.mjs — on a dimension mismatch, no 'total' key is returned
+return { diff: -1, reason: 'size mismatch 1440x13685 vs 1440x13980' }
+
+// driver/newspaper.mjs — the pass rule that consumed it
+const ratio = r.total ? (r.diff ?? Infinity) / r.total : 0
+const passes = r.diff === 0 || ratio <= 0.001
+\`\`\`
+
+Con \`total\` indefinido, el ternario cae a \`0\`, y \`0 <= 0.001\` es verdadero. Toda discrepancia de dimensiones —es decir, exactamente el caso en que la página cambió de alto, que es la señal más fuerte de que algo se movió— se reportaba como aprobada. El driver sin modificar imprimía un conteo negativo de píxeles junto a "ALL PASSED", con código de salida 0.
+
+Y había una consecuencia encima de esa. Las líneas base versionadas se habían recortado mientras una API pública que la página consulta no respondía, así que ese panel no se dibujaba y la captura quedaba 295 píxeles más baja que la página que ve cualquier visitante. La puerta llevaba meses comparando contra una página que nadie ve. Hoy esa respuesta se sirve desde un archivo versionado, para que la captura sea hermética.
+
+El arreglo del conteo cambió el retorno para que la altura no pueda escaparse: se compara el prefijo común de las dos imágenes y las filas sobrantes se cobran al conteo de diferencias.
+
+\`\`\`js
+const heightDelta = imgB.height - imgA.height
+const h = Math.min(imgA.height, imgB.height) // compare the common prefix
+// ... per-row diff over the common prefix ...
+if (heightDelta !== 0) {
+  // Keep the gate strict: an unseen tail is still a difference.
+  diff += Math.abs(heightDelta) * width
+  notes.push('height delta ' + heightDelta)
+}
+\`\`\`
+
+Después aparecieron dos defectos más de la misma familia. El flag que recorta las líneas base solo regeneraba las capturas que fallaban, así que un cambio real de 5.755 píxeles que caía bajo la tolerancia sobrevivía al recorte y la puerta no podía converger nunca a cero. Y la tolerancia misma, calculada sobre el área de la página entera, dejaba pasar ediciones de texto sustanciales. Hoy la regla es que aprueba solo con cero píxeles distintos; la banda del 0,1 % sobrevive únicamente como disparador de recorte.
+
+Lo último es lo que más me costó aceptar. Para volver a creerle a la puerta hubo que demostrar que podía fallar: alargar deliberadamente un título en español, reconstruir, y comprobar que fallaba con 8,3 millones de píxeles distintos y que fallaba solo en las cuatro capturas en español, no en las cuatro en inglés. Discriminación correcta por idioma, no una falla en bloque.
+
+**Lecciones**
+
+**Un arnés verde en un HEAD sin tocar no demuestra que la puerta funcione.** Demuestra que no se queja. Son cosas distintas, y las confundí durante meses.
+
+**Una puerta que no puede fallar es peor que no tener ninguna**, porque compra confianza falsa. Sin puerta sé que no sé. Con una puerta rota creo que sé.
+
+**Un valor centinela sin denominador puede invertir una regla de aprobación.** El \`-1\` era razonable como señal de error; lo que no era razonable es que el consumidor lo dividiera por un campo que ese retorno nunca incluye. Un tipo de retorno con forma variable es una trampa esperando a un ternario.
+
+**Un driver versionado es un contrato, no una decoración.** Vive en el repositorio, se revisa en el mismo cambio que lo modifica y crece con la funcionalidad. Y precisamente por eso hay que revisarlo con el mismo rigor que el código de producción, cosa que no hice.
+
+**Rojo primero atrapa defectos de composición que ninguna prueba unitaria ve.** El foco que no llega, el clic desviado, la actualización que se pierde en un lote: los tres viven entre unidades que, por separado, están correctas.
+
+**Una costura de pruebas que hace la prueba fácil suele hacerla probar otra cosa.** Si la única forma de cerrar una ventana en la prueba no es la forma en que un usuario la cierra, la prueba no cubre lo que dice cubrir.
+
+**Una puerta de píxeles solo es honesta si recortar una línea base cuesta trabajo.** Cada región distinta debe quedar atribuida a un cambio de texto intencional antes de aceptar la nueva imagen. En cuanto recortar es más barato que explicar, la puerta se convierte en un registro de lo que pasó, no en un control de lo que puede pasar.`,
+    contentEn: `This portfolio ships two visual themes over the same material. The first is an editorial newspaper design, with columns, rules and press typography. The second is an interactive Windows XP-style desktop: windows you drag, resize from eight handles, minimise to the taskbar, maximise and close; a working Start menu; tabs that gather related sections; a utilities tray; and a help window listing the keyboard shortcuts.
+
+The constraint that shaped the whole effort fits in one line: while the second theme evolves, the first one may not move a single pixel.
+
+That is where the problem starts. Desktop interaction has no natural seam for unit tests. I can call the reducer that computes a window rectangle after a drag and check the arithmetic. I did, and it deserves to exist. But that test says nothing about the only thing that actually matters: that pressing the pointer on a title bar makes the event reach that reducer at all.
+
+Defects in this kind of work live exactly in that gap. An event that never arrives. An element covered by another one that keeps the click. A state update React batches together, wiping a marker before an effect gets to read it. None of the three can be written as a unit test of the reducer, because in all three cases the reducer is correct.
+
+The second half of the problem is its mirror image. The newspaper theme has almost no behaviour to test: its correctness is visual. There is no function you can ask whether the design is still intact. And it was precisely the asset that could not break, precisely because nobody would be looking at it while the work happened in the other theme.
+
+**The wrong approach**
+
+I considered two routes before deciding, and rejected both.
+
+The first was extending screenshot approval across the whole site, desktop included. It is tempting because it looks uniform: one tool, one discipline. It fails for a concrete reason. On a surface under active construction, every intentional change looks exactly like a regression. Each unit of work would have produced dozens of differences to approve by eye, and approving by eye dozens of times in a row turns the gate into a rubber stamp. A gate that gets approved out of habit has stopped being a gate.
+
+The second was leaning on manual checking: open the browser, click, look. It is good at discovery, and it did in fact discover things no other technique found. It is useless as proof. I cannot prove with one click that a freshly opened window took keyboard focus and that the already-open window did not steal it, and far less can I prove it twice in a row, in two languages and at four screen widths.
+
+There was a third mistake, harder to see, that I held for months without noticing: believing that a committed driver passing green is the finish line.
+
+**The solution**
+
+Two drivers committed to the repository, with different jobs and opposite expectations.
+
+\`\`\`
+                  +-- xp-interactive.mjs --> real clicks in a real browser
+                  |      98 behaviour checks; grows with the feature
+localhost:4193 ---+
+                  +-- newspaper.mjs -------> 4 viewports x 2 locales
+                         8 captures -> pixelDiff -> committed baselines
+                         passes only at 0 differing pixels
+\`\`\`
+
+\`xp-interactive.mjs\` is a behaviour harness. It clicks the real interface in a real browser, and it grew alongside the feature, always red first: 58 checks, then 64, then 88, and 98 today. It is meant to change every time the desktop changes; if it never changed, that would be the suspicious outcome.
+
+The concrete discipline is that every unit of work opens by writing the assertion that fails. Before clamped dragging existed, the driver was already trying to shove a window two thousand pixels off-screen and demanding that it stay inside the desktop:
+
+\`\`\`js
+await page.mouse.move(sx, sy)
+await page.mouse.down()
+await page.mouse.move(sx + 2000, sy + 2000, { steps: 20 })
+await page.mouse.up()
+const pos = await win.evaluate((el) => el.getBoundingClientRect())
+check('drag: bottom <= desktop bottom - 40px', pos.bottom <= desktopH - TASKBAR_H + 0.5)
+check('drag: no negative left/top', pos.left >= -0.5 && pos.top >= -0.5)
+\`\`\`
+
+That check failed first for the right reason — the window flew off the screen — and only then went green. The sequence matters: writing the assertion against unfixed code is the only thing that proves the assertion measures what I think it measures.
+
+For assertions like that to be writable at all, geometry has exactly one owner. The \`WindowManager\` owns rectangles, clamping and z-order. Resizing is a single operation, \`resize(id, dx, dy, dir)\`, feeding all eight handles; clamps apply to dimensions first and to position second, so edges anchored north and west give way when they hit the minimum instead of pushing the window off the desktop:
+
+\`\`\`ts
+// Size clamp first (minimum + desktop bounds).
+w = Math.min(Math.max(MIN_W, w), desktopW)
+h = Math.min(Math.max(MIN_H, h), desktopH - TASKBAR_HEIGHT)
+
+// Position clamp after size, so the anchored (n/w) edges re-anchor.
+if (west) x = Math.min(x + (rect.w - w), desktopW - w)
+if (north) y = Math.min(y + (rect.h - h), desktopH - TASKBAR_HEIGHT - h)
+\`\`\`
+
+If each window did its own clamping arithmetic, the same rule would exist eight times and the driver would have to check it eight times. With one owner there is one rule and one check. The same holds for focus: z-order, the active window and the set of open windows are a single piece of state, so "clicking the lower window brings it to the front" becomes a one-line assertion.
+
+\`newspaper.mjs\` does the opposite. It does not test behaviour: it tests invariance. It captures the full page at four widths and two locales — eight captures — and compares them pixel by pixel against committed baselines. It is meant never to change. When it does, either somebody disturbed the newspaper by accident, or somebody changed the text on purpose and owes an explanation for every differing region before the baselines get re-cut.
+
+**The impact**
+
+The behaviour harness ended at 98 of 98, and it caught things review did not.
+
+The cleanest case is a batched-state defect. When the help window opens, the focus mechanism marks the newly opened window and a mount effect hands keyboard focus to its title bar:
+
+\`\`\`tsx
+useEffect(() => {
+  if (active && justOpened === id && titlebarRef.current) {
+    titlebarRef.current.focus()
+  }
+}, [active, justOpened, id])
+// open(id) marks justOpened = id; focus(id) clears it. Calling both from the
+// same handler clears the marker inside one batched update, so this never runs.
+\`\`\`
+
+The original handler called \`open('help')\` and immediately \`focus('help')\`. Both updates landed in the same React batch, \`focus\` cleared the marker before the effect could read it, and focus never arrived. A unit test of the reducer would have passed without comment, because \`open\` does write the marker. The defect exists only in composition.
+
+Before that, a verification cycle found something worse, and the lesson lives in why the driver had missed it. The window controls — minimise, maximise, close — were inert to real pointer input: pointer capture on the title bar diverted the click, and a maximised window sat underneath the site header. The committed driver did not catch it because it exercised those three buttons through a test seam instead of clicking the buttons. The seam made the test easy to write, and for that exact reason made it test something else.
+
+Then came the part that genuinely changed how I work. This very cycle proved the committed driver had been lying.
+
+\`\`\`
+size mismatch --> { diff: -1 }             // no 'total' key in the result
+                        |
+                        v
+   ratio = r.total ? diff / total : 0      // total undefined -> ratio = 0
+                        |
+                        v
+   passes = diff === 0 || ratio <= 0.001   // 0 <= 0.001 -> PASS
+                        |
+                        v
+   "-3/63956015 differing pixels ... ALL PASSED"    exit 0
+\`\`\`
+
+It took two halves, and both were required. The comparison returned a sentinel value when the two images did not share dimensions, and that return carried no \`total\` field. The consumer computed the ratio with a ternary on \`total\`:
+
+\`\`\`js
+// driver/helpers.mjs — on a dimension mismatch, no 'total' key is returned
+return { diff: -1, reason: 'size mismatch 1440x13685 vs 1440x13980' }
+
+// driver/newspaper.mjs — the pass rule that consumed it
+const ratio = r.total ? (r.diff ?? Infinity) / r.total : 0
+const passes = r.diff === 0 || ratio <= 0.001
+\`\`\`
+
+With \`total\` undefined the ternary falls to \`0\`, and \`0 <= 0.001\` is true. Every dimension mismatch — that is, exactly the case where the page changed height, which is the strongest available signal that something moved — was reported as a pass. The unmodified driver printed a negative pixel count next to "ALL PASSED", with exit code 0.
+
+There was a consequence stacked on top of that one. The committed baselines had been cut while a public API the page queries was unreachable, so that panel never rendered and the capture came out 295 pixels shorter than the page any visitor sees. For months the gate had been comparing against a page nobody ever loads. That response is now served from a committed file, so the capture is hermetic.
+
+The counting fix reshaped the return so height cannot escape: the common prefix of the two images is compared, and the surplus rows are charged to the difference count.
+
+\`\`\`js
+const heightDelta = imgB.height - imgA.height
+const h = Math.min(imgA.height, imgB.height) // compare the common prefix
+// ... per-row diff over the common prefix ...
+if (heightDelta !== 0) {
+  // Keep the gate strict: an unseen tail is still a difference.
+  diff += Math.abs(heightDelta) * width
+  notes.push('height delta ' + heightDelta)
+}
+\`\`\`
+
+Two more defects from the same family surfaced afterwards. The flag that re-cuts baselines only regenerated the captures that were failing, so a genuine 5,755-pixel change sitting under the tolerance survived the re-cut and the gate could never converge on zero. And the tolerance itself, computed over whole-page area, let substantial text edits through. The rule today is that it passes only at zero differing pixels; the 0.1% band survives purely as the re-cut trigger.
+
+The last part was the hardest to accept. To trust the gate again I had to prove it could fail: deliberately lengthen one Spanish title, rebuild, and confirm it failed with 8.3 million differing pixels and failed only on the four Spanish captures, not the four English ones. Correct per-locale discrimination, not a blanket failure.
+
+**Lessons**
+
+**A green harness at an untouched HEAD does not prove the gate works.** It proves the gate is not complaining. Those are different claims, and I conflated them for months.
+
+**A gate that cannot fail is worse than no gate at all**, because it buys false confidence. With no gate I know that I do not know. With a broken gate I believe that I know.
+
+**A sentinel value without a denominator can make a pass rule mean its opposite.** The \`-1\` was reasonable as an error signal; what was not reasonable is a consumer dividing it by a field that return never carries. A return type with a variable shape is a trap waiting for a ternary.
+
+**A committed driver is a contract, not decoration.** It lives in the repository, gets reviewed in the same change that modifies it, and grows with the feature. Which is exactly why it deserves the same scrutiny as production code, and did not get it from me.
+
+**Red first catches composition defects no unit test can see.** Focus that never arrives, a click that gets diverted, an update lost inside a batch: all three live between units that are individually correct.
+
+**A test seam that makes the test easy usually makes it test something else.** If the only way to close a window in the test is not the way a user closes it, the test does not cover what it claims to cover.
+
+**A pixel gate is only honest if re-cutting a baseline costs effort.** Every differing region has to be attributed to an intended text change before the new image is accepted. The moment re-cutting is cheaper than explaining, the gate becomes a log of what happened rather than a control on what may happen.`,
+  },
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
