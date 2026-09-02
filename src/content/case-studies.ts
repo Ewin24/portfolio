@@ -430,11 +430,11 @@ export const caseStudies: CaseStudy[] = [
     impactEn:
       '426 tests at ~95% statement coverage against an enforced 70% gate. A 248 kB raw bundle, 88 kB gzipped. GitHub Actions runs lint, typecheck and tests before deploying to Cloudflare Workers. Public MIT-licensed repository.',
 
-    stack: ['TypeScript', 'React', 'Vite', 'IndexedDB', 'Cloudflare Workers', 'DOMPurify', 'Vitest', 'GitHub Actions'],
+    stack: ['TypeScript', 'Preact', 'Vite', 'IndexedDB', 'Cloudflare Workers', 'DOMPurify', 'Vitest', 'GitHub Actions'],
     architectureDiagram: 'UI → services → ports → adapters (store IndexedDB, cliente del relay) → relay en Cloudflare Workers (CORS + GET condicional + guarda SSRF por salto) → origen del feed. Sanitización DOMPurify en un único punto de estrangulamiento antes de renderizar.',
     githubUrl: 'https://github.com/Ewin24/ReaderSS',
     hasNDA: false,
-    tags: ['open-source', 'oss', 'typescript', 'react', 'offline-first', 'cloudflare-workers', 'indexeddb', 'testing'],
+    tags: ['open-source', 'oss', 'typescript', 'preact', 'offline-first', 'cloudflare-workers', 'indexeddb', 'testing'],
   },
 ]
 

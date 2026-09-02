@@ -3854,8 +3854,8 @@ Los dos proveedores no devuelven la misma clase de cosa.
 { "viable": true, "motivo": "APROBADO", "puntaje": 720 }
 
 // proveedor de VARIABLES
-{ "nombre": "...", "rangoEdad": "26-35", "genero": "M",
-  "ingresoEstimado": 3200000, "variablesAdicionales": { } }
+{ "perfil": "...", "franjaEtaria": "26-35", "segmento": "M",
+  "ingresoEstimado": 3200000, "atributosExtra": { } }
 \`\`\`
 
 El primero es un servicio de decisión: le preguntás por un documento y te contesta si el solicitante es viable, con un motivo. El dato que el sistema necesita viene en la respuesta.
@@ -3876,8 +3876,8 @@ Hay una versión más general de este error y me la encuentro seguido. Cuando do
 
 \`\`\`text
 proveedor de DECISIÓN            proveedor de VARIABLES
-  consulta ──▶ { viable,           consulta ──▶ { nombre, rangoEdad,
-                 motivo }                         genero, ingresoEstimado,
+  consulta ──▶ { viable,           consulta ──▶ { perfil, franjaEtaria,
+                 motivo }                         segmento, ingresoEstimado,
                                                   + diccionario abierto }
         │                                    │
         └──▶ el dato existe                  └──▶ el dato NO existe
@@ -4006,8 +4006,8 @@ The two providers do not return the same kind of thing.
 { "viable": true, "motivo": "APROBADO", "puntaje": 720 }
 
 // proveedor de VARIABLES
-{ "nombre": "...", "rangoEdad": "26-35", "genero": "M",
-  "ingresoEstimado": 3200000, "variablesAdicionales": { } }
+{ "perfil": "...", "franjaEtaria": "26-35", "segmento": "M",
+  "ingresoEstimado": 3200000, "atributosExtra": { } }
 \`\`\`
 
 The first is a decision service. You ask it about a document and it tells you whether the applicant is viable, with a reason. The datum the system needs arrives in the response.
@@ -4028,8 +4028,8 @@ There is a more general version of this mistake and I run into it often. When tw
 
 \`\`\`text
 proveedor de DECISIÓN            proveedor de VARIABLES
-  consulta ──▶ { viable,           consulta ──▶ { nombre, rangoEdad,
-                 motivo }                         genero, ingresoEstimado,
+  consulta ──▶ { viable,           consulta ──▶ { perfil, franjaEtaria,
+                 motivo }                         segmento, ingresoEstimado,
                                                   + diccionario abierto }
         │                                    │
         └──▶ el dato existe                  └──▶ el dato NO existe
