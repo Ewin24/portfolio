@@ -13,8 +13,17 @@ import {
  *
  * Passes when every capture has 0 differing pixels (≤ 0.1% tolerance for
  * font rasterisation noise).
+ *
+ * Run with `--update` to re-cut the committed baselines from the current
+ * captures. That flag is deliberately not a shortcut: it prints the differing
+ * regions first (`firstDiffY`, `heightDelta`, `bands`) so every one of them can
+ * be attributed to an intended content change before the new baselines are
+ * committed. A difference in layout, chrome, spacing or typography is a
+ * regression to fix in source, never a reason to re-baseline.
  */
+const UPDATE = process.argv.includes('--update')
 const failures = []
+const recut = []
 let checks = 0
 let totalPixels = 0
 let diffPixels = 0
@@ -27,18 +36,30 @@ function check(name, cond, extra = '') {
   }
 }
 
+/**
+ * Print the differing geometry of one capture so each region can be attributed
+ * to an edited section before any baseline is re-cut.
+ */
+function reportRegions(lang, viewport, r) {
+  console.log(`    region report [${lang}] @ ${viewport}: firstDiffY=${r.firstDiffY ?? 'none'} heightDelta=${r.heightDelta ?? 0} width=${r.width} height=${r.height}`)
+  if (!r.bands || r.bands.length === 0) {
+    console.log('      bands: none')
+    return
+  }
+  for (const b of r.bands) {
+    console.log(`      band y=${b.y0}..${b.y1} (${b.y1 - b.y0 + 1} rows, ${b.pixels} px)`)
+  }
+}
+
 async function run() {
   ensureBaselineDir()
   const browser = await openBrowser()
   try {
     for (const lang of LOCALES) {
       for (const vp of VIEWPORTS) {
-        const ctx = await browser.newContext({
-          viewport: { width: vp.width, height: vp.height },
-          locale: lang === 'es' ? 'es-ES' : 'en-US',
-          reducedMotion: 'reduce',
-        })
-        const page = await ctx.newPage()
+        // `newPage` also stubs `api.github.com` from the committed fixture, so
+        // the capture no longer depends on live third-party data.
+        const { ctx, page } = await newPage(browser, vp, lang, { reducedMotion: 'reduce' })
         try {
           await page.goto(BASE_URL, { waitUntil: 'networkidle' })
           const cur = `${shotPath(lang, vp.name)}`.replace('baseline-', 'current-')
@@ -52,10 +73,23 @@ async function run() {
           totalPixels += r.total ?? 0
           diffPixels += r.diff ?? -1
           const ratio = r.total ? (r.diff ?? Infinity) / r.total : 0
-          const passes = r.diff === 0 || ratio <= 0.001
+          // A negative `diff` is a width mismatch: a hard fail, never tolerated
+          // by the 0.1% rasterisation allowance.
+          const passes = r.diff === 0 || (r.diff > 0 && r.total > 0 && ratio <= 0.001)
           check(`[${lang}] newspaper pixel-identical @ ${vp.name}`,
             passes,
             `diff=${r.diff} total=${r.total} (${(ratio * 100).toFixed(4)}%) ${r.reason || ''}`)
+          if (!passes) reportRegions(lang, vp.name, r)
+          // A deliberate re-cut must land on exactly 0 differing pixels, so it
+          // refreshes every capture that is not byte-identical — not only the
+          // ones the 0.1% rasterisation allowance already failed. Otherwise a
+          // tolerated difference survives the re-cut and the gate never
+          // converges on the 0 px that R8 requires.
+          if (UPDATE && r.diff !== 0) {
+            copyFileSync(cur, base)
+            recut.push(base)
+            console.log(`    RE-CUT ${base}`)
+          }
         } finally { await ctx.close() }
       }
     }
@@ -65,6 +99,11 @@ async function run() {
   }
 
   console.log(`Newspaper checks: ${checks - failures.length}/${checks} passed`)
+  if (UPDATE) {
+    console.log(`\n${recut.length} baseline(s) re-cut`)
+    console.log('BASELINES RE-CUT — attribution required before commit')
+    process.exit(0)
+  }
   if (failures.length) {
     console.log('FAILED:')
     console.log(failures.join('\n'))
@@ -75,6 +114,6 @@ async function run() {
   }
 }
 
-import { existsSync } from 'node:fs'
+import { existsSync, copyFileSync } from 'node:fs'
 
 run().catch((e) => { console.error(e); process.exit(1) })
