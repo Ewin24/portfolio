@@ -3550,6 +3550,271 @@ Three lessons that apply to any automated validation system with human fallback:
 If you are designing a validation system with human fallback, assume the bot will fail. Design for failure. And the way to design for failure is to have plan B as first-class code, not as a \`catch\` branch.`,
     relatedIds: ['clean-architecture-los', 'catalog-driven-decision-engine', 'domain-exception-problemdetails-pipeline'],
   },
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 15 — Adversarial review vs. real use (ReaderSS)
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'adversarial-review-missed-user-defects',
+    slug: 'revision-adversarial-no-encontro-lo-que-el-usuario-si',
+    title: 'Once rondas de revisión adversarial no encontraron los dos defectos que un usuario halló en minutos',
+    titleEn: 'Eleven Rounds of Adversarial Review Missed the Two Defects a User Found in Minutes',
+    date: '2026-09-05',
+    tags: ['testing', 'code-review', 'typescript', 'cloudflare-workers', 'indexeddb'],
+    category: 'arquitectura',
+    featured: true,
+    excerpt:
+      'ReaderSS terminó con 426 pruebas, ~95% de cobertura contra una puerta exigida del 70%, once rondas de revisión adversarial y 47 hallazgos aplicados. Después abrí la aplicación en un navegador y en cinco minutos encontré dos defectos que la volvían inservible: ninguno de los dos había sido detectado. Esto es dónde viven esos defectos, por qué la revisión no puede llegar ahí, y qué cambié para que la próxima vez fallen en rojo.',
+    excerptEn:
+      'ReaderSS shipped with 426 tests, ~95% coverage against an enforced 70% gate, eleven rounds of adversarial review and 47 findings applied. Then I opened the app in a browser and found two defects in five minutes that made it unusable. Neither had been caught. Here is where that class of defect actually lives, why review cannot reach it, and what I changed so it fails loudly next time.',
+    content: `Terminé ReaderSS con una confianza que resultó estar mal fundada.
+
+Los números eran buenos y lo siguen siendo. 426 pruebas. Cerca del 95% de cobertura de sentencias contra una puerta del 70% que no está documentada sino exigida: el umbral vive en \`vite.config.ts\` y \`npm run test:coverage\` falla por debajo de él. Once rondas de revisión adversarial de cuatro lentes, más dos refutaciones formales, con 47 hallazgos aplicados, un BLOCKER y cuatro CRITICALs atrapados antes de publicar. Un bundle de 248 kB en crudo, 88 kB comprimido. GitHub Actions corre lint, typecheck y pruebas antes de desplegar a Cloudflare Workers. El repositorio es público, con licencia MIT.
+
+Después abrí la aplicación en un navegador, por primera vez, usándola como usuario. En menos de cinco minutos encontré dos defectos que la volvían inservible. La revisión no había encontrado ninguno de los dos.
+
+**Defecto uno: la aplicación culpaba al usuario de su propio error de arranque**
+
+No pude agregar un solo feed. Todos fallaban, y todos fallaban con el mismo mensaje: el contenido no parece un feed. El mensaje era falso y además acusatorio, porque señalaba la dirección que el usuario acababa de escribir.
+
+La causa estaba fuera de todos los módulos. \`npm run dev\` levantaba Vite, y Vite por sí solo no tiene ninguna ruta \`/api/feed\`. Cualquier petición a esa ruta caía en el fallback de historia del SPA, que responde \`index.html\` con un 200. El cliente recibía un 200, asumía que venía del relay, y le entregaba HTML al parser de feeds. El parser hacía exactamente lo que debía hacer: reportar que eso no era un feed.
+
+Cada módulo estaba bien. La composición entre ellos no existía, y ningún módulo era dueño de esa composición.
+
+**Defecto dos: el panel de lectura se renderizaba fuera de la pantalla**
+
+Con el relay arriba pude suscribirme, refrescar y marcar entradas como leídas. Pero al hacer clic en una entrada no ocurría nada visible.
+
+En el breakpoint de escritorio, \`.app-shell\` declaraba tres columnas y una sola fila explícita. Una slice posterior había agregado un cuarto hijo directo — la barra de acciones — sin ninguna regla de ubicación. El auto-placement implícito de CSS Grid hizo lo único que podía hacer: lo puso en la primera celda libre y corrió todo lo demás una posición. La barra de acciones tomó la columna de 220 px, la barra lateral tomó la de 320 px, la lista de entradas tomó el \`1fr\`, y el panel de lectura terminó en una fila implícita, dentro de la columna de 220 px, por debajo del \`min-height: 100vh\`.
+
+El panel se renderizaba correctamente. Simplemente nunca era visible.
+
+**El enfoque equivocado: leer la profundidad de la revisión como evidencia de que funciona**
+
+Mi error no fue confiar en la cobertura ni en la revisión. Fue confundir lo que cada una responde.
+
+La cobertura responde qué líneas ejecutaron las pruebas. La revisión adversarial responde qué puede derivar un lector cuidadoso a partir del código. Las dos son evidencia real de algo, y ninguna de las dos arranca la aplicación. Los dos defectos vivían precisamente donde ninguna de las dos llega: uno en la composición del comando de desarrollo, otro en el motor de layout del navegador.
+
+Esto no es un argumento contra la revisión adversarial. Las once rondas encontraron cosas que ningún usuario habría encontrado jamás: un fallo bloqueante y cuatro críticos, casi todos en el borde de confianza — la guarda SSRF que debe reaplicarse en cada salto de redirección, el punto único de estrangulamiento donde DOMPurify sanitiza antes de renderizar, los límites de tamaño y de tiempo del relay. Un usuario que abre el navegador no descubre un SSRF a través de una cadena de redirecciones. Descubre que la aplicación no arranca. Son dos superficies distintas y exigen dos verificaciones distintas. Mi error fue creer que una cubría a la otra.
+
+Hay un detalle que hace esto más incómodo. \`grid.css\` llevaba tres slices con un comentario honesto que decía, textualmente, que jsdom no ejecuta layout, que ninguna prueba automatizada ejercitaba ese breakpoint, y que quedaba sin verificar salvo por revisión manual. El comentario era exacto. Esa revisión manual se aplazó cada vez y nunca se hizo.
+
+Once rondas de revisión leyeron ese comentario y ninguna actuó sobre él. Leer una advertencia no es lo mismo que ejecutar aquello contra lo que advierte. Un comentario honesto describe un riesgo; no lo controla. Si nadie está obligado a responder por él, se degrada hasta volverse decoración.
+
+**La solución, por clase de defecto**
+
+Cada defecto pertenece a una clase distinta y cada clase necesita un tipo de barrera distinto.
+
+*Cableado de composición.* El comando de desarrollo tiene que arrancar todo lo que la aplicación necesita para funcionar. Conecté \`@cloudflare/vite-plugin\` al servidor de desarrollo de Vite, de modo que un solo comando sirve la aplicación y \`/api/*\` en el mismo origen, con HMR intacto:
+
+\`\`\`ts
+// vite.config.ts
+plugins: [
+  ...(process.env.VITEST ? [] : [cloudflare()]),
+  preact(),
+  VitePWA({ registerType: "prompt", injectRegister: "script" }),
+],
+\`\`\`
+
+*Diagnóstico honesto.* Arrancar el relay no basta: el cliente tiene que poder distinguir "el relay no está" de "tu feed está roto". Agregué un código \`RELAY_UNAVAILABLE\` que se evalúa antes de tratar el cuerpo como contenido de feed:
+
+\`\`\`ts
+// src/adapters/feed/relayFeedSource.ts
+const RELAY_MARKER_HEADER = "X-Relay-Origin-Status";
+
+function looksLikeMissingRelay(response: Response): boolean {
+  return response.headers.get(RELAY_MARKER_HEADER) === null
+    || isHtmlContentType(response.headers.get("Content-Type"));
+}
+\`\`\`
+
+La cabecera marcadora no es una heurística: es parte del contrato del relay, que la escribe en toda respuesta que no sea de error. Su ausencia es una señal positiva de que quien respondió no fue el relay. Y ahí apareció el hallazgo más caro de todos: los fixtures de prueba omitían esa cabecera. Con esa omisión, toda una clase de fallo era imposible de probar en las dos direcciones — ninguna prueba podía producir una respuesta sin relay, y ninguna prueba podía afirmar nada sobre ella.
+
+\`\`\`
+navegador ──▶ /api/feed (Worker relay) ──▶ origen del feed
+                 │ guarda SSRF reaplicada en cada salto de redirección
+                 │ GET condicional (If-None-Match / If-Modified-Since)
+                 └ X-Relay-Origin-Status en toda respuesta real
+
+vite solo ──▶ sin ruta /api/feed ──▶ fallback SPA ──▶ index.html 200 ──▶ parser
+\`\`\`
+
+*Layout.* Reescribí \`.app-shell\` con áreas nombradas en lugar de la rejilla implícita. Después del cambio no queda ninguna ubicación por defecto disponible, que es exactamente el mecanismo que produjo el defecto:
+
+\`\`\`css
+/* src/styles/grid.css — @media (min-width: 768px) */
+.app-shell {
+  grid-template-columns: 220px 320px 1fr;
+  grid-template-areas:
+    "toggle-error toggle-error toggle-error"
+    "actions actions actions"
+    "sidebar list pane";
+}
+\`\`\`
+
+Y le puse una prueba de guardia con una lista de hijos no-panel mantenida a mano, junto con el contrato de extensión escrito en el propio archivo: para agregar un hijo nuevo hay que declarar su área en los dos breakpoints, agregar su regla \`grid-area\`, y agregar su clase a la lista de la guardia — en ese orden, para que el fallo en rojo de la guardia demuestre la omisión antes de que llegue el arreglo.
+
+\`\`\`ts
+// src/styles/grid.test.ts
+const KNOWN_NON_PANE_CHILD_CLASSES = [
+  "app-shell__toggle-error",
+  "app-shell__actions",
+];
+expect(row.every((token) => token === areaName)).toBe(true);
+expect(row.length).toBe(columnCount);
+\`\`\`
+
+Esa guardia declara en su propio comentario lo que no cubre: jsdom no ejecuta layout, así que verifica que las reglas existan y sean internamente consistentes, no que los píxeles caigan donde deben. Y la lista es manual, así que un hijo nuevo agregado sin su entrada se escapa. Prefiero una guardia estrecha que declara sus límites antes que una amplia que promete lo que no puede cumplir — ese fue justamente el patrón que produjo todo esto.
+
+Los tres arreglos comparten la misma forma: convertir una suposición implícita en algo que el sistema puede desmentir. El comando de desarrollo suponía que alguien más levantaría el relay; ahora lo levanta él. El cliente suponía que un 200 venía del relay; ahora exige la marca del contrato antes de creerlo. La rejilla suponía que todo hijo tenía una ubicación declarada; ahora no queda ninguna ubicación implícita que ofrecerle.
+
+**El impacto**
+
+Los dos arreglos son pequeños. Lo caro fue lo que dejaron ver.
+
+El hueco en los fixtures no era un defecto de ningún módulo: era un agujero en lo que la suite podía expresar. Una cabecera faltante en un fixture no aparece en la cobertura, no aparece en el lint, y no aparece en una lectura del código, porque el código que la consume es correcto. Aparece cuando algo real responde y el fixture nunca pudo imitarlo.
+
+Ninguna de las dos clases era exótica. La aplicación tiene una capa de datos sobre IndexedDB para lectura offline, parsers de RSS 2.0, RDF, Atom y JSON Feed normalizados sobre un mismo modelo de entrada, importación y exportación OPML, y un relay en el borde con GET condicional para no volver a descargar lo que no cambió. Todo eso estaba probado, y bien probado. Lo que no estaba probado era el arranque y la pantalla.
+
+El caso más severo fue el de marcar como no leído. Un efecto que dependía del mismo estado que escribía revertía la acción en silencio. La prueba de extremo a extremo escrita para prevenir exactamente eso pasaba estando el defecto presente, porque su \`waitFor\` se resolvía sobre un parpadeo transitorio y su valor esperado codificaba la huella del propio defecto.
+
+Una prueba que afirma la huella del defecto es peor que no tener prueba. No deja una pregunta abierta: deja una respuesta falsa, y además consume la atención que habría encontrado la verdadera.
+
+Hoy las dos clases tienen barrera. El arranque de desarrollo levanta el relay, la ausencia del relay se reporta como problema local de configuración y no como feed inválido, la rejilla no tiene ubicación por defecto disponible, y los fixtures ejercitan el contrato real del relay en lugar de asumirlo. La suite quedó en 426 pruebas con cerca del 95% de cobertura, sobre la misma puerta exigida del 70%.
+
+**Lecciones**
+
+**La cobertura y la revisión responden otras preguntas.** Responden qué se ejecutó y qué se puede derivar leyendo. No responden si la aplicación funciona. La composición del arranque y el layout del navegador son dos clases enteras que quedan fuera del alcance de ambas, y no por descuido: por definición.
+
+**Una prueba que codifica la huella del defecto es peor que ninguna.** Cuando escribo una prueba de regresión para un defecto que acabo de ver, ahora la ejecuto primero contra el código sin arreglar. Si no falla en rojo, la prueba no está probando lo que creo.
+
+**Un comentario honesto no es un control.** \`grid.css\` advirtió sobre este defecto exacto durante tres slices. La advertencia era correcta y no sirvió de nada. Convierte la advertencia en una prueba que falla, o acepta que la van a leer y a ignorar.
+
+**Once rondas de revisión no reemplazan abrir un navegador.** El paso de verificación más barato de todo el proyecto — correr el comando de desarrollo y hacer clic en una entrada — fue el único que encontró cualquiera de los dos defectos. Ahora es un paso obligatorio del cierre de cada slice, antes de declararla terminada.`,
+    contentEn: `I finished ReaderSS feeling confident, and that confidence turned out to be badly grounded.
+
+The numbers were good and they still are. 426 tests. Around 95% statement coverage against a 70% gate that is enforced rather than documented: the threshold lives in \`vite.config.ts\`, and \`npm run test:coverage\` fails below it. Eleven rounds of four-lens adversarial review plus two formal refutations, 47 findings applied, one BLOCKER and four CRITICALs caught before publishing. A 248 kB bundle, 88 kB gzipped. GitHub Actions runs lint, typecheck and tests before deploying to Cloudflare Workers. The repository is public under MIT.
+
+Then I opened the app in a browser for the first time and used it the way a user would. Within five minutes I hit two defects that made it unusable. Review had caught neither of them.
+
+**Defect one: the app blamed the user for its own startup failure**
+
+I could not add a single feed. Every attempt failed, and every attempt failed with the same message: this content does not look like a feed. The message was wrong, and it was also accusatory, because it pointed at the address the user had just typed.
+
+The cause sat outside every module. \`npm run dev\` started Vite, and Vite on its own has no \`/api/feed\` route at all. Any request to that path fell through to the SPA history fallback, which answers with \`index.html\` and a 200. The client saw a 200, assumed the relay had answered, and handed HTML to the feed parser. The parser did precisely its job: it reported that this was not a feed.
+
+Every module was correct. The composition between them did not exist, and no module owned that composition.
+
+**Defect two: the reading pane rendered off-screen**
+
+With the relay running I could subscribe, refresh, and toggle entries read. But clicking an entry appeared to do nothing at all.
+
+At the desktop breakpoint, \`.app-shell\` declared three columns and exactly one explicit row. A later slice had added a fourth direct child — the actions bar — with no placement rule of its own. CSS Grid's implicit auto-placement did the only thing it could: it dropped that child into the first free cell and shifted everything else along by one. The actions bar took the 220 px column, the sidebar took the 320 px column, the entry list took the \`1fr\`, and the reading pane was pushed into an implicit second row, inside the 220 px column, below \`min-height: 100vh\`.
+
+The pane rendered correctly. It was simply never visible.
+
+**The wrong approach: reading review depth as evidence that it works**
+
+My mistake was not trusting coverage or review. It was confusing what each of them answers.
+
+Coverage answers which lines the tests executed. Adversarial review answers what a careful reader can derive from the code. Both are genuine evidence of something, and neither one ever starts the application. Both defects lived exactly where neither can reach: one in the composition of the dev command, the other in the browser's layout engine.
+
+None of this is an argument against adversarial review. Those eleven rounds found things no user would ever have found: one blocker and four criticals, nearly all of them on the trust boundary — the SSRF guard that has to be re-applied on every redirect hop, the single choke point where DOMPurify sanitises before anything renders, the relay's size and time limits. A user opening a browser does not discover an SSRF through a redirect chain. They discover that the app does not start. Those are two different surfaces demanding two different checks, and my mistake was assuming one covered the other.
+
+One detail makes this more uncomfortable. \`grid.css\` had carried an honest comment for three slices stating, in plain words, that jsdom performs no layout, that no automated test exercised that breakpoint, and that it therefore stayed unverified except by manual review. The comment was accurate. That manual review was deferred every time and never performed.
+
+Eleven review rounds read that comment and none acted on it. Reading a warning is not the same as executing the thing it warns about. An honest comment describes a risk; it does not control one. If nobody is accountable for it, it decays into decoration.
+
+**The fix, one defect class at a time**
+
+The two defects belong to different classes, and each class needs a different kind of barrier.
+
+*Composition wiring.* The dev command has to boot everything the app needs to work. I wired \`@cloudflare/vite-plugin\` into Vite's dev server, so a single command serves the app and \`/api/*\` from one origin with HMR intact:
+
+\`\`\`ts
+// vite.config.ts
+plugins: [
+  ...(process.env.VITEST ? [] : [cloudflare()]),
+  preact(),
+  VitePWA({ registerType: "prompt", injectRegister: "script" }),
+],
+\`\`\`
+
+*Honest diagnostics.* Booting the relay is not enough on its own: the client has to be able to tell "the relay is not there" apart from "your feed is broken". I added a \`RELAY_UNAVAILABLE\` code that is evaluated before the body is ever treated as feed content:
+
+\`\`\`ts
+// src/adapters/feed/relayFeedSource.ts
+const RELAY_MARKER_HEADER = "X-Relay-Origin-Status";
+
+function looksLikeMissingRelay(response: Response): boolean {
+  return response.headers.get(RELAY_MARKER_HEADER) === null
+    || isHtmlContentType(response.headers.get("Content-Type"));
+}
+\`\`\`
+
+That marker header is not a heuristic. It is part of the relay's contract, which writes it on every non-error response, so its absence is positive evidence that something other than the relay answered. And this is where the most expensive finding surfaced: the test fixtures omitted that header. With it missing, an entire failure class was untestable in both directions — no test could produce a missing-relay response, and no test could assert anything about one.
+
+\`\`\`
+browser ──▶ /api/feed (Worker relay) ──▶ feed origin
+               │ SSRF guard re-applied on every redirect hop
+               │ conditional GET (If-None-Match / If-Modified-Since)
+               └ X-Relay-Origin-Status on every real response
+
+vite alone ──▶ no /api/feed route ──▶ SPA fallback ──▶ index.html 200 ──▶ parser
+\`\`\`
+
+*Layout.* I rewrote \`.app-shell\` with named areas instead of the implicit grid. After the change there is no default placement left available at all, which is exactly the mechanism that produced the defect:
+
+\`\`\`css
+/* src/styles/grid.css — @media (min-width: 768px) */
+.app-shell {
+  grid-template-columns: 220px 320px 1fr;
+  grid-template-areas:
+    "toggle-error toggle-error toggle-error"
+    "actions actions actions"
+    "sidebar list pane";
+}
+\`\`\`
+
+Then I gave it a guard test with a hand-maintained list of non-pane children, alongside an extension contract written into the file itself: adding a new child means declaring its area in both breakpoints, adding its \`grid-area\` rule, and adding its class to the guard's list — in that order, so the guard's RED failure demonstrates the omission before the fix lands.
+
+\`\`\`ts
+// src/styles/grid.test.ts
+const KNOWN_NON_PANE_CHILD_CLASSES = [
+  "app-shell__toggle-error",
+  "app-shell__actions",
+];
+expect(row.every((token) => token === areaName)).toBe(true);
+expect(row.length).toBe(columnCount);
+\`\`\`
+
+The guard states its own limits in its own comment: jsdom performs no layout, so it verifies that the rules exist and are internally consistent, not that pixels land where they should. And the list is manual, so a new child added without its entry slips past. I would rather have a narrow guard that declares its boundaries than a broad one that promises what it cannot deliver — that promise-shaped gap is the pattern that produced all of this.
+
+All three fixes share one shape: turn an implicit assumption into something the system can contradict. The dev command assumed somebody else would start the relay; now it starts it. The client assumed a 200 came from the relay; now it demands the contract marker before believing that. The grid assumed every child had a declared placement; now there is no implicit placement left to hand out.
+
+**The impact**
+
+Both fixes are small. What they exposed was the expensive part.
+
+The fixture gap was not a defect in any module: it was a hole in what the suite could express. A missing header in a fixture does not show up in coverage, does not show up in lint, and does not show up in a code read, because the code consuming it is correct. It shows up when something real answers and the fixture was never able to imitate it.
+
+Neither class was exotic. The app has an IndexedDB data layer for offline reading, parsers for RSS 2.0, RDF, Atom and JSON Feed normalised onto one entry model, OPML import and export, and an edge relay doing conditional GET so it never re-downloads what has not changed. All of that was tested, and tested well. What was never tested was the startup and the screen.
+
+The worst case was mark-as-unread. An effect that depended on the same state it wrote silently reverted the action. The end-to-end test written to prevent exactly that passed while the defect was present, because its \`waitFor\` resolved on a transient flicker and its expected value encoded the defect's own fingerprint.
+
+A test that asserts the bug's fingerprint is worse than no test. It does not leave an open question; it leaves a false answer, and it consumes the attention that would have found the real one.
+
+Both classes have barriers now. The dev command boots the relay, a missing relay is reported as a local configuration problem instead of an invalid feed, the grid has no default placement left, and the fixtures exercise the relay's real contract instead of assuming it. The suite settled at 426 tests and roughly 95% coverage against the same enforced 70% gate.
+
+**Lessons**
+
+**Coverage and review answer different questions.** They answer what ran and what can be derived by reading. They do not answer whether the app works. Startup composition and browser layout are two whole classes outside the reach of both, and not by oversight — by definition.
+
+**A test that encodes the bug's fingerprint is worse than none.** When I write a regression test for a defect I have just seen, I now run it first against the unfixed code. If it does not fail RED, the test is not testing what I think it is.
+
+**An honest comment is not a control.** \`grid.css\` warned about this exact defect for three slices. The warning was correct and it changed nothing. Turn the warning into a failing test, or accept that it will be read and ignored.
+
+**Eleven rounds of review do not replace opening a browser.** The cheapest verification step in the entire project — run the dev command, click one entry — was the only one that found either defect. It is now a mandatory step at the end of every slice, before I call it done.`,
+  },
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
