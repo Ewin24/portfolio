@@ -92,6 +92,22 @@ export type TranslationKeys = {
   'skills.azure.milestone2': string
   'skills.azure.milestone3': string
   'skills.azure.reference': string
+  'skills.cfworkers.milestone1': string
+  'skills.cfworkers.milestone2': string
+  'skills.cfworkers.milestone3': string
+  'skills.cfworkers.reference': string
+  'skills.indexeddb.milestone1': string
+  'skills.indexeddb.milestone2': string
+  'skills.indexeddb.milestone3': string
+  'skills.indexeddb.reference': string
+  'skills.playwright.milestone1': string
+  'skills.playwright.milestone2': string
+  'skills.playwright.milestone3': string
+  'skills.playwright.reference': string
+  'skills.vitest.milestone1': string
+  'skills.vitest.milestone2': string
+  'skills.vitest.milestone3': string
+  'skills.vitest.reference': string
   // About
   'about.title': string
   'about.subtitle': string
@@ -237,6 +253,22 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.azure.milestone2': 'CI/CD con Azure DevOps',
     'skills.azure.milestone3': 'Contenedores y orquestación en Azure Kubernetes',
     'skills.azure.reference': 'Ver Casos de Estudio',
+    'skills.cfworkers.milestone1': 'Relay de feeds en el borde con CORS y GET condicional',
+    'skills.cfworkers.milestone2': 'Guarda SSRF reaplicada en cada salto de redirección',
+    'skills.cfworkers.milestone3': 'Despliegue automatizado con GitHub Actions',
+    'skills.cfworkers.reference': 'Ver Casos de Estudio',
+    'skills.indexeddb.milestone1': 'Capa de datos offline para un lector RSS',
+    'skills.indexeddb.milestone2': 'Marcas de tiempo por campo para leído y destacado',
+    'skills.indexeddb.milestone3': 'Importación y exportación OPML',
+    'skills.indexeddb.reference': 'Ver Casos de Estudio',
+    'skills.playwright.milestone1': 'Drivers versionados que ejercitan la UI real',
+    'skills.playwright.milestone2': 'Regresión visual contra líneas base con 0 píxeles de diferencia',
+    'skills.playwright.milestone3': '98 verificaciones de comportamiento sobre el escritorio XP',
+    'skills.playwright.reference': 'Ver Casos de Estudio',
+    'skills.vitest.milestone1': '426 pruebas con ~95% de cobertura sobre una puerta exigida del 70%',
+    'skills.vitest.milestone2': 'Pruebas de extremo a extremo contra el almacén real',
+    'skills.vitest.milestone3': 'Cobertura exigida en CI antes del despliegue',
+    'skills.vitest.reference': 'Ver Casos de Estudio',
     'skills.php.milestone1': 'Laravel con workers asíncronos y jobs',
     'skills.php.milestone2': 'SaaS B2B completo para sector solidario',
     'skills.php.milestone3': 'Procesamiento de archivos financieros en segundo plano',
@@ -402,6 +434,22 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.azure.milestone2': 'CI/CD with Azure DevOps',
     'skills.azure.milestone3': 'Containers and orchestration in Azure Kubernetes',
     'skills.azure.reference': 'View Case Studies',
+    'skills.cfworkers.milestone1': 'Edge feed relay with CORS and conditional GET',
+    'skills.cfworkers.milestone2': 'SSRF guard re-applied on every redirect hop',
+    'skills.cfworkers.milestone3': 'Automated deployment via GitHub Actions',
+    'skills.cfworkers.reference': 'View Case Studies',
+    'skills.indexeddb.milestone1': 'Offline data layer for an RSS reader',
+    'skills.indexeddb.milestone2': 'Per-field change timestamps for read and starred state',
+    'skills.indexeddb.milestone3': 'OPML import and export',
+    'skills.indexeddb.reference': 'View Case Studies',
+    'skills.playwright.milestone1': 'Committed drivers that exercise the real UI',
+    'skills.playwright.milestone2': 'Visual regression against committed baselines at 0 differing pixels',
+    'skills.playwright.milestone3': '98 behavior checks over the XP desktop',
+    'skills.playwright.reference': 'View Case Studies',
+    'skills.vitest.milestone1': '426 tests at ~95% coverage against an enforced 70% gate',
+    'skills.vitest.milestone2': 'End-to-end tests against the real store',
+    'skills.vitest.milestone3': 'Coverage enforced in CI before deployment',
+    'skills.vitest.reference': 'View Case Studies',
     'skills.php.milestone1': 'Laravel with async workers and jobs',
     'skills.php.milestone2': 'Complete B2B SaaS for solidarity sector',
     'skills.php.milestone3': 'Background processing of financial files',

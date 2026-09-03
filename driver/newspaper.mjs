@@ -73,9 +73,12 @@ async function run() {
           totalPixels += r.total ?? 0
           diffPixels += r.diff ?? -1
           const ratio = r.total ? (r.diff ?? Infinity) / r.total : 0
-          // A negative `diff` is a width mismatch: a hard fail, never tolerated
-          // by the 0.1% rasterisation allowance.
-          const passes = r.diff === 0 || (r.diff > 0 && r.total > 0 && ratio <= 0.001)
+          // Converged baselines gate on exactly zero differing pixels. The old
+          // 0.1% area allowance let a real 5,755 px text change report ALL
+          // PASSED, because the tolerance is measured over the whole page. It
+          // survives only as the re-cut trigger below; `ratio` and a negative
+          // `diff` (width mismatch) remain for the diagnostic line.
+          const passes = r.diff === 0
           check(`[${lang}] newspaper pixel-identical @ ${vp.name}`,
             passes,
             `diff=${r.diff} total=${r.total} (${(ratio * 100).toFixed(4)}%) ${r.reason || ''}`)
