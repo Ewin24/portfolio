@@ -200,8 +200,8 @@
     </script>
 
     <title>Edwin Trigos | Software Architect & Full Stack Developer</title>
-    <script type="module" crossorigin src="/portfolio/assets/index-DvAYycDr.js"></script>
-    <link rel="stylesheet" crossorigin href="/portfolio/assets/index-CjciP8Ey.css">
+    <script type="module" crossorigin src="/portfolio/assets/index-BgewQ3aJ.js"></script>
+    <link rel="stylesheet" crossorigin href="/portfolio/assets/index-BkueOK9A.css">
   <script type="application/ld+json">
 [
   {
@@ -706,13 +706,13 @@
     "@type": "CreativeWork",
     "@id": "https://ewin24.github.io/portfolio/#case-fabricas-credit-los",
     "name": "Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC",
-    "description": "114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones.",
+    "description": "114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones. 474/474 pruebas verdes tras hacer configurable el proveedor de datos de riesgo, entregado como 3 PRs encadenados.",
     "inLanguage": "es",
     "dateCreated": "2025",
     "author": {
       "@id": "https://ewin24.github.io/portfolio/#person"
     },
-    "keywords": "fintech, architecture, fullstack, los, ddd, dotnet",
+    "keywords": "fintech, architecture, fullstack, los, ddd, dotnet, strategy, feature-flags",
     "about": {
       "@type": "Thing",
       "name": "Fintech / Crédito"
@@ -791,13 +791,13 @@
     "@type": "CreativeWork",
     "@id": "https://ewin24.github.io/portfolio/#case-portfolio-hybrid",
     "name": "Portfolio con Arquitectura Híbrida (React 19 + Vite)",
-    "description": "Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript.",
+    "description": "Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript. El escritorio XP se construyó con TDD estricto contra un driver Playwright versionado —98/98 verificaciones, RED antes que GREEN en cada unidad de trabajo—, y un segundo driver versionado compara el tema periódico píxel a píxel en 4 viewports × 2 idiomas contra líneas base versionadas: exige 0 píxeles de diferencia, así que el diseño editorial no puede desviarse mientras evoluciona el segundo tema.",
     "inLanguage": "es",
-    "dateCreated": "2024",
+    "dateCreated": "2026",
     "author": {
       "@id": "https://ewin24.github.io/portfolio/#person"
     },
-    "keywords": "frontend, portfolio, architecture, react",
+    "keywords": "frontend, portfolio, architecture, react, testing, tdd, design-system",
     "about": {
       "@type": "Thing",
       "name": "Desarrollo Web"
@@ -842,16 +842,33 @@
     "@type": "CreativeWork",
     "@id": "https://ewin24.github.io/portfolio/#case-starsol-saas",
     "name": "STARSOL — Plataforma SaaS para Gestión Integral de Riesgos",
-    "description": "Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR.",
+    "description": "Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR. El validador de estructura acepta 12 archivos reales de cliente (7 ADA + 5 SICSES) sin errores bloqueantes; activar una rama de validación de campos que nunca se había alcanzado en producción sacó a la luz tres desajustes de formato reales —fechas de 7 dígitos que perdían el cero inicial por coerción numérica, un valor monetario decimal contra una regla `integer`, y números de crédito con un espacio incrustado en uno de los formatos—, todos normalizados antes de validar para que el mismo crédito cargado por cualquiera de los dos formatos resuelva a un único identificador.",
     "inLanguage": "es",
     "dateCreated": "2024",
     "author": {
       "@id": "https://ewin24.github.io/portfolio/#person"
     },
-    "keywords": "saas, fintech, architecture, cloud, laravel",
+    "keywords": "saas, fintech, architecture, cloud, laravel, regulatory, data-ingestion",
     "about": {
       "@type": "Thing",
       "name": "Fintech / Riesgos"
+    },
+    "creativeWorkStatus": "Published"
+  },
+  {
+    "@type": "CreativeWork",
+    "@id": "https://ewin24.github.io/portfolio/#case-readerss",
+    "name": "ReaderSS — Lector RSS con lectura offline y relay en el borde",
+    "description": "426 pruebas con ~95% de cobertura de sentencias contra una puerta exigida del 70%. Bundle de 248 kB en crudo y 88 kB comprimido. GitHub Actions ejecuta lint, typecheck y pruebas antes de desplegar a Cloudflare Workers. Repositorio público con licencia MIT.",
+    "inLanguage": "es",
+    "dateCreated": "2026",
+    "author": {
+      "@id": "https://ewin24.github.io/portfolio/#person"
+    },
+    "keywords": "open-source, oss, typescript, react, offline-first, cloudflare-workers, indexeddb, testing",
+    "about": {
+      "@type": "Thing",
+      "name": "Open Source / Web"
     },
     "creativeWorkStatus": "Published"
   }
@@ -918,14 +935,14 @@
   "@type": "ItemList",
   "name": "Production Case Studies",
   "description": "Real systems shipped to production by Edwin Trigos.",
-  "numberOfItems": 9,
+  "numberOfItems": 10,
   "itemListElement": [
     {
       "@type": "ListItem",
       "position": 1,
       "name": "Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC",
       "url": "https://ewin24.github.io/portfolio/#projects",
-      "description": "114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones."
+      "description": "114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones. 474/474 pruebas verdes tras hacer configurable el proveedor de datos de riesgo, entregado como 3 PRs encadenados."
     },
     {
       "@type": "ListItem",
@@ -960,7 +977,7 @@
       "position": 6,
       "name": "Portfolio con Arquitectura Híbrida (React 19 + Vite)",
       "url": "https://ewin24.github.io/portfolio/#projects",
-      "description": "Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript."
+      "description": "Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript. El escritorio XP se construyó con TDD estricto contra un driver Playwright versionado —98/98 verificaciones, RED antes que GREEN en cada unidad de trabajo—, y un segundo driver versionado compara el tema periódico píxel a píxel en 4 viewports × 2 idiomas contra líneas base versionadas: exige 0 píxeles de diferencia, así que el diseño editorial no puede desviarse mientras evoluciona el segundo tema."
     },
     {
       "@type": "ListItem",
@@ -981,7 +998,14 @@
       "position": 9,
       "name": "STARSOL — Plataforma SaaS para Gestión Integral de Riesgos",
       "url": "https://ewin24.github.io/portfolio/#projects",
-      "description": "Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR."
+      "description": "Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR. El validador de estructura acepta 12 archivos reales de cliente (7 ADA + 5 SICSES) sin errores bloqueantes; activar una rama de validación de campos que nunca se había alcanzado en producción sacó a la luz tres desajustes de formato reales —fechas de 7 dígitos que perdían el cero inicial por coerción numérica, un valor monetario decimal contra una regla `integer`, y números de crédito con un espacio incrustado en uno de los formatos—, todos normalizados antes de validar para que el mismo crédito cargado por cualquiera de los dos formatos resuelva a un único identificador."
+    },
+    {
+      "@type": "ListItem",
+      "position": 10,
+      "name": "ReaderSS — Lector RSS con lectura offline y relay en el borde",
+      "url": "https://ewin24.github.io/portfolio/#projects",
+      "description": "426 pruebas con ~95% de cobertura de sentencias contra una puerta exigida del 70%. Bundle de 248 kB en crudo y 88 kB comprimido. GitHub Actions ejecuta lint, typecheck y pruebas antes de desplegar a Cloudflare Workers. Repositorio público con licencia MIT."
     }
   ]
 }
@@ -1107,8 +1131,8 @@
 <h3>Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC</h3>
 <p><strong>Company</strong>: Fábricas de Crédito QUAC. <strong>Period</strong>: 2025 – 2026. <strong>Stack</strong>: .NET 8+, C#, Dapper, SQL Server, Clean Architecture, REST API, JWT, Strategy Pattern.</p>
 <p><strong>Problem</strong>: La empresa no contaba con un sistema digital de originación de crédito. Las solicitudes se procesaban de forma manual, tomando días en completarse, sin validación de identidad ni detección de fraude. Cada solicitud requería revisión humana sin automatización, generando demoras, errores de conciliación y exposición a suplantación de identidad.</p>
-<p><strong>Solution</strong>: Diseñé y construí el sistema completo desde cero. En la capa de datos: DDL con 4 esquemas lógicos (cfg/cat/fab/aud), 30+ tablas transaccionales, máquina de estados de 23 estados, y 27 stored procedures optimizados. En la capa de servicios: API REST en .NET con Clean Architecture — repositorios por esquema, servicios por dominio funcional (Estudio, Tercero, OTP, Biometría) y controladores por canal (Admin/Tienda/Web/Handoff). Implementé el SOVI (Sistema Orquestador de Validación de Identidad) con patrón Strategy para verificación por bot de voz + validación manual, con motor de decisiones catalog-driven (sin if/switch hardcodeados). Integré detección de fraude con análisis biométrico de fotografías y un flujo completo de auditoría INSERT-ONLY.</p>
-<p><strong>Impact</strong>: 114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones.</p>
+<p><strong>Solution</strong>: Diseñé y construí el sistema completo desde cero. En la capa de datos: DDL con 4 esquemas lógicos (cfg/cat/fab/aud), 30+ tablas transaccionales, máquina de estados de 23 estados, y 27 stored procedures optimizados. En la capa de servicios: API REST en .NET con Clean Architecture — repositorios por esquema, servicios por dominio funcional (Estudio, Tercero, OTP, Biometría) y controladores por canal (Admin/Tienda/Web/Handoff). Implementé el SOVI (Sistema Orquestador de Validación de Identidad) con patrón Strategy para verificación por bot de voz + validación manual, con motor de decisiones catalog-driven (sin if/switch hardcodeados). Integré detección de fraude con análisis biométrico de fotografías y un flujo completo de auditoría INSERT-ONLY. Más adelante hice configurable el proveedor de datos de riesgo mediante una interfaz de estrategia (`IProveedorContactos`) y un resolvedor que mapea por diccionario el proveedor configurado a su implementación —sumar un tercer proveedor es una clase nueva y un registro de inyección de dependencias, cero `if`—, detrás de un feature flag que funciona como kill switch sin redespliegue y con un stub de falla explícita para la rama cuyo mapeo semántico todavía no está definido: nunca aprueba ni niega en silencio, y nunca cae de vuelta al otro proveedor.</p>
+<p><strong>Impact</strong>: 114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones. 474/474 pruebas verdes tras hacer configurable el proveedor de datos de riesgo, entregado como 3 PRs encadenados.</p>
 </article>
 <article>
 <h3>SOVI — Sistema Orquestador de Validación de Identidad</h3>
@@ -1140,10 +1164,10 @@
 </article>
 <article>
 <h3>Portfolio con Arquitectura Híbrida (React 19 + Vite)</h3>
-<p><strong>Company</strong>: Proyecto Personal. <strong>Period</strong>: 2024 – Presente. <strong>Stack</strong>: React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion, GitHub API.</p>
+<p><strong>Company</strong>: Proyecto Personal. <strong>Period</strong>: 2026 – Presente. <strong>Stack</strong>: React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion, GitHub API, Playwright.</p>
 <p><strong>Problem</strong>: Los portfolios de desarrolladores muestran código pero no el impacto de negocio. Depender exclusivamente de la API de GitHub para mostrar proyectos oculta el trabajo más valioso: sistemas privados empresariales bajo NDA. Necesitaba una plataforma que vendiera ingeniería, no solo repositorios públicos.</p>
-<p><strong>Solution</strong>: Diseñé una arquitectura híbrida: capa de contenido curado (casos de estudio en TypeScript con formato STAR, experiencia laboral, blog) como fuente principal de verdad, y API de GitHub como widget secundario de actividad. Implementé i18n nativo (ES/EN), design system editorial pixel-art con sombras pixeladas y tipografía de periódico, y animaciones con Framer Motion. Construido con React 19 + Vite + TypeScript + Tailwind CSS v4.</p>
-<p><strong>Impact</strong>: Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript.</p>
+<p><strong>Solution</strong>: Diseñé una arquitectura híbrida: capa de contenido curado (casos de estudio en TypeScript con formato STAR, experiencia laboral, blog) como fuente principal de verdad, y API de GitHub como widget secundario de actividad. Implementé i18n nativo (ES/EN), design system editorial pixel-art con sombras pixeladas y tipografía de periódico, y animaciones con Framer Motion. Construido con React 19 + Vite + TypeScript + Tailwind CSS v4. Sobre esa base sumé un segundo tema seleccionable por `data-theme` —del periódico editorial a un escritorio interactivo estilo XP— con un WindowManager que es dueño de cada rectángulo, clamp y orden Z: ventanas arrastrables, redimensionado por 8 asas, menú de inicio, barra de tareas con bandeja de utilidades, pestañas dentro de una misma ventana y una ventana de ayuda fuera del registro visible.</p>
+<p><strong>Impact</strong>: Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript. El escritorio XP se construyó con TDD estricto contra un driver Playwright versionado —98/98 verificaciones, RED antes que GREEN en cada unidad de trabajo—, y un segundo driver versionado compara el tema periódico píxel a píxel en 4 viewports × 2 idiomas contra líneas base versionadas: exige 0 píxeles de diferencia, así que el diseño editorial no puede desviarse mientras evoluciona el segundo tema.</p>
 </article>
 <article>
 <h3>API Centralizada de Comunicaciones por Email — Infobip como Proveedor Único</h3>
@@ -1163,8 +1187,15 @@
 <h3>STARSOL — Plataforma SaaS para Gestión Integral de Riesgos</h3>
 <p><strong>Company</strong>: STARSOL. <strong>Period</strong>: 2024 – Presente. <strong>Stack</strong>: PHP, Laravel, AWS, .NET MAUI, MySQL, Docker, CI/CD.</p>
 <p><strong>Problem</strong>: Las entidades del sector solidario (cooperativas, fondos de empleados) enfrentaban procesos manuales para la gestión de riesgos SARLAFT, SARC y SIAR, con flujos de originación de crédito y monitoreo normativo sin digitalizar. El servidor web monolítico se convertía en cuello de botella al procesar archivos financieros pesados de forma sincrónica, degradando la experiencia del usuario.</p>
-<p><strong>Solution</strong>: Diseñé y construí STARSOL desde cero como plataforma SaaS B2B en PHP con Laravel, implementando una arquitectura asíncrona con 3 background workers que procesan jobs simultáneamente, desacoplando completamente la carga de archivos del hilo principal del servidor web. Para la gestión avanzada de archivos, desarrollé una aplicación cliente en .NET MAUI con capacidad offline que se sincroniza con el backend en la nube. A nivel de infraestructura, aprovisioné entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad para el procesamiento de datos financieros sensibles.</p>
-<p><strong>Impact</strong>: Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR.</p>
+<p><strong>Solution</strong>: Diseñé y construí STARSOL desde cero como plataforma SaaS B2B en PHP con Laravel, implementando una arquitectura asíncrona con 3 background workers que procesan jobs simultáneamente, desacoplando completamente la carga de archivos del hilo principal del servidor web. Para la gestión avanzada de archivos, desarrollé una aplicación cliente en .NET MAUI con capacidad offline que se sincroniza con el backend en la nube. A nivel de infraestructura, aprovisioné entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad para el procesamiento de datos financieros sensibles. En la v2 construí un módulo dedicado de ingesta regulatoria ADA/SICSES cuyo CsvStructureValidator detecta marcador, separador y fila de encabezado antes de validar —cuenta la fila de encabezado, nunca una fila de datos—, y en la v3 reestructuré la interfaz en 3 módulos.</p>
+<p><strong>Impact</strong>: Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR. El validador de estructura acepta 12 archivos reales de cliente (7 ADA + 5 SICSES) sin errores bloqueantes; activar una rama de validación de campos que nunca se había alcanzado en producción sacó a la luz tres desajustes de formato reales —fechas de 7 dígitos que perdían el cero inicial por coerción numérica, un valor monetario decimal contra una regla `integer`, y números de crédito con un espacio incrustado en uno de los formatos—, todos normalizados antes de validar para que el mismo crédito cargado por cualquiera de los dos formatos resuelva a un único identificador.</p>
+</article>
+<article>
+<h3>ReaderSS — Lector RSS con lectura offline y relay en el borde</h3>
+<p><strong>Company</strong>: Proyecto Personal (OSS). <strong>Period</strong>: 2026. <strong>Stack</strong>: TypeScript, React, Vite, IndexedDB, Cloudflare Workers, DOMPurify, Vitest, GitHub Actions.</p>
+<p><strong>Problem</strong>: Los navegadores retiraron el soporte nativo de RSS y los lectores que sobrevivieron son servicios en la nube que se quedan con tu lista de fuentes. Una página en el navegador tampoco puede pedir un feed arbitrario: CORS lo bloquea. Y nada de eso funciona sin conexión, justo cuando más se lee.</p>
+<p><strong>Solution</strong>: Construí el cliente con dominio, puertos y adaptadores tras un composition root, con IndexedDB como capa de datos. El acceso a los feeds pasa por un relay en Cloudflare Workers que resuelve CORS y agrega GET condicional, límites de tamaño y de tiempo, una guarda SSRF reaplicada en cada salto de redirección y una guarda de origen documentada explícitamente como no autenticante. Los parsers de RSS 2.0, RDF, Atom y JSON Feed normalizan todo a un único modelo de entrada; la sanitización con DOMPurify vive en un único punto de estrangulamiento antes de renderizar. Incluye importación y exportación OPML, estados de leído/no leído/destacado con marcas de tiempo por campo, y un refresco que reporta el fallo real de cada feed en lugar de un único error agregado.</p>
+<p><strong>Impact</strong>: 426 pruebas con ~95% de cobertura de sentencias contra una puerta exigida del 70%. Bundle de 248 kB en crudo y 88 kB comprimido. GitHub Actions ejecuta lint, typecheck y pruebas antes de desplegar a Cloudflare Workers. Repositorio público con licencia MIT.</p>
 </article>
 <h2>Technical Blog</h2>
 <article itemscope itemtype="https://schema.org/Article">
@@ -1237,8 +1268,8 @@
 <p><time itemprop="datePublished" datetime="2026-07-15">2026-07-15</time>. <strong>Category</strong>: <span itemprop="articleSection">arquitectura</span>. <strong>Tags</strong>: dotnet, biometrics, strategy-pattern, catalog-driven, fintech, orchestration, liveness-detection, geolocation.</p>
 <p itemprop="description">En un sistema de originación de crédito, validar identidad no es solo confirmar un número de documento. Es probar que la persona está viva, está en el lugar que dice estar, y no es un deepfake. Acá está cómo diseñé BOT Ubica (bot de voz + geolocalización) más Prueba de Vida V2 (liveness detection con OAuth) más un motor de decisiones catalog-driven con 9 códigos de diagnóstico, fallback manual como ciudadano de primera clase, y un selector de buró de crédito configurable sin redeploy.</p>
 </article>
-<h2>Technologies (56 production-grade)</h2>
-<p>Flutter 3.44+ · Dart · GetX · just_audio · media_kit · audio_service · youtube_explode_dart · Hive · Dio · JNI · Gradle · AGP · Kotlin DSL · PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET Framework · ERP · CRM · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · Factory Pattern · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API · Infobip Email API · Azure Blob Storage</p>
+<h2>Technologies (62 production-grade)</h2>
+<p>Flutter 3.44+ · Dart · GetX · just_audio · media_kit · audio_service · youtube_explode_dart · Hive · Dio · JNI · Gradle · AGP · Kotlin DSL · PHP · Laravel · AWS · .NET MAUI · MySQL · Docker · CI/CD · .NET 8 · C# · SQL Server · Clean Architecture · Flutter · Dapper · React · TypeScript · .NET Core · REST API · Crystal Reports · .NET Framework · ERP · CRM · .NET · JavaScript · HTML/CSS · Scrum · HTML · CSS · UI/UX · Deployment · .NET 8+ · JWT · Strategy Pattern · Polly · Serilog · Factory Pattern · UI Architecture · React 19 · Vite · Tailwind CSS v4 · Framer Motion · GitHub API · Playwright · Infobip Email API · Azure Blob Storage · IndexedDB · Cloudflare Workers · DOMPurify · Vitest · GitHub Actions</p>
 <h2>Work Experience</h2>
 <article>
 <h3>Mantenedor Open Source (Fork) &amp; Desarrollador Flutter — Harmony-Music</h3>
@@ -1257,7 +1288,9 @@
 <ul>
 <li>Lideré el diseño arquitectónico, desarrollo end-to-end y despliegue en la nube de STARSOL, una plataforma SaaS B2B para el sector solidario que gestiona el Sistema Integral de Administración de Riesgos (SARLAFT, SARC, SIAR), digitalizando y automatizando flujos complejos de originación de crédito y monitoreo normativo</li>
 <li>Diseñé una arquitectura asíncrona con 3 background workers procesando jobs simultáneamente para desacoplar tareas pesadas del hilo principal del servidor web (PHP/Laravel), eliminando cuellos de botella en el procesamiento de archivos financieros</li>
+<li>Desarrollé una aplicación cliente en .NET MAUI para gestión avanzada de archivos integrada con el ecosistema STARSOL, habilitando procesamiento offline y sincronización con el backend en la nube</li>
 <li>Orquesté el aprovisionamiento de entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad y seguridad para el procesamiento de datos financieros sensibles</li>
+<li>Construí el módulo de ingesta regulatoria ADA/SICSES con un validador de estructura CSV que detecta marcador, separador y fila de encabezado antes de validar, verificado contra 12 archivos reales de cliente sin errores bloqueantes</li>
 </ul>
 <p><strong>Stack</strong>: PHP, Laravel, AWS, .NET MAUI, MySQL, Docker, CI/CD</p>
 </article>
