@@ -147,7 +147,7 @@ export const BAND_CAP = 20
  *  - A height mismatch no longer bails. The common prefix `min(hA, hB)` is
  *    compared and `heightDelta` is reported, but `|heightDelta| * width` is
  *    added to `diff` so a taller or shorter page can never silently pass.
- *  - Consecutive differing rows collapse into `bands` (capped at `BAND_CAP`),
+ *  - Consecutive differing rows are merged into `bands` (capped at `BAND_CAP`),
  *    and the first differing row is reported as `firstDiffY`.
  */
 export async function pixelDiff(fileA, fileB) {
