@@ -119,7 +119,7 @@ export const caseStudies: CaseStudy[] = [
     industry: 'Fintech / Riesgo Crediticio',
 
     period: '2024 – 2025',
-    role: 'Backend Developer',
+    role: 'Desarrollador Backend',
     roleEn: 'Backend Developer',
 
     problem:
@@ -285,7 +285,7 @@ export const caseStudies: CaseStudy[] = [
     industry: 'Communications / SaaS B2B',
 
     period: '2024',
-    role: 'Backend Architect / API Designer',
+    role: 'Arquitecto Backend / Diseñador de APIs',
     roleEn: 'Backend Architect / API Designer',
 
     problem:
