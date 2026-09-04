@@ -3550,6 +3550,904 @@ Three lessons that apply to any automated validation system with human fallback:
 If you are designing a validation system with human fallback, assume the bot will fail. Design for failure. And the way to design for failure is to have plan B as first-class code, not as a \`catch\` branch.`,
     relatedIds: ['clean-architecture-los', 'catalog-driven-decision-engine', 'domain-exception-problemdetails-pipeline'],
   },
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 15 — Adversarial review vs. real use (ReaderSS)
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'adversarial-review-missed-user-defects',
+    slug: 'revision-adversarial-no-encontro-lo-que-el-usuario-si',
+    title: 'Once rondas de revisión adversarial no encontraron los dos defectos que un usuario halló en minutos',
+    titleEn: 'Eleven Rounds of Adversarial Review Missed the Two Defects a User Found in Minutes',
+    date: '2026-09-05',
+    tags: ['testing', 'code-review', 'typescript', 'cloudflare-workers', 'indexeddb'],
+    category: 'arquitectura',
+    featured: true,
+    excerpt:
+      'ReaderSS terminó con 426 pruebas, ~95% de cobertura contra una puerta exigida del 70%, once rondas de revisión adversarial y 47 hallazgos aplicados. Después abrí la aplicación en un navegador y en cinco minutos encontré dos defectos que la volvían inservible: ninguno de los dos había sido detectado. Esto es dónde viven esos defectos, por qué la revisión no puede llegar ahí, y qué cambié para que la próxima vez fallen en rojo.',
+    excerptEn:
+      'ReaderSS shipped with 426 tests, ~95% coverage against an enforced 70% gate, eleven rounds of adversarial review and 47 findings applied. Then I opened the app in a browser and found two defects in five minutes that made it unusable. Neither had been caught. Here is where that class of defect actually lives, why review cannot reach it, and what I changed so it fails loudly next time.',
+    content: `Terminé ReaderSS con una confianza que resultó estar mal fundada.
+
+Los números eran buenos y lo siguen siendo. 426 pruebas. Cerca del 95% de cobertura de sentencias contra una puerta del 70% que no está documentada sino exigida: el umbral vive en \`vite.config.ts\` y \`npm run test:coverage\` falla por debajo de él. Once rondas de revisión adversarial de cuatro lentes, más dos refutaciones formales, con 47 hallazgos aplicados, un BLOCKER y cuatro CRITICALs atrapados antes de publicar. Un bundle de 248 kB en crudo, 88 kB comprimido. GitHub Actions corre lint, typecheck y pruebas antes de desplegar a Cloudflare Workers. El repositorio es público, con licencia MIT.
+
+Después abrí la aplicación en un navegador, por primera vez, usándola como usuario. En menos de cinco minutos encontré dos defectos que la volvían inservible. La revisión no había encontrado ninguno de los dos.
+
+**Defecto uno: la aplicación culpaba al usuario de su propio error de arranque**
+
+No pude agregar un solo feed. Todos fallaban, y todos fallaban con el mismo mensaje: el contenido no parece un feed. El mensaje era falso y además acusatorio, porque señalaba la dirección que el usuario acababa de escribir.
+
+La causa estaba fuera de todos los módulos. \`npm run dev\` levantaba Vite, y Vite por sí solo no tiene ninguna ruta \`/api/feed\`. Cualquier petición a esa ruta caía en el fallback de historia del SPA, que responde \`index.html\` con un 200. El cliente recibía un 200, asumía que venía del relay, y le entregaba HTML al parser de feeds. El parser hacía exactamente lo que debía hacer: reportar que eso no era un feed.
+
+Cada módulo estaba bien. La composición entre ellos no existía, y ningún módulo era dueño de esa composición.
+
+**Defecto dos: el panel de lectura se renderizaba fuera de la pantalla**
+
+Con el relay arriba pude suscribirme, refrescar y marcar entradas como leídas. Pero al hacer clic en una entrada no ocurría nada visible.
+
+En el breakpoint de escritorio, \`.app-shell\` declaraba tres columnas y una sola fila explícita. Una slice posterior había agregado un cuarto hijo directo — la barra de acciones — sin ninguna regla de ubicación. El auto-placement implícito de CSS Grid hizo lo único que podía hacer: lo puso en la primera celda libre y corrió todo lo demás una posición. La barra de acciones tomó la columna de 220 px, la barra lateral tomó la de 320 px, la lista de entradas tomó el \`1fr\`, y el panel de lectura terminó en una fila implícita, dentro de la columna de 220 px, por debajo del \`min-height: 100vh\`.
+
+El panel se renderizaba correctamente. Simplemente nunca era visible.
+
+**El enfoque equivocado: leer la profundidad de la revisión como evidencia de que funciona**
+
+Mi error no fue confiar en la cobertura ni en la revisión. Fue confundir lo que cada una responde.
+
+La cobertura responde qué líneas ejecutaron las pruebas. La revisión adversarial responde qué puede derivar un lector cuidadoso a partir del código. Las dos son evidencia real de algo, y ninguna de las dos arranca la aplicación. Los dos defectos vivían precisamente donde ninguna de las dos llega: uno en la composición del comando de desarrollo, otro en el motor de layout del navegador.
+
+Esto no es un argumento contra la revisión adversarial. Las once rondas encontraron cosas que ningún usuario habría encontrado jamás: un fallo bloqueante y cuatro críticos, casi todos en el borde de confianza — la guarda SSRF que debe reaplicarse en cada salto de redirección, el punto único de estrangulamiento donde DOMPurify sanitiza antes de renderizar, los límites de tamaño y de tiempo del relay. Un usuario que abre el navegador no descubre un SSRF a través de una cadena de redirecciones. Descubre que la aplicación no arranca. Son dos superficies distintas y exigen dos verificaciones distintas. Mi error fue creer que una cubría a la otra.
+
+Hay un detalle que hace esto más incómodo. \`grid.css\` llevaba tres slices con un comentario honesto que decía, textualmente, que jsdom no ejecuta layout, que ninguna prueba automatizada ejercitaba ese breakpoint, y que quedaba sin verificar salvo por revisión manual. El comentario era exacto. Esa revisión manual se aplazó cada vez y nunca se hizo.
+
+Once rondas de revisión leyeron ese comentario y ninguna actuó sobre él. Leer una advertencia no es lo mismo que ejecutar aquello contra lo que advierte. Un comentario honesto describe un riesgo; no lo controla. Si nadie está obligado a responder por él, se degrada hasta volverse decoración.
+
+**La solución, por clase de defecto**
+
+Cada defecto pertenece a una clase distinta y cada clase necesita un tipo de barrera distinto.
+
+*Cableado de composición.* El comando de desarrollo tiene que arrancar todo lo que la aplicación necesita para funcionar. Conecté \`@cloudflare/vite-plugin\` al servidor de desarrollo de Vite, de modo que un solo comando sirve la aplicación y \`/api/*\` en el mismo origen, con HMR intacto:
+
+\`\`\`ts
+// vite.config.ts
+plugins: [
+  ...(process.env.VITEST ? [] : [cloudflare()]),
+  preact(),
+  VitePWA({ registerType: "prompt", injectRegister: "script" }),
+],
+\`\`\`
+
+*Diagnóstico honesto.* Arrancar el relay no basta: el cliente tiene que poder distinguir "el relay no está" de "tu feed está roto". Agregué un código \`RELAY_UNAVAILABLE\` que se evalúa antes de tratar el cuerpo como contenido de feed:
+
+\`\`\`ts
+// src/adapters/feed/relayFeedSource.ts
+const RELAY_MARKER_HEADER = "X-Relay-Origin-Status";
+
+function looksLikeMissingRelay(response: Response): boolean {
+  return response.headers.get(RELAY_MARKER_HEADER) === null
+    || isHtmlContentType(response.headers.get("Content-Type"));
+}
+\`\`\`
+
+La cabecera marcadora no es una heurística: es parte del contrato del relay, que la escribe en toda respuesta que no sea de error. Su ausencia es una señal positiva de que quien respondió no fue el relay. Y ahí apareció el hallazgo más caro de todos: los fixtures de prueba omitían esa cabecera. Con esa omisión, toda una clase de fallo era imposible de probar en las dos direcciones — ninguna prueba podía producir una respuesta sin relay, y ninguna prueba podía afirmar nada sobre ella.
+
+\`\`\`
+navegador ──▶ /api/feed (Worker relay) ──▶ origen del feed
+                 │ guarda SSRF reaplicada en cada salto de redirección
+                 │ GET condicional (If-None-Match / If-Modified-Since)
+                 └ X-Relay-Origin-Status en toda respuesta real
+
+vite solo ──▶ sin ruta /api/feed ──▶ fallback SPA ──▶ index.html 200 ──▶ parser
+\`\`\`
+
+*Layout.* Reescribí \`.app-shell\` con áreas nombradas en lugar de la rejilla implícita. Después del cambio no queda ninguna ubicación por defecto disponible, que es exactamente el mecanismo que produjo el defecto:
+
+\`\`\`css
+/* src/styles/grid.css — @media (min-width: 768px) */
+.app-shell {
+  grid-template-columns: 220px 320px 1fr;
+  grid-template-areas:
+    "toggle-error toggle-error toggle-error"
+    "actions actions actions"
+    "sidebar list pane";
+}
+\`\`\`
+
+Y le puse una prueba de guardia con una lista de hijos no-panel mantenida a mano, junto con el contrato de extensión escrito en el propio archivo: para agregar un hijo nuevo hay que declarar su área en los dos breakpoints, agregar su regla \`grid-area\`, y agregar su clase a la lista de la guardia — en ese orden, para que el fallo en rojo de la guardia demuestre la omisión antes de que llegue el arreglo.
+
+\`\`\`ts
+// src/styles/grid.test.ts
+const KNOWN_NON_PANE_CHILD_CLASSES = [
+  "app-shell__toggle-error",
+  "app-shell__actions",
+];
+expect(row.every((token) => token === areaName)).toBe(true);
+expect(row.length).toBe(columnCount);
+\`\`\`
+
+Esa guardia declara en su propio comentario lo que no cubre: jsdom no ejecuta layout, así que verifica que las reglas existan y sean internamente consistentes, no que los píxeles caigan donde deben. Y la lista es manual, así que un hijo nuevo agregado sin su entrada se escapa. Prefiero una guardia estrecha que declara sus límites antes que una amplia que promete lo que no puede cumplir — ese fue justamente el patrón que produjo todo esto.
+
+Los tres arreglos comparten la misma forma: convertir una suposición implícita en algo que el sistema puede desmentir. El comando de desarrollo suponía que alguien más levantaría el relay; ahora lo levanta él. El cliente suponía que un 200 venía del relay; ahora exige la marca del contrato antes de creerlo. La rejilla suponía que todo hijo tenía una ubicación declarada; ahora no queda ninguna ubicación implícita que ofrecerle.
+
+**El impacto**
+
+Los dos arreglos son pequeños. Lo caro fue lo que dejaron ver.
+
+El hueco en los fixtures no era un defecto de ningún módulo: era un agujero en lo que la suite podía expresar. Una cabecera faltante en un fixture no aparece en la cobertura, no aparece en el lint, y no aparece en una lectura del código, porque el código que la consume es correcto. Aparece cuando algo real responde y el fixture nunca pudo imitarlo.
+
+Ninguna de las dos clases era exótica. La aplicación tiene una capa de datos sobre IndexedDB para lectura offline, parsers de RSS 2.0, RDF, Atom y JSON Feed normalizados sobre un mismo modelo de entrada, importación y exportación OPML, y un relay en el borde con GET condicional para no volver a descargar lo que no cambió. Todo eso estaba probado, y bien probado. Lo que no estaba probado era el arranque y la pantalla.
+
+El caso más severo fue el de marcar como no leído. Un efecto que dependía del mismo estado que escribía revertía la acción en silencio. La prueba de extremo a extremo escrita para prevenir exactamente eso pasaba estando el defecto presente, porque su \`waitFor\` se resolvía sobre un parpadeo transitorio y su valor esperado codificaba la huella del propio defecto.
+
+Una prueba que afirma la huella del defecto es peor que no tener prueba. No deja una pregunta abierta: deja una respuesta falsa, y además consume la atención que habría encontrado la verdadera.
+
+Hoy las dos clases tienen barrera. El arranque de desarrollo levanta el relay, la ausencia del relay se reporta como problema local de configuración y no como feed inválido, la rejilla no tiene ubicación por defecto disponible, y los fixtures ejercitan el contrato real del relay en lugar de asumirlo. La suite quedó en 426 pruebas con cerca del 95% de cobertura, sobre la misma puerta exigida del 70%.
+
+**Lecciones**
+
+**La cobertura y la revisión responden otras preguntas.** Responden qué se ejecutó y qué se puede derivar leyendo. No responden si la aplicación funciona. La composición del arranque y el layout del navegador son dos clases enteras que quedan fuera del alcance de ambas, y no por descuido: por definición.
+
+**Una prueba que codifica la huella del defecto es peor que ninguna.** Cuando escribo una prueba de regresión para un defecto que acabo de ver, ahora la ejecuto primero contra el código sin arreglar. Si no falla en rojo, la prueba no está probando lo que creo.
+
+**Un comentario honesto no es un control.** \`grid.css\` advirtió sobre este defecto exacto durante tres slices. La advertencia era correcta y no sirvió de nada. Convierte la advertencia en una prueba que falla, o acepta que la van a leer y a ignorar.
+
+**Once rondas de revisión no reemplazan abrir un navegador.** El paso de verificación más barato de todo el proyecto — correr el comando de desarrollo y hacer clic en una entrada — fue el único que encontró cualquiera de los dos defectos. Ahora es un paso obligatorio del cierre de cada slice, antes de declararla terminada.`,
+    contentEn: `I finished ReaderSS feeling confident, and that confidence turned out to be badly grounded.
+
+The numbers were good and they still are. 426 tests. Around 95% statement coverage against a 70% gate that is enforced rather than documented: the threshold lives in \`vite.config.ts\`, and \`npm run test:coverage\` fails below it. Eleven rounds of four-lens adversarial review plus two formal refutations, 47 findings applied, one BLOCKER and four CRITICALs caught before publishing. A 248 kB bundle, 88 kB gzipped. GitHub Actions runs lint, typecheck and tests before deploying to Cloudflare Workers. The repository is public under MIT.
+
+Then I opened the app in a browser for the first time and used it the way a user would. Within five minutes I hit two defects that made it unusable. Review had caught neither of them.
+
+**Defect one: the app blamed the user for its own startup failure**
+
+I could not add a single feed. Every attempt failed, and every attempt failed with the same message: this content does not look like a feed. The message was wrong, and it was also accusatory, because it pointed at the address the user had just typed.
+
+The cause sat outside every module. \`npm run dev\` started Vite, and Vite on its own has no \`/api/feed\` route at all. Any request to that path fell through to the SPA history fallback, which answers with \`index.html\` and a 200. The client saw a 200, assumed the relay had answered, and handed HTML to the feed parser. The parser did precisely its job: it reported that this was not a feed.
+
+Every module was correct. The composition between them did not exist, and no module owned that composition.
+
+**Defect two: the reading pane rendered off-screen**
+
+With the relay running I could subscribe, refresh, and toggle entries read. But clicking an entry appeared to do nothing at all.
+
+At the desktop breakpoint, \`.app-shell\` declared three columns and exactly one explicit row. A later slice had added a fourth direct child — the actions bar — with no placement rule of its own. CSS Grid's implicit auto-placement did the only thing it could: it dropped that child into the first free cell and shifted everything else along by one. The actions bar took the 220 px column, the sidebar took the 320 px column, the entry list took the \`1fr\`, and the reading pane was pushed into an implicit second row, inside the 220 px column, below \`min-height: 100vh\`.
+
+The pane rendered correctly. It was simply never visible.
+
+**The wrong approach: reading review depth as evidence that it works**
+
+My mistake was not trusting coverage or review. It was confusing what each of them answers.
+
+Coverage answers which lines the tests executed. Adversarial review answers what a careful reader can derive from the code. Both are genuine evidence of something, and neither one ever starts the application. Both defects lived exactly where neither can reach: one in the composition of the dev command, the other in the browser's layout engine.
+
+None of this is an argument against adversarial review. Those eleven rounds found things no user would ever have found: one blocker and four criticals, nearly all of them on the trust boundary — the SSRF guard that has to be re-applied on every redirect hop, the single choke point where DOMPurify sanitises before anything renders, the relay's size and time limits. A user opening a browser does not discover an SSRF through a redirect chain. They discover that the app does not start. Those are two different surfaces demanding two different checks, and my mistake was assuming one covered the other.
+
+One detail makes this more uncomfortable. \`grid.css\` had carried an honest comment for three slices stating, in plain words, that jsdom performs no layout, that no automated test exercised that breakpoint, and that it therefore stayed unverified except by manual review. The comment was accurate. That manual review was deferred every time and never performed.
+
+Eleven review rounds read that comment and none acted on it. Reading a warning is not the same as executing the thing it warns about. An honest comment describes a risk; it does not control one. If nobody is accountable for it, it decays into decoration.
+
+**The fix, one defect class at a time**
+
+The two defects belong to different classes, and each class needs a different kind of barrier.
+
+*Composition wiring.* The dev command has to boot everything the app needs to work. I wired \`@cloudflare/vite-plugin\` into Vite's dev server, so a single command serves the app and \`/api/*\` from one origin with HMR intact:
+
+\`\`\`ts
+// vite.config.ts
+plugins: [
+  ...(process.env.VITEST ? [] : [cloudflare()]),
+  preact(),
+  VitePWA({ registerType: "prompt", injectRegister: "script" }),
+],
+\`\`\`
+
+*Honest diagnostics.* Booting the relay is not enough on its own: the client has to be able to tell "the relay is not there" apart from "your feed is broken". I added a \`RELAY_UNAVAILABLE\` code that is evaluated before the body is ever treated as feed content:
+
+\`\`\`ts
+// src/adapters/feed/relayFeedSource.ts
+const RELAY_MARKER_HEADER = "X-Relay-Origin-Status";
+
+function looksLikeMissingRelay(response: Response): boolean {
+  return response.headers.get(RELAY_MARKER_HEADER) === null
+    || isHtmlContentType(response.headers.get("Content-Type"));
+}
+\`\`\`
+
+That marker header is not a heuristic. It is part of the relay's contract, which writes it on every non-error response, so its absence is positive evidence that something other than the relay answered. And this is where the most expensive finding surfaced: the test fixtures omitted that header. With it missing, an entire failure class was untestable in both directions — no test could produce a missing-relay response, and no test could assert anything about one.
+
+\`\`\`
+browser ──▶ /api/feed (Worker relay) ──▶ feed origin
+               │ SSRF guard re-applied on every redirect hop
+               │ conditional GET (If-None-Match / If-Modified-Since)
+               └ X-Relay-Origin-Status on every real response
+
+vite alone ──▶ no /api/feed route ──▶ SPA fallback ──▶ index.html 200 ──▶ parser
+\`\`\`
+
+*Layout.* I rewrote \`.app-shell\` with named areas instead of the implicit grid. After the change there is no default placement left available at all, which is exactly the mechanism that produced the defect:
+
+\`\`\`css
+/* src/styles/grid.css — @media (min-width: 768px) */
+.app-shell {
+  grid-template-columns: 220px 320px 1fr;
+  grid-template-areas:
+    "toggle-error toggle-error toggle-error"
+    "actions actions actions"
+    "sidebar list pane";
+}
+\`\`\`
+
+Then I gave it a guard test with a hand-maintained list of non-pane children, alongside an extension contract written into the file itself: adding a new child means declaring its area in both breakpoints, adding its \`grid-area\` rule, and adding its class to the guard's list — in that order, so the guard's RED failure demonstrates the omission before the fix lands.
+
+\`\`\`ts
+// src/styles/grid.test.ts
+const KNOWN_NON_PANE_CHILD_CLASSES = [
+  "app-shell__toggle-error",
+  "app-shell__actions",
+];
+expect(row.every((token) => token === areaName)).toBe(true);
+expect(row.length).toBe(columnCount);
+\`\`\`
+
+The guard states its own limits in its own comment: jsdom performs no layout, so it verifies that the rules exist and are internally consistent, not that pixels land where they should. And the list is manual, so a new child added without its entry slips past. I would rather have a narrow guard that declares its boundaries than a broad one that promises what it cannot deliver — that promise-shaped gap is the pattern that produced all of this.
+
+All three fixes share one shape: turn an implicit assumption into something the system can contradict. The dev command assumed somebody else would start the relay; now it starts it. The client assumed a 200 came from the relay; now it demands the contract marker before believing that. The grid assumed every child had a declared placement; now there is no implicit placement left to hand out.
+
+**The impact**
+
+Both fixes are small. What they exposed was the expensive part.
+
+The fixture gap was not a defect in any module: it was a hole in what the suite could express. A missing header in a fixture does not show up in coverage, does not show up in lint, and does not show up in a code read, because the code consuming it is correct. It shows up when something real answers and the fixture was never able to imitate it.
+
+Neither class was exotic. The app has an IndexedDB data layer for offline reading, parsers for RSS 2.0, RDF, Atom and JSON Feed normalised onto one entry model, OPML import and export, and an edge relay doing conditional GET so it never re-downloads what has not changed. All of that was tested, and tested well. What was never tested was the startup and the screen.
+
+The worst case was mark-as-unread. An effect that depended on the same state it wrote silently reverted the action. The end-to-end test written to prevent exactly that passed while the defect was present, because its \`waitFor\` resolved on a transient flicker and its expected value encoded the defect's own fingerprint.
+
+A test that asserts the bug's fingerprint is worse than no test. It does not leave an open question; it leaves a false answer, and it consumes the attention that would have found the real one.
+
+Both classes have barriers now. The dev command boots the relay, a missing relay is reported as a local configuration problem instead of an invalid feed, the grid has no default placement left, and the fixtures exercise the relay's real contract instead of assuming it. The suite settled at 426 tests and roughly 95% coverage against the same enforced 70% gate.
+
+**Lessons**
+
+**Coverage and review answer different questions.** They answer what ran and what can be derived by reading. They do not answer whether the app works. Startup composition and browser layout are two whole classes outside the reach of both, and not by oversight — by definition.
+
+**A test that encodes the bug's fingerprint is worse than none.** When I write a regression test for a defect I have just seen, I now run it first against the unfixed code. If it does not fail RED, the test is not testing what I think it is.
+
+**An honest comment is not a control.** \`grid.css\` warned about this exact defect for three slices. The warning was correct and it changed nothing. Turn the warning into a failing test, or accept that it will be read and ignored.
+
+**Eleven rounds of review do not replace opening a browser.** The cheapest verification step in the entire project — run the dev command, click one entry — was the only one that found either defect. It is now a mandatory step at the end of every slice, before I call it done.`,
+  },
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 16 — Semantic asymmetry vs. uniform interface
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'interfaz-uniforme-asimetria-semantica',
+    slug: 'interfaz-uniforme-no-arregla-asimetria-semantica',
+    title: 'Una interfaz uniforme no arregla una asimetría semántica',
+    titleEn: 'A Uniform Interface Does Not Fix a Semantic Asymmetry',
+    date: '2026-09-12',
+    tags: ['arquitectura', 'strategy-pattern', 'feature-flags', 'dotnet', 'integration'],
+    category: 'arquitectura',
+    featured: false,
+    excerpt:
+      'Dos proveedores externos de datos de riesgo, un refactor que parecía obvio y una interfaz uniforme que los unificaba. Uno de los dos devuelve una decisión; el otro devuelve variables y ningún campo de viabilidad. La interfaz hace que ambas formas compilen, pero no crea el dato que falta. Esto es cómo separé lo que sí se podía unificar de lo que había que dejar fallando en voz alta.',
+    excerptEn:
+      'Two external risk-data providers, one refactor that looked obvious, and a uniform interface to unify them. One provider returns a decision; the other returns variables and carries no viability field at all. The interface makes both shapes compile — it does not create the missing datum. Here is how I separated what could genuinely be unified from what had to fail out loud.',
+    content: `Un sistema de originación de crédito con el que trabajé consulta a dos proveedores externos de datos de riesgo. Durante meses asumí que eran dos instancias del mismo problema. No lo eran, y la diferencia no vivía en el código.
+
+El sistema los usa para dos cosas distintas. La primera es contactabilidad: dado un documento, obtener teléfonos y direcciones para poder comunicarse con el solicitante. La segunda es viabilidad: dado el mismo documento, decidir si el solicitante puede avanzar en el proceso de crédito.
+
+La contactabilidad ya era configurable de verdad, con un patrón strategy completo. Una interfaz \`IProveedorContactos\` expone una propiedad discriminadora que identifica al proveedor; hay una implementación real por cada uno, sin stubs; y un resolvedor mapea la central configurada a su implementación por diccionario, con una falla suave a un valor por defecto. En el contenedor de dependencias hay un registro por implementación más el resolvedor. Agregar un tercer proveedor es una clase nueva y un registro. Cero \`if\`.
+
+La viabilidad no. Ahí había un \`if\` literal comparando el nombre del proveedor configurado, y todo lo demás caía en un bloque heredado escrito en línea. No había interfaz común: el servicio llamaba directo a dos clientes con firmas distintas y objetos de respuesta distintos.
+
+Puesto así, el diagnóstico se escribe solo. La viabilidad es la contactabilidad con deuda técnica. Extraés la interfaz, movés las dos ramas a implementaciones, registrás en el contenedor y el \`if\` desaparece. Es el mismo refactor, en el mismo repositorio, hecho por la misma persona, con el ejemplo ya funcionando dos carpetas más allá.
+
+Ese diagnóstico era falso.
+
+**El enfoque equivocado**
+
+Mi plan era extraer una interfaz uniforme —llamémosla \`IEvaluadorViabilidad\`— con una operación \`EvaluarAsync\` que devolviera un resultado común, y hacer que las dos ramas encajaran ahí. Empecé por leer los dos contratos externos para definir el tipo de retorno. Ahí se cayó todo.
+
+Los dos proveedores no devuelven la misma clase de cosa.
+
+\`\`\`json
+// proveedor de DECISIÓN
+{ "viable": true, "motivo": "APROBADO", "puntaje": 720 }
+
+// proveedor de VARIABLES
+{ "perfil": "...", "franjaEtaria": "26-35", "segmento": "M",
+  "ingresoEstimado": 3200000, "atributosExtra": { } }
+\`\`\`
+
+El primero es un servicio de decisión: le preguntás por un documento y te contesta si el solicitante es viable, con un motivo. El dato que el sistema necesita viene en la respuesta.
+
+El segundo es un servicio de variables. Devuelve nombre, rango de edad, género, un estimador de ingreso y un diccionario abierto de variables adicionales que crece según el producto contratado. No trae ningún campo de viabilidad. No es que venga vacío, ni que venga con otro nombre: no existe.
+
+Una interfaz uniforme hace que las dos formas compilen. No crea el dato que falta.
+
+Esa es la parte incómoda, porque el refactor sí se puede hacer. Puedo escribir \`IEvaluadorViabilidad\`, puedo implementarla dos veces y puedo dejar el proyecto compilando esta misma tarde. La pregunta es qué devuelve la segunda implementación. Solo hay tres respuestas posibles y las tres son peores que no hacer nada.
+
+Devolver "viable" significa que el sistema aprueba crédito con un criterio que nadie definió. Devolver "no viable" significa que lo niega con un criterio que nadie definió, que además es la variante con consecuencias regulatorias. Caer de vuelta al otro proveedor convierte la configuración en mentira: el operador selecciona un proveedor, el sistema consulta otro, y nada en la respuesta lo delata.
+
+Ninguna de las tres es un problema de implementación. Las tres son la misma pregunta de negocio disfrazada de decisión técnica: qué combinación de rango de edad, género e ingreso estimado significa "viable" para este producto. Esa pregunta la responde alguien con autoridad sobre la política de crédito, no un desarrollador eligiendo un valor de retorno para que el compilador se calle.
+
+La simetría que yo había visto estaba en el sitio de llamada, no en el dominio. Las dos ramas se parecían porque las dos empiezan igual: consultar a un proveedor y decidir. El verbo "decidir" hacía trabajo distinto en cada lado. De un lado nombra un servicio que ya existe. Del otro nombra algo que todavía no está definido, y ninguna cantidad de indirección lo define.
+
+Hay una versión más general de este error y me la encuentro seguido. Cuando dos integraciones resuelven la misma necesidad, uno tiende a asumir que exponen la misma capacidad con distinta sintaxis. A veces es cierto y el adaptador es trivial. Otras veces una de las dos resuelve un problema estrictamente más chico, y el adaptador tiene que inventar la diferencia. Ese "inventar" es donde se cuela la regla de negocio sin dueño.
+
+\`\`\`text
+proveedor de DECISIÓN            proveedor de VARIABLES
+  consulta ──▶ { viable,           consulta ──▶ { perfil, franjaEtaria,
+                 motivo }                         segmento, ingresoEstimado,
+                                                  + diccionario abierto }
+        │                                    │
+        └──▶ el dato existe                  └──▶ el dato NO existe
+\`\`\`
+
+**La solución de dos velocidades**
+
+Dejé de tratarlo como un refactor único y lo traté como dos entregas con criterios distintos.
+
+Donde la semántica coincide, entregué la estrategia real. La contactabilidad ya tenía la forma correcta, así que el trabajo fue consolidarla y dejar el camino abierto para un tercer proveedor:
+
+\`\`\`csharp
+public interface IProveedorContactos
+{
+    string Central { get; }
+    Task<Contactos> ObtenerAsync(string documento);
+}
+
+public IProveedorContactos Resolver(string central) =>
+    _proveedores.FirstOrDefault(p => p.Central == central)
+    ?? _proveedores.First(p => p.Central == PorDefecto);
+\`\`\`
+
+Un resolvedor por diccionario en vez de un \`switch\` no es una preferencia estética. Es la diferencia entre "agregar un proveedor toca una clase nueva" y "agregar un proveedor toca todos los sitios donde alguien escribió una comparación de cadena".
+
+Donde la semántica no coincide, entregué una falla explícita detrás de un flag. El flag se lee de configuración, no de una constante compilada:
+
+\`\`\`csharp
+var habilitado = await _config.LeerEnteroConGuardaAsync(FlagRuteoViabilidad, 0);
+if (habilitado == 0) return await EvaluarPorRutaHeredadaAsync(solicitud);
+
+var activo = await _config.ObtenerProveedorActivoAsync(TipoServicio.Viabilidad);
+if (activo is null)
+{
+    _log.Advertencia("Configuración ausente; se usa la ruta heredada.");
+    return await EvaluarPorRutaHeredadaAsync(solicitud);
+}
+\`\`\`
+
+Con el flag apagado, el camino heredado corre exactamente igual que antes. Ese es el punto: la rama nueva puede existir en producción sin cambiar ningún comportamiento observable, y volver atrás no requiere un despliegue. Un flag que hay que redesplegar para apagar no es un kill switch, es un comentario optimista.
+
+Con el flag encendido y el proveedor de decisión activo, corre la decisión real. Con el flag encendido y el proveedor de variables activo, corre esto:
+
+\`\`\`csharp
+// El mapeo variables → {viable, motivo} es una regla de negocio sin definir.
+// Falla explícito: nunca aprueba, nunca niega, nunca cae al otro proveedor.
+return new Evaluacion
+{
+    Resultado = ResultadoEvaluacion.Error,
+    Motivo = "Mapeo de viabilidad no definido para este proveedor",
+};
+\`\`\`
+
+Esta es la pieza que más discutí conmigo mismo y la que más defiendo. No es una tarea a medio hacer: es la única salida honesta mientras el mapeo no exista. Un error explícito le dice al operador que la combinación que seleccionó no está soportada todavía. Una aprobación silenciosa no le dice nada y le entrega crédito a alguien sobre un criterio que inventó el compilador.
+
+El mismo criterio aplica cuando el proveedor falla por razones triviales. Si el cliente externo devuelve null o lanza una excepción, el resultado es un error explícito. Nunca una caída de vuelta al otro proveedor. Ese caso está sostenido por una prueba de regresión que verifica las dos mitades:
+
+\`\`\`csharp
+[Fact]
+public async Task ProveedorCaido_DevuelveError_YNuncaConsultaAlOtro()
+{
+    _variables.Setup(p => p.ConsultarAsync(It.IsAny<Solicitud>()))
+              .ThrowsAsync(new TimeoutException());
+    var r = await _servicio.EvaluarAsync(_solicitud);
+    Assert.Equal(ResultadoEvaluacion.Error, r.Resultado);
+    _decision.Verify(p => p.ConsultarAsync(It.IsAny<Solicitud>()), Times.Never);
+}
+\`\`\`
+
+La segunda mitad de esa prueba es la que importa. Verificar que devuelve error es fácil de escribir y fácil de satisfacer por accidente. Verificar que el otro proveedor no fue invocado ni una vez es lo que impide que alguien, dentro de seis meses y con muy buena intención, agregue un \`catch\` que "recupera" la operación consultando al proveedor de al lado.
+
+\`\`\`text
+                    ┌─ contactabilidad ────────────────────────────┐
+                    │ IProveedorContactos ──▶ resolvedor (dicc.)   │──▶ proveedor A
+solicitud ──▶ eval  │ tercer proveedor = 1 clase + 1 registro      │──▶ proveedor B
+              de    └──────────────────────────────────────────────┘
+              riesgo┌─ viabilidad ─────────────────────────────────┐
+                    │ flag = 0  ──▶ ruta heredada, sin cambios     │
+                    │ flag = 1 + proveedor-decisión ──▶ decisión   │
+                    │ flag = 1 + proveedor-variables ──▶ Error     │
+                    │ proveedor null o excepción ──▶ Error         │
+                    └──────────────────────────────────────────────┘
+\`\`\`
+
+**Impacto**
+
+La suite completa quedó en 474 de 474 pruebas verdes. El cambio se entregó como tres PRs encadenados de 888, 692 y 620 líneas: base de datos y configuración primero, API y pantalla de administración después, y el cableado del servicio al final. Los tres exceden el presupuesto de revisión de 400 líneas que uso por defecto, y los tres se marcaron como excepción explícita en vez de mezclarse en silencio. Ese es un costo real de revisión y prefiero pagarlo declarado antes que esconderlo partiendo el cambio por la mitad de una transacción.
+
+El resultado operativo es más chico de lo que parece y más útil de lo que suena. La contactabilidad quedó lista para un tercer proveedor sin tocar lógica de negocio. La viabilidad quedó en un estado donde encender el flag con el proveedor de variables activo rompe de forma controlada y visible, en vez de responder algo plausible. Y la pregunta que bloquea el avance dejó de ser un bloque de código sin escribir para convertirse en una regla de negocio con nombre y con dueño.
+
+Ese último punto es el que cambió el ritmo del proyecto. Mientras el mapeo fue "una tarea pendiente del backend", nadie fuera del equipo técnico lo vio. Cuando pasó a ser "falta definir qué variables determinan viabilidad para este producto", apareció en la conversación correcta, con las personas que sí pueden responderlo.
+
+También cambió la forma de estimar. Antes, el trabajo restante se veía como un refactor de una tarde. Ahora se ve como lo que es: una definición de política de crédito, más un día de implementación una vez que esa definición exista. La segunda estimación es incómoda y es la verdadera.
+
+**Lecciones**
+
+**La simetría del sitio de llamada no es simetría del dominio.** Dos ramas que empiezan igual pueden terminar en cosas incomparables. Antes de extraer una interfaz común comparo las formas de retorno, no las firmas de invocación. Si un lado trae el dato y el otro no lo tiene, no hay interfaz que arregle eso.
+
+**Una interfaz uniforme es una garantía de compilación, no una garantía semántica.** El compilador confirma que las dos implementaciones tienen la misma forma. No sabe si las dos significan lo mismo, y esa segunda pregunta era la única que importaba acá.
+
+**Una falla explícita es una salida de diseño.** Cuando el sistema no puede responder correctamente, responder "no puedo" es una respuesta válida y auditable. Aprobar o negar un crédito porque un mapeo no está definido es la catástrofe real, y es exactamente lo que produce una interfaz uniforme cuando la usás para tapar un dato faltante.
+
+**Un flag que no se puede apagar sin desplegar no es un kill switch.** El valor tiene que vivir donde alguien pueda cambiarlo en caliente, y el camino heredado tiene que quedar intacto mientras esté apagado. Si apagar el flag requiere el mismo procedimiento que revertir el cambio, el flag no compró nada.
+
+**Nombrar la pregunta abierta es progreso; esconderla detrás de una abstracción no lo es.** La abstracción hace que el problema desaparezca del código y siga existiendo en producción, que es el peor lugar posible para descubrirlo.`,
+    contentEn: `A loan origination system I worked on consults two external risk-data providers. For months I assumed they were two instances of the same problem. They were not, and the difference did not live in the code.
+
+The system uses them for two different things. The first is contactability: given an identity document, retrieve phone numbers and addresses so the applicant can be reached. The second is viability: given the same document, decide whether the applicant can move forward in the credit process.
+
+Contactability was genuinely config-driven, with a complete strategy pattern. An \`IProveedorContactos\` interface exposes a discriminator property that identifies the provider; there is one real implementation per provider, no stubs; and a resolver maps the configured bureau to its implementation through a dictionary, with a soft fallback to a default. Dependency injection holds one registration per implementation plus the resolver. Adding a third provider is one new class and one registration. Zero \`if\`.
+
+Viability was not. It had a literal \`if\` comparing the configured provider's name, and everything else fell through to a legacy block written inline. There was no shared interface: the service called two clients directly, with different signatures and different response objects.
+
+Put that way, the diagnosis writes itself. Viability is contactability with technical debt. Extract the interface, move both branches into implementations, register both for injection, and the \`if\` disappears. Same refactor, same repository, same person, with a working example two folders away.
+
+The diagnosis was wrong.
+
+**The wrong approach**
+
+My plan was to extract a uniform interface — call it \`IEvaluadorViabilidad\` — with an \`EvaluarAsync\` operation returning a shared result, and slot both branches into it. I started by reading the two external contracts to pin down the return type. That is where it collapsed.
+
+The two providers do not return the same kind of thing.
+
+\`\`\`json
+// proveedor de DECISIÓN
+{ "viable": true, "motivo": "APROBADO", "puntaje": 720 }
+
+// proveedor de VARIABLES
+{ "perfil": "...", "franjaEtaria": "26-35", "segmento": "M",
+  "ingresoEstimado": 3200000, "atributosExtra": { } }
+\`\`\`
+
+The first is a decision service. You ask it about a document and it tells you whether the applicant is viable, with a reason. The datum the system needs arrives in the response.
+
+The second is a variables service. It returns a name, an age range, a gender, an income estimate, and an open dictionary of additional variables that grows with the contracted product. It carries no viability field. Not empty, not renamed: absent.
+
+A uniform interface makes both shapes compile. It does not create the missing datum.
+
+That is the uncomfortable part, because the refactor is perfectly doable. I can write \`IEvaluadorViabilidad\`, implement it twice, and have the project compiling this afternoon. The question is what the second implementation returns. There are exactly three available answers and all three are worse than doing nothing.
+
+Returning "viable" means the system approves credit on a criterion nobody defined. Returning "not viable" means it denies credit on a criterion nobody defined, which is the variant with regulatory consequences. Falling back to the other provider turns the configuration into a lie: the operator selects one provider, the system queries another, and nothing in the response gives it away.
+
+None of the three is an implementation problem. All three are the same business question wearing a technical costume: which combination of age range, gender and estimated income means "viable" for this product. That question belongs to someone with authority over credit policy, not to a developer picking a return value to keep the compiler quiet.
+
+The symmetry I had seen lived at the call site, not in the domain. Both branches looked alike because both start the same way: consult a provider and decide. The verb "decide" was doing different work on each side. On one side it names a service that already exists. On the other it names something nobody has defined yet, and no amount of indirection defines it.
+
+There is a more general version of this mistake and I run into it often. When two integrations serve the same need, it is tempting to assume they expose the same capability with different syntax. Sometimes that is true and the adapter is trivial. Other times one of them solves a strictly smaller problem, and the adapter has to invent the difference. That act of inventing is exactly where an ownerless business rule slips in.
+
+\`\`\`text
+proveedor de DECISIÓN            proveedor de VARIABLES
+  consulta ──▶ { viable,           consulta ──▶ { perfil, franjaEtaria,
+                 motivo }                         segmento, ingresoEstimado,
+                                                  + diccionario abierto }
+        │                                    │
+        └──▶ el dato existe                  └──▶ el dato NO existe
+\`\`\`
+
+**The two-speed solution**
+
+I stopped treating it as a single refactor and treated it as two deliveries with different acceptance criteria.
+
+Where the semantics match, ship the real strategy. Contactability already had the right shape, so the work was consolidating it and leaving the door open for a third provider:
+
+\`\`\`csharp
+public interface IProveedorContactos
+{
+    string Central { get; }
+    Task<Contactos> ObtenerAsync(string documento);
+}
+
+public IProveedorContactos Resolver(string central) =>
+    _proveedores.FirstOrDefault(p => p.Central == central)
+    ?? _proveedores.First(p => p.Central == PorDefecto);
+\`\`\`
+
+A dictionary resolver instead of a \`switch\` is not an aesthetic preference. It is the difference between "adding a provider touches one new class" and "adding a provider touches every place where someone wrote a string comparison".
+
+Where the semantics do not match, ship an explicit failure behind a feature flag. The flag is read from configuration, not from a compiled constant:
+
+\`\`\`csharp
+var habilitado = await _config.LeerEnteroConGuardaAsync(FlagRuteoViabilidad, 0);
+if (habilitado == 0) return await EvaluarPorRutaHeredadaAsync(solicitud);
+
+var activo = await _config.ObtenerProveedorActivoAsync(TipoServicio.Viabilidad);
+if (activo is null)
+{
+    _log.Advertencia("Configuración ausente; se usa la ruta heredada.");
+    return await EvaluarPorRutaHeredadaAsync(solicitud);
+}
+\`\`\`
+
+With the flag off, the legacy path runs exactly as it did before. That is the point: the new branch can exist in production without changing a single observable behavior, and backing out does not require a deployment. A flag you have to redeploy to switch off is not a kill switch, it is an optimistic comment.
+
+With the flag on and the decision provider active, the real decision runs. With the flag on and the variables provider active, this runs:
+
+\`\`\`csharp
+// El mapeo variables → {viable, motivo} es una regla de negocio sin definir.
+// Falla explícito: nunca aprueba, nunca niega, nunca cae al otro proveedor.
+return new Evaluacion
+{
+    Resultado = ResultadoEvaluacion.Error,
+    Motivo = "Mapeo de viabilidad no definido para este proveedor",
+};
+\`\`\`
+
+This is the piece I argued with myself about the most, and the one I defend hardest. It is not a half-finished task: it is the only honest exit while the mapping does not exist. An explicit error tells the operator the combination they selected is not supported yet. A silent approval tells them nothing and hands credit to someone on a criterion the compiler invented.
+
+The same rule applies when the provider fails for trivial reasons. If the external client returns null or throws, the result is an explicit error. Never a fallback to the other provider. That case is held in place by a regression test that checks both halves:
+
+\`\`\`csharp
+[Fact]
+public async Task ProveedorCaido_DevuelveError_YNuncaConsultaAlOtro()
+{
+    _variables.Setup(p => p.ConsultarAsync(It.IsAny<Solicitud>()))
+              .ThrowsAsync(new TimeoutException());
+    var r = await _servicio.EvaluarAsync(_solicitud);
+    Assert.Equal(ResultadoEvaluacion.Error, r.Resultado);
+    _decision.Verify(p => p.ConsultarAsync(It.IsAny<Solicitud>()), Times.Never);
+}
+\`\`\`
+
+The second half of that test is the one that matters. Asserting that it returns an error is easy to write and easy to satisfy by accident. Asserting that the other provider was never invoked is what stops someone, six months from now and with excellent intentions, from adding a \`catch\` that "recovers" the operation by querying the provider next door.
+
+\`\`\`text
+                    ┌─ contactabilidad ────────────────────────────┐
+                    │ IProveedorContactos ──▶ resolvedor (dicc.)   │──▶ proveedor A
+solicitud ──▶ eval  │ tercer proveedor = 1 clase + 1 registro      │──▶ proveedor B
+              de    └──────────────────────────────────────────────┘
+              riesgo┌─ viabilidad ─────────────────────────────────┐
+                    │ flag = 0  ──▶ ruta heredada, sin cambios     │
+                    │ flag = 1 + proveedor-decisión ──▶ decisión   │
+                    │ flag = 1 + proveedor-variables ──▶ Error     │
+                    │ proveedor null o excepción ──▶ Error         │
+                    └──────────────────────────────────────────────┘
+\`\`\`
+
+**Impact**
+
+The full suite finished at 474 of 474 tests green. The change shipped as three chained pull requests of 888, 692 and 620 lines: database and configuration first, API and admin screen next, service wiring last. All three exceed the 400-line review budget I use by default, and all three were flagged as explicit exceptions rather than quietly merged. That is a real cost imposed on a reviewer, and I would rather pay it out loud than hide it by splitting the change through the middle of a transaction.
+
+The operational result is smaller than it sounds and more useful than it looks. Contactability is ready for a third provider without touching business logic. Viability sits in a state where turning the flag on with the variables provider active breaks in a controlled, visible way instead of answering something plausible. And the question blocking progress stopped being an unwritten block of code and became a business rule with a name and an owner.
+
+That last point is what changed the project's rhythm. While the mapping was "a pending backend task", nobody outside the technical team saw it. Once it became "we need to define which variables determine viability for this product", it showed up in the right conversation, with the people who can actually answer it.
+
+It also changed how the work is estimated. Before, the remaining effort looked like an afternoon of refactoring. Now it looks like what it is: a credit policy definition, plus a day of implementation once that definition exists. The second estimate is uncomfortable and it is the true one.
+
+**Lessons**
+
+**Symmetry at the call site is not symmetry in the domain.** Two branches that start alike can end in incomparable places. Before extracting a shared interface I now compare return shapes, not invocation signatures. If one side carries the datum and the other does not have it, no interface repairs that.
+
+**A uniform interface is a compilation guarantee, not a semantic one.** The compiler confirms both implementations have the same shape. It does not know whether they mean the same thing, and that second question was the only one that mattered here.
+
+**An explicit failure is a design output.** When the system cannot answer correctly, answering "I cannot" is a valid, auditable response. Approving or denying credit because a mapping is undefined is the actual catastrophe, and it is precisely what a uniform interface produces when you use it to paper over a missing datum.
+
+**A flag you cannot switch off without deploying is not a kill switch.** The value has to live somewhere a human can change it hot, and the legacy path has to stay intact while it is off. If switching the flag off takes the same procedure as reverting the change, the flag bought you nothing.
+
+**Naming the open question is progress; hiding it behind an abstraction is not.** The abstraction makes the problem disappear from the code while it keeps existing in production, which is the worst possible place to discover it.`,
+    relatedIds: ['clean-architecture-los', 'catalog-driven-decision-engine'],
+  },
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 17 — Strict TDD against a committed Playwright driver
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'strict-tdd-committed-playwright-driver',
+    slug: 'tdd-estricto-contra-driver-playwright-versionado',
+    title: 'TDD estricto contra un driver Playwright versionado',
+    titleEn: 'Strict TDD Against a Committed Playwright Driver',
+    date: '2026-09-19',
+    tags: ['testing', 'tdd', 'playwright', 'react', 'ui'],
+    category: 'arquitectura',
+    featured: false,
+    excerpt:
+      'Construí un escritorio interactivo dentro de un portafolio cuyo otro tema no puede moverse un píxel, con dos drivers Playwright versionados: uno de comportamiento que creció en rojo primero hasta 98 verificaciones, y una puerta de píxeles. Escribir pruebas contra un driver versionado no era la línea de meta: la puerta llevaba meses aprobando todo lo que fallaba.',
+    excerptEn:
+      'I built an interactive desktop inside a portfolio whose other theme may not move a single pixel, using two committed Playwright drivers: a behaviour harness grown red-first to 98 checks, and a pixel gate. Writing tests against a committed driver was not the finish line — the gate had been passing every failure for months.',
+    content: `Este portafolio tiene dos temas visuales sobre el mismo contenido. El primero es un diseño editorial de periódico, con columnas, filetes y tipografía de prensa. El segundo es un escritorio interactivo inspirado en Windows XP: ventanas que se arrastran, se redimensionan desde ocho asas, se minimizan a la barra de tareas, se maximizan y se cierran; un menú de inicio funcional; pestañas que agrupan secciones relacionadas; una bandeja de utilidades; y una ventana de ayuda con los atajos de teclado.
+
+La restricción que ordenó todo el trabajo cabe en una línea: mientras el segundo tema evoluciona, el primero no puede moverse un píxel.
+
+Ahí empieza el problema. Una interacción de escritorio no tiene una costura natural para pruebas unitarias. Puedo llamar al reductor que calcula el rectángulo de una ventana después de un arrastre y verificar la aritmética. Lo hice, y está bien que exista. Pero esa prueba no dice nada sobre lo único que de verdad importa: que al presionar el puntero sobre la barra de título el evento llegue efectivamente hasta ese reductor.
+
+Los defectos de este tipo de trabajo viven exactamente en esa brecha. Un evento que nunca llega. Un elemento tapado por otro que se queda con el clic. Una actualización de estado que React agrupa en el mismo lote y que borra un marcador antes de que un efecto alcance a leerlo. Ninguno de los tres se puede expresar como prueba unitaria del reductor, porque en los tres casos el reductor está correcto.
+
+La segunda mitad del problema es la simétrica. El tema periódico casi no tiene comportamiento que probar: su corrección es visual. No existe una función a la que preguntarle si el diseño sigue intacto. Y era justamente el activo que no podía romperse, precisamente porque nadie iba a estar mirándolo mientras el trabajo ocurría en el otro tema.
+
+**El enfoque equivocado**
+
+Consideré dos caminos antes de decidir, y descarté los dos.
+
+El primero fue extender la aprobación por captura de pantalla a todo el sitio, escritorio incluido. Es tentador porque parece uniforme: una sola herramienta, una sola disciplina. Falla por una razón concreta. En una superficie que está en construcción activa, cada cambio intencional se ve idéntico a una regresión. Cada porción de trabajo habría producido decenas de diferencias para aprobar a ojo, y aprobar a ojo decenas de veces seguidas convierte la puerta en un sello de goma. Una puerta que se aprueba por costumbre ya dejó de ser una puerta.
+
+El segundo fue confiar en la verificación manual: abrir el navegador, hacer clic, mirar. Sirve para descubrir, y de hecho descubrió cosas que ninguna otra técnica encontró. No sirve para demostrar. No puedo demostrar con un clic que la ventana recién abierta recibió el foco de teclado y que la ventana que ya estaba abierta no se lo robó, y mucho menos puedo demostrarlo dos veces seguidas, en dos idiomas y en cuatro anchos de pantalla.
+
+Hubo un tercer error, más difícil de ver, que sostuve durante meses sin notarlo: creer que un driver versionado que pasa en verde es la línea de meta.
+
+**La solución**
+
+Dos drivers versionados en el repositorio, con trabajos distintos y expectativas opuestas.
+
+\`\`\`
+                  +-- xp-interactive.mjs --> real clicks in a real browser
+                  |      98 behaviour checks; grows with the feature
+localhost:4193 ---+
+                  +-- newspaper.mjs -------> 4 viewports x 2 locales
+                         8 captures -> pixelDiff -> committed baselines
+                         passes only at 0 differing pixels
+\`\`\`
+
+\`xp-interactive.mjs\` es un arnés de comportamiento. Hace clic sobre la interfaz real en un navegador real, y creció junto con la funcionalidad, siempre en rojo primero: 58 verificaciones, luego 64, luego 88, y hoy 98. Se espera que cambie cada vez que cambia el escritorio; si nunca cambiara, sería sospechoso.
+
+La disciplina concreta es que cada unidad de trabajo empieza escribiendo la afirmación que falla. Antes de que existiera el arrastre con límites, el driver ya intentaba mover una ventana dos mil píxeles hacia afuera y exigía que siguiera dentro del escritorio:
+
+\`\`\`js
+await page.mouse.move(sx, sy)
+await page.mouse.down()
+await page.mouse.move(sx + 2000, sy + 2000, { steps: 20 })
+await page.mouse.up()
+const pos = await win.evaluate((el) => el.getBoundingClientRect())
+check('drag: bottom <= desktop bottom - 40px', pos.bottom <= desktopH - TASKBAR_H + 0.5)
+check('drag: no negative left/top', pos.left >= -0.5 && pos.top >= -0.5)
+\`\`\`
+
+Esa verificación falló primero por la razón correcta —la ventana se salía de la pantalla— y solo después se volvió verde. El orden importa: escribir la afirmación contra el código sin arreglar es lo único que demuestra que la afirmación mide lo que creo que mide.
+
+Para que ese tipo de afirmación sea escribible, la geometría tiene un solo dueño. El \`WindowManager\` posee los rectángulos, los límites y el apilamiento en z. Redimensionar es una sola operación, \`resize(id, dx, dy, dir)\`, que alimenta las ocho asas; los límites se aplican primero al tamaño y después a la posición, para que los bordes anclados al norte y al oeste cedan al llegar al mínimo en lugar de empujar la ventana fuera del escritorio:
+
+\`\`\`ts
+// Size clamp first (minimum + desktop bounds).
+w = Math.min(Math.max(MIN_W, w), desktopW)
+h = Math.min(Math.max(MIN_H, h), desktopH - TASKBAR_HEIGHT)
+
+// Position clamp after size, so the anchored (n/w) edges re-anchor.
+if (west) x = Math.min(x + (rect.w - w), desktopW - w)
+if (north) y = Math.min(y + (rect.h - h), desktopH - TASKBAR_HEIGHT - h)
+\`\`\`
+
+Si cada ventana hiciera su propia aritmética de límites, la misma regla existiría ocho veces y el driver tendría que verificarla ocho veces. Con un solo dueño hay una regla y una verificación. Lo mismo aplica al foco: el apilamiento en z, la ventana activa y el conjunto de ventanas abiertas son un único estado, así que "hacer clic en la ventana de abajo la trae al frente" es una afirmación de una línea.
+
+\`newspaper.mjs\` hace lo contrario. No prueba comportamiento: prueba invariancia. Captura la página completa en cuatro anchos y dos idiomas —ocho capturas— y las compara píxel a píxel contra líneas base versionadas. Se espera que no cambie nunca. Cuando cambia, o alguien tocó el periódico sin querer, o alguien cambió el texto a propósito y debe justificar cada región distinta antes de recortar las líneas base.
+
+**El impacto**
+
+El arnés de comportamiento terminó en 98 de 98, y encontró cosas que la revisión no encontró.
+
+El caso más limpio es un defecto de lote de estado. Al abrir la ventana de ayuda, el mecanismo de foco marca la ventana recién abierta y un efecto de montaje le entrega el foco de teclado a su barra de título:
+
+\`\`\`tsx
+useEffect(() => {
+  if (active && justOpened === id && titlebarRef.current) {
+    titlebarRef.current.focus()
+  }
+}, [active, justOpened, id])
+// open(id) marks justOpened = id; focus(id) clears it. Calling both from the
+// same handler clears the marker inside one batched update, so this never runs.
+\`\`\`
+
+El manejador original llamaba a \`open('help')\` y enseguida a \`focus('help')\`. Las dos actualizaciones caían en el mismo lote de React, \`focus\` limpiaba el marcador antes de que el efecto lo leyera, y el foco nunca llegaba. Una prueba unitaria del reductor habría pasado sin observaciones, porque \`open\` sí escribe el marcador. El defecto solo existe en la composición.
+
+Antes de eso, un ciclo de verificación encontró algo peor, y la lección está en por qué el driver no lo había visto. Los botones de la ventana —minimizar, maximizar, cerrar— eran inertes al puntero real: la captura de puntero sobre la barra de título desviaba el clic, y una ventana maximizada quedaba por debajo del encabezado del sitio. El driver versionado no lo detectaba porque ejercitaba esos tres botones a través de una costura de pruebas en lugar de hacer clic sobre los botones. La costura hacía la prueba fácil de escribir, y por eso mismo la hacía probar otra cosa.
+
+Y después vino lo que de verdad cambió mi forma de trabajar. Este mismo ciclo demostró que el driver versionado estaba mintiendo.
+
+\`\`\`
+size mismatch --> { diff: -1 }             // no 'total' key in the result
+                        |
+                        v
+   ratio = r.total ? diff / total : 0      // total undefined -> ratio = 0
+                        |
+                        v
+   passes = diff === 0 || ratio <= 0.001   // 0 <= 0.001 -> PASS
+                        |
+                        v
+   "-3/63956015 differing pixels ... ALL PASSED"    exit 0
+\`\`\`
+
+Eran dos mitades, y las dos hacían falta. La comparación devolvía un valor centinela cuando las dos imágenes no tenían las mismas dimensiones, y ese retorno no incluía el campo \`total\`. El consumidor calculaba la proporción con un ternario sobre \`total\`:
+
+\`\`\`js
+// driver/helpers.mjs — on a dimension mismatch, no 'total' key is returned
+return { diff: -1, reason: 'size mismatch 1440x13685 vs 1440x13980' }
+
+// driver/newspaper.mjs — the pass rule that consumed it
+const ratio = r.total ? (r.diff ?? Infinity) / r.total : 0
+const passes = r.diff === 0 || ratio <= 0.001
+\`\`\`
+
+Con \`total\` indefinido, el ternario cae a \`0\`, y \`0 <= 0.001\` es verdadero. Toda discrepancia de dimensiones —es decir, exactamente el caso en que la página cambió de alto, que es la señal más fuerte de que algo se movió— se reportaba como aprobada. El driver sin modificar imprimía un conteo negativo de píxeles junto a "ALL PASSED", con código de salida 0.
+
+Y había una consecuencia encima de esa. Las líneas base versionadas se habían recortado mientras una API pública que la página consulta no respondía, así que ese panel no se dibujaba y la captura quedaba 295 píxeles más baja que la página que ve cualquier visitante. La puerta llevaba meses comparando contra una página que nadie ve. Hoy esa respuesta se sirve desde un archivo versionado, para que la captura sea hermética.
+
+El arreglo del conteo cambió el retorno para que la altura no pueda escaparse: se compara el prefijo común de las dos imágenes y las filas sobrantes se cobran al conteo de diferencias.
+
+\`\`\`js
+const heightDelta = imgB.height - imgA.height
+const h = Math.min(imgA.height, imgB.height) // compare the common prefix
+// ... per-row diff over the common prefix ...
+if (heightDelta !== 0) {
+  // Keep the gate strict: an unseen tail is still a difference.
+  diff += Math.abs(heightDelta) * width
+  notes.push('height delta ' + heightDelta)
+}
+\`\`\`
+
+Después aparecieron dos defectos más de la misma familia. El flag que recorta las líneas base solo regeneraba las capturas que fallaban, así que un cambio real de 5.755 píxeles que caía bajo la tolerancia sobrevivía al recorte y la puerta no podía converger nunca a cero. Y la tolerancia misma, calculada sobre el área de la página entera, dejaba pasar ediciones de texto sustanciales. Hoy la regla es que aprueba solo con cero píxeles distintos; la banda del 0,1 % sobrevive únicamente como disparador de recorte.
+
+Lo último es lo que más me costó aceptar. Para volver a creerle a la puerta hubo que demostrar que podía fallar: alargar deliberadamente un título en español, reconstruir, y comprobar que fallaba con 8,3 millones de píxeles distintos y que fallaba solo en las cuatro capturas en español, no en las cuatro en inglés. Discriminación correcta por idioma, no una falla en bloque.
+
+**Lecciones**
+
+**Un arnés verde en un HEAD sin tocar no demuestra que la puerta funcione.** Demuestra que no se queja. Son cosas distintas, y las confundí durante meses.
+
+**Una puerta que no puede fallar es peor que no tener ninguna**, porque compra confianza falsa. Sin puerta sé que no sé. Con una puerta rota creo que sé.
+
+**Un valor centinela sin denominador puede invertir una regla de aprobación.** El \`-1\` era razonable como señal de error; lo que no era razonable es que el consumidor lo dividiera por un campo que ese retorno nunca incluye. Un tipo de retorno con forma variable es una trampa esperando a un ternario.
+
+**Un driver versionado es un contrato, no una decoración.** Vive en el repositorio, se revisa en el mismo cambio que lo modifica y crece con la funcionalidad. Y precisamente por eso hay que revisarlo con el mismo rigor que el código de producción, cosa que no hice.
+
+**Rojo primero atrapa defectos de composición que ninguna prueba unitaria ve.** El foco que no llega, el clic desviado, la actualización que se pierde en un lote: los tres viven entre unidades que, por separado, están correctas.
+
+**Una costura de pruebas que hace la prueba fácil suele hacerla probar otra cosa.** Si la única forma de cerrar una ventana en la prueba no es la forma en que un usuario la cierra, la prueba no cubre lo que dice cubrir.
+
+**Una puerta de píxeles solo es honesta si recortar una línea base cuesta trabajo.** Cada región distinta debe quedar atribuida a un cambio de texto intencional antes de aceptar la nueva imagen. En cuanto recortar es más barato que explicar, la puerta se convierte en un registro de lo que pasó, no en un control de lo que puede pasar.`,
+    contentEn: `This portfolio ships two visual themes over the same material. The first is an editorial newspaper design, with columns, rules and press typography. The second is an interactive Windows XP-style desktop: windows you drag, resize from eight handles, minimise to the taskbar, maximise and close; a working Start menu; tabs that gather related sections; a utilities tray; and a help window listing the keyboard shortcuts.
+
+The constraint that shaped the whole effort fits in one line: while the second theme evolves, the first one may not move a single pixel.
+
+That is where the problem starts. Desktop interaction has no natural seam for unit tests. I can call the reducer that computes a window rectangle after a drag and check the arithmetic. I did, and it deserves to exist. But that test says nothing about the only thing that actually matters: that pressing the pointer on a title bar makes the event reach that reducer at all.
+
+Defects in this kind of work live exactly in that gap. An event that never arrives. An element covered by another one that keeps the click. A state update React batches together, wiping a marker before an effect gets to read it. None of the three can be written as a unit test of the reducer, because in all three cases the reducer is correct.
+
+The second half of the problem is its mirror image. The newspaper theme has almost no behaviour to test: its correctness is visual. There is no function you can ask whether the design is still intact. And it was precisely the asset that could not break, precisely because nobody would be looking at it while the work happened in the other theme.
+
+**The wrong approach**
+
+I considered two routes before deciding, and rejected both.
+
+The first was extending screenshot approval across the whole site, desktop included. It is tempting because it looks uniform: one tool, one discipline. It fails for a concrete reason. On a surface under active construction, every intentional change looks exactly like a regression. Each unit of work would have produced dozens of differences to approve by eye, and approving by eye dozens of times in a row turns the gate into a rubber stamp. A gate that gets approved out of habit has stopped being a gate.
+
+The second was leaning on manual checking: open the browser, click, look. It is good at discovery, and it did in fact discover things no other technique found. It is useless as proof. I cannot prove with one click that a freshly opened window took keyboard focus and that the already-open window did not steal it, and far less can I prove it twice in a row, in two languages and at four screen widths.
+
+There was a third mistake, harder to see, that I held for months without noticing: believing that a committed driver passing green is the finish line.
+
+**The solution**
+
+Two drivers committed to the repository, with different jobs and opposite expectations.
+
+\`\`\`
+                  +-- xp-interactive.mjs --> real clicks in a real browser
+                  |      98 behaviour checks; grows with the feature
+localhost:4193 ---+
+                  +-- newspaper.mjs -------> 4 viewports x 2 locales
+                         8 captures -> pixelDiff -> committed baselines
+                         passes only at 0 differing pixels
+\`\`\`
+
+\`xp-interactive.mjs\` is a behaviour harness. It clicks the real interface in a real browser, and it grew alongside the feature, always red first: 58 checks, then 64, then 88, and 98 today. It is meant to change every time the desktop changes; if it never changed, that would be the suspicious outcome.
+
+The concrete discipline is that every unit of work opens by writing the assertion that fails. Before clamped dragging existed, the driver was already trying to shove a window two thousand pixels off-screen and demanding that it stay inside the desktop:
+
+\`\`\`js
+await page.mouse.move(sx, sy)
+await page.mouse.down()
+await page.mouse.move(sx + 2000, sy + 2000, { steps: 20 })
+await page.mouse.up()
+const pos = await win.evaluate((el) => el.getBoundingClientRect())
+check('drag: bottom <= desktop bottom - 40px', pos.bottom <= desktopH - TASKBAR_H + 0.5)
+check('drag: no negative left/top', pos.left >= -0.5 && pos.top >= -0.5)
+\`\`\`
+
+That check failed first for the right reason — the window flew off the screen — and only then went green. The sequence matters: writing the assertion against unfixed code is the only thing that proves the assertion measures what I think it measures.
+
+For assertions like that to be writable at all, geometry has exactly one owner. The \`WindowManager\` owns rectangles, clamping and z-order. Resizing is a single operation, \`resize(id, dx, dy, dir)\`, feeding all eight handles; clamps apply to dimensions first and to position second, so edges anchored north and west give way when they hit the minimum instead of pushing the window off the desktop:
+
+\`\`\`ts
+// Size clamp first (minimum + desktop bounds).
+w = Math.min(Math.max(MIN_W, w), desktopW)
+h = Math.min(Math.max(MIN_H, h), desktopH - TASKBAR_HEIGHT)
+
+// Position clamp after size, so the anchored (n/w) edges re-anchor.
+if (west) x = Math.min(x + (rect.w - w), desktopW - w)
+if (north) y = Math.min(y + (rect.h - h), desktopH - TASKBAR_HEIGHT - h)
+\`\`\`
+
+If each window did its own clamping arithmetic, the same rule would exist eight times and the driver would have to check it eight times. With one owner there is one rule and one check. The same holds for focus: z-order, the active window and the set of open windows are a single piece of state, so "clicking the lower window brings it to the front" becomes a one-line assertion.
+
+\`newspaper.mjs\` does the opposite. It does not test behaviour: it tests invariance. It captures the full page at four widths and two locales — eight captures — and compares them pixel by pixel against committed baselines. It is meant never to change. When it does, either somebody disturbed the newspaper by accident, or somebody changed the text on purpose and owes an explanation for every differing region before the baselines get re-cut.
+
+**The impact**
+
+The behaviour harness ended at 98 of 98, and it caught things review did not.
+
+The cleanest case is a batched-state defect. When the help window opens, the focus mechanism marks the newly opened window and a mount effect hands keyboard focus to its title bar:
+
+\`\`\`tsx
+useEffect(() => {
+  if (active && justOpened === id && titlebarRef.current) {
+    titlebarRef.current.focus()
+  }
+}, [active, justOpened, id])
+// open(id) marks justOpened = id; focus(id) clears it. Calling both from the
+// same handler clears the marker inside one batched update, so this never runs.
+\`\`\`
+
+The original handler called \`open('help')\` and immediately \`focus('help')\`. Both updates landed in the same React batch, \`focus\` cleared the marker before the effect could read it, and focus never arrived. A unit test of the reducer would have passed without comment, because \`open\` does write the marker. The defect exists only in composition.
+
+Before that, a verification cycle found something worse, and the lesson lives in why the driver had missed it. The window controls — minimise, maximise, close — were inert to real pointer input: pointer capture on the title bar diverted the click, and a maximised window sat underneath the site header. The committed driver did not catch it because it exercised those three buttons through a test seam instead of clicking the buttons. The seam made the test easy to write, and for that exact reason made it test something else.
+
+Then came the part that genuinely changed how I work. This very cycle proved the committed driver had been lying.
+
+\`\`\`
+size mismatch --> { diff: -1 }             // no 'total' key in the result
+                        |
+                        v
+   ratio = r.total ? diff / total : 0      // total undefined -> ratio = 0
+                        |
+                        v
+   passes = diff === 0 || ratio <= 0.001   // 0 <= 0.001 -> PASS
+                        |
+                        v
+   "-3/63956015 differing pixels ... ALL PASSED"    exit 0
+\`\`\`
+
+It took two halves, and both were required. The comparison returned a sentinel value when the two images did not share dimensions, and that return carried no \`total\` field. The consumer computed the ratio with a ternary on \`total\`:
+
+\`\`\`js
+// driver/helpers.mjs — on a dimension mismatch, no 'total' key is returned
+return { diff: -1, reason: 'size mismatch 1440x13685 vs 1440x13980' }
+
+// driver/newspaper.mjs — the pass rule that consumed it
+const ratio = r.total ? (r.diff ?? Infinity) / r.total : 0
+const passes = r.diff === 0 || ratio <= 0.001
+\`\`\`
+
+With \`total\` undefined the ternary falls to \`0\`, and \`0 <= 0.001\` is true. Every dimension mismatch — that is, exactly the case where the page changed height, which is the strongest available signal that something moved — was reported as a pass. The unmodified driver printed a negative pixel count next to "ALL PASSED", with exit code 0.
+
+There was a consequence stacked on top of that one. The committed baselines had been cut while a public API the page queries was unreachable, so that panel never rendered and the capture came out 295 pixels shorter than the page any visitor sees. For months the gate had been comparing against a page nobody ever loads. That response is now served from a committed file, so the capture is hermetic.
+
+The counting fix reshaped the return so height cannot escape: the common prefix of the two images is compared, and the surplus rows are charged to the difference count.
+
+\`\`\`js
+const heightDelta = imgB.height - imgA.height
+const h = Math.min(imgA.height, imgB.height) // compare the common prefix
+// ... per-row diff over the common prefix ...
+if (heightDelta !== 0) {
+  // Keep the gate strict: an unseen tail is still a difference.
+  diff += Math.abs(heightDelta) * width
+  notes.push('height delta ' + heightDelta)
+}
+\`\`\`
+
+Two more defects from the same family surfaced afterwards. The flag that re-cuts baselines only regenerated the captures that were failing, so a genuine 5,755-pixel change sitting under the tolerance survived the re-cut and the gate could never converge on zero. And the tolerance itself, computed over whole-page area, let substantial text edits through. The rule today is that it passes only at zero differing pixels; the 0.1% band survives purely as the re-cut trigger.
+
+The last part was the hardest to accept. To trust the gate again I had to prove it could fail: deliberately lengthen one Spanish title, rebuild, and confirm it failed with 8.3 million differing pixels and failed only on the four Spanish captures, not the four English ones. Correct per-locale discrimination, not a blanket failure.
+
+**Lessons**
+
+**A green harness at an untouched HEAD does not prove the gate works.** It proves the gate is not complaining. Those are different claims, and I conflated them for months.
+
+**A gate that cannot fail is worse than no gate at all**, because it buys false confidence. With no gate I know that I do not know. With a broken gate I believe that I know.
+
+**A sentinel value without a denominator can make a pass rule mean its opposite.** The \`-1\` was reasonable as an error signal; what was not reasonable is a consumer dividing it by a field that return never carries. A return type with a variable shape is a trap waiting for a ternary.
+
+**A committed driver is a contract, not decoration.** It lives in the repository, gets reviewed in the same change that modifies it, and grows with the feature. Which is exactly why it deserves the same scrutiny as production code, and did not get it from me.
+
+**Red first catches composition defects no unit test can see.** Focus that never arrives, a click that gets diverted, an update lost inside a batch: all three live between units that are individually correct.
+
+**A test seam that makes the test easy usually makes it test something else.** If the only way to close a window in the test is not the way a user closes it, the test does not cover what it claims to cover.
+
+**A pixel gate is only honest if re-cutting a baseline costs effort.** Every differing region has to be attributed to an intended text change before the new image is accepted. The moment re-cutting is cheaper than explaining, the gate becomes a log of what happened rather than a control on what may happen.`,
+  },
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
