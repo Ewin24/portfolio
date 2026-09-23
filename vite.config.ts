@@ -8,6 +8,10 @@ import { education } from './src/content/education'
 import { blogPosts } from './src/blog/content/posts'
 import { testimonials } from './src/content/testimonials'
 
+const SITE_URL = 'https://ewin24.github.io/portfolio/'
+/** Newest post date — the content-derived "last modified" for the home page and its JSON-LD. */
+const latestPostDate = blogPosts.reduce((max, p) => (p.date > max ? p.date : max), '')
+
 /**
  * Pre-render plugin: generates comprehensive static HTML and additional
  * JSON-LD schemas (Article per post, FAQPage, HowTo, CreativeWork) from
@@ -325,7 +329,7 @@ function generatePageWrapperSchemas(): string {
     mainEntity: { '@id': 'https://ewin24.github.io/portfolio/#person' },
     about: { '@id': 'https://ewin24.github.io/portfolio/#person' },
     isPartOf: { '@id': 'https://ewin24.github.io/portfolio/#website' },
-    dateModified: '2026-06-19',
+    dateModified: latestPostDate,
   }
 
   const webPage = {
@@ -342,7 +346,7 @@ function generatePageWrapperSchemas(): string {
       '@type': 'ImageObject',
       url: 'https://avatars.githubusercontent.com/Ewin24',
     },
-    dateModified: '2026-06-19',
+    dateModified: latestPostDate,
     speakable: {
       '@type': 'SpeakableSpecification',
       cssSelector: ['h1', 'h2', '.hero h1', 'article h3'],
@@ -389,6 +393,24 @@ function generatePageWrapperSchemas(): string {
 }
 
 /**
+ * sitemap.xml generated from the same content the JSON-LD comes from, so it
+ * cannot drift from `blogPosts`: home (with hreflang alternates), the section
+ * anchors, one entry per post using the app's `#/blog/article/<slug>` route
+ * with `lastmod` = post date, and the two llms files.
+ */
+function generateSitemap(): string {
+  const entry = (loc: string, extra = '') => `  <url>\n    <loc>${loc}</loc>\n${extra}  </url>`
+  const home = entry(
+    SITE_URL,
+    `    <lastmod>${latestPostDate}</lastmod>\n    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}?lang=en" />\n    <xhtml:link rel="alternate" hreflang="es" href="${SITE_URL}?lang=es" />\n`,
+  )
+  const sections = ['about', 'projects', 'skills', 'experience', 'blog', 'contact'].map((s) => entry(`${SITE_URL}#${s}`))
+  const posts = blogPosts.map((p) => entry(`${SITE_URL}#/blog/article/${p.slug}`, `    <lastmod>${p.date}</lastmod>\n`))
+  const llms = ['llms.txt', 'llms-full.txt'].map((f) => entry(`${SITE_URL}${f}`))
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${[home, ...sections, ...posts, ...llms].join('\n')}\n</urlset>\n`
+}
+
+/**
  * Vite plugin: injects pre-rendered content + additional JSON-LD schemas.
  *
  * Strategy: The pre-rendered static content is injected INSIDE
@@ -408,6 +430,9 @@ function generatePageWrapperSchemas(): string {
 function preloadStaticContent(): import('vite').Plugin {
   return {
     name: 'preload-static-content',
+    generateBundle() {
+      this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: generateSitemap() })
+    },
     transformIndexHtml(html) {
       const content = generatePreloadedContent()
       const articleSchemas = generateArticleSchemas()
