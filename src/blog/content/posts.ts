@@ -4448,6 +4448,224 @@ The last part was the hardest to accept. To trust the gate again I had to prove 
 
 **A pixel gate is only honest if re-cutting a baseline costs effort.** Every differing region has to be attributed to an intended text change before the new image is accepted. The moment re-cutting is cheaper than explaining, the gate becomes a log of what happened rather than a control on what may happen.`,
   },
+  // ═════════════════════════════════════════════════════════════════════════
+  // Artículo 18 — Authorization attribute invisible to a unit test
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'authorization-attribute-invisible-to-unit-test',
+    slug: 'atributo-autorizacion-invisible-prueba-unitaria',
+    title: 'El atributo de autorización que ninguna prueba unitaria puede ver',
+    titleEn: 'The Authorization Attribute a Unit Test Cannot See',
+    date: '2026-09-26',
+    tags: ['testing', 'tdd', 'ASP.NET Core', 'dotnet', 'authorization'],
+    category: 'arquitectura',
+    featured: false,
+    excerpt:
+      'Añadí un endpoint administrativo que sustituye una operación que antes solo un DBA podía ejecutar, protegido por un atributo de autorización. La prueba unitaria más obvia lo confirmaba en verde llamando al método del controlador directamente, y por eso mismo no probaba nada: ese atributo solo lo evalúa el middleware, nunca una llamada de método suelta. La prueba honesta necesitó un servidor de pruebas real y una mutación deliberada del atributo para demostrar que medía lo que decía medir.',
+    excerptEn:
+      'I added an administrative endpoint that replaces an operation only a DBA could previously run, protected by an authorization attribute. The obvious unit test confirmed it green by calling the controller method directly, which is exactly why it proved nothing: that attribute is only ever evaluated by the middleware, never by a bare method call. The honest test needed a real test server and a deliberate mutation of the attribute to prove it measured what it claimed to measure.',
+    content: `Un flujo administrativo tenía un caso atascado que, hasta ese momento, solo un DBA podía resolver: una actualización manual directamente sobre la base de datos cuando el camino normal se trababa. El requisito para convertir eso en un endpoint HTTP era corto de enunciar: sin el permiso correcto, la petición responde 403 y el servicio de dominio no se ejecuta en absoluto. No 403 con trabajo hecho detrás. 403 real, sin ningún efecto secundario.
+
+Implementé la ruta con el mecanismo que ASP.NET Core recomienda para esto: un atributo declarativo, [RequireGrant(Grants.CaseReview)], puesto sobre la acción CloseAsync de CaseReviewController, que expone POST /cases/{id}/close. La acción recibe el identificador del caso y una razón, y delega en un puerto de servicio, ICaseReviewService, cuya implementación real ya estaba probada contra la base de datos en un trabajo anterior. Ese puerto era el borde declarado de esta pieza: se mockea aquí, y lo que hace falta demostrar es que la ruta HTTP hace lo correcto con los datos correctos, no que el servicio funcione.
+
+El endpoint no cambiaba la lógica del caso, solo el canal para llegar a ella. Antes, resolver un caso atascado significaba pedirle a alguien con acceso directo a la base de datos que corriera una actualización a mano, sin el mismo registro estructurado ni la misma superficie de auditoría que ya tenían las demás operaciones administrativas. El riesgo no era que el endpoint hiciera algo distinto de lo que el DBA hacía manualmente; era que, al automatizarlo, alguien sin el permiso correcto pudiera dispararlo sin que nadie lo notara.
+
+Faltaba una prueba que lo confirmara: sin el permiso correcto, 403; con el permiso, el servicio se invoca. Escribirla parecía trivial, y la que escribí pasó a la primera. Ese resultado verde, obtenido sin pensarlo dos veces, es exactamente lo que este artículo cuestiona.
+
+**El enfoque equivocado**
+
+La prueba obvia instancia el controlador directamente y llama a su método:
+
+\`\`\`csharp
+[Fact]
+public async Task Close_is_forbidden_without_grant_ILLUSION()
+{
+    var controller = new CaseReviewController(_service.Object);
+    var result = await controller.CloseAsync(42, new { reason = "duplicate" });
+    // [RequireGrant] never runs here: only the middleware reads it.
+}
+\`\`\`
+
+Pasó, porque el mock de ICaseReviewService estaba configurado en modo estricto y CloseAsync jamás llegó a llamarlo. Pero pasó por la razón equivocada. [RequireGrant] es un atributo que ASP.NET Core solo evalúa dentro del pipeline de autorización, un paso de middleware que corre antes de que el framework invoque la acción. Llamar al método en C# desde una prueba xUnit nunca atraviesa ese pipeline: es una llamada de método normal, sin petición HTTP, sin autenticación, sin autorización. El atributo estaba ahí, decorando la firma, y la prueba nunca lo ejercitó.
+
+Ese patrón, instanciar la clase bajo prueba y llamar directamente a su método, es exactamente lo que cualquier guía de pruebas unitarias enseña primero, y es correcto para casi todo lo que no dependa del transporte HTTP. El problema no es la técnica en general; es que aquí la pieza que se supone que se está probando, el atributo de autorización, vive fuera del método que la prueba invoca. Nada en la firma de CloseAsync avisa de eso: hace falta saber de antemano que [RequireGrant] es responsabilidad de otro componente.
+
+Esta es la clase de defecto que ya me había costado caro antes: código que existe en el árbol de fuentes, se ve correcto en la revisión, y nadie lo invoca de la forma en que se invoca en producción. Una prueba que llama al método directamente no prueba el atributo, prueba que el método, aislado de la tubería que le da sentido, hace lo que el código de adentro dice que hace. Eso es tautológico, no es una verificación.
+
+La revisión de código tampoco lo habría detectado: el atributo estaba presente, escrito correctamente, apuntando al permiso correcto. Cualquier lector con conocimiento de ASP.NET Core lo habría dado por bueno. El defecto no estaba en el código de producción, sino en la prueba que decía respaldarlo.
+
+**La solución**
+
+La única forma honesta de probar un atributo de autorización es atravesar el pipeline real que lo evalúa: un servidor de pruebas real, no una llamada de método. Levanté un host mínimo con Microsoft.AspNetCore.TestHost, con la autenticación y autorización de producción intactas, mockeando solo lo que quedaba fuera del borde declarado: la identidad del llamante y el puerto de servicio.
+
+\`\`\`csharp
+var host = new HostBuilder().ConfigureWebHost(web => web
+    .UseTestServer()
+    .ConfigureServices(s => s
+        .AddAuthentication("Test")
+        .AddScheme<AuthenticationSchemeOptions, HeaderAuthHandler>("Test", _ => { }))
+    .ConfigureServices(s => s.AddAuthorization()
+        // Add after AddAuthorization(): wins over the default TryAdd provider.
+        .AddSingleton<IAuthorizationPolicyProvider, GrantPolicyProvider>())
+    .Configure(app => app.UseAuthentication().UseAuthorization()));
+\`\`\`
+
+El detalle que casi se me escapa fue el orden de registro. AddAuthorization() ya registra un IAuthorizationPolicyProvider por defecto, usando TryAdd, es decir, "agregar solo si no hay uno". Registrar GrantPolicyProvider antes de esa llamada no tiene efecto: el proveedor por defecto gana. Registrarlo después, con Add en lugar de TryAdd, sí lo reemplaza. Sin ese orden, la prueba habría estado ejercitando un proveedor de políticas que no es el que corre en producción, cayendo en la misma ilusión que el enfoque anterior, solo que un nivel más abajo.
+
+El mock de ICaseReviewService se configuró en modo estricto, no en el modo relajado por defecto. Con un mock relajado, una llamada no configurada simplemente devuelve un valor por defecto y la prueba sigue su curso sin quejarse; en modo estricto, cualquier llamada no configurada lanza una excepción. Esa diferencia es la que convierte VerifyNoOtherCalls() en una aserción real: no solo confirma que el método esperado no se llamó, confirma que ningún otro método del servicio se llamó tampoco.
+
+La identidad la resuelve HeaderAuthHandler, un esquema de autenticación de prueba que lee un encabezado, X-Test-Grants, y lo convierte en los claims que GrantHandler espera. IGrantLookup, el puerto detrás de esos claims en producción, queda fuera del alcance de esta prueba a propósito: ya se prueba en otro lugar, y aquí solo hace falta que la decisión de autorización dependa de él, no que él mismo sea correcto.
+
+Trazar la frontera ahí, y no más abajo, es una decisión deliberada: bajar un nivel más y mockear GrantHandler directamente habría probado que el mock hace lo que el mock dice, no que la política real decide correctamente a partir de los claims. Subir un nivel y no mockear IGrantLookup habría acoplado esta prueba a un almacén de datos que ya tiene sus propias pruebas en otro lugar.
+
+Con el host real en pie, la prueba honesta hace una petición HTTP de verdad:
+
+\`\`\`csharp
+[Fact]
+public async Task Close_is_forbidden_without_grant()
+{
+    _client.DefaultRequestHeaders.Add("X-Test-Grants", "none");
+    var res = await _client.PostAsJsonAsync("/cases/42/close", new { reason = "duplicate" });
+    Assert.Equal(HttpStatusCode.Forbidden, res.StatusCode);
+    _service.VerifyNoOtherCalls(); // strict mock: the action never ran
+}
+\`\`\`
+
+Esta prueba sí atraviesa autenticación y autorización reales. El mock estricto de ICaseReviewService cumple la misma función que en la versión con la ilusión, pero ahora esa aserción significa algo: si el pipeline dejara pasar la petición, el mock lo delataría.
+
+El diagrama de dependencias que terminé confirmando con la prueba real, frente a lo que la primera prueba en realidad ejercitaba:
+
+\`\`\`
+xUnit -> HttpClient -> TestServer -> Authentication -> Authorization ([RequireGrant]) -> Controller -> ICaseReviewService (mock)
+                                                                            ^
+                                                   direct call enters here, skipping both middleware boxes
+\`\`\`
+
+**El impacto**
+
+El conjunto de pruebas HTTP para esta ruta quedó en 3: la negativa que abre este artículo, un gemelo positivo con el permiso correcto que confirma un 200 con el resultado real del servicio, y una prueba de payload inválido que nunca llega a preguntar por el permiso. Las tres corren contra el pipeline real, no contra un método suelto.
+
+La parte que de verdad valida la prueba no es que pase, es que sepa fallar. Comenté [RequireGrant(Grants.CaseReview)] en el controlador, dejando una nota sobre por qué estaba comentado, reconstruí, y corrí la prueba con nombre. Falló, pero no con un 403 fallido: falló con un 400, porque sin el atributo la petición autenticada llegó al controlador y el mock estricto de ICaseReviewService explotó al recibir una llamada que nunca configuré. Exactamente la prueba que nombra el permiso, y ninguna otra, dejó de pasar. Restauré el atributo desde la copia de respaldo, reconstruí, y las 3 pruebas volvieron a verde.
+
+La mutación se hizo sobre una copia de respaldo del archivo, nunca con un comando de control de versiones que pudiera arrastrar cambios sin relación. Comentar el atributo, recompilar, correr las pruebas y restaurar desde esa copia es un ciclo de segundos, y es el único que deja evidencia de que la prueba mide lo que dice medir en lugar de solo asumirlo.
+
+El resto de la suite, más de 1.100 pruebas, siguió en verde sin tocar nada fuera de este endpoint. La ruta añadió cerca de 130 líneas de producción: dos DTOs pequeños, un método de repositorio, un método de servicio sin lógica propia, y la acción del controlador. La prueba HTTP y el manejador de autenticación de prueba no cuentan contra ese presupuesto: viven en el proyecto de pruebas, no en el de producción.
+
+Antes de tocar nada corrí la suite completa como línea base, y después de restaurar el atributo la corrí de nuevo: mismo número de pruebas, mismo resultado, sin ningún efecto colateral fuera del endpoint nuevo. Esa comparación antes y después es la que permite afirmar que el endpoint no rompió nada que ya funcionara, no solo que las tres pruebas nuevas pasan.
+
+**Lecciones**
+
+**Un atributo de autorización solo lo prueba el pipeline que lo lee, nunca una llamada de método.** [RequireGrant] es metadata; el middleware de autorización es quien la interpreta, y sin ese middleware en la prueba, el atributo es decoración que nunca se ejecuta.
+
+**Una prueba verde que llama directo al método puede estar probando una tautología.** Si la prueba y el código bajo prueba comparten la misma ruta de ejecución que el atributo se supone que intercepta, la prueba no puede fallar aunque el atributo desaparezca, y una aserción que no puede fallar no aserta nada.
+
+**El orden de registro de servicios no es un detalle de estilo.** Add después de AddAuthorization() reemplaza al proveedor por defecto; antes, no tiene efecto, porque AddAuthorization() registra el suyo con TryAdd, y ese matiz decide si la prueba ejercita la política real o una que nunca corre en producción.
+
+**Una prueba solo demuestra lo que dice demostrar una vez que se demuestra que puede fallar.** Retirar el atributo, ver caer exactamente la prueba que lo nombra, y restaurarlo desde una copia, nunca con un comando que pueda arrastrar cambios ajenos, es la única forma de confiar en el verde.
+
+**El borde de lo que se mockea es una decisión, no un accidente de lo que resulta fácil de instanciar.** Mockear el servicio de dominio fue correcto porque ya estaba probado en otro lugar; mockear la autorización habría sido correcto solo si esta prueba no fuera, precisamente, la prueba de la autorización.`,
+    contentEn: `An administrative workflow had a stuck case that, until then, only a DBA could resolve: a manual update run directly against the database whenever the normal path got stuck. The requirement for turning that into an HTTP endpoint was short to state: without the correct permission, the request returns 403 and the domain service never runs at all. Not a 403 with work done behind it. A real 403, with no side effect.
+
+I implemented the route with the mechanism ASP.NET Core recommends for this: a declarative attribute, [RequireGrant(Grants.CaseReview)], placed on the CloseAsync action of CaseReviewController, which exposes POST /cases/{id}/close. The action takes the case id and a reason, and delegates to a service port, ICaseReviewService, whose real implementation was already tested against the database in earlier work. That port was the boundary this piece declared: it gets mocked here, and what needs proving is that the HTTP route does the right thing with the right data, not that the service works.
+
+The endpoint did not change the case logic, only the channel for reaching it. Before, resolving a stuck case meant asking someone with direct database access to run a manual update, without the same structured logging or the same audit surface the other administrative operations already had. The risk was not that the endpoint would do something different from what the DBA did by hand; it was that, once automated, someone without the correct permission could trigger it and nobody would notice.
+
+A test was missing to confirm it: without the correct permission, 403; with it, the service gets called. Writing it looked trivial, and the one I wrote passed on the first run. That green result, reached without a second thought, is exactly what this article questions.
+
+**The wrong approach**
+
+The obvious test instantiates the controller directly and calls its method:
+
+\`\`\`csharp
+[Fact]
+public async Task Close_is_forbidden_without_grant_ILLUSION()
+{
+    var controller = new CaseReviewController(_service.Object);
+    var result = await controller.CloseAsync(42, new { reason = "duplicate" });
+    // [RequireGrant] never runs here: only the middleware reads it.
+}
+\`\`\`
+
+It passed, because the ICaseReviewService mock was configured in strict mode and CloseAsync never reached it. But it passed for the wrong reason. [RequireGrant] is an attribute ASP.NET Core only evaluates inside the authorization pipeline, a middleware step that runs before the framework invokes the action. Calling the method in C# from an xUnit test never crosses that pipeline: it is a plain method call, with no HTTP request, no authentication, no authorization. The attribute sat there, decorating the signature, and the test never exercised it.
+
+That pattern, instantiate the class under test and call its method directly, is exactly what any unit-testing guide teaches first, and it is correct for almost everything that does not depend on HTTP transport. The problem is not the technique in general; it is that here the piece supposedly under test, the authorization attribute, lives outside the method the test invokes. Nothing in the signature of CloseAsync warns about that: you have to already know that [RequireGrant] is another component's responsibility.
+
+This is the defect class that had already cost me before: code that exists in the source tree, looks correct in review, and nobody invokes the way production invokes it. A test that calls the method directly does not prove the attribute, it proves that the method, isolated from the pipeline that gives it meaning, does what the code inside says it does. That is tautological, not verification.
+
+Code review would not have caught it either: the attribute was present, written correctly, pointing at the right permission. Any reader familiar with ASP.NET Core would have signed off on it. The defect was not in the production code; it was in the test that claimed to back it.
+
+**The solution**
+
+The only honest way to test an authorization attribute is to cross the real pipeline that evaluates it: a real test server, not a method call. I stood up a minimal host with Microsoft.AspNetCore.TestHost, with the real authentication and authorization production uses intact, mocking only what fell outside the declared boundary: caller identity and the service port.
+
+\`\`\`csharp
+var host = new HostBuilder().ConfigureWebHost(web => web
+    .UseTestServer()
+    .ConfigureServices(s => s
+        .AddAuthentication("Test")
+        .AddScheme<AuthenticationSchemeOptions, HeaderAuthHandler>("Test", _ => { }))
+    .ConfigureServices(s => s.AddAuthorization()
+        // Add after AddAuthorization(): wins over the default TryAdd provider.
+        .AddSingleton<IAuthorizationPolicyProvider, GrantPolicyProvider>())
+    .Configure(app => app.UseAuthentication().UseAuthorization()));
+\`\`\`
+
+The detail that nearly got past me was registration order. AddAuthorization() already registers a default IAuthorizationPolicyProvider using TryAdd, meaning "add only if none exists". Registering GrantPolicyProvider before that call has no effect: the default provider wins. Registering it after, with Add instead of TryAdd, does replace it. Without that order, the test would have been exercising a policy provider that is not the one running in production, falling into the same illusion as the previous approach, just one layer down.
+
+The ICaseReviewService mock was configured in strict mode, not the relaxed default. With a relaxed mock, an unconfigured call simply returns a default value and the test carries on without complaint; in strict mode, any unconfigured call throws. That difference is what turns VerifyNoOtherCalls() into a real assertion: it confirms not only that the expected method was never called, but that no other method on the service was called either.
+
+Identity is resolved by HeaderAuthHandler, a test authentication scheme that reads a header, X-Test-Grants, and turns it into the claims GrantHandler expects. IGrantLookup, the port behind those claims in production, is deliberately out of scope for this test: it is tested elsewhere, and here the authorization decision only needs to depend on it, not be correct on its own.
+
+Drawing the boundary there, and no lower, was a deliberate choice: going one level lower and mocking GrantHandler directly would have proven only that the mock does what the mock says, not that the real policy decides correctly from the claims. Going one level higher and leaving IGrantLookup unmocked would have coupled this test to a data store that already has its own tests elsewhere.
+
+With the real host running, the honest test makes an actual HTTP request:
+
+\`\`\`csharp
+[Fact]
+public async Task Close_is_forbidden_without_grant()
+{
+    _client.DefaultRequestHeaders.Add("X-Test-Grants", "none");
+    var res = await _client.PostAsJsonAsync("/cases/42/close", new { reason = "duplicate" });
+    Assert.Equal(HttpStatusCode.Forbidden, res.StatusCode);
+    _service.VerifyNoOtherCalls(); // strict mock: the action never ran
+}
+\`\`\`
+
+This test does cross real authentication and authorization. The strict ICaseReviewService mock plays the same role it did in the illusion version, but now that assertion means something: if the pipeline let the request through, the mock would give it away.
+
+The dependency diagram I ended up confirming with the real test, against what the first test actually exercised:
+
+\`\`\`
+xUnit -> HttpClient -> TestServer -> Authentication -> Authorization ([RequireGrant]) -> Controller -> ICaseReviewService (mock)
+                                                                            ^
+                                                   direct call enters here, skipping both middleware boxes
+\`\`\`
+
+**The impact**
+
+The HTTP test suite for this route settled at 3: the negative test that opens this article, a positive twin with the correct permission confirming a 200 and the real result from the service, and an invalid-payload test that never gets to ask about the permission. All three run against the real pipeline, not a bare method.
+
+The part that actually validates the test is not that it passes, it is that it knows how to fail. I commented out [RequireGrant(Grants.CaseReview)] on the controller, left a note on why it was commented, rebuilt, and ran the named test. It failed, but not with a failed 403: it failed with a 400, because without the attribute the authenticated request reached the controller and the strict ICaseReviewService mock blew up on a call I never configured. Exactly the test that names the permission, and no other, stopped passing. I restored the attribute from the backup copy, rebuilt, and all 3 tests went green again.
+
+The mutation ran against a backup copy of the file, never a version-control command that could drag along unrelated changes. Commenting the attribute out, rebuilding, running the tests and restoring from that copy is a cycle measured in seconds, and it is the only one that leaves evidence the test measures what it claims to measure instead of just assuming it.
+
+The rest of the suite, more than 1,100 tests, stayed green without touching anything outside this endpoint. The route added close to 130 lines of production code: two small DTOs, one repository method, one service method with no logic of its own, and the controller action. The HTTP test and the test authentication handler do not count against that budget: they live in the test project, not production.
+
+Before touching anything I ran the full suite as a baseline, and after restoring the attribute I ran it again: same test count, same result, no side effect outside the new endpoint. That before-and-after comparison is what lets me claim the endpoint broke nothing that already worked, not just that the three new tests pass.
+
+**Lessons**
+
+**An authorization attribute is only proven by the pipeline that reads it, never by a method call.** [RequireGrant] is metadata; the authorization middleware is what interprets it, and without that middleware in the test, the attribute is decoration that never runs.
+
+**A green test that calls the method directly can be proving a tautology.** If the test and the code under test share the same execution path the attribute is supposed to intercept, the test cannot fail even if the attribute disappears, and an assertion that cannot fail asserts nothing.
+
+**Service registration order is not a style detail.** Add after AddAuthorization() replaces the default provider; before it, it has no effect, because AddAuthorization() registers its own with TryAdd, and that nuance decides whether the test exercises the real policy or one that never runs in production.
+
+**A test only proves what it claims to prove once it is shown able to fail.** Removing the attribute, watching exactly the test that names it fall, and restoring it from a copy, never a command that could drag along unrelated changes, is the only way to trust the green.
+
+**What gets mocked is a decision, not an accident of what is easy to instantiate.** Mocking the domain service was correct because it was already tested elsewhere; mocking authorization would have been correct only if this test were not, precisely, the test of authorization.`,
+    relatedIds: ['domain-exception-problemdetails-pipeline', 'strict-tdd-committed-playwright-driver'],
+  },
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
