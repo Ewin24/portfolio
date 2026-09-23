@@ -729,6 +729,37 @@ async function run() {
         check('help: initial about mount does not steal focus', focused === null, `focused=${focused}`)
       } finally { await ctx.close() }
     }
+
+    // ── 16. Full-page article view must scroll in XP ──
+    // The XP document lock (html overflow:hidden at >=640px) is only correct
+    // while the desktop canvas is rendered. `#blog/article/<slug>` swaps the
+    // whole desktop for the full-page article view, which has no internal
+    // scroll container: with the lock still applied the article is unreadable.
+    {
+      const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[3])
+      try {
+        const lockedOnDesktop = await page.evaluate(() => getComputedStyle(document.documentElement).overflowY)
+        check('article: desktop keeps html overflow hidden @1440', lockedOnDesktop === 'hidden', `overflowY=${lockedOnDesktop}`)
+
+        await page.locator('.xp-desktop-icon[data-app="blog"]').click()
+        await page.waitForTimeout(400)
+        await page.locator('#blog button').filter({ hasText: /Leer|Read/ }).first().click()
+        await page.waitForFunction(() => location.hash.startsWith('#blog/article/'))
+        await page.waitForTimeout(400)
+        const overflowY = await page.evaluate(() => getComputedStyle(document.documentElement).overflowY)
+        check('article: full-page view has no html overflow lock', overflowY !== 'hidden', `overflowY=${overflowY}`)
+
+        await page.mouse.move(720, 450)
+        await page.mouse.wheel(0, 1000)
+        await page.waitForTimeout(400)
+        const scrolled = await page.evaluate(() => ({
+          top: document.documentElement.scrollTop,
+          h: document.documentElement.scrollHeight,
+          wins: document.querySelectorAll('.xp-window').length,
+        }))
+        check('article: full-page article scrolls in XP', scrolled.top > 0, JSON.stringify(scrolled))
+      } finally { await ctx.close() }
+    }
   } finally {
     await browser.close()
   }

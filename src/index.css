@@ -506,8 +506,11 @@ html[data-theme='xp'] {
   display: none;
 }
 
+/* Scoped to the rendered desktop: the full-page article view
+   (#blog/article/<slug>) replaces the desktop and has no internal scroll
+   container, so locking the document there makes the article unreadable. */
 @media (min-width: 640px) {
-  html[data-theme='xp'] {
+  html[data-theme='xp']:has(.xp-desktop) {
     overflow: hidden;
   }
 }
