@@ -1,99 +1,105 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://ewin24.github.io/portfolio/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-09-26</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://ewin24.github.io/portfolio/?lang=en" />
     <xhtml:link rel="alternate" hreflang="es" href="https://ewin24.github.io/portfolio/?lang=es" />
   </url>
-
-  <!-- Static section anchors (single-page app routes) -->
   <url>
     <loc>https://ewin24.github.io/portfolio/#about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://ewin24.github.io/portfolio/#projects</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
-
   <url>
     <loc>https://ewin24.github.io/portfolio/#skills</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://ewin24.github.io/portfolio/#experience</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://ewin24.github.io/portfolio/#blog</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
   </url>
-
   <url>
     <loc>https://ewin24.github.io/portfolio/#contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
-
-  <!-- Blog articles (hash-routed — single-page app handles them) -->
   <url>
-    <loc>https://ewin24.github.io/portfolio/#blog/article/arquitectura-limpa-sistema-originacion-credito</loc>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/arquitectura-limpa-sistema-originacion-credito</loc>
     <lastmod>2026-01-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
   </url>
-
   <url>
-    <loc>https://ewin24.github.io/portfolio/#blog/article/motor-decisiones-catalog-driven-sin-if</loc>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/motor-decisiones-catalog-driven-sin-if</loc>
     <lastmod>2026-03-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
   </url>
-
   <url>
-    <loc>https://ewin24.github.io/portfolio/#blog/article/api-centralizada-comunicaciones</loc>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/api-centralizada-comunicaciones</loc>
     <lastmod>2026-06-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
   </url>
-
   <url>
-    <loc>https://ewin24.github.io/portfolio/#blog/article/dual-frontend-clean-architecture-dotnet-10</loc>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/dual-frontend-clean-architecture-dotnet-10</loc>
     <lastmod>2026-07-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
   </url>
-
   <url>
-    <loc>https://ewin24.github.io/portfolio/#blog/article/dapper-stored-procedures-en-lugar-de-ef-core</loc>
-    <lastmod>2026-05-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/error-handling-middleware-pipeline</loc>
+    <lastmod>2026-07-15</lastmod>
   </url>
-
-  <!-- AI-readable content -->
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/dapper-stored-procedures-en-lugar-de-ef-core</loc>
+    <lastmod>2026-08-01</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/versionado-api-transparente-sin-romper-clientes</loc>
+    <lastmod>2026-08-15</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/orquestacion-cross-system-sin-acoplamiento</loc>
+    <lastmod>2026-09-01</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/heredar-proyecto-flutter-no-mantenido</loc>
+    <lastmod>2026-06-26</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/audio-multiplataforma-flutter-arquitectura</loc>
+    <lastmod>2026-06-26</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/youtube-innertube-api-resiliencia</loc>
+    <lastmod>2026-06-26</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/modernizacion-build-flutter-upgrade</loc>
+    <lastmod>2026-06-26</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/android-14-audio-background-modernizacion</loc>
+    <lastmod>2026-06-26</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/validacion-biometrica-geolocalizacion-credito</loc>
+    <lastmod>2026-07-15</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/revision-adversarial-no-encontro-lo-que-el-usuario-si</loc>
+    <lastmod>2026-09-05</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/interfaz-uniforme-no-arregla-asimetria-semantica</loc>
+    <lastmod>2026-09-12</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/tdd-estricto-contra-driver-playwright-versionado</loc>
+    <lastmod>2026-09-19</lastmod>
+  </url>
+  <url>
+    <loc>https://ewin24.github.io/portfolio/#/blog/article/atributo-autorizacion-invisible-prueba-unitaria</loc>
+    <lastmod>2026-09-26</lastmod>
+  </url>
   <url>
     <loc>https://ewin24.github.io/portfolio/llms.txt</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
-
   <url>
     <loc>https://ewin24.github.io/portfolio/llms-full.txt</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
-
 </urlset>
