@@ -108,6 +108,10 @@ export type TranslationKeys = {
   'skills.vitest.milestone2': string
   'skills.vitest.milestone3': string
   'skills.vitest.reference': string
+  'skills.geo.milestone1': string
+  'skills.geo.milestone2': string
+  'skills.geo.milestone3': string
+  'skills.geo.reference': string
   // About
   'about.title': string
   'about.subtitle': string
@@ -269,6 +273,10 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.vitest.milestone2': 'Pruebas de extremo a extremo contra el almacén real',
     'skills.vitest.milestone3': 'Cobertura exigida en CI antes del despliegue',
     'skills.vitest.reference': 'Ver Casos de Estudio',
+    'skills.geo.milestone1': 'Datos estructurados JSON-LD: Person, WebSite, BreadcrumbList y Service',
+    'skills.geo.milestone2': 'llms.txt y llms-full.txt para rastreadores de IA, con robots.txt y sitemap',
+    'skills.geo.milestone3': 'Auditoría GEO automatizada de 58 a 83/100, 14 de 14 hallazgos resueltos',
+    'skills.geo.reference': 'Ver Casos de Estudio',
     'skills.php.milestone1': 'Laravel con workers asíncronos y jobs',
     'skills.php.milestone2': 'SaaS B2B completo para sector solidario',
     'skills.php.milestone3': 'Procesamiento de archivos financieros en segundo plano',
@@ -450,6 +458,10 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.vitest.milestone2': 'End-to-end tests against the real store',
     'skills.vitest.milestone3': 'Coverage enforced in CI before deployment',
     'skills.vitest.reference': 'View Case Studies',
+    'skills.geo.milestone1': 'JSON-LD structured data: Person, WebSite, BreadcrumbList and Service',
+    'skills.geo.milestone2': 'llms.txt and llms-full.txt for AI crawlers, plus robots.txt and a sitemap',
+    'skills.geo.milestone3': 'Automated GEO audit from 58 to 83/100, 14 of 14 issues resolved',
+    'skills.geo.reference': 'View Case Studies',
     'skills.php.milestone1': 'Laravel with async workers and jobs',
     'skills.php.milestone2': 'Complete B2B SaaS for solidarity sector',
     'skills.php.milestone3': 'Background processing of financial files',
