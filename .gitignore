@@ -37,6 +37,9 @@ sdd/
 # SDD workflow artifacts
 .atl/
 
+# CodeGraph local index — regenerated per checkout, never published
+.codegraph/
+
 # Playwright regression snapshots — regenerated each run, only the baseline is committed
 driver/.baseline/current-*.png
 scratchpad/
