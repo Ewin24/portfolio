@@ -3292,7 +3292,7 @@ Both classes have barriers now. The dev command boots the relay, a missing relay
 
 El sistema los usa para dos cosas distintas. La primera es contactabilidad: dado un documento, obtener teléfonos y direcciones para poder comunicarse con el solicitante. La segunda es viabilidad: dado el mismo documento, decidir si el solicitante puede avanzar en el proceso de crédito.
 
-La contactabilidad ya era configurable de verdad, con un patrón strategy completo. Una interfaz \`IProveedorContactos\` expone una propiedad discriminadora que identifica al proveedor; hay una implementación real por cada uno, sin stubs; y un resolvedor mapea la central configurada a su implementación por diccionario, con una falla suave a un valor por defecto. En el contenedor de dependencias hay un registro por implementación más el resolvedor. Agregar un tercer proveedor es una clase nueva y un registro. Cero \`if\`.
+La contactabilidad ya era configurable de verdad, con un patrón strategy completo. Una interfaz \`IContactDataProvider\` expone una propiedad discriminadora que identifica al proveedor; hay una implementación real por cada uno, sin stubs; y un resolvedor mapea la central configurada a su implementación por diccionario, con una falla suave a un valor por defecto. En el contenedor de dependencias hay un registro por implementación más el resolvedor. Agregar un tercer proveedor es una clase nueva y un registro. Cero \`if\`.
 
 La viabilidad no. Ahí había un \`if\` literal comparando el nombre del proveedor configurado, y todo lo demás caía en un bloque heredado escrito en línea. No había interfaz común: el servicio llamaba directo a dos clientes con firmas distintas y objetos de respuesta distintos.
 
@@ -3347,13 +3347,13 @@ Dejé de tratarlo como un refactor único y lo traté como dos entregas con crit
 Donde la semántica coincide, entregué la estrategia real. La contactabilidad ya tenía la forma correcta, así que el trabajo fue consolidarla y dejar el camino abierto para un tercer proveedor:
 
 \`\`\`csharp
-public interface IProveedorContactos
+public interface IContactDataProvider
 {
     string Central { get; }
     Task<Contactos> ObtenerAsync(string documento);
 }
 
-public IProveedorContactos Resolver(string central) =>
+public IContactDataProvider Resolver(string central) =>
     _proveedores.FirstOrDefault(p => p.Central == central)
     ?? _proveedores.First(p => p.Central == PorDefecto);
 \`\`\`
@@ -3408,7 +3408,7 @@ La segunda mitad de esa prueba es la que importa. Verificar que devuelve error e
 
 \`\`\`text
                     ┌─ contactabilidad ────────────────────────────┐
-                    │ IProveedorContactos ──▶ resolvedor (dicc.)   │──▶ proveedor A
+                    │ IContactDataProvider ──▶ resolvedor (dicc.)  │──▶ proveedor A
 solicitud ──▶ eval  │ tercer proveedor = 1 clase + 1 registro      │──▶ proveedor B
               de    └──────────────────────────────────────────────┘
               riesgo┌─ viabilidad ─────────────────────────────────┐
@@ -3443,7 +3443,7 @@ También cambió la forma de estimar. Antes, el trabajo restante se veía como u
 
 The system uses them for two different things. The first is contactability: given an identity document, retrieve phone numbers and addresses so the applicant can be reached. The second is viability: given the same document, decide whether the applicant can move forward in the credit process.
 
-Contactability was genuinely config-driven, with a complete strategy pattern. An \`IProveedorContactos\` interface exposes a discriminator property that identifies the provider; there is one real implementation per provider, no stubs; and a resolver maps the configured bureau to its implementation through a dictionary, with a soft fallback to a default. Dependency injection holds one registration per implementation plus the resolver. Adding a third provider is one new class and one registration. Zero \`if\`.
+Contactability was genuinely config-driven, with a complete strategy pattern. An \`IContactDataProvider\` interface exposes a discriminator property that identifies the provider; there is one real implementation per provider, no stubs; and a resolver maps the configured bureau to its implementation through a dictionary, with a soft fallback to a default. Dependency injection holds one registration per implementation plus the resolver. Adding a third provider is one new class and one registration. Zero \`if\`.
 
 Viability was not. It had a literal \`if\` comparing the configured provider's name, and everything else fell through to a legacy block written inline. There was no shared interface: the service called two clients directly, with different signatures and different response objects.
 
@@ -3498,13 +3498,13 @@ I stopped treating it as a single refactor and treated it as two deliveries with
 Where the semantics match, ship the real strategy. Contactability already had the right shape, so the work was consolidating it and leaving the door open for a third provider:
 
 \`\`\`csharp
-public interface IProveedorContactos
+public interface IContactDataProvider
 {
     string Central { get; }
     Task<Contactos> ObtenerAsync(string documento);
 }
 
-public IProveedorContactos Resolver(string central) =>
+public IContactDataProvider Resolver(string central) =>
     _proveedores.FirstOrDefault(p => p.Central == central)
     ?? _proveedores.First(p => p.Central == PorDefecto);
 \`\`\`
@@ -3559,7 +3559,7 @@ The second half of that test is the one that matters. Asserting that it returns 
 
 \`\`\`text
                     ┌─ contactabilidad ────────────────────────────┐
-                    │ IProveedorContactos ──▶ resolvedor (dicc.)   │──▶ proveedor A
+                    │ IContactDataProvider ──▶ resolvedor (dicc.)  │──▶ proveedor A
 solicitud ──▶ eval  │ tercer proveedor = 1 clase + 1 registro      │──▶ proveedor B
               de    └──────────────────────────────────────────────┘
               riesgo┌─ viabilidad ─────────────────────────────────┐
