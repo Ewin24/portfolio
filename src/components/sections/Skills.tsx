@@ -17,6 +17,7 @@ import {
   HardDrive,
   Bug,
   TestTube,
+  ScanSearch,
 } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
@@ -245,6 +246,19 @@ const TECH_DATA: TechData[] = [
       'skills.vitest.milestone3',
     ],
     referenceKey: 'skills.vitest.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'geo',
+    name: 'AI Discoverability',
+    icon: ScanSearch,
+    color: '#0F6E6E',
+    milestoneKeys: [
+      'skills.geo.milestone1',
+      'skills.geo.milestone2',
+      'skills.geo.milestone3',
+    ],
+    referenceKey: 'skills.geo.reference',
     referenceUrl: '#projects',
   },
 ]
