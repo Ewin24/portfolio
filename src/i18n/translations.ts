@@ -184,7 +184,7 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.contact': 'Contacto',
 
     // Hero — Copy Senior, vende ingeniería no código
-    'hero.greeting': 'Soluciones de',
+    'hero.greeting': 'Edición digital · Colombia',
     'hero.role': 'Ingeniería de Software',
     'hero.subtitle':
       'Ingeniero de Software y Desarrollador Full-Stack especializado en sistemas distribuidos, microservicios y plataformas SaaS. Experiencia comprobable modernizando ERPs, integrando soluciones Fintech y desplegando en la nube. Apasionado por el Clean Code, la optimización de bases de datos y las arquitecturas resilientes orientadas a resolver cuellos de botella.',
@@ -194,7 +194,7 @@ const translations: Record<Language, TranslationKeys> = {
     // Stats con valor real
     'hero.stats.yearsExp': 'Años de experiencia',
     'hero.stats.systems': 'Sistemas en producción',
-    'hero.stats.stack': 'Tecnologías dominadas',
+    'hero.stats.stack': 'Tecnologías en producción',
 
     // Projects
     'projects.title': 'Casos de Estudio',
@@ -370,7 +370,7 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.contact': 'Contact',
 
     // Hero
-    'hero.greeting': 'Software',
+    'hero.greeting': 'Digital edition · Colombia',
     'hero.role': 'Engineering Solutions',
     'hero.subtitle':
       'Software Engineer and Full-Stack Developer specialized in distributed systems, microservices, and high-performance SaaS platforms. Proven track record modernizing enterprise ERPs, integrating Fintech solutions, and deploying to the cloud. Passionate about Clean Code, database optimization, and resilient architectures that solve bottlenecks and deliver direct business value.',
@@ -380,7 +380,7 @@ const translations: Record<Language, TranslationKeys> = {
     // Stats
     'hero.stats.yearsExp': 'Years of experience',
     'hero.stats.systems': 'Production systems',
-    'hero.stats.stack': 'Technologies mastered',
+    'hero.stats.stack': 'Technologies shipped',
 
     // Projects
     'projects.title': 'Case Studies',
