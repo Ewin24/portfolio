@@ -540,6 +540,22 @@ html[data-theme='xp'] {
   --shadow-pixel:     0 2px 4px rgba(0, 0, 0, 0.30);
   --shadow-pixel-lg:  0 4px 8px rgba(0, 0, 0, 0.30);
   --shadow-pixel-xl:  0 8px 16px rgba(0, 0, 0, 0.30);
+
+  /* ── Bevels: stacked 1px inset shadows, never a border ──
+     Raised = light top/left, dark bottom/right; sunken inverts it. Thin is
+     the one-pixel version for small chrome, field is XP's flat blue edit
+     border, and dither is the 2px checkerboard of a latched toggle. */
+  --xp-bevel-raised:
+    inset -1px -1px 0 #404040, inset 1px 1px 0 #FFFFFF,
+    inset -2px -2px 0 #808080, inset 2px 2px 0 #E3E3E3;
+  --xp-bevel-sunken:
+    inset 1px 1px 0 #404040, inset -1px -1px 0 #FFFFFF,
+    inset 2px 2px 0 #808080, inset -2px -2px 0 #E3E3E3;
+  --xp-bevel-thin:    inset -1px -1px 0 #808080, inset 1px 1px 0 #FFFFFF;
+  --xp-bevel-thin-in: inset 1px 1px 0 #808080, inset -1px -1px 0 #FFFFFF;
+  --xp-bevel-field:   inset 0 0 0 1px #7F9DB9, inset 2px 2px 0 rgba(0, 0, 0, 0.06);
+  --xp-hover-ring:    inset 0 0 0 1px #F9B653, inset 0 0 0 2px #FDD889;
+  --xp-dither:        repeating-conic-gradient(#FFFFFF 0% 25%, #D4D0C8 0% 50%) 0 0 / 2px 2px;
 }
 
 /* ── Scrollbar: XP's thin grey bar ── */
@@ -559,36 +575,46 @@ html[data-theme='xp'] {
    the classic raised grey face: paper fill, 2px bevel, black text and a
    pressed state that inverts the bevel. */
 [data-theme='xp'] .px-btn {
-  background: #ECE9D8;
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECEBE6 86%, #D6D0C5 100%);
   color: #000;
-  border: 2px solid #808080;
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF,
-    inset -2px -2px 0 #D4D0C8,
-    inset 2px 2px 0 #FFFFFF;
+  border: 1px solid #003C74;
+  border-radius: 3px;
+  box-shadow: var(--xp-bevel-thin);
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
   text-shadow: none;
 }
 
-[data-theme='xp'] .px-btn:hover {
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF,
-    inset -2px -2px 0 #D4D0C8,
-    inset 2px 2px 0 #FFFFFF;
+/* XP answers hover with an orange glow ring, never with movement. */
+[data-theme='xp'] .px-btn:hover,
+[data-theme='xp'] .px-btn:focus-visible {
+  box-shadow: var(--xp-hover-ring);
+  transform: none;
 }
 
 [data-theme='xp'] .px-btn:active {
-  background: #D4D0C8;
-  box-shadow:
-    inset 1px 1px 0 #808080,
-    inset -1px -1px 0 #FFFFFF,
-    inset 2px 2px 0 #D4D0C8,
-    inset -2px -2px 0 #FFFFFF;
+  background: #E3E3DB;
+  box-shadow: var(--xp-bevel-sunken);
+  transform: none;
 }
 
-[data-theme='xp'] .px-btn-outline {
+/* A latched toggle reads as held down: sunken bevel over a dither. */
+[data-theme='xp'] .px-btn[aria-pressed='true'] {
+  background: var(--xp-dither);
+  box-shadow: var(--xp-bevel-sunken);
+}
+
+[data-theme='xp'] .px-btn-outline,
+[data-theme='xp'] .px-btn-outline:hover {
   background: transparent;
+  color: #000;
+}
+
+[data-theme='xp'] .xp-desktop :is(input[type='text'], input[type='search'], input[type='email'], textarea, select) {
+  background-color: #FFFFFF;
+  border-color: #7F9DB9;
+  box-shadow: var(--xp-bevel-field);
 }
 
 [data-theme='xp'] .px-badge,
@@ -683,15 +709,14 @@ html[data-theme='xp'] {
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: #ECE9D8;
-  color: #000;
-  border: 1px solid #808080;
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF;
+  color: #FFFFFF;
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.6));
 }
 
+[data-theme='xp'] .xp-desktop-icon-glyph svg { width: 28px; height: 28px; }
+
 [data-theme='xp'] .xp-desktop-icon-label {
+  padding: 0 2px;
   font-size: 11px;
   text-align: center;
   line-height: 1.15;
@@ -704,13 +729,14 @@ html[data-theme='xp'] {
   background: rgba(255, 255, 255, 0.12);
 }
 
-[data-theme='xp'] .xp-desktop-icon:active {
-  background: rgba(255, 255, 255, 0.2);
+/* Selected = the label turns XP selection blue with a dotted focus edge. */
+[data-theme='xp'] .xp-desktop-icon:is(:active, :focus-visible) .xp-desktop-icon-label {
+  background: #316AC5;
+  outline: 1px dotted #FFFFFF;
 }
 
 [data-theme='xp'] .xp-desktop-icon:focus-visible {
-  outline: 2px solid #FFFFFF;
-  outline-offset: -2px;
+  outline: none;
 }
 
 /* ── Section neutralisers ──
@@ -735,18 +761,19 @@ html[data-theme='xp'] {
    the manager via inline styles; the active window gets a stronger highlight. */
 [data-theme='xp'] .xp-window {
   background: #ECE9D8;
-  border: 2px solid;
-  border-color: #f4f7fb #808080 #808080 #f4f7fb;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+  /* Luna frame: a 2px blue rim with rounded top corners. */
+  border: 2px solid #7A96DF;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   /* No overflow:hidden here — the resize handles straddle the 2px border
      (top:-2px etc.) and would be clipped by it. The body keeps its own
      overflow:auto + fixed height (design D6). */
 }
 
-/* The active window stands out: a bright bevel top edge and a tighter drop. */
+/* The active window stands out: saturated rim and a deeper drop. */
 [data-theme='xp'] .xp-window[data-active='true'] {
-  border-color: #ffffff #808080 #808080 #ffffff;
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35);
+  border-color: #0831D9;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 [data-theme='xp'] .xp-window-titlebar {
@@ -756,14 +783,13 @@ html[data-theme='xp'] {
   gap: 8px;
   height: 32px;
   padding: 0 4px 0 8px;
-  /* D2 title-bar gradient. The solid dark zone (#0054e3) runs 0%->80% of the
-     bar and carries the white title text (6.22:1); the #4a8fe8->#7eb6ff tail
-     is decorative only and carries zero text. The glyph band of the title
-     (roughly 25-75% of the 32px bar) sits entirely inside the solid zone, so
-     white on the tail never matters. Window controls are separate raised
-     button faces, not gradient text. */
-  background: linear-gradient(180deg, #0054e3 0%, #0054e3 80%, #4a8fe8 80%, #7eb6ff 100%);
+  border-radius: 6px 6px 0 0;
+  /* Luna gloss: a light highlight at the top edge, the #0054E3 body that
+     carries the white title (6.2:1) through the glyph band, and a darker
+     bottom lip. Inactive windows swap in the muted variant below. */
+  background: linear-gradient(180deg, #3D95FF 0%, #0A5FDB 14%, #0054E3 50%, #0058EE 86%, #003DD7 100%);
   color: #FFFFFF;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45);
   user-select: none;
   cursor: move;
   /* z-index 40 beats both the resize handles (30) AND the window-body content
@@ -792,31 +818,46 @@ html[data-theme='xp'] {
   gap: 2px;
 }
 
-/* The three window controls are real buttons with raised bevel faces and
-   black glyphs (17.2:1), not gradient text. */
+/* The muted title bar of a background window; white still reads 4.7:1 on
+   its #5570C0 body. */
+[data-theme='xp'] .xp-window[data-active='false'] .xp-window-titlebar {
+  background: linear-gradient(180deg, #A9C3F2 0%, #7B9FE6 14%, #5570C0 50%, #5A76C6 86%, #4A66B6 100%);
+}
+
+/* Glossy Luna controls: white-rimmed rounded buttons with white glyphs; the
+   Close button is the red-orange one. */
 [data-theme='xp'] .xp-window-controls button {
-  width: 22px;
-  height: 22px;
+  width: 21px;
+  height: 21px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #ECE9D8;
-  color: #000;
-  border: 1px solid #808080;
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF;
+  background: linear-gradient(180deg, #5C9CF8 0%, #2A6CE3 45%, #1D55CF 100%);
+  color: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.35), inset -1px -1px 0 rgba(0, 0, 0, 0.2);
   font-size: 9px;
   line-height: 1;
   padding: 0;
   cursor: pointer;
 }
 
+[data-theme='xp'] .xp-window-controls button[aria-label='Close'] {
+  background: linear-gradient(180deg, #EE8363 0%, #E04343 45%, #C13D1C 100%);
+}
+
+[data-theme='xp'] .xp-window-controls button:hover {
+  filter: brightness(1.15);
+}
+
 [data-theme='xp'] .xp-window-controls button:active {
-  background: #D4D0C8;
-  box-shadow:
-    inset 1px 1px 0 #808080,
-    inset -1px -1px 0 #FFFFFF;
+  filter: brightness(0.85);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='xp'] .xp-window[data-active='false'] .xp-window-controls button {
+  opacity: 0.8;
 }
 
 [data-theme='xp'] .xp-window-body {
@@ -828,11 +869,12 @@ html[data-theme='xp'] {
      independently — a dragged/resized window never pushes the desktop. */
   height: calc(100% - 32px);
   overflow: auto;
+  container-type: inline-size;
 }
 
 /* Focus ring on the draggable title bar (keyboard users). */
 [data-theme='xp'] .xp-window-titlebar:focus-visible {
-  outline: 2px solid #316AC5;
+  outline: 1px dotted #FFFFFF;
   outline-offset: -2px;
 }
 
@@ -936,20 +978,21 @@ html[data-theme='xp'] {
 [data-theme='xp'] .xp-help-return {
   background: #ECE9D8;
   color: #000;
-  border: 1px solid #808080;
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF;
+  border: 1px solid #003C74;
+  border-radius: 3px;
+  box-shadow: var(--xp-bevel-thin);
   font-size: 12px;
   padding: 5px 14px;
   cursor: pointer;
 }
 
+[data-theme='xp'] .xp-help-return:hover {
+  box-shadow: var(--xp-hover-ring);
+}
+
 [data-theme='xp'] .xp-help-return:active {
   background: #D4D0C8;
-  box-shadow:
-    inset 1px 1px 0 #808080,
-    inset -1px -1px 0 #FFFFFF;
+  box-shadow: var(--xp-bevel-sunken);
 }
 
 [data-theme='xp'] .xp-help-return:focus-visible {
@@ -963,11 +1006,14 @@ html[data-theme='xp'] {
    extra window/desktop padding would steal width below the newspaper card
    grids' minimum content width and force horizontal scroll at 375px. The
    sections keep their own padding inside the window body. */
-[data-theme='xp'] .xp-window-body section {
+[data-theme='xp'] .xp-window-body :is(section:not(#hero), #hero > div) {
   max-width: 100%;
   margin-left: auto;
   margin-right: auto;
+  padding: 1.5rem 1rem; /* newspaper py-20/px-6 is sized for a page, not a 480px window */
 }
+[data-theme='xp'] .xp-window-body #hero h1 { font-size: clamp(2rem, 9cqi, 3.5rem) !important; }
+[data-theme='xp'] .xp-window-body [data-opening-rank] h2 { font-size: clamp(1.5rem, 7cqi, 2.5rem); }
 
 /* ── XP card grids stay within the window ──
    The newspaper case-study grid uses an auto-sized single column, which
@@ -999,8 +1045,9 @@ html[data-theme='xp'] {
 }
 
 /* ── Taskbar ──
-   Fixed to the bottom: an XP-blue surface (white text reads 5.25:1 on
-   #316AC5), a Start button, one label per open window, and a clock. */
+   Fixed to the bottom: the Luna blue bar (white text reads 5.9:1 on its
+   #245EDB body) with a light top highlight, the green Start pill, one label
+   per open window, and the lighter tray + clock well on the right. */
 [data-theme='xp'] .xp-taskbar {
   position: fixed;
   bottom: 0;
@@ -1012,153 +1059,184 @@ html[data-theme='xp'] {
   align-items: center;
   gap: 8px;
   padding: 0 8px;
-  background: linear-gradient(180deg, #316AC5 0%, #1E4FA0 100%);
-  border-top: 2px solid #f4f7fb;
-  box-shadow: 0 -1px 0 #808080;
+  background: linear-gradient(180deg, #3F8CF3 0%, #245EDB 10%, #245EDB 88%, #1941A5 100%);
+  border-top: 1px solid #0831D9;
+  box-shadow: inset 0 1px 0 #5A9CF7;
 }
 
+/* The Start pill runs the full bar height, flush left, rounded right. */
 [data-theme='xp'] .xp-taskbar .xp-start-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  height: 28px;
-  padding: 0 10px;
-  /* Classic Luna green Start (design D4): the vertical gradient keeps the
-     raised bevel face, with white text for contrast. */
-  background: linear-gradient(180deg, #3c8928, #2f6d1f);
-  color: #fff;
-  border: 2px solid #f4f7fb;
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF;
+  align-self: stretch;
+  margin-left: -8px;
+  padding: 0 22px 0 12px;
+  background: linear-gradient(180deg, #5EB55A 0%, #3C9A3C 14%, #2E8B2E 82%, #1F6E1F 100%);
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 0 14px 14px 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset -2px 0 3px rgba(0, 0, 0, 0.3);
+  font-size: 17px;
   font-weight: 700;
-  font-size: 12px;
+  font-style: italic;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
   cursor: pointer;
 }
 
 [data-theme='xp'] .xp-taskbar .xp-start-btn:hover {
-  /* Soft green glow on hover (design D4). */
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF,
-    0 0 6px rgba(120, 220, 90, 0.6);
+  filter: brightness(1.1);
 }
 
-[data-theme='xp'] .xp-taskbar .xp-start-btn:active {
-  background: linear-gradient(180deg, #2f6d1f, #3c8928);
-  box-shadow:
-    inset 1px 1px 0 #808080,
-    inset -1px -1px 0 #FFFFFF;
-}
-
+[data-theme='xp'] .xp-taskbar .xp-start-btn:active,
 [data-theme='xp'] .xp-taskbar .xp-start-btn[aria-expanded='true'] {
-  background: linear-gradient(180deg, #2f6d1f, #3c8928);
-  box-shadow:
-    inset 1px 1px 0 #808080,
-    inset -1px -1px 0 #FFFFFF;
+  background: linear-gradient(180deg, #1F6E1F 0%, #2E8B2E 30%, #3C9A3C 100%);
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='xp'] .xp-taskbar [role='list'] {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 3px;
+  min-width: 0;
 }
 
 [data-theme='xp'] .xp-taskbar .xp-window-label {
   display: inline-flex;
   align-items: center;
   min-width: 0;
-  flex: 0 1 auto;
-  height: 26px;
+  max-width: 160px;
+  flex: 0 1 160px;
+  height: 30px;
   padding: 0 10px;
-  background: #ECE9D8;
-  color: #000;
-  border: 2px solid #f4f7fb;
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF;
+  background: linear-gradient(180deg, #4C8FF5 0%, #3C81F3 50%, #2D6CE8 100%);
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.3), inset -1px -1px 0 rgba(0, 0, 0, 0.3);
   font-family: inherit;
   font-size: 12px;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.35);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
 }
 
+[data-theme='xp'] .xp-taskbar .xp-window-label:hover {
+  filter: brightness(1.1);
+}
+
+/* The focused window's label is pressed in. */
 [data-theme='xp'] .xp-taskbar .xp-window-label[data-active='true'] {
-  background: #FFFFFF;
-  box-shadow:
-    inset 1px 1px 0 #808080,
-    inset -1px -1px 0 #FFFFFF;
+  background: #1E49B5;
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.55), inset -1px -1px 0 rgba(255, 255, 255, 0.15);
+  font-weight: 700;
+}
+
+/* Tray + clock share one lighter inset well with a bevelled left edge.
+   margin-left:auto pushes it right (DOM order: Start → labels → tray → clock). */
+[data-theme='xp'] .xp-tray,
+[data-theme='xp'] .xp-taskbar .xp-clock {
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(180deg, #1FA2F2 0%, #1290E8 12%, #0E7FD6 88%, #1A6FC7 100%);
 }
 
 [data-theme='xp'] .xp-tray {
-  /* Pushes the tray (and the clock after it) to the far right, left of the
-     clock (design D3). DOM order: Start → labels → tray → clock. */
   margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  gap: 4px;
+  padding-left: 10px;
+  border-left: 1px solid #092E8F;
+  box-shadow: inset 1px 0 0 #5DB5F7;
 }
 
-[data-theme='xp'] .xp-tray .xp-tray-btn {
+/* Tray buttons are flat toolbar buttons: they pop a thin bevel on hover and
+   sink on press, like the XP notification area. */
+[data-theme='xp'] .xp-tray :is(.xp-tray-btn, button[aria-pressed]) {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  height: 26px;
-  padding: 0 8px;
-  background: #ECE9D8;
-  color: #000;
-  border: 2px solid #f4f7fb;
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF;
+  height: 24px;
+  padding: 0 6px;
+  background: transparent;
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 2px;
+  box-shadow: none;
   font-family: inherit;
   font-size: 11px;
   font-weight: 700;
+  letter-spacing: 0;
   text-decoration: none;
   cursor: pointer;
 }
 
-[data-theme='xp'] .xp-tray .xp-tray-btn:hover {
-  background: #FFFFFF;
+[data-theme='xp'] .xp-tray :is(.xp-tray-btn, button[aria-pressed]):hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
+  box-shadow: var(--xp-bevel-thin);
 }
 
-[data-theme='xp'] .xp-tray .xp-tray-btn:active {
-  background: #D4D0C8;
-  box-shadow:
-    inset 1px 1px 0 #808080,
-    inset -1px -1px 0 #FFFFFF;
+[data-theme='xp'] .xp-tray :is(.xp-tray-btn, button[aria-pressed]):active {
+  background: rgba(0, 0, 0, 0.18);
+  box-shadow: var(--xp-bevel-thin-in);
+}
+
+[data-theme='xp'] .xp-tray button[aria-pressed='true'],
+[data-theme='xp'] .xp-tray button[aria-pressed='true']:hover {
+  background: var(--xp-dither);
+  color: #000;
+  box-shadow: var(--xp-bevel-sunken);
 }
 
 [data-theme='xp'] .xp-taskbar .xp-clock {
+  margin: 0 -8px;
+  padding: 0 14px 0 8px;
   color: #FFFFFF;
   font-size: 12px;
   white-space: nowrap;
-  padding: 0 6px;
 }
 
 /* ── Start menu panel ──
-   The functional XP Start menu: a raised grey panel anchored above the Start
+   The functional XP Start menu: a two-column Luna panel anchored above the Start
    button, listing the 7 app menuitems under a "Programs" group header and a
    "My Computer" easter egg footer. */
 [data-theme='xp'] .xp-startmenu {
   position: fixed;
   bottom: 40px;
-  left: 8px;
-  width: 240px;
+  left: 0;
+  width: min(380px, 100vw);
   z-index: 59;
-  background: #ECE9D8;
+  background: #FFFFFF;
   color: #000;
-  border: 2px solid #f4f7fb;
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF,
-    2px 2px 0 rgba(0, 0, 0, 0.3);
-  padding: 0 0 8px;
+  border: 1px solid #0831D9;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.45);
 }
 
+[data-theme='xp'] .xp-startmenu-cols { display: grid; grid-template-columns: 1fr 1fr; }
+
+[data-theme='xp'] .xp-startmenu-avatar {
+  display: inline-grid; place-items: center; width: 36px; height: 36px;
+  border: 2px solid #FFFFFF; border-radius: 3px; background: linear-gradient(135deg, #F6A04D, #D9661F);
+}
+
+[data-theme='xp'] .xp-startmenu-bar { height: 30px; background: linear-gradient(180deg, #4282D6, #245EDB 60%, #1941A5); }
+
 [data-theme='xp'] .xp-startmenu-header {
-  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 14px;
   color: #FFFFFF;
-  background: linear-gradient(180deg, #3a6ea5 0%, #00008b 100%);
-  border-bottom: 2px solid #808080;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(180deg, #3F8CF3 0%, #245EDB 20%, #1C4FC6 100%);
+  border-bottom: 2px solid #E68B2C;
 }
 
 [data-theme='xp'] .xp-startmenu-group {
@@ -1209,8 +1287,9 @@ html[data-theme='xp'] {
 }
 
 [data-theme='xp'] .xp-startmenu-footer {
-  border-top: 1px solid #D4D0C8;
-  padding: 6px 4px 0;
+  background: #D3E5FA;
+  border-left: 1px solid #95BDEE;
+  padding: 6px 4px;
 }
 
 [data-theme='xp'] .xp-startmenu-easteregg {

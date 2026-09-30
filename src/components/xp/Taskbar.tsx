@@ -14,7 +14,7 @@ import type { AppId } from './registry'
  */
 export function Taskbar() {
   const { apps, openSet, order, states, activeId, restore, focus, minimize } = useWindowManager()
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
   const [startOpen, setStartOpen] = useState(false)
   const [now, setNow] = useState(() => new Date())
   const startBtnRef = useRef<HTMLButtonElement>(null)
@@ -63,8 +63,16 @@ export function Taskbar() {
         aria-controls="xp-startmenu"
         onClick={toggleStart}
       >
-        <span aria-hidden="true">🪟</span>
-        Start
+        {/* Original four-pane mark, skewed like a waving flag. */}
+        <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true">
+          <g transform="skewY(-10) translate(0 2)">
+            <rect x="1" y="1.5" width="6.5" height="6" rx="1" fill="#E8452C" />
+            <rect x="8.5" y="1.5" width="6.5" height="6" rx="1" fill="#5BB83A" />
+            <rect x="1" y="8.5" width="6.5" height="6" rx="1" fill="#2F8FE0" />
+            <rect x="8.5" y="8.5" width="6.5" height="6" rx="1" fill="#F4C020" />
+          </g>
+        </svg>
+        {lang === 'es' ? 'Inicio' : 'Start'}
       </button>
 
       <StartMenu open={startOpen} onClose={() => setStartOpen(false)} startButtonRef={startBtnRef} />
