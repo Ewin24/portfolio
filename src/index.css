@@ -869,6 +869,7 @@ html[data-theme='xp'] {
      independently — a dragged/resized window never pushes the desktop. */
   height: calc(100% - 32px);
   overflow: auto;
+  container-type: inline-size;
 }
 
 /* Focus ring on the draggable title bar (keyboard users). */
@@ -1005,11 +1006,14 @@ html[data-theme='xp'] {
    extra window/desktop padding would steal width below the newspaper card
    grids' minimum content width and force horizontal scroll at 375px. The
    sections keep their own padding inside the window body. */
-[data-theme='xp'] .xp-window-body section {
+[data-theme='xp'] .xp-window-body :is(section:not(#hero), #hero > div) {
   max-width: 100%;
   margin-left: auto;
   margin-right: auto;
+  padding: 1.5rem 1rem; /* newspaper py-20/px-6 is sized for a page, not a 480px window */
 }
+[data-theme='xp'] .xp-window-body #hero h1 { font-size: clamp(2rem, 9cqi, 3.5rem) !important; }
+[data-theme='xp'] .xp-window-body [data-opening-rank] h2 { font-size: clamp(1.5rem, 7cqi, 2.5rem); }
 
 /* ── XP card grids stay within the window ──
    The newspaper case-study grid uses an auto-sized single column, which
