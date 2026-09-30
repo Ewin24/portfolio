@@ -41,7 +41,10 @@
      alternate theme can restate them without touching a single component. */
   --radius-surface:   0px;      /* card / panel corners */
   --radius-pill:      0px;      /* tags, badges, small controls */
-  --texture-body:     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23FAFAF5'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23F0EFE8' opacity='0.4'/%3E%3C/svg%3E");
+  /* Paper tooth: a stitched 180px noise tile thresholded into sparse
+     warm-ink specks (capped at 6% alpha) and cream specks. Transparent
+     between specks, so it lays over whatever paper colour sits beneath. */
+  --texture-body:     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .24 0 0 0 0 .18 0 0 0 0 .12 7 0 0 0 -4.3'/%3E%3C/filter%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 .96 0 7 0 0 -4.3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23d)' opacity='.06'/%3E%3Crect width='180' height='180' filter='url(%23c)' opacity='.5'/%3E%3C/svg%3E");
   --ease-surface:     cubic-bezier(0.4, 0, 0.2, 1);
   --duration-surface: 75ms;     /* the pixel press is deliberately instant */
   --duration-chapter: 900ms;    /* cross-chapter colour drift */
@@ -64,6 +67,12 @@
     color: var(--color-ink);
     overflow-x: hidden;
     /* Textura sutil de papel — token, so an alternate theme can drop it */
+    background-image: var(--texture-body);
+  }
+
+  /* The page wrappers paint opaque paper over body, so they carry the
+     tooth themselves. XP sets --texture-body to none. */
+  .paper-grain {
     background-image: var(--texture-body);
   }
 

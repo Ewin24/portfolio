@@ -101,7 +101,7 @@ function App() {
       }}
     >
       {blogMode ? (
-        <motion.div key="blog-full" {...fade} className="min-h-screen bg-paper">
+        <motion.div key="blog-full" {...fade} className="min-h-screen bg-paper paper-grain">
           {/* Back to portfolio bar */}
           <div className="chrome-bar sticky top-0 z-50 bg-paper border-b-2 border-rule">
             <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
@@ -127,7 +127,7 @@ function App() {
           </Suspense>
         </motion.div>
       ) : (
-        <motion.div key="portfolio" {...fade} className="min-h-screen bg-paper">
+        <motion.div key="portfolio" {...fade} className="min-h-screen bg-paper paper-grain">
           <a href="#main" className="skip-link">
             {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
           </a>

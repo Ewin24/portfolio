@@ -62,7 +62,7 @@ export function Hero() {
   ]
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-paper">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
 
       {/* Fondo: líneas tipográficas decorativas (newspaper columns ghost) */}
       <div
