@@ -872,6 +872,9 @@ html[data-theme='xp'] {
   min-height: 0;
 }
 
+/* The Hero ghost column rules read as stray vertical lines inside a window. */
+[data-theme='xp'] .hero-columns { display: none; }
+
 [data-theme='xp'] .xp-window-body #hero {
   min-height: 0;
 }
@@ -1322,8 +1325,8 @@ html[data-theme='xp'] {
 
 /* ── Start menu panel ──
    The functional XP Start menu: a two-column Luna panel anchored above the Start
-   button, listing the 7 app menuitems under a "Programs" group header and a
-   "My Computer" easter egg footer. */
+   button. The left column lists the 7 app menuitems under the Programs group
+   header; the pale-blue right column holds the My Computer easter egg. */
 [data-theme='xp'] .xp-startmenu {
   position: fixed;
   bottom: 40px;

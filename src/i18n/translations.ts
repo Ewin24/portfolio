@@ -169,6 +169,8 @@ export type TranslationKeys = {
   'help.esc': string
   'help.escDesc': string
   'help.return': string
+  'startmenu.programs': string
+  'startmenu.myComputer': string
 }
 
 const translations: Record<Language, TranslationKeys> = {
@@ -356,6 +358,8 @@ const translations: Record<Language, TranslationKeys> = {
     'help.esc': 'Esc',
     'help.escDesc': 'Cerrar la ventana activa',
     'help.return': 'Volver al periódico',
+    'startmenu.programs': 'Programas',
+    'startmenu.myComputer': 'Mi PC',
   },
 
   en: {
@@ -542,6 +546,8 @@ const translations: Record<Language, TranslationKeys> = {
     'help.esc': 'Esc',
     'help.escDesc': 'Close the active window',
     'help.return': 'Return to newspaper',
+    'startmenu.programs': 'Programs',
+    'startmenu.myComputer': 'My Computer',
   },
 }
 
