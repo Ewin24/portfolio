@@ -1,3 +1,5 @@
+import { motion, useReducedMotion } from 'motion/react'
+
 interface Props {
   /** The functional name of the section. Always shown. */
   title: string
@@ -29,13 +31,22 @@ export function SectionOpening({
   rank = 'standard',
 }: Props) {
   const isLead = rank === 'lead'
+  const reduceMotion = useReducedMotion()
+  // The heavy rules ink themselves left to right once, like a press stroke.
+  const draw = {
+    initial: reduceMotion ? false : { scaleX: 0 },
+    whileInView: { scaleX: 1 },
+    viewport: { once: true },
+    transition: { duration: 0.6, ease: 'easeOut' },
+    style: { originX: 0 },
+  } as const
   const h2Class = isLead
     ? 'font-headline text-5xl md:text-6xl font-black text-ink leading-none'
     : 'font-headline text-4xl md:text-5xl font-black text-ink leading-none'
 
   return (
     <div data-opening-rank={rank} className={isLead ? 'mb-14' : 'mb-10'}>
-      <div className={isLead ? 'border-t-8 border-rule mb-1' : 'border-t-4 border-rule mb-1'} />
+      <motion.div {...draw} className={isLead ? 'border-t-8 border-rule mb-1' : 'border-t-4 border-rule mb-1'} />
       <div className={isLead ? 'border-t-2 border-rule mb-6' : 'border-t border-rule mb-4'} />
 
       {align === 'beside' ? (
@@ -59,7 +70,7 @@ export function SectionOpening({
         </>
       )}
 
-      <div className="border-t-4 border-rule mt-4" />
+      <motion.div {...draw} className="border-t-4 border-rule mt-4" />
     </div>
   )
 }

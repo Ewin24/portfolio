@@ -41,7 +41,10 @@
      alternate theme can restate them without touching a single component. */
   --radius-surface:   0px;      /* card / panel corners */
   --radius-pill:      0px;      /* tags, badges, small controls */
-  --texture-body:     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23FAFAF5'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23F0EFE8' opacity='0.4'/%3E%3C/svg%3E");
+  /* Paper tooth: a stitched 180px noise tile thresholded into sparse
+     warm-ink specks (capped at 6% alpha) and cream specks. Transparent
+     between specks, so it lays over whatever paper colour sits beneath. */
+  --texture-body:     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .24 0 0 0 0 .18 0 0 0 0 .12 7 0 0 0 -4.3'/%3E%3C/filter%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 .96 0 7 0 0 -4.3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23d)' opacity='.06'/%3E%3Crect width='180' height='180' filter='url(%23c)' opacity='.5'/%3E%3C/svg%3E");
   --ease-surface:     cubic-bezier(0.4, 0, 0.2, 1);
   --duration-surface: 75ms;     /* the pixel press is deliberately instant */
   --duration-chapter: 900ms;    /* cross-chapter colour drift */
@@ -67,10 +70,25 @@
     background-image: var(--texture-body);
   }
 
+  /* The page wrappers paint opaque paper over body, so they carry the
+     tooth themselves. XP sets --texture-body to none. */
+  .paper-grain {
+    background-image: var(--texture-body);
+  }
+
   h1, h2, h3, h4 {
     font-family: var(--font-headline);
     color: var(--color-ink);
     letter-spacing: -0.02em;
+  }
+
+  /* Editorial rag: balanced headings, no orphaned last words in body copy. */
+  :root:not([data-theme='xp']) :is(h1, h2, h3, h4) {
+    text-wrap: balance;
+  }
+
+  :root:not([data-theme='xp']) p {
+    text-wrap: pretty;
   }
 
   ::selection {
@@ -204,15 +222,89 @@
     display: block;
   }
 
-  /* Drop cap — primera letra decorativa */
+  /* Drop cap — a boxed capital about three lines tall: ink border, a thin
+     inner frame, and a small accent square tucked into the inner corner.
+     ::first-letter takes no ::before/::after, so the frame is an inset
+     shadow and the square a background. */
   .drop-cap::first-letter {
     font-family: var(--font-headline);
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 900;
-    line-height: 0.8;
+    line-height: 1;
     float: left;
-    margin-right: 0.125rem;
-    margin-top: 0.25rem;
+    margin: 0.3rem 0.75rem 0 0;
+    padding: 0.3rem 0.6rem 0.2rem;
+    border: 2px solid var(--color-rule);
+    box-shadow: inset 0 0 0 3px var(--color-paper), inset 0 0 0 4px var(--color-rule);
+    background: linear-gradient(var(--color-accent) 0 0) no-repeat right 6px bottom 6px / 7px 7px;
+  }
+
+  /* Pull quote — ruled above and below, a rotated accent square on the top rule. */
+  .pull-quote {
+    position: relative;
+    margin-top: 2rem;
+    padding: 1.25rem 0 1rem;
+    border-block: 2px solid var(--color-rule);
+    font-family: var(--font-headline);
+    font-style: italic;
+    font-size: 1.5rem;
+    line-height: 1.3;
+    color: var(--color-ink);
+    text-align: center;
+  }
+
+  .pull-quote::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: calc(50% - 5px);
+    width: 10px;
+    height: 10px;
+    background: var(--color-accent);
+    rotate: 45deg;
+  }
+
+  /* Ink stamp — a worn rubber stamp on current roles. The #ink-wear SVG
+     filter lives once in Experience.tsx. */
+  .ink-stamp {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    border: 2px solid currentColor;
+    outline: 1px solid currentColor;
+    outline-offset: 2px;
+    rotate: -8deg;
+    mix-blend-mode: multiply;
+    filter: url(#ink-wear);
+  }
+
+  /* Reading progress — fills along the bottom edge of its positioned parent. */
+  .reading-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--color-accent);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+    pointer-events: none;
+  }
+
+  /* Section rhythm — every other section sits on a full-bleed paper-dark
+     band (border-image paints past the max-w-7xl box without extra DOM).
+     Cards with no fill of their own get paper so they keep their edge. */
+  :root:not([data-theme='xp']) #main :is(#skills, #education, #blog) {
+    border-image: conic-gradient(var(--color-paper-dark) 0 0) fill 0 / / 0 100vw;
+  }
+
+  :where(:root:not([data-theme='xp']) #main :is(#skills, #education, #blog)) .px-card:not([class*='bg-']) {
+    background-color: var(--color-paper);
   }
 
   /* Skill tag */

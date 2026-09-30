@@ -62,13 +62,13 @@ export function Hero() {
   ]
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-paper">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
 
       {/* Fondo: líneas tipográficas decorativas (newspaper columns ghost) */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="absolute inset-0 opacity-[0.09] pointer-events-none"
         style={{
-          backgroundImage: 'repeating-linear-gradient(90deg, #1A1A1A 0px, #1A1A1A 1px, transparent 1px, transparent calc((100% - 8px) / 12))',
+          backgroundImage: 'linear-gradient(90deg, #1A1A1A 1px, transparent 1px)',
           backgroundSize: 'calc(100% / 12) 100%',
         }}
       />
@@ -129,7 +129,7 @@ export function Hero() {
 
         {/* Stats — valores de negocio, no GitHub metrics */}
         <FadeIn delay={0.4}>
-          <div className="grid grid-cols-3 border-2 border-rule shadow-pixel-sm">
+          <div className="grid grid-cols-3 border-2 border-t-8 border-rule shadow-pixel-sm">
             {stats.map((stat, i) => (
               /*
                * The founding: a world so recent that many things had no name

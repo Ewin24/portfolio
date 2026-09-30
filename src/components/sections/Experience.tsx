@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
@@ -11,6 +12,7 @@ interface CardProps {
 
 function ExperienceCard({ job, index }: CardProps) {
   const { lang, t } = useTranslation()
+  const reduceMotion = useReducedMotion()
 
   const role         = lang === 'es' ? job.role         : job.roleEn
   const achievements = lang === 'es' ? job.achievements : job.achievementsEn
@@ -28,10 +30,18 @@ function ExperienceCard({ job, index }: CardProps) {
             <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
               {job.period}
             </p>
+            {/* Decorative: the period above already reads Presente/Present. */}
             {job.current && (
-              <span className="px-badge px-badge-accent text-[10px]">
-                {t('experience.current')}
-              </span>
+              <motion.span
+                aria-hidden="true"
+                className="ink-stamp mt-2"
+                initial={reduceMotion ? false : { scale: 1.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.22, ease: [0.5, 0, 0.75, 0] }}
+              >
+                {t('experience.stamp')}
+              </motion.span>
             )}
           </div>
 
@@ -92,6 +102,15 @@ export function Experience() {
 
   return (
     <section id="experience" className="py-20 px-6 max-w-7xl mx-auto">
+      {/* Worn-ink filter for .ink-stamp, defined once: noise thresholded
+          into an alpha mask, then the stamp is kept only where ink "took". */}
+      <svg width="0" height="0" aria-hidden="true" className="absolute">
+        <filter id="ink-wear">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="noise" />
+          <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -12 0 0 0 8" result="mask" />
+          <feComposite in="SourceGraphic" in2="mask" operator="in" />
+        </filter>
+      </svg>
 
       {/* Section header */}
       <FadeIn>

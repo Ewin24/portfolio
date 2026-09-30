@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from './hooks/useTranslation'
 import { useTheme } from './theme/ThemeContext'
 import { Header } from './components/Header'
+import { ReadingProgress } from './components/ui/ReadingProgress'
 import { XPShell } from './components/xp/XPShell'
 import { Taskbar } from './components/xp/Taskbar'
 import { WindowManagerProvider } from './components/xp/WindowManager'
@@ -101,7 +102,7 @@ function App() {
       }}
     >
       {blogMode ? (
-        <motion.div key="blog-full" {...fade} className="min-h-screen bg-paper">
+        <motion.div key="blog-full" {...fade} className="min-h-screen bg-paper paper-grain">
           {/* Back to portfolio bar */}
           <div className="chrome-bar sticky top-0 z-50 bg-paper border-b-2 border-rule">
             <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
@@ -119,6 +120,7 @@ function App() {
                 Blog
               </span>
             </div>
+            <ReadingProgress />
           </div>
 
           {/* Full-page blog content */}
@@ -127,7 +129,7 @@ function App() {
           </Suspense>
         </motion.div>
       ) : (
-        <motion.div key="portfolio" {...fade} className="min-h-screen bg-paper">
+        <motion.div key="portfolio" {...fade} className="min-h-screen bg-paper paper-grain">
           <a href="#main" className="skip-link">
             {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
           </a>
