@@ -95,8 +95,11 @@ export function StartMenu({ open, onClose, startButtonRef }: StartMenuProps) {
 
   return (
     <div ref={menuRef} className="xp-startmenu" role="menu" aria-label="Start menu" id="xp-startmenu" onKeyDown={onMenuKeyDown}>
-      <div className="xp-startmenu-header">Portfolio</div>
+      <div className="xp-startmenu-header">
+        <span className="xp-startmenu-avatar" aria-hidden="true">ET</span>Edwin Trigos
+      </div>
 
+      <div className="xp-startmenu-cols">
       <div className="xp-startmenu-group" role="group" aria-label="Programs">
         <div className="xp-startmenu-group-label">Programs</div>
         {PROGRAMS.map((id) => (
@@ -123,6 +126,8 @@ export function StartMenu({ open, onClose, startButtonRef }: StartMenuProps) {
           <span>My Computer</span>
         </button>
       </div>
+      </div>
+      <div className="xp-startmenu-bar" />
     </div>
   )
 }

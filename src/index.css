@@ -709,15 +709,14 @@ html[data-theme='xp'] {
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: #ECE9D8;
-  color: #000;
-  border: 1px solid #808080;
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF;
+  color: #FFFFFF;
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.6));
 }
 
+[data-theme='xp'] .xp-desktop-icon-glyph svg { width: 28px; height: 28px; }
+
 [data-theme='xp'] .xp-desktop-icon-label {
+  padding: 0 2px;
   font-size: 11px;
   text-align: center;
   line-height: 1.15;
@@ -730,13 +729,14 @@ html[data-theme='xp'] {
   background: rgba(255, 255, 255, 0.12);
 }
 
-[data-theme='xp'] .xp-desktop-icon:active {
-  background: rgba(255, 255, 255, 0.2);
+/* Selected = the label turns XP selection blue with a dotted focus edge. */
+[data-theme='xp'] .xp-desktop-icon:is(:active, :focus-visible) .xp-desktop-icon-label {
+  background: #316AC5;
+  outline: 1px dotted #FFFFFF;
 }
 
 [data-theme='xp'] .xp-desktop-icon:focus-visible {
-  outline: 2px solid #FFFFFF;
-  outline-offset: -2px;
+  outline: none;
 }
 
 /* ── Section neutralisers ──
@@ -1196,32 +1196,43 @@ html[data-theme='xp'] {
 }
 
 /* ── Start menu panel ──
-   The functional XP Start menu: a raised grey panel anchored above the Start
+   The functional XP Start menu: a two-column Luna panel anchored above the Start
    button, listing the 7 app menuitems under a "Programs" group header and a
    "My Computer" easter egg footer. */
 [data-theme='xp'] .xp-startmenu {
   position: fixed;
   bottom: 40px;
-  left: 8px;
-  width: 240px;
+  left: 0;
+  width: min(380px, 100vw);
   z-index: 59;
-  background: #ECE9D8;
+  background: #FFFFFF;
   color: #000;
-  border: 2px solid #f4f7fb;
-  box-shadow:
-    inset -1px -1px 0 #808080,
-    inset 1px 1px 0 #FFFFFF,
-    2px 2px 0 rgba(0, 0, 0, 0.3);
-  padding: 0 0 8px;
+  border: 1px solid #0831D9;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.45);
 }
 
+[data-theme='xp'] .xp-startmenu-cols { display: grid; grid-template-columns: 1fr 1fr; }
+
+[data-theme='xp'] .xp-startmenu-avatar {
+  display: inline-grid; place-items: center; width: 36px; height: 36px;
+  border: 2px solid #FFFFFF; border-radius: 3px; background: linear-gradient(135deg, #F6A04D, #D9661F);
+}
+
+[data-theme='xp'] .xp-startmenu-bar { height: 30px; background: linear-gradient(180deg, #4282D6, #245EDB 60%, #1941A5); }
+
 [data-theme='xp'] .xp-startmenu-header {
-  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 14px;
   color: #FFFFFF;
-  background: linear-gradient(180deg, #3a6ea5 0%, #00008b 100%);
-  border-bottom: 2px solid #808080;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(180deg, #3F8CF3 0%, #245EDB 20%, #1C4FC6 100%);
+  border-bottom: 2px solid #E68B2C;
 }
 
 [data-theme='xp'] .xp-startmenu-group {
@@ -1272,8 +1283,9 @@ html[data-theme='xp'] {
 }
 
 [data-theme='xp'] .xp-startmenu-footer {
-  border-top: 1px solid #D4D0C8;
-  padding: 6px 4px 0;
+  background: #D3E5FA;
+  border-left: 1px solid #95BDEE;
+  padding: 6px 4px;
 }
 
 [data-theme='xp'] .xp-startmenu-easteregg {
