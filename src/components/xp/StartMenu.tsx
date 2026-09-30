@@ -100,8 +100,8 @@ export function StartMenu({ open, onClose, startButtonRef }: StartMenuProps) {
       </div>
 
       <div className="xp-startmenu-cols">
-      <div className="xp-startmenu-group" role="group" aria-label="Programs">
-        <div className="xp-startmenu-group-label">Programs</div>
+      <div className="xp-startmenu-group" role="group" aria-label={t('startmenu.programs')}>
+        <div className="xp-startmenu-group-label">{t('startmenu.programs')}</div>
         {PROGRAMS.map((id) => (
           <button
             key={id}
@@ -123,7 +123,7 @@ export function StartMenu({ open, onClose, startButtonRef }: StartMenuProps) {
       <div className="xp-startmenu-footer">
         <button type="button" className="xp-startmenu-easteregg" onClick={() => launch('about')}>
           <Computer size={18} aria-hidden="true" />
-          <span>My Computer</span>
+          <span>{t('startmenu.myComputer')}</span>
         </button>
       </div>
       </div>

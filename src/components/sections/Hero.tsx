@@ -66,7 +66,7 @@ export function Hero() {
 
       {/* Fondo: líneas tipográficas decorativas (newspaper columns ghost) */}
       <div
-        className="absolute inset-0 opacity-[0.09] pointer-events-none"
+        className="hero-columns absolute inset-0 opacity-[0.09] pointer-events-none"
         style={{
           backgroundImage: 'linear-gradient(90deg, #1A1A1A 1px, transparent 1px)',
           backgroundSize: 'calc(100% / 12) 100%',
