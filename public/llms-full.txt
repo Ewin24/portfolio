@@ -2,144 +2,279 @@
 
 > Portfolio of Edwin Trigos — Software Architect and Full Stack Developer specializing in .NET, Clean Architecture, and financial systems. 5+ years building production systems. Bilingual technical blog (ES/EN). Remote from Bucaramanga, Colombia.
 
-Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure.
+Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure, Cloudflare Workers, IndexedDB, Playwright, Vitest.
 
 ---
 
 ## Blog — Technical Architecture Articles
 
-### Clean Architecture en un Sistema de Originación de Crédito
-https://ewin24.github.io/portfolio/
+### El atributo de autorización que ninguna prueba unitaria puede ver
+https://ewin24.github.io/portfolio/#/blog/article/atributo-autorizacion-invisible-prueba-unitaria
 
-**Published**: 2026-01-15 | **Language**: ES/EN
+**Published**: 2026-09-26 | **Language**: ES/EN | **English title**: The Authorization Attribute a Unit Test Cannot See
 
-Cuando asumí el diseño del Sistema de Originación de Crédito, sabía que este no sería un proyecto más. Era un sistema completo desde cero: base de datos transaccional, API REST con múltiples canales de consumo, integración con burós de crédito, verificación biométrica, y un flujo de 23 estados que un préstamo recorre desde la solicitud hasta el desembolso.
-
-La decisión más importante no fue qué tecnología usar, sino cómo organizar el código para que el proyecto siguiera siendo mantenible cuando llegara a 100 mil líneas.
-
-**La solución: Capas con propósito único**
-
-Dividí el código en 3 ejes ortogonales:
-
-1. Repositorios por esquema de base de datos: ICfgRepository, ICatRepository, IFabRepository, IAudRepository. La regla mental es trivial: si la tabla está en fab.EstudiosCredito, va en IFabRepository. No hay ambigüedad.
-
-2. Servicios por dominio funcional: EstudioService (apertura, riesgo, aprobación), TerceroService (datos del cliente), OtpService (validación OTP), BiometriaService (verificación facial). Cada servicio contiene toda la lógica de su dominio.
-
-3. Controladores por canal de consumo: Tienda (BFF), Web, Handoff, Admin. Cada canal tiene sus propios controladores, pero TODOS inyectan los mismos servicios de dominio. Sin duplicación de lógica.
-
-**Resultado**: 114 endpoints en 6 capas BFF, 27 stored procedures, 0 duplicación de lógica entre canales. Cuando llegó el requerimiento de agregar el canal Web, solo creamos controladores nuevos — cero cambios en servicios o repositorios existentes.
+I added an administrative endpoint that replaces an operation only a DBA could previously run, protected by an authorization attribute. The obvious unit test confirmed it green by calling the controller method directly, which is exactly why it proved nothing: that attribute is only ever evaluated by the middleware, never by a bare method call. The honest test needed a real test server and a deliberate mutation of the attribute to prove it measured what it claimed to measure.
 
 ---
 
-### Motor de Decisiones Catalog-Driven sin if/switch
-https://ewin24.github.io/portfolio/
+### TDD estricto contra un driver Playwright versionado
+https://ewin24.github.io/portfolio/#/blog/article/tdd-estricto-contra-driver-playwright-versionado
 
-**Published**: 2026-03-20 | **Language**: ES/EN
+**Published**: 2026-09-19 | **Language**: ES/EN | **English title**: Strict TDD Against a Committed Playwright Driver
 
-El SOVI (Sistema Orquestador de Validación de Identidad) nació de un requisito aparentemente simple: "validar que la persona que solicita el crédito es quien dice ser". Pero el bot de voz podía devolver 10+ diagnósticos diferentes.
-
-En lugar de hardcodear decisiones con switch(diagnostico) { case "ERROR": ... }, creé una tabla cat.CatalogoDiagnosticosBot:
-
-| IdDiagnostico | CodigoDiagnostico | AccionSistema | RequiereReintento |
-|---------------|-------------------|---------------|-------------------|
-| 1 | IDENTIDAD_CONFIRMADA | APROBAR | false |
-| 2 | VOZ_NO_COINCIDE | ESCALAR | true |
-| 3 | ERROR_TECNICO_BOT | REINTENTAR | true |
-
-El motor de decisiones ahora es una línea: `var accion = await _repositorio.ObtenerAccionPorDiagnostico(codigoDiagnostico); return EjecutarAccion(accion);`
-
-Implementé el patrón Strategy con dos estrategias de validación: BotValidacionStrategy (automatizada vía bot de voz) y ManualValidacionStrategy (asesor humano como plan B). El plan B es ciudadano de primera clase, no un fallback after-thought.
-
-**Resultado**: 0 cambios de código cuando el negocio modifica reglas. 0 cambios cuando se agregan nuevos diagnósticos. Trazabilidad completa con timestamp, URL de audio y datos biométricos.
+I built an interactive desktop inside a portfolio whose other theme may not move a single pixel, using two committed Playwright drivers: a behaviour harness grown red-first to 98 checks, and a pixel gate. Writing tests against a committed driver was not the finish line — the gate had been passing every failure for months.
 
 ---
 
-### API Centralizada de Comunicaciones con Clean Architecture
-https://ewin24.github.io/portfolio/
+### Una interfaz uniforme no arregla una asimetría semántica
+https://ewin24.github.io/portfolio/#/blog/article/interfaz-uniforme-no-arregla-asimetria-semantica
 
-**Published**: 2026-06-15 | **Language**: ES/EN
+**Published**: 2026-09-12 | **Language**: ES/EN | **English title**: A Uniform Interface Does Not Fix a Semantic Asymmetry
 
-Teníamos áreas enteras de la empresa gestionando el correo por su cuenta: gestión de proveedores, recursos humanos, cumplimiento, producción, atención al cliente. Cada una con su propia integración, su propia clave API de Sendinblue hardcodeada, y su propio concepto de "éxito".
-
-**La solución: una API, 4 capas**
-
-Diseñé una API centralizada con Clean Architecture en 4 capas: API (controllers HTTP), Application (servicios de orquestación), Domain (entidades e interfaces), Infrastructure (proveedores concretos, repositorios con Dapper, configuración multi-tenant).
-
-La clave del desacople: `public interface IEmailProvider { Task<EmailResponse> SendAsync(EmailRequest request); }`. Infobip es UNA implementación. Cuando migramos de Sendinblue a Infobip, el impacto total fue crear una clase que implementara IEmailProvider. Ni un solo sistema consumidor se enteró.
-
-Trazabilidad con GUID: cada transacción persiste con ID propio, request/response payload completo, y status (SUCCESS/API_REJECTED/APP_ERROR). Logging con 3 pipelines de Serilog separando ruido operativo de trazabilidad real.
-
-Multi-tenant desde el día 1: 8 cuentas de Infobip para 8 contextos de negocio, resueltas por OriginContext desde configuración centralizada.
-
-**Resultado**: Cambio de proveedor de días a horas. Múltiples áreas → 1 API. Cada transacción trazable con GUID. Debugging pasó de 30min-2h a segundos.
+Two external risk-data providers, one refactor that looked obvious, and a uniform interface to unify them. One provider returns a decision; the other returns variables and carries no viability field at all. The interface makes both shapes compile — it does not create the missing datum. Here is how I separated what could genuinely be unified from what had to fail out loud.
 
 ---
 
-### Dual-Frontend Clean Architecture: Blazor + REST API
-https://ewin24.github.io/portfolio/
+### Once rondas de revisión adversarial no encontraron los dos defectos que un usuario halló en minutos
+https://ewin24.github.io/portfolio/#/blog/article/revision-adversarial-no-encontro-lo-que-el-usuario-si
 
-**Published**: 2026-07-01 | **Language**: ES/EN
+**Published**: 2026-09-05 | **Language**: ES/EN | **English title**: Eleven Rounds of Adversarial Review Missed the Two Defects a User Found in Minutes
 
-ERP que atiende dos tipos de consumidores: sistemas externos mediante REST API e usuarios internos mediante Blazor Server. Ambos inyectan los mismos Application Services desde un contenedor DI compartido — sin llamadas HTTP entre capas de presentación.
+ReaderSS shipped with 426 tests, ~95% coverage against an enforced 70% gate, eleven rounds of adversarial review and 47 findings applied. Then I opened the app in a browser and found two defects in five minutes that made it unusable. Neither had been caught. Here is where that class of defect actually lives, why review cannot reach it, and what I changed so it fails loudly next time.
 
-La clave: `builder.Services.AddScoped<IOrdenService, OrdenService>()` registrado una vez, consumido por ambos entry points. En Blazor con `@inject IOrdenService`, en API con constructor injection estándar.
+---
 
-**Resultado**: Cero duplicación de lógica de negocio. Cada nueva regla se implementa una sola vez. Tiempo de feature development reducido ~60% comparado con doble implementación.
+### Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio
+https://ewin24.github.io/portfolio/#/blog/article/orquestacion-cross-system-sin-acoplamiento
+
+**Published**: 2026-09-01 | **Language**: ES/EN | **English title**: A work order travels through 3 systems without any coupling to each other: the orchestrator is a method, not a microservice
+
+When a production order needs to notify by email, save PDFs to the cloud, and update status in another system, the temptation is to build an orchestrator service. But sometimes the right orchestrator is a 30-line method.
+
+---
+
+### Versioné 24 controladores de una API en producción sin cambiar ni una sola URL existente
+https://ewin24.github.io/portfolio/#/blog/article/versionado-api-transparente-sin-romper-clientes
+
+**Published**: 2026-08-15 | **Language**: ES/EN | **English title**: I versioned 24 production API controllers without changing a single existing URL
+
+When 24 controllers are in production and clients can't all update simultaneously, breaking URLs is not an option. Here's how I implemented transparent versioning with dual routes without any legacy consumer noticing.
+
+---
+
+### No uso Entity Framework. En 3 años de ERP, cero migraciones, cero N+1, cero sorpresas en producción
+https://ewin24.github.io/portfolio/#/blog/article/dapper-stored-procedures-en-lugar-de-ef-core
+
+**Published**: 2026-08-01 | **Language**: ES/EN | **English title**: I don't use Entity Framework. In 3 years of ERP development, zero migrations, zero N+1, zero production surprises
+
+Every time someone says "use EF Core, it's the standard", I wonder if their database has 200 legacy stored procedures and a DBA team. Here's why we chose pure Dapper and lived to tell the tale.
+
+---
+
+### Todo el error handling de mi API se reduce a dos archivos: así eliminé los try-catch de mis controladores
+https://ewin24.github.io/portfolio/#/blog/article/error-handling-middleware-pipeline
+
+**Published**: 2026-07-15 | **Language**: ES/EN | **English title**: My entire API error handling lives in two files: how I eliminated try-catch from my controllers
+
+Every controller had its own try-catch, each error returned a different format, and messages mixed technical details with business rules. Unifying it all in two files — DomainExceptions.cs + ExceptionHandlingMiddleware — changed how we think about errors.
+
+---
+
+### BOT Ubica + Prueba de Vida: cómo validé identidad biométrica en tiempo real con fallback humano y catálogo de diagnósticos
+https://ewin24.github.io/portfolio/#/blog/article/validacion-biometrica-geolocalizacion-credito
+
+**Published**: 2026-07-15 | **Language**: ES/EN | **English title**: BOT Ubica + Proof of Life: how I validated biometric identity in real-time with human fallback and diagnostic catalog
+
+In a loan origination system, validating identity is not just confirming a document number. It is proving that the person is alive, is where they say they are, and is not a deepfake. Here is how I designed BOT Ubica (voice bot + geolocation) plus Proof of Life V2 (liveness detection with OAuth) plus a catalog-driven decision engine with 9 diagnostic codes, manual fallback as a first-class citizen, and a configurable credit bureau selector without redeploy.
+
+---
+
+### Diseñé un ERP donde la capa de presentación (Blazor) y la REST API son intercambiables gracias a Clean Architecture
+https://ewin24.github.io/portfolio/#/blog/article/dual-frontend-clean-architecture-dotnet-10
+
+**Published**: 2026-07-01 | **Language**: ES/EN | **English title**: I Designed an ERP Where the Presentation Layer (Blazor) and REST API Are Interchangeable Thanks to Clean Architecture
+
+How I made Blazor and the API share identical business logic in a production ERP through dependency injection in Clean Architecture, eliminating duplication and accelerating feature development.
+
+---
+
+### Lo que realmente heredas al hacer un fork de un proyecto Flutter "no mantenido"
+https://ewin24.github.io/portfolio/#/blog/article/heredar-proyecto-flutter-no-mantenido
+
+**Published**: 2026-06-26 | **Language**: ES/EN | **English title**: What you actually inherit when you fork an "unmaintained" Flutter project
+
+An "unmaintained" repo does not mean "does not compile". It means: abandoned packages, forgotten migrator flags, code that crashes at runtime with -1 out of range, and zero debugging tools. When I forked Harmony-Music in June 2026, that was the real state. Here is the 4-phase triage methodology I used to take it from "does not compile" to release v1.12.2.
+
+---
+
+### Audio multiplataforma en Flutter: dos engines, una API, tres plataformas
+https://ewin24.github.io/portfolio/#/blog/article/audio-multiplataforma-flutter-arquitectura
+
+**Published**: 2026-06-26 | **Language**: ES/EN | **English title**: Cross-platform audio in Flutter: two engines, one API, three platforms
+
+There is no single Flutter audio engine that covers Android, Windows, and Linux with the same quality. The solution is not to choose one: it is to compose. just_audio as the unified API, media_kit as the desktop backend, audio_service for lifecycle and notification, SMTC for media keys on Windows. Here is the real architecture, the platform-specific offsets, and the bugs that only appear on desktop.
+
+---
+
+### Cuando tu app depende de una API que no controlas: reverse-engineering YouTube Music
+https://ewin24.github.io/portfolio/#/blog/article/youtube-innertube-api-resiliencia
+
+**Published**: 2026-06-26 | **Language**: ES/EN | **English title**: When your app depends on an API you don't control: reverse-engineering YouTube Music
+
+Harmony-Music does not use the official YouTube API. It uses InnerTube, the internal API that YouTube Music exposes to its own web app, reverse-engineered for years. When YouTube changes the response format (no changelog, no docs, no warning), 24 of 25 search results fall into orphan buckets. Here is the story of rewriting the bucketing, classifying by pageType, and building a ResponseRecorder for offline diff.
+
+---
+
+### El precio de la modernización: actualizar un proyecto Flutter abandonado a Flutter 3.5+
+https://ewin24.github.io/portfolio/#/blog/article/modernizacion-build-flutter-upgrade
+
+**Published**: 2026-06-26 | **Language**: ES/EN | **English title**: The upgrade tax: modernizing an abandoned Flutter project to Flutter 3.5+
+
+Upgrading a Flutter project that sat for 6 months without maintenance is not a version bump. It is a coupled chain: Flutter SDK, AGP, Gradle, Kotlin, plugins, Dart deprecations, Material deprecations, abandoned packages. When I forked Harmony-Music, the "upgrade tax" was 19 separate commits. Here is the correct order, the commits that broke everything, and the metric nobody tells you about migrating.
+
+---
+
+### Audio en background en Android 14+ cuando heredaste código de Android 9
+https://ewin24.github.io/portfolio/#/blog/article/android-14-audio-background-modernizacion
+
+**Published**: 2026-06-26 | **Language**: ES/EN | **English title**: Background audio on Android 14+ when you inherited Android 9 code
+
+A music app you inherited with Android 9 code has three problems running on Android 14+: scoped storage killed Permission.storage, foreground service types are strict, and any native API (like the equalizer) needs a JNI bridge because there is no Dart package. Here is the complete solution: SDK-version-aware permissions, JNI for Equalizer, and the audio_service config that keeps the music alive in background.
+
+---
+
+### Centralicé todos los correos de la empresa en una API con Clean Architecture (y dejé de preguntarle al proveedor qué pasó)
+https://ewin24.github.io/portfolio/#/blog/article/api-centralizada-comunicaciones
+
+**Published**: 2026-06-15 | **Language**: ES/EN | **English title**: I centralized every corporate email into a single Clean Architecture API (and stopped asking the provider what happened)
+
+Every business area managed email on its own —its own implementation, its own API key, its own definition of "success." Until the provider said "I didn't get the receipt" and no one knew what happened. Here's how I designed a centralized API that eliminated the enterprise communications black box.
+
+---
+
+### Eliminé todos los if/switch de mi motor de decisiones (y por qué deberías hacer lo mismo)
+https://ewin24.github.io/portfolio/#/blog/article/motor-decisiones-catalog-driven-sin-if
+
+**Published**: 2026-03-20 | **Language**: ES/EN | **English title**: I eliminated every if/switch from my decision engine (and why you should too)
+
+When you build a system that makes decisions based on external diagnoses (a voice bot, a validation service), the temptation is to write switch(message) { case "ERROR": ... }. That's immediate technical debt. Let me tell you how I avoided it with a catalog-driven engine.
+
+---
+
+### Clean Architecture en un Sistema de Originación de Crédito: Cómo evité el caos antes de escribir la primera línea de código
+https://ewin24.github.io/portfolio/#/blog/article/arquitectura-limpa-sistema-originacion-credito
+
+**Published**: 2026-01-15 | **Language**: ES/EN | **English title**: Clean Architecture in a Loan Origination System: How I avoided chaos before writing the first line of code
+
+When you get a greenfield project, the temptation is to open Visual Studio and start writing controllers. But without a clear structure, in 3 months you have a Big Ball of Mud. Here's how I designed the LOS architecture before writing a single line of production code.
 
 ---
 
 ## Case Studies — Production Systems
 
 ### STARSOL — SaaS Platform for Integrated Risk Management
-https://ewin24.github.io/portfolio/
+https://ewin24.github.io/portfolio/#projects
 **Period**: 2024-Present | **Role**: Cloud Software Architect & Independent Developer
 **Stack**: PHP, Laravel, AWS, .NET MAUI, MySQL, Docker, CI/CD
 
 B2B SaaS platform for the solidarity sector covering SARLAFT, SARC, and SIAR risk management. Async architecture with 3 background workers processing jobs simultaneously, decoupling file uploads from the main web server thread. .NET MAUI client app with offline sync. AWS high-availability infrastructure with CI/CD pipelines.
 
 ### LOS — Loan Origination System
-https://ewin24.github.io/portfolio/
+https://ewin24.github.io/portfolio/#projects
 **Period**: 2025-2026 | **Role**: Software Architect / Full Stack Developer
 **Stack**: .NET 8+, C#, Dapper, SQL Server, Clean Architecture, REST API, JWT, Strategy Pattern
 
 Complete loan origination system built from scratch. Data layer: DDL with 4 logical schemas (cfg/cat/fab/aud), 30+ tables, 23-state state machine, 27 stored procedures. Service layer: REST API with Clean Architecture — repositories per schema, services per domain, controllers per channel (Admin/Store/Web/Handoff). Identity verification via voice bot with catalog-driven decision engine. Biometric fraud detection. INSERT-ONLY audit trail.
 
-**Impact**: 114+ API endpoints across 6 BFF layers. 27 SPs in production. 23-state loan lifecycle with full traceability. Automated identity verification.
+**Impact**: 114+ API endpoints across 6 BFF layers (Admin/Core/Store/Web/Handoff/Util). 27 stored procedures in production. 23-state loan lifecycle with full traceability. Automated identity verification via voice bot with manual Plan B as a first-class citizen. Immutable audit trail of all operations. 474/474 tests green after making the risk-data provider configurable, delivered as 3 chained PRs. I then redesigned the operator's case workspace so every action gets its own dialog instead of sharing a generic one, delivered as 10 chained commits of at most 400 lines each and closed with 23 requirements and 117 verified scenarios. An administrative endpoint replaced an operation only a DBA could previously run, delivered as 3 chained PRs, with its guarding permission proven through the real HTTP pipeline rather than a direct method call.
 
 ### SOVI — Identity Validation Orchestrator
-https://ewin24.github.io/portfolio/
+https://ewin24.github.io/portfolio/#projects
 **Period**: 2026 | **Role**: Software Architect
 **Stack**: .NET, C#, SQL Server, Strategy Pattern, REST API
 
 Strategy pattern with two validation strategies: BotValidacionStrategy (voice bot) and ManualValidacionStrategy (human advisor). Catalog-driven decision engine — no hardcoded if/switch. Each bot diagnosis triggers a SystemAction from database catalog. Complete traceability per study with 10+ categorized bot diagnoses.
 
 ### Datacredito API Integration
-https://ewin24.github.io/portfolio/
+https://ewin24.github.io/portfolio/#projects
 **Period**: 2024-2025 | **Role**: Backend Developer
 **Stack**: .NET 8, C#, Dapper, SQL Server, Polly, Serilog, JWT, REST API
 
 Credit bureau REST API with resilience patterns (Polly circuit breaker + retry policy). JWT authentication. Structured logging with Serilog. Request/response logging middleware with sensitive field sanitization. Query times reduced from 3s to 400ms through index optimization.
 
 ### Payroll System — ERP Document Generation for Franchise Chain
-https://ewin24.github.io/portfolio/
+https://ewin24.github.io/portfolio/#projects
 **Period**: 2025-2026 | **Role**: Full Stack Developer
 **Stack**: C#, .NET Framework, Crystal Reports, SQL Server, ERP
 
 Extended CRM document routing for 3 new franchise-chain payroll types. Modified dynamic routing logic, added 21 .rpt templates organized by payroll type. Non-invasive extension — zero breaks in 45+ legacy payroll types.
 
 ### Admin Module UI Architecture
-https://ewin24.github.io/portfolio/
+https://ewin24.github.io/portfolio/#projects
 **Period**: 2026 | **Role**: Frontend Architect
 **Stack**: React, TypeScript, REST API, UI Architecture
 
 Restructured admin module into two macro-modules: "Panel de Control" (monitoring dashboard) and "Módulo Administrar" (CRUD configuration with tabs). Navigation reflects clean backend architecture. Scalable — new capabilities require only a new tab in the corresponding macro-module.
 
 ### Portfolio — Hybrid Architecture
-https://ewin24.github.io/portfolio/
-**Period**: 2024-Present | **Role**: Frontend Developer & Designer
-**Stack**: React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion, GitHub API
+https://ewin24.github.io/portfolio/#projects
+**Period**: 2026-Present | **Role**: Frontend Developer & Designer
+**Stack**: React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion, GitHub API, Playwright
 
-Hybrid architecture: curated content layer (STAR-format case studies, blog) as primary source of truth, GitHub API as secondary activity widget. Native i18n (ES/EN). Pixel-art editorial design system. Built with React 19 + Vite + TypeScript + Tailwind CSS v4.
+Designed a hybrid architecture: curated content layer (STAR-format case studies in TypeScript, work experience, blog) as the primary source of truth, and GitHub API as a secondary activity widget. Implemented native i18n (ES/EN), pixel-art editorial design system with pixel shadows and newspaper typography, and Framer Motion animations. Built with React 19 + Vite + TypeScript + Tailwind CSS v4. On top of that I added a second theme selected through `data-theme` —from the editorial newspaper to an interactive XP-style desktop— driven by a WindowManager that owns every rect, clamp and z-order: draggable windows, 8-handle resizing, a Start menu, a taskbar with a utilities tray, tabs inside a single window, and a Help window kept out of the visible registry. I also treated visibility to AI engines as measurable engineering: JSON-LD structured data plus `llms.txt` and `llms-full.txt`, which took an automated GEO audit from 58 to 83/100.
+
+**Impact**: Architecture that prioritizes business impact over source code. NDA-compliant case studies without exposing confidential information. Native i18n without external libraries. Custom design system that visually stands out from generic portfolios. Adding a case study = 1 TypeScript object. The XP desktop was built with strict TDD against a committed Playwright driver —98/98 checks, RED before GREEN on every work unit— and a second committed driver pixel-diffs the newspaper theme across 4 viewports × 2 locales against committed baselines: it demands 0 differing pixels, so the editorial design cannot drift while the second theme evolves.
+
+### Centralized Email Communications API — Single Provider
+https://ewin24.github.io/portfolio/#projects
+**Period**: 2024 | **Role**: Backend Architect / API Designer
+**Stack**: .NET 8, C#, Clean Architecture, Dapper, SQL Server, Serilog, Polly, Azure Blob Storage, JWT
+
+**Problem**: 5 independent email sending silos, each system calling the provider directly with its own credentials, retry logic and format. Diagnosing an undelivered email took 30 minutes across 5 servers and 8 mailboxes. Zero cross-system traceability.
+
+**Solution**: One REST API in .NET 8 with Clean Architecture in 4 layers (Api / Application / Domain / Infrastructure). A provider-agnostic IEmailProvider interface in Domain; an application service that validates, applies per-context templates with typed tokens, persists each transaction with its own GUID before calling the provider, and retries with exponential backoff; a typed HttpClient adapter with Polly circuit breaker in Infrastructure. 8 multi-tenant accounts resolved by business context from configuration. Serilog with 3 pipelines and sanitization of attachments, PII and credentials.
+
+**Impact**: Diagnosis time for an undelivered email from 30 minutes to 5 seconds. Zero hardcoded credentials, rotatable without redeploy. Provider change measured in hours, not weeks. Zero orphan emails. 7 REST controllers (one per consumption channel) sharing the same application service.
+
+### Harmony-Music — Cross-Platform Flutter Open Source Music App
+https://ewin24.github.io/portfolio/#projects
+**Period**: 2026-Present | **Role**: Open Source Maintainer & Flutter Developer
+**Stack**: Flutter 3.44+, Dart, GetX, just_audio, media_kit, audio_service, youtube_explode_dart, Hive, Dio, JNI
+
+**Problem**: The original creator marked the repository as "unmaintained" in December 2025: abandoned dependencies, leftover Gradle migrator flags, runtime crashes (RangeError from indexWhere returning -1), no debugging tools, and an undocumented API (YouTube Music InnerTube) that changed without notice and broke search.
+
+**Solution**: 4-phase triage. (1) Build first — Gradle 8.14, AGP 8.11.1, Kotlin 2.2.20 with modern DSL. (2) Deprecations — 19 commits replacing deprecated Flutter/Material APIs and removing dead packages. (3) Runtime — rewrote search bucketing for the new flat InnerTube format, added indexWhere guards, structured HTTP logging. (4) Tooling — a ResponseRecorder that captures raw responses to disk for offline diffing. Audio via just_audio + media_kit + audio_service + SMTC on 3 platforms with a single Dart API.
+
+**Impact**: ~36 commits in 3 days from "does not compile" to release v1.12.2 with a modern toolchain. Working search with the new InnerTube format. Clean build on Flutter 3.44+. Audio on 3 platforms. Complete documentation, releases and changelog.
+
+### ReaderSS — RSS Reader with Offline Reading and an Edge Relay
+https://ewin24.github.io/portfolio/#projects
+**Period**: 2026 | **Role**: Architect & Full Stack Developer
+**Stack**: TypeScript, Preact, Vite, IndexedDB, Cloudflare Workers, DOMPurify, Vitest, GitHub Actions
+
+**Problem**: Browsers dropped native RSS support; surviving readers are cloud services that keep your feed list. A browser page cannot fetch an arbitrary feed (CORS), and none of it works offline.
+
+**Solution**: Domain, ports and adapters behind a composition root with IndexedDB as the data layer. A Cloudflare Workers relay solves CORS and adds conditional GET, size and time limits, an SSRF guard re-applied on every redirect hop, and an explicitly non-authenticating origin guard. Parsers for RSS 2.0, RDF, Atom and JSON Feed normalize onto one entry model; DOMPurify sanitisation at a single choke point. OPML import/export, read/unread/starred state with per-field timestamps, per-feed failure reporting.
+
+**Impact**: 426 tests at ~95% statement coverage against an enforced 70% gate. 248 kB raw bundle, 88 kB gzipped. GitHub Actions runs lint, typecheck and tests before deploying to Cloudflare Workers. Public MIT-licensed repository.
+
+---
+
+## Skills & Technologies
+
+17 technologies with production milestones: .NET / C#, PHP / Laravel, SQL Server, React, TypeScript, AWS, Flutter, Clean Architecture, Docker, Java / Spring Boot, PostgreSQL, Azure, Cloudflare Workers, IndexedDB, Playwright, Vitest, AI Discoverability.
+
+---
+
+## Experience
+
+- **Harmony-Music** — Open Source Maintainer (Fork) & Flutter Developer (Jun 2026-Present). Stack: Flutter 3.44+, Dart, GetX, just_audio, media_kit, audio_service, youtube_explode_dart, Hive, Dio, JNI, Gradle, AGP, Kotlin DSL.
+- **STARSOL** — Cloud Software Architect & Independent Developer (Jan 2024-Present). Stack: PHP, Laravel, AWS, .NET MAUI, MySQL, Docker, CI/CD.
+- **BAGUER S.A.S** — Full Stack C# .NET & Mobile Developer (2024-Present). Stack: .NET 8, C#, SQL Server, Clean Architecture, Flutter, Dapper, React, TypeScript.
+- **Cliente — Franquicias de Ropa** — Full Stack .NET Developer (2025-2026). Stack: C#, .NET Framework, Crystal Reports, SQL Server, ERP, CRM.
+- **CAMPUSLANDS** — Full Stack Developer (.NET & JavaScript) (Feb 2023-Jan 2024). Stack: C#, .NET, MySQL, JavaScript, HTML/CSS, Scrum.
+- **BAGUER S.A.S** — .NET Backend Developer (2021-2023). Stack: C#, .NET Core, Dapper, SQL Server, REST API, Crystal Reports.
+- **ESPEJOS GLAM** — Web Developer (Jan 2022-Jan 2023). Stack: PHP, JavaScript, HTML, CSS, UI/UX, Deployment.
 
 ---
 
@@ -152,6 +287,6 @@ Software Architect and Full Stack Developer with 5+ years building production sy
 **LinkedIn**: https://www.linkedin.com/in/edwintrigosguevara
 **Email**: edwintrigos24@gmail.com
 
-**Core Technologies**: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure.
+**Core Technologies**: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure, Cloudflare Workers, IndexedDB, Playwright, Vitest.
 
-**Systems in Production**: 7 documented case studies. 114+ API endpoints designed. 27 stored procedures optimized. Credit bureau integrations processing thousands of daily transactions.
+**Systems in Production**: 10 documented case studies. 114+ API endpoints designed. 27 stored procedures optimized. Credit bureau integrations processing thousands of daily transactions.

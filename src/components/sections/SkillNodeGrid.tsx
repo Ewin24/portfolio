@@ -1,10 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react'
 import type { ComponentType, CSSProperties } from 'react'
 import type { LucideProps } from 'lucide-react'
-import { useTheme } from '../../theme/ThemeContext'
 import { useTranslation } from '../../hooks/useTranslation'
-import { insomniaLabel } from '../../theme/labels'
-import { InsomniaTag } from '../book/InsomniaTag'
 
 interface Technology {
   id: string
@@ -27,19 +24,13 @@ export function SkillNodeGrid({
   onSelect,
 }: SkillNodeGridProps) {
   const reduceMotion = useReducedMotion()
-  const { theme, stillness } = useTheme()
-  const { lang } = useTranslation()
-
-  // Skills maps to the insomnia chapter, where a town that has stopped
-  // sleeping ties a written card to every object so its use is not forgotten.
-  const tagged = theme === 'book'
+  const { t } = useTranslation()
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {technologies.map((tech, index) => {
+      {technologies.map((tech) => {
         const isSelected = selectedId === tech.id
         const Icon = tech.icon
-        const label = tagged ? insomniaLabel(tech.id, lang) : null
 
         return (
           // A real <button>: it brings Enter/Space activation, the correct
@@ -56,11 +47,11 @@ export function SkillNodeGrid({
             aria-pressed={isSelected}
             className={`
               w-full text-left
-              border-2 cursor-pointer p-4 select-none
+              px-card cursor-pointer p-4 select-none
               transition-all duration-75
               ${isSelected
-                ? 'bg-ink text-paper shadow-none translate-x-1 translate-y-1 border-rule'
-                : 'bg-paper text-ink shadow-pixel border-rule hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1'
+                ? 'bg-ink text-paper shadow-none translate-x-1 translate-y-1'
+                : 'px-card-interactive bg-paper text-ink'
               }
             `}
           >
@@ -92,27 +83,16 @@ export function SkillNodeGrid({
                 >
                   {tech.name}
                 </h4>
-                {!label && (
-                  <p
-                    className={`
-                      font-mono text-[10px] mt-0.5
-                      ${isSelected ? 'text-paper opacity-70' : 'text-ink-muted'}
-                    `}
-                  >
-                    {tech.milestones.length} milestones
-                  </p>
-                )}
+                <p
+                  className={`
+                    font-mono text-[10px] mt-0.5
+                    ${isSelected ? 'text-paper opacity-70' : 'text-ink-muted'}
+                  `}
+                >
+                  {tech.milestones.length} {t('skills.milestoneCount')}
+                </p>
               </div>
             </div>
-
-            {label && (
-              <InsomniaTag
-                index={index}
-                text={label}
-                legible={isSelected}
-                still={Boolean(reduceMotion) || stillness}
-              />
-            )}
           </motion.button>
         )
       })}

@@ -1,60 +1,18 @@
-import { useMemo, useState } from 'react'
+import { motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
 import { sortedExperience } from '../../content'
 import type { WorkExperience } from '../../types'
 
-/**
- * The lineage.
- *
- * The Buendías keep naming their sons Aureliano and José Arcadio, and every
- * generation believes it is starting something. The reader sees what the
- * family cannot: the same name coming back, and coming back.
- *
- * A career reads the same way, and the data already contained it — C# turns
- * up in four unconnected companies, SQL Server in three, Crystal Reports in
- * two roles separated by years. Nobody plans that. You discover it in
- * hindsight, which is exactly the novel's trick.
- *
- * So the recurring tools are marked with how many roles they have survived,
- * and pointing at one lights up every other role it appears in. That is the
- * lineage made visible, and unlike most of this theme it is also the single
- * most useful thing on the page: it says what actually persists in the work.
- */
-function countLineage(jobs: WorkExperience[]) {
-  const counts = new Map<string, number>()
-  for (const job of jobs) {
-    // A tool listed twice by one role is still one generation.
-    for (const tech of new Set(job.stack)) {
-      counts.set(tech, (counts.get(tech) ?? 0) + 1)
-    }
-  }
-  return counts
-}
-
 interface CardProps {
   job: WorkExperience
   index: number
-  lineage: Map<string, number>
-  tracked: string | null
-  onTrack: (tech: string | null) => void
-  showLineage: boolean
 }
 
-function ExperienceCard({
-  job,
-  index,
-  lineage,
-  tracked,
-  onTrack,
-  showLineage,
-}: CardProps) {
-  const { lang } = useTranslation()
-  const { t } = useTranslation()
-
-  const carriesTracked = tracked !== null && job.stack.includes(tracked)
+function ExperienceCard({ job, index }: CardProps) {
+  const { lang, t } = useTranslation()
+  const reduceMotion = useReducedMotion()
 
   const role         = lang === 'es' ? job.role         : job.roleEn
   const achievements = lang === 'es' ? job.achievements : job.achievementsEn
@@ -64,11 +22,7 @@ function ExperienceCard({
 
   return (
     <FadeIn delay={index * 0.1}>
-      <div
-        className={`grid md:grid-cols-[200px_1fr] gap-0 border-2 border-rule shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75${
-          carriesTracked ? ' is-lineage-kin' : ''
-        }${tracked && !carriesTracked ? ' is-lineage-other' : ''}`}
-      >
+      <div className="grid md:grid-cols-[200px_1fr] gap-0 px-card">
 
         {/* Columna izquierda — metadata */}
         <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-5 bg-paper-dark flex flex-col gap-3">
@@ -76,10 +30,18 @@ function ExperienceCard({
             <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
               {job.period}
             </p>
+            {/* Decorative: the period above already reads Presente/Present. */}
             {job.current && (
-              <span className="px-badge px-badge-accent text-[10px]">
-                {t('experience.current')}
-              </span>
+              <motion.span
+                aria-hidden="true"
+                className="ink-stamp mt-2"
+                initial={reduceMotion ? false : { scale: 1.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.22, ease: [0.5, 0, 0.75, 0] }}
+              >
+                {t('experience.stamp')}
+              </motion.span>
             )}
           </div>
 
@@ -102,42 +64,9 @@ function ExperienceCard({
 
           {/* Stack tags */}
           <div className="flex flex-wrap gap-1.5 mt-auto pt-2 border-t border-rule-light">
-            {job.stack.map((tech) => {
-              const generations = lineage.get(tech) ?? 1
-              const recurs = showLineage && generations > 1
-
-              if (!recurs) {
-                return (
-                  <span key={tech} className="skill-tag text-[10px]">{tech}</span>
-                )
-              }
-
-              return (
-                <button
-                  key={tech}
-                  type="button"
-                  className={`skill-tag text-[10px] lineage-tag${
-                    tracked === tech ? ' is-tracked' : ''
-                  }`}
-                  // over/out rather than enter/leave: the bubbling pair is
-                  // delivered far more reliably, and the non-bubbling pair
-                  // could not be reproduced in an automated pointer test at
-                  // all, which means it was equally unverifiable.
-                  onPointerOver={() => onTrack(tech)}
-                  onPointerOut={() => onTrack(null)}
-                  onFocus={() => onTrack(tech)}
-                  onBlur={() => onTrack(null)}
-                  aria-label={`${tech} — ${generations} ${
-                    lang === 'es' ? 'generaciones' : 'generations'
-                  }`}
-                >
-                  {tech}
-                  <span className="lineage-count" aria-hidden="true">
-                    {generations}
-                  </span>
-                </button>
-              )
-            })}
+            {job.stack.map((tech) => (
+              <span key={tech} className="skill-tag text-[10px]">{tech}</span>
+            ))}
           </div>
         </div>
 
@@ -170,17 +99,18 @@ function ExperienceCard({
 
 export function Experience() {
   const { t } = useTranslation()
-  const { theme } = useTheme()
-  const [tracked, setTracked] = useState<string | null>(null)
-
-  const lineage = useMemo(() => countLineage(sortedExperience), [])
-  const showLineage = theme === 'book'
 
   return (
-    <section
-      id="experience"
-      className={`py-20 px-6 max-w-5xl mx-auto${tracked ? ' is-tracing' : ''}`}
-    >
+    <section id="experience" className="py-20 px-6 max-w-7xl mx-auto">
+      {/* Worn-ink filter for .ink-stamp, defined once: noise thresholded
+          into an alpha mask, then the stamp is kept only where ink "took". */}
+      <svg width="0" height="0" aria-hidden="true" className="absolute">
+        <filter id="ink-wear">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" result="noise" />
+          <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -12 0 0 0 8" result="mask" />
+          <feComposite in="SourceGraphic" in2="mask" operator="in" />
+        </filter>
+      </svg>
 
       {/* Section header */}
       <FadeIn>
@@ -188,6 +118,7 @@ export function Experience() {
           section="experience"
           title={t('experience.title')}
           subtitle={t('experience.subtitle')}
+          rank="lead"
         />
       </FadeIn>
 
@@ -198,10 +129,6 @@ export function Experience() {
             key={job.id}
             job={job}
             index={i}
-            lineage={lineage}
-            tracked={tracked}
-            onTrack={setTracked}
-            showLineage={showLineage}
           />
         ))}
       </div>

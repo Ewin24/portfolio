@@ -1,6 +1,6 @@
 import type { Language } from '../types'
 
-type TranslationKeys = {
+export type TranslationKeys = {
   // Nav
   'nav.about': string
   'nav.projects': string
@@ -42,6 +42,7 @@ type TranslationKeys = {
   'skills.activity': string
   'skills.heading': string
   'skills.milestones': string
+  'skills.milestoneCount': string
   'skills.detail': string
   // Tech milestones (content — translatable)
   'skills.dotnet.milestone1': string
@@ -92,6 +93,26 @@ type TranslationKeys = {
   'skills.azure.milestone2': string
   'skills.azure.milestone3': string
   'skills.azure.reference': string
+  'skills.cfworkers.milestone1': string
+  'skills.cfworkers.milestone2': string
+  'skills.cfworkers.milestone3': string
+  'skills.cfworkers.reference': string
+  'skills.indexeddb.milestone1': string
+  'skills.indexeddb.milestone2': string
+  'skills.indexeddb.milestone3': string
+  'skills.indexeddb.reference': string
+  'skills.playwright.milestone1': string
+  'skills.playwright.milestone2': string
+  'skills.playwright.milestone3': string
+  'skills.playwright.reference': string
+  'skills.vitest.milestone1': string
+  'skills.vitest.milestone2': string
+  'skills.vitest.milestone3': string
+  'skills.vitest.reference': string
+  'skills.geo.milestone1': string
+  'skills.geo.milestone2': string
+  'skills.geo.milestone3': string
+  'skills.geo.reference': string
   // About
   'about.title': string
   'about.subtitle': string
@@ -102,7 +123,7 @@ type TranslationKeys = {
   // Experience
   'experience.title': string
   'experience.subtitle': string
-  'experience.current': string
+  'experience.stamp': string
   'experience.achievements': string
   // Blog
   'blog.title': string
@@ -118,6 +139,8 @@ type TranslationKeys = {
   'blog.backToList': string
   'blog.prevArticle': string
   'blog.nextArticle': string
+  'blog.articles': string
+  'blog.reading': string
   // Testimonials
   'testimonials.title': string
   'testimonials.subtitle': string
@@ -132,6 +155,22 @@ type TranslationKeys = {
   // Footer
   'footer.built': string
   'footer.activity': string
+  // XP Help window (Slice 3)
+  'window.help': string
+  'help.shortcutsTitle': string
+  'help.drag': string
+  'help.dragDesc': string
+  'help.resize': string
+  'help.resizeDesc': string
+  'help.shiftArrow': string
+  'help.shiftArrowDesc': string
+  'help.enter': string
+  'help.enterDesc': string
+  'help.esc': string
+  'help.escDesc': string
+  'help.return': string
+  'startmenu.programs': string
+  'startmenu.myComputer': string
 }
 
 const translations: Record<Language, TranslationKeys> = {
@@ -147,7 +186,7 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.contact': 'Contacto',
 
     // Hero — Copy Senior, vende ingeniería no código
-    'hero.greeting': 'Soluciones de',
+    'hero.greeting': 'Edición digital · Colombia',
     'hero.role': 'Ingeniería de Software',
     'hero.subtitle':
       'Ingeniero de Software y Desarrollador Full-Stack especializado en sistemas distribuidos, microservicios y plataformas SaaS. Experiencia comprobable modernizando ERPs, integrando soluciones Fintech y desplegando en la nube. Apasionado por el Clean Code, la optimización de bases de datos y las arquitecturas resilientes orientadas a resolver cuellos de botella.',
@@ -157,7 +196,7 @@ const translations: Record<Language, TranslationKeys> = {
     // Stats con valor real
     'hero.stats.yearsExp': 'Años de experiencia',
     'hero.stats.systems': 'Sistemas en producción',
-    'hero.stats.stack': 'Tecnologías dominadas',
+    'hero.stats.stack': 'Tecnologías en producción',
 
     // Projects
     'projects.title': 'Casos de Estudio',
@@ -184,10 +223,11 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.activity': 'Uso por repositorios públicos',
     'skills.heading': 'Logros Clave',
     'skills.milestones': 'Hitos',
+    'skills.milestoneCount': 'hitos',
     'skills.detail': 'Detalle técnico',
     'skills.dotnet.milestone1': 'Clean Architecture en sistemas de producción',
     'skills.dotnet.milestone2': 'Migración de .NET Framework a .NET Core',
-    'skills.dotnet.milestone3': 'APIs REST con patrones de resiliencia',
+    'skills.dotnet.milestone3': 'Pruebas de integración por la tubería de autorización real (TestServer)',
     'skills.dotnet.reference': 'Ver artículo: Clean Architecture en LOS',
     'skills.sqlserver.milestone1': 'DDL con 4 esquemas lógicos y 30+ tablas',
     'skills.sqlserver.milestone2': 'Optimización de consultas: 3s → 400ms',
@@ -221,6 +261,26 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.azure.milestone2': 'CI/CD con Azure DevOps',
     'skills.azure.milestone3': 'Contenedores y orquestación en Azure Kubernetes',
     'skills.azure.reference': 'Ver Casos de Estudio',
+    'skills.cfworkers.milestone1': 'Relay de feeds en el borde con CORS y GET condicional',
+    'skills.cfworkers.milestone2': 'Guarda SSRF reaplicada en cada salto de redirección',
+    'skills.cfworkers.milestone3': 'Despliegue automatizado con GitHub Actions',
+    'skills.cfworkers.reference': 'Ver Casos de Estudio',
+    'skills.indexeddb.milestone1': 'Capa de datos offline para un lector RSS',
+    'skills.indexeddb.milestone2': 'Marcas de tiempo por campo para leído y destacado',
+    'skills.indexeddb.milestone3': 'Importación y exportación OPML',
+    'skills.indexeddb.reference': 'Ver Casos de Estudio',
+    'skills.playwright.milestone1': 'Drivers versionados que ejercitan la UI real',
+    'skills.playwright.milestone2': 'Regresión visual contra líneas base con 0 píxeles de diferencia',
+    'skills.playwright.milestone3': '98 verificaciones de comportamiento sobre el escritorio XP',
+    'skills.playwright.reference': 'Ver Casos de Estudio',
+    'skills.vitest.milestone1': '426 pruebas con ~95% de cobertura sobre una puerta exigida del 70%',
+    'skills.vitest.milestone2': 'Pruebas de extremo a extremo contra el almacén real',
+    'skills.vitest.milestone3': 'Cobertura exigida en CI antes del despliegue',
+    'skills.vitest.reference': 'Ver Casos de Estudio',
+    'skills.geo.milestone1': 'JSON-LD: Person, WebSite, Article, CreativeWork, ItemList, FAQPage, HowTo, BreadcrumbList y Service',
+    'skills.geo.milestone2': 'llms.txt y llms-full.txt para rastreadores de IA, con robots.txt y sitemap',
+    'skills.geo.milestone3': 'Auditoría GEO automatizada de 58 a 83/100, 14 de 14 hallazgos resueltos',
+    'skills.geo.reference': 'Ver Casos de Estudio',
     'skills.php.milestone1': 'Laravel con workers asíncronos y jobs',
     'skills.php.milestone2': 'SaaS B2B completo para sector solidario',
     'skills.php.milestone3': 'Procesamiento de archivos financieros en segundo plano',
@@ -247,7 +307,7 @@ const translations: Record<Language, TranslationKeys> = {
     // Experience
     'experience.title': 'Trayectoria',
     'experience.subtitle': 'Experiencia profesional con impacto medible',
-    'experience.current': 'Actual',
+    'experience.stamp': 'En curso',
     'experience.achievements': 'Logros clave',
 
     // Blog
@@ -264,6 +324,8 @@ const translations: Record<Language, TranslationKeys> = {
     'blog.backToList': 'Volver a artículos',
     'blog.prevArticle': 'Anterior',
     'blog.nextArticle': 'Siguiente',
+    'blog.articles': 'Artículos',
+    'blog.reading': 'Lectura',
 
     // Testimonials
     'testimonials.title': 'Referencias',
@@ -281,6 +343,23 @@ const translations: Record<Language, TranslationKeys> = {
     // Footer
     'footer.built': 'Construido con',
     'footer.activity': 'Actividad técnica vía GitHub API',
+
+    // XP Help window (Slice 3)
+    'window.help': 'Ayuda',
+    'help.shortcutsTitle': 'Atajos de teclado',
+    'help.drag': 'Arrastrar',
+    'help.dragDesc': 'Mantén la barra de título y arrastra para mover la ventana',
+    'help.resize': 'Redimensionar',
+    'help.resizeDesc': 'Arrastra cualquiera de los 8 bordes o esquinas',
+    'help.shiftArrow': 'Mayús + Flechas',
+    'help.shiftArrowDesc': 'Redimensionar ±8px con el teclado',
+    'help.enter': 'Enter',
+    'help.enterDesc': 'Enfocar o restaurar la ventana',
+    'help.esc': 'Esc',
+    'help.escDesc': 'Cerrar la ventana activa',
+    'help.return': 'Volver al periódico',
+    'startmenu.programs': 'Programas',
+    'startmenu.myComputer': 'Mi PC',
   },
 
   en: {
@@ -295,7 +374,7 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.contact': 'Contact',
 
     // Hero
-    'hero.greeting': 'Software',
+    'hero.greeting': 'Digital edition · Colombia',
     'hero.role': 'Engineering Solutions',
     'hero.subtitle':
       'Software Engineer and Full-Stack Developer specialized in distributed systems, microservices, and high-performance SaaS platforms. Proven track record modernizing enterprise ERPs, integrating Fintech solutions, and deploying to the cloud. Passionate about Clean Code, database optimization, and resilient architectures that solve bottlenecks and deliver direct business value.',
@@ -305,7 +384,7 @@ const translations: Record<Language, TranslationKeys> = {
     // Stats
     'hero.stats.yearsExp': 'Years of experience',
     'hero.stats.systems': 'Production systems',
-    'hero.stats.stack': 'Technologies mastered',
+    'hero.stats.stack': 'Technologies shipped',
 
     // Projects
     'projects.title': 'Case Studies',
@@ -332,10 +411,11 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.activity': 'Usage by public repositories',
     'skills.heading': 'Key Achievements',
     'skills.milestones': 'Milestones',
+    'skills.milestoneCount': 'milestones',
     'skills.detail': 'Technical Detail',
     'skills.dotnet.milestone1': 'Clean Architecture in production systems',
     'skills.dotnet.milestone2': 'Migration from .NET Framework to .NET Core',
-    'skills.dotnet.milestone3': 'REST APIs with resilience patterns',
+    'skills.dotnet.milestone3': 'Integration tests through the real authorization pipeline (TestServer)',
     'skills.dotnet.reference': 'Read: Clean Architecture in LOS',
     'skills.sqlserver.milestone1': 'DDL with 4 logical schemas and 30+ tables',
     'skills.sqlserver.milestone2': 'Query optimization: 3s → 400ms',
@@ -369,6 +449,26 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.azure.milestone2': 'CI/CD with Azure DevOps',
     'skills.azure.milestone3': 'Containers and orchestration in Azure Kubernetes',
     'skills.azure.reference': 'View Case Studies',
+    'skills.cfworkers.milestone1': 'Edge feed relay with CORS and conditional GET',
+    'skills.cfworkers.milestone2': 'SSRF guard re-applied on every redirect hop',
+    'skills.cfworkers.milestone3': 'Automated deployment via GitHub Actions',
+    'skills.cfworkers.reference': 'View Case Studies',
+    'skills.indexeddb.milestone1': 'Offline data layer for an RSS reader',
+    'skills.indexeddb.milestone2': 'Per-field change timestamps for read and starred state',
+    'skills.indexeddb.milestone3': 'OPML import and export',
+    'skills.indexeddb.reference': 'View Case Studies',
+    'skills.playwright.milestone1': 'Committed drivers that exercise the real UI',
+    'skills.playwright.milestone2': 'Visual regression against committed baselines at 0 differing pixels',
+    'skills.playwright.milestone3': '98 behavior checks over the XP desktop',
+    'skills.playwright.reference': 'View Case Studies',
+    'skills.vitest.milestone1': '426 tests at ~95% coverage against an enforced 70% gate',
+    'skills.vitest.milestone2': 'End-to-end tests against the real store',
+    'skills.vitest.milestone3': 'Coverage enforced in CI before deployment',
+    'skills.vitest.reference': 'View Case Studies',
+    'skills.geo.milestone1': 'JSON-LD: Person, WebSite, Article, CreativeWork, ItemList, FAQPage, HowTo, BreadcrumbList and Service',
+    'skills.geo.milestone2': 'llms.txt and llms-full.txt for AI crawlers, plus robots.txt and a sitemap',
+    'skills.geo.milestone3': 'Automated GEO audit from 58 to 83/100, 14 of 14 issues resolved',
+    'skills.geo.reference': 'View Case Studies',
     'skills.php.milestone1': 'Laravel with async workers and jobs',
     'skills.php.milestone2': 'Complete B2B SaaS for solidarity sector',
     'skills.php.milestone3': 'Background processing of financial files',
@@ -395,7 +495,7 @@ const translations: Record<Language, TranslationKeys> = {
     // Experience
     'experience.title': 'Experience',
     'experience.subtitle': 'Professional track record with measurable impact',
-    'experience.current': 'Current',
+    'experience.stamp': 'Current',
     'experience.achievements': 'Key achievements',
 
     // Blog
@@ -412,6 +512,8 @@ const translations: Record<Language, TranslationKeys> = {
     'blog.backToList': 'Back to articles',
     'blog.prevArticle': 'Previous',
     'blog.nextArticle': 'Next',
+    'blog.articles': 'Articles',
+    'blog.reading': 'Reading',
 
     // Testimonials
     'testimonials.title': 'References',
@@ -429,6 +531,23 @@ const translations: Record<Language, TranslationKeys> = {
     // Footer
     'footer.built': 'Built with',
     'footer.activity': 'Technical activity via GitHub API',
+
+    // XP Help window (Slice 3)
+    'window.help': 'Help',
+    'help.shortcutsTitle': 'Keyboard shortcuts',
+    'help.drag': 'Drag',
+    'help.dragDesc': 'Hold the title bar and drag to move the window',
+    'help.resize': 'Resize',
+    'help.resizeDesc': 'Drag any of the 8 edges or corners',
+    'help.shiftArrow': 'Shift + Arrows',
+    'help.shiftArrowDesc': 'Resize by ±8px with the keyboard',
+    'help.enter': 'Enter',
+    'help.enterDesc': 'Focus or restore the window',
+    'help.esc': 'Esc',
+    'help.escDesc': 'Close the active window',
+    'help.return': 'Return to newspaper',
+    'startmenu.programs': 'Programs',
+    'startmenu.myComputer': 'My Computer',
   },
 }
 

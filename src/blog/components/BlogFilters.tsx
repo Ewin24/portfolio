@@ -142,7 +142,7 @@ export function BlogFilters() {
           {/* Clear all */}
           <button
             onClick={clearFilters}
-            className="font-mono text-[9px] uppercase tracking-wider text-accent hover:text-accent-dark underline transition-colors cursor-pointer"
+            className="font-mono text-[10px] uppercase tracking-wider text-accent hover:text-accent-dark underline transition-colors cursor-pointer"
           >
             {lang === 'es' ? 'Limpiar todo' : 'Clear all'}
           </button>
@@ -236,7 +236,7 @@ export function BlogFilters() {
                 transition={{ duration: 0.15 }}
                 className="absolute top-full left-0 mt-1 z-20 border-2 border-rule bg-paper shadow-pixel-sm p-3 flex flex-col gap-2"
               >
-                <label className="font-mono text-[9px] uppercase tracking-wider text-ink-muted">
+                <label className="font-mono text-[10px] uppercase tracking-wider text-ink-muted">
                   {lang === 'es' ? 'Desde' : 'From'}
                 </label>
                 <input
@@ -245,7 +245,7 @@ export function BlogFilters() {
                   onChange={(e) => handleDateStart(e.target.value)}
                   className="border-2 border-rule bg-paper-dark font-mono text-[10px] px-2 py-1"
                 />
-                <label className="font-mono text-[9px] uppercase tracking-wider text-ink-muted">
+                <label className="font-mono text-[10px] uppercase tracking-wider text-ink-muted">
                   {lang === 'es' ? 'Hasta' : 'To'}
                 </label>
                 <input
@@ -257,7 +257,7 @@ export function BlogFilters() {
                 {filter.dateRange && (
                   <button
                     onClick={clearDateRange}
-                    className="font-mono text-[9px] text-accent hover:text-accent-dark underline mt-1 cursor-pointer"
+                    className="font-mono text-[10px] text-accent hover:text-accent-dark underline mt-1 cursor-pointer"
                   >
                     {lang === 'es' ? 'Limpiar' : 'Clear'}
                   </button>

@@ -1,8 +1,5 @@
-import { useReducedMotion } from 'motion/react'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../ui/FadeIn'
-import { Decipher } from '../book/Decipher'
 import { SectionOpening } from '../ui/SectionOpening'
 import { education } from '../../content'
 import type { Education as EducationType } from '../../types'
@@ -11,20 +8,13 @@ const sorted = [...education].sort((a, b) => b.order - a.order)
 
 function EducationCard({ item, index }: { item: EducationType; index: number }) {
   const { lang } = useTranslation()
-  const { theme, stillness } = useTheme()
-  const reduceMotion = useReducedMotion()
-
-  // This section is the parchments: writing that arrives in a script the
-  // house cannot read yet, and gives itself up to whoever works at it.
-  const ciphered = theme === 'book'
-  const still = Boolean(reduceMotion) || stillness
 
   const degree = lang === 'es' ? item.degree : item.degreeEn
   const description = lang === 'es' ? item.description : item.descriptionEn
 
   return (
     <FadeIn delay={index * 0.1}>
-      <div className="grid md:grid-cols-[200px_1fr] gap-0 border-2 border-rule shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75">
+      <div className="grid md:grid-cols-[200px_1fr] gap-0 px-card">
 
         {/* Left column — metadata */}
         <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-5 bg-paper-dark flex flex-col gap-3">
@@ -39,24 +29,14 @@ function EducationCard({ item, index }: { item: EducationType; index: number }) 
             )}
           </div>
           <p className="font-headline text-lg font-bold text-ink leading-tight">
-            <Decipher
-              text={item.institution}
-              active={ciphered}
-              still={still}
-              delay={index * 90}
-            />
+            {item.institution}
           </p>
         </div>
 
         {/* Right column — degree + description */}
         <div className="p-5">
           <p className="font-headline text-base font-bold italic text-ink-light mb-3">
-            <Decipher
-              text={degree}
-              active={ciphered}
-              still={still}
-              delay={index * 90 + 260}
-            />
+            {degree}
           </p>
           {description && (
             <p className="font-sans text-sm text-ink-light leading-relaxed">
@@ -73,7 +53,7 @@ export function Education() {
   const { t } = useTranslation()
 
   return (
-    <section id="education" className="py-20 px-6 max-w-5xl mx-auto">
+    <section id="education" className="py-20 px-6 max-w-7xl mx-auto">
 
       {/* Section header */}
       <FadeIn>

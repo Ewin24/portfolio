@@ -2,33 +2,50 @@
 
 > Portfolio of Edwin Trigos — Software Architect and Full Stack Developer specializing in .NET, Clean Architecture, and financial systems (fintech, loan origination, credit bureaus). 5+ years building production systems including a 114-endpoint LOS API, identity validation orchestrator, centralized communications platform, and a B2B SaaS risk management platform. Bilingual technical blog (ES/EN) covering architecture decisions, design patterns, and real production tradeoffs. Based in Bucaramanga, Colombia.
 
-Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure.
+Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure, Cloudflare Workers, IndexedDB, Playwright, Vitest.
 
 ## Blog — Technical Architecture Articles
-- [Clean Architecture en un Sistema de Originación de Crédito](https://ewin24.github.io/portfolio/): Cómo diseñar 114 endpoints en 6 capas BFF con 0 duplicación. Repositorios por esquema, servicios por dominio, controladores por canal. Caso real con .NET + Dapper + SQL Server.
-- [Motor de Decisiones Catalog-Driven sin if/switch](https://ewin24.github.io/portfolio/): Implementación del patrón Strategy con catálogo en base de datos. Cómo agregar diagnósticos sin tocar código. SOVI — sistema de validación de identidad con bot de voz + plan B manual.
-- [API Centralizada de Comunicaciones con Clean Architecture](https://ewin24.github.io/portfolio/): De 5 sistemas con su propia clave API a 1 API con 8 cuentas multi-tenant. Provider-agnostic, trazabilidad con GUID, 3 pipelines de logging con Serilog.
-- [Dual-Frontend Clean Architecture: Blazor + REST API](https://ewin24.github.io/portfolio/): ERP donde Blazor Server y REST API comparten los mismos Application Services. Inyección directa sin llamadas HTTP entre capas de presentación.
-- [Dapper + Stored Procedures: Cuándo elegirlos sobre EF Core](https://ewin24.github.io/portfolio/): Performance comparison, casos reales en sistemas financieros, y patrones de repositorio con Dapper. (Upcoming)
+- [El atributo de autorización que ninguna prueba unitaria puede ver](https://ewin24.github.io/portfolio/#/blog/article/atributo-autorizacion-invisible-prueba-unitaria): Published 2026-09-26 (ES/EN).
+- [TDD estricto contra un driver Playwright versionado](https://ewin24.github.io/portfolio/#/blog/article/tdd-estricto-contra-driver-playwright-versionado): Published 2026-09-19 (ES/EN).
+- [Una interfaz uniforme no arregla una asimetría semántica](https://ewin24.github.io/portfolio/#/blog/article/interfaz-uniforme-no-arregla-asimetria-semantica): Published 2026-09-12 (ES/EN).
+- [Once rondas de revisión adversarial no encontraron los dos defectos que un usuario halló en minutos](https://ewin24.github.io/portfolio/#/blog/article/revision-adversarial-no-encontro-lo-que-el-usuario-si): Published 2026-09-05 (ES/EN).
+- [Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio](https://ewin24.github.io/portfolio/#/blog/article/orquestacion-cross-system-sin-acoplamiento): Published 2026-09-01 (ES/EN).
+- [Versioné 24 controladores de una API en producción sin cambiar ni una sola URL existente](https://ewin24.github.io/portfolio/#/blog/article/versionado-api-transparente-sin-romper-clientes): Published 2026-08-15 (ES/EN).
+- [No uso Entity Framework. En 3 años de ERP, cero migraciones, cero N+1, cero sorpresas en producción](https://ewin24.github.io/portfolio/#/blog/article/dapper-stored-procedures-en-lugar-de-ef-core): Published 2026-08-01 (ES/EN).
+- [Todo el error handling de mi API se reduce a dos archivos: así eliminé los try-catch de mis controladores](https://ewin24.github.io/portfolio/#/blog/article/error-handling-middleware-pipeline): Published 2026-07-15 (ES/EN).
+- [BOT Ubica + Prueba de Vida: cómo validé identidad biométrica en tiempo real con fallback humano y catálogo de diagnósticos](https://ewin24.github.io/portfolio/#/blog/article/validacion-biometrica-geolocalizacion-credito): Published 2026-07-15 (ES/EN).
+- [Diseñé un ERP donde la capa de presentación (Blazor) y la REST API son intercambiables gracias a Clean Architecture](https://ewin24.github.io/portfolio/#/blog/article/dual-frontend-clean-architecture-dotnet-10): Published 2026-07-01 (ES/EN).
+- [Lo que realmente heredas al hacer un fork de un proyecto Flutter "no mantenido"](https://ewin24.github.io/portfolio/#/blog/article/heredar-proyecto-flutter-no-mantenido): Published 2026-06-26 (ES/EN).
+- [Audio multiplataforma en Flutter: dos engines, una API, tres plataformas](https://ewin24.github.io/portfolio/#/blog/article/audio-multiplataforma-flutter-arquitectura): Published 2026-06-26 (ES/EN).
+- [Cuando tu app depende de una API que no controlas: reverse-engineering YouTube Music](https://ewin24.github.io/portfolio/#/blog/article/youtube-innertube-api-resiliencia): Published 2026-06-26 (ES/EN).
+- [El precio de la modernización: actualizar un proyecto Flutter abandonado a Flutter 3.5+](https://ewin24.github.io/portfolio/#/blog/article/modernizacion-build-flutter-upgrade): Published 2026-06-26 (ES/EN).
+- [Audio en background en Android 14+ cuando heredaste código de Android 9](https://ewin24.github.io/portfolio/#/blog/article/android-14-audio-background-modernizacion): Published 2026-06-26 (ES/EN).
+- [Centralicé todos los correos de la empresa en una API con Clean Architecture (y dejé de preguntarle al proveedor qué pasó)](https://ewin24.github.io/portfolio/#/blog/article/api-centralizada-comunicaciones): Published 2026-06-15 (ES/EN).
+- [Eliminé todos los if/switch de mi motor de decisiones (y por qué deberías hacer lo mismo)](https://ewin24.github.io/portfolio/#/blog/article/motor-decisiones-catalog-driven-sin-if): Published 2026-03-20 (ES/EN).
+- [Clean Architecture en un Sistema de Originación de Crédito: Cómo evité el caos antes de escribir la primera línea de código](https://ewin24.github.io/portfolio/#/blog/article/arquitectura-limpa-sistema-originacion-credito): Published 2026-01-15 (ES/EN).
 
 ## Case Studies — Production Systems
-- [STARSOL SaaS Platform](https://ewin24.github.io/portfolio/): B2B SaaS for financial risk management (SARLAFT, SARC, SIAR). Async architecture with 3 background workers, .NET MAUI client, AWS infrastructure.
-- [LOS — Loan Origination System](https://ewin24.github.io/portfolio/): 114+ API endpoints, 27 stored procedures, 23-state lifecycle, biometric verification, INSERT-ONLY audit. Built from scratch with Clean Architecture.
-- [SOVI — Identity Validation Orchestrator](https://ewin24.github.io/portfolio/): Strategy pattern with voice bot + manual fallback. Catalog-driven decision engine. Full biometric audit trail.
-- [Datacredito API Integration](https://ewin24.github.io/portfolio/): Credit bureau API with Polly circuit breaker + retry. Query times reduced from 3s to 400ms. JWT auth + Serilog structured logging.
-- [Payroll System — ERP Document Generation for Franchise Chain](https://ewin24.github.io/portfolio/): Extended CRM routing for 48 payroll types. 21 Crystal Reports templates. Non-invasive extension — zero breaks in legacy payroll types.
-- [Admin Module UI Architecture](https://ewin24.github.io/portfolio/): Separated monitoring dashboard from CRUD configuration. Navigation reflects Clean Architecture backend domains.
+- [STARSOL SaaS Platform](https://ewin24.github.io/portfolio/#projects): B2B SaaS for financial risk management (SARLAFT, SARC, SIAR). Async architecture with 3 background workers, .NET MAUI client, AWS infrastructure.
+- [LOS — Loan Origination System](https://ewin24.github.io/portfolio/#projects): 114+ API endpoints, 27 stored procedures, 23-state lifecycle, biometric verification, INSERT-ONLY audit. Built from scratch with Clean Architecture. Later: configurable risk-data provider behind a kill switch, operator case workspace redesigned in chained commits, and an administrative endpoint whose permission is proven through the real HTTP pipeline.
+- [SOVI — Identity Validation Orchestrator](https://ewin24.github.io/portfolio/#projects): Strategy pattern with voice bot + manual fallback. Catalog-driven decision engine. Full biometric audit trail.
+- [Datacredito API Integration](https://ewin24.github.io/portfolio/#projects): Credit bureau API with Polly circuit breaker + retry. Query times reduced from 3s to 400ms. JWT auth + Serilog structured logging.
+- [Payroll System — ERP Document Generation for Franchise Chain](https://ewin24.github.io/portfolio/#projects): Extended CRM routing for 48 payroll types. 21 Crystal Reports templates. Non-invasive extension — zero breaks in legacy payroll types.
+- [Admin Module UI Architecture](https://ewin24.github.io/portfolio/#projects): Separated monitoring dashboard from CRUD configuration. Navigation reflects Clean Architecture backend domains.
+- [Portfolio — Hybrid Architecture](https://ewin24.github.io/portfolio/#projects): Curated content layer + GitHub API widget, native i18n, an XP-style desktop theme built with strict TDD against a committed Playwright driver (98/98 checks), a pixel-diff gate for the newspaper theme, and JSON-LD + llms.txt that took a GEO audit from 58 to 83/100.
+- [Centralized Email Communications API](https://ewin24.github.io/portfolio/#projects): 5 email silos unified into one Clean Architecture API with a provider-agnostic interface, 8 multi-tenant accounts, GUID traceability per transaction. Diagnosis time from 30 minutes to 5 seconds.
+- [Harmony-Music — Open Source Flutter Music App](https://ewin24.github.io/portfolio/#projects): Took an unmaintained fork from "does not compile" to release v1.12.2 in ~36 commits: modern Gradle/AGP/Kotlin toolchain, InnerTube search bucketing rewrite, audio on 3 platforms with one Dart API.
+- [ReaderSS — RSS Reader with Offline Reading](https://ewin24.github.io/portfolio/#projects): Ports-and-adapters client on IndexedDB, Cloudflare Workers relay with SSRF guard, 4 feed parsers, 426 tests at ~95% coverage, 88 kB gzipped bundle.
 
 ## Skills & Technologies
-- [Full Technology Stack](https://ewin24.github.io/portfolio/): .NET/C#, PHP/Laravel, SQL Server, React, TypeScript, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure, Clean Architecture. 12 technologies with production milestones.
+- [Full Technology Stack](https://ewin24.github.io/portfolio/#skills): .NET / C#, PHP / Laravel, SQL Server, React, TypeScript, AWS, Flutter, Clean Architecture, Docker, Java / Spring Boot, PostgreSQL, Azure, Cloudflare Workers, IndexedDB, Playwright, Vitest, AI Discoverability. 17 technologies with production milestones.
 
 ## Experience
-- [Work History](https://ewin24.github.io/portfolio/): STARSOL (Cloud Architect, 2024-present), BAGUER S.A.S (Full Stack .NET & Mobile, 2024-present), CAMPUSLANDS (Full Stack, 2023-2024), ESPEJOS GLAM (Web Developer, 2022-2023).
+- [Work History](https://ewin24.github.io/portfolio/#experience): Harmony-Music (Open Source Maintainer (Fork) & Flutter Developer, Jun 2026-Present), STARSOL (Cloud Software Architect & Independent Developer, Jan 2024-Present), BAGUER S.A.S (Full Stack C# .NET & Mobile Developer, 2024-Present), Cliente — Franquicias de Ropa (Full Stack .NET Developer, 2025-2026), CAMPUSLANDS (Full Stack Developer (.NET & JavaScript), Feb 2023-Jan 2024), BAGUER S.A.S (.NET Backend Developer, 2021-2023), ESPEJOS GLAM (Web Developer, Jan 2022-Jan 2023).
 
 ## About
-- [About Edwin Trigos](https://ewin24.github.io/portfolio/): Software Architect and Full Stack Developer. Remote from Colombia. GitHub: Ewin24. LinkedIn: edwintrigosguevara. Email: edwintrigos24@gmail.com.
+- [About Edwin Trigos](https://ewin24.github.io/portfolio/#about): Software Architect and Full Stack Developer. Remote from Colombia. GitHub: Ewin24. LinkedIn: edwintrigosguevara. Email: edwintrigos24@gmail.com.
 
 ## Optional
-- [Contact](https://ewin24.github.io/portfolio/): Contact information and links to GitHub and LinkedIn profiles.
-- [Education](https://ewin24.github.io/portfolio/): Academic background and certifications.
-- [Testimonials](https://ewin24.github.io/portfolio/): Professional recommendations and endorsements.
+- [Contact](https://ewin24.github.io/portfolio/#contact): Contact information and links to GitHub and LinkedIn profiles.
+- [Education](https://ewin24.github.io/portfolio/#education): Academic background and certifications.
+- [Testimonials](https://ewin24.github.io/portfolio/#testimonials): Professional recommendations and endorsements.

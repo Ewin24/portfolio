@@ -1,9 +1,15 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft } from 'lucide-react'
-import { useApp } from './context/AppContext'
 import { useTranslation } from './hooks/useTranslation'
+import { useTheme } from './theme/ThemeContext'
 import { Header } from './components/Header'
+import { ReadingProgress } from './components/ui/ReadingProgress'
+import { XPShell } from './components/xp/XPShell'
+import { Taskbar } from './components/xp/Taskbar'
+import { WindowManagerProvider } from './components/xp/WindowManager'
+import { DesktopWindows } from './components/xp/DesktopWindows'
+import { APP_REGISTRY } from './components/xp/registry'
 import { Hero } from './components/sections/Hero'
 import { About } from './components/sections/About'
 import { Projects } from './components/sections/Projects'
@@ -13,8 +19,6 @@ import { Education } from './components/sections/Education'
 import { Testimonials } from './components/sections/Testimonials'
 import { Contact } from './components/sections/Contact'
 import { Footer } from './components/sections/Footer'
-import { BookStage } from './components/book/BookStage'
-import { Loading } from './components/ui/Loading'
 
 /**
  * The blog carries the heaviest dependencies in the app: every post body
@@ -49,10 +53,16 @@ function BlogFallback({ minHeight, id }: { minHeight: string; id?: string }) {
 }
 
 function App() {
-  const { loading, error } = useApp()
   const { lang } = useTranslation()
+  const { theme } = useTheme()
   const reduceMotion = useReducedMotion()
   const [blogMode, setBlogMode] = useState(false)
+
+  // The XP desktop metaphor lives inside App: when the XP theme is active the
+  // Hero renders inside the first window, the other sections follow in their
+  // own windows, and the taskbar docks at the bottom. The newspaper branch
+  // below stays byte-identical.
+  const xp = theme === 'xp'
 
   // Watch hash changes for blog full-page mode
   useEffect(() => {
@@ -69,30 +79,6 @@ function App() {
       window.removeEventListener('popstate', check)
     }
   }, [])
-
-  if (loading) return <Loading />
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-paper">
-        <div className="border-2 border-rule shadow-pixel p-8 text-center max-w-md bg-paper">
-          <div className="border-t-4 border-rule mb-1" />
-          <div className="border-t border-rule mb-4" />
-          <p className="font-mono text-xs font-bold uppercase tracking-widest text-accent mb-2">
-            Error
-          </p>
-          <p className="font-sans text-sm text-ink-light">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-6 px-btn px-btn-outline text-xs cursor-pointer"
-          >
-            Reintentar
-          </button>
-          <div className="border-t-4 border-rule mt-4" />
-        </div>
-      </div>
-    )
-  }
 
   const fade = {
     initial: { opacity: 0 },
@@ -116,13 +102,7 @@ function App() {
       }}
     >
       {blogMode ? (
-        <motion.div key="blog-full" {...fade} className="min-h-screen bg-paper">
-          {/* The article view carries the atmosphere too. Without it the page
-              surface is transparent in Book and the reader gets a flat
-              wash instead of a sky. No section ids exist here, so the stage
-              settles on the opening chapter. */}
-          <BookStage />
-
+        <motion.div key="blog-full" {...fade} className="min-h-screen bg-paper paper-grain">
           {/* Back to portfolio bar */}
           <div className="chrome-bar sticky top-0 z-50 bg-paper border-b-2 border-rule">
             <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
@@ -136,10 +116,11 @@ function App() {
                 <ArrowLeft size={14} />
                 {lang === 'es' ? 'Volver al portfolio' : 'Back to portfolio'}
               </button>
-              <span className="font-mono text-[9px] text-ink-muted uppercase tracking-widest">
+              <span className="font-mono text-[10px] text-ink-muted uppercase tracking-widest">
                 Blog
               </span>
             </div>
+            <ReadingProgress />
           </div>
 
           {/* Full-page blog content */}
@@ -148,32 +129,39 @@ function App() {
           </Suspense>
         </motion.div>
       ) : (
-        <motion.div key="portfolio" {...fade} className="min-h-screen bg-paper">
-          {/* Book's sky, dunes and airborne sand. Renders nothing at all
-              in the default newspaper theme. */}
-          <BookStage />
-
+        <motion.div key="portfolio" {...fade} className="min-h-screen bg-paper paper-grain">
           <a href="#main" className="skip-link">
             {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
           </a>
-          <Header />
+          {!xp && <Header />}
 
           {/* The atmosphere layers sit at z-0, so the readable page is lifted
               above them explicitly rather than relying on which elements
               happen to be positioned. */}
           <div className="relative z-10">
             <main id="main" tabIndex={-1}>
-              <Hero />
-              <About />
-              <Projects />
-              <Skills />
-              <Experience />
-              <Education />
-              <Testimonials />
-              <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
-                <BlogRoot />
-              </Suspense>
-              <Contact />
+              {xp ? (
+                <WindowManagerProvider apps={APP_REGISTRY}>
+                  <XPShell>
+                    <DesktopWindows />
+                  </XPShell>
+                  <Taskbar />
+                </WindowManagerProvider>
+              ) : (
+                <>
+                  <Hero />
+                  <About />
+                  <Projects />
+                  <Skills />
+                  <Experience />
+                  <Education />
+                  <Testimonials />
+                  <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
+                    <BlogRoot />
+                  </Suspense>
+                  <Contact />
+                </>
+              )}
             </main>
             <Footer />
           </div>

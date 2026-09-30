@@ -16,7 +16,7 @@
   --color-paper-dark:  #F0EFE8;   /* Fondo alternado */
   --color-ink:         #1A1A1A;   /* Texto principal */
   --color-ink-light:   #4A4A4A;   /* Texto secundario */
-  --color-ink-muted:   #8A8A8A;   /* Texto muted */
+  --color-ink-muted:   #6B6B6B;   /* Texto muted — 5.09:1 on paper, 4.62:1 on paper-dark */
   --color-rule:        #1A1A1A;   /* Color de bordes/líneas */
   --color-rule-light:  #D0CFC8;   /* Bordes sutiles */
   --color-accent:      #C41E1E;   /* Rojo periódico — para highlights */
@@ -41,7 +41,10 @@
      alternate theme can restate them without touching a single component. */
   --radius-surface:   0px;      /* card / panel corners */
   --radius-pill:      0px;      /* tags, badges, small controls */
-  --texture-body:     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23FAFAF5'/%3E%3Crect x='0' y='0' width='1' height='1' fill='%23F0EFE8' opacity='0.4'/%3E%3C/svg%3E");
+  /* Paper tooth: a stitched 180px noise tile thresholded into sparse
+     warm-ink specks (capped at 6% alpha) and cream specks. Transparent
+     between specks, so it lays over whatever paper colour sits beneath. */
+  --texture-body:     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .24 0 0 0 0 .18 0 0 0 0 .12 7 0 0 0 -4.3'/%3E%3C/filter%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 .96 0 7 0 0 -4.3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23d)' opacity='.06'/%3E%3Crect width='180' height='180' filter='url(%23c)' opacity='.5'/%3E%3C/svg%3E");
   --ease-surface:     cubic-bezier(0.4, 0, 0.2, 1);
   --duration-surface: 75ms;     /* the pixel press is deliberately instant */
   --duration-chapter: 900ms;    /* cross-chapter colour drift */
@@ -67,10 +70,25 @@
     background-image: var(--texture-body);
   }
 
+  /* The page wrappers paint opaque paper over body, so they carry the
+     tooth themselves. XP sets --texture-body to none. */
+  .paper-grain {
+    background-image: var(--texture-body);
+  }
+
   h1, h2, h3, h4 {
     font-family: var(--font-headline);
     color: var(--color-ink);
     letter-spacing: -0.02em;
+  }
+
+  /* Editorial rag: balanced headings, no orphaned last words in body copy. */
+  :root:not([data-theme='xp']) :is(h1, h2, h3, h4) {
+    text-wrap: balance;
+  }
+
+  :root:not([data-theme='xp']) p {
+    text-wrap: pretty;
   }
 
   ::selection {
@@ -146,6 +164,32 @@
     color: var(--color-on-ink);
   }
 
+  /* Pixel Card — the one card recipe. `.px-card` is the static surface
+     (rule border + pixel shadow); `.px-card-interactive` adds the press for
+     cards that are links or buttons. A shadow-pixel-* utility resizes the
+     shadow; `.px-card-sm` also shrinks the press to match it. */
+  .px-card {
+    --card-press: 4px;
+    border: 2px solid var(--color-rule);
+    box-shadow: var(--shadow-pixel);
+  }
+
+  .px-card-sm {
+    --card-press: 2px;
+    box-shadow: var(--shadow-pixel-sm);
+  }
+
+  .px-card-interactive {
+    cursor: pointer;
+    transition: box-shadow 75ms ease, translate 75ms ease;
+  }
+
+  .px-card-interactive:hover,
+  .px-card-interactive:active {
+    box-shadow: none;
+    translate: var(--card-press) var(--card-press);
+  }
+
   /* Pixel Badge / Tag */
   .px-badge {
     display: inline-block;
@@ -178,15 +222,210 @@
     display: block;
   }
 
-  /* Drop cap — primera letra decorativa */
-  .drop-cap::first-letter {
+  /* Drop cap — a boxed capital about three lines tall: ink border, a thin
+     inner frame, and a small accent square tucked into the inner corner.
+     ::first-letter takes no ::before/::after, so the frame is an inset
+     shadow and the square a background. */
+  .drop-cap::first-letter,
+  :root:not([data-theme='xp']) .blog-article-body > p:first-of-type::first-letter {
     font-family: var(--font-headline);
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 900;
-    line-height: 0.8;
+    line-height: 1;
     float: left;
-    margin-right: 0.125rem;
-    margin-top: 0.25rem;
+    margin: 0.3rem 0.75rem 0 0;
+    padding: 0.3rem 0.6rem 0.2rem;
+    border: 2px solid var(--color-rule);
+    box-shadow: inset 0 0 0 3px var(--color-paper), inset 0 0 0 4px var(--color-rule);
+    background: linear-gradient(var(--color-accent) 0 0) no-repeat right 6px bottom 6px / 7px 7px;
+  }
+
+  /* Pull quote — ruled above and below, a rotated accent square on the top rule. */
+  .pull-quote,
+  :root:not([data-theme='xp']) .blog-article-body blockquote {
+    position: relative;
+    margin-top: 2rem;
+    padding: 1.25rem 0 1rem;
+    border-block: 2px solid var(--color-rule);
+    font-family: var(--font-headline);
+    font-style: italic;
+    font-size: 1.5rem;
+    line-height: 1.3;
+    color: var(--color-ink);
+    text-align: center;
+  }
+
+  .pull-quote::before,
+  :root:not([data-theme='xp']) .blog-article-body blockquote::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: calc(50% - 5px);
+    width: 10px;
+    height: 10px;
+    background: var(--color-accent);
+    rotate: 45deg;
+  }
+
+  /* Article prose — the full-page blog article. Measure, code blocks and
+     tables apply in every theme; the newspaper ornaments (drop cap, ruled
+     h2, square bullets, pull-quote blockquote) are scoped to it. */
+  .blog-article-body {
+    max-width: 70ch;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-ink-light);
+  }
+
+  @media (min-width: 768px) {
+    .blog-article-body { font-size: 1.0625rem; }
+  }
+
+  .blog-article-body > * + * { margin-top: 1.25rem; }
+  .blog-article-body h2 {
+    margin-top: 3rem;
+    font-family: var(--font-headline);
+    font-size: 1.625rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+  .blog-article-body h3 {
+    margin-top: 2rem;
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+  .blog-article-body strong { font-weight: 700; color: var(--color-ink); }
+  .blog-article-body a { color: var(--color-accent); text-decoration: underline; }
+  .blog-article-body a:hover { color: var(--color-accent-dark); }
+  .blog-article-body :is(ul, ol) { padding-left: 1.5rem; }
+  .blog-article-body ul { list-style: square; }
+  .blog-article-body ol { list-style: decimal; }
+  .blog-article-body li + li { margin-top: 0.4rem; }
+  .blog-article-body hr { margin-block: 2rem; border-top: 4px solid var(--color-rule); }
+
+  .blog-article-body :not(pre) > code {
+    padding: 0.1em 0.3em;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-paper-dark);
+    border: 1px solid var(--color-rule-light);
+  }
+
+  /* Code block — scrolls sideways, never wraps, so alignment survives. The
+     language strip is sticky so it stays put while the code scrolls. */
+  .blog-article-body pre {
+    margin-block: 1.75rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    background: var(--color-paper-dark);
+    border: 2px solid var(--color-rule);
+    box-shadow: var(--shadow-pixel-sm);
+  }
+  .blog-article-body pre code {
+    display: block;
+    width: max-content;
+    min-width: 100%;
+    padding: 1rem 1.25rem;
+    white-space: pre;
+  }
+  .blog-article-body pre[data-lang]::before {
+    content: attr(data-lang);
+    position: sticky;
+    left: 0;
+    display: block;
+    padding: 0.3rem 1.25rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    border-bottom: 1px solid var(--color-rule-light);
+  }
+
+  /* Tables — the wrapper scrolls on narrow screens, the table keeps its
+     semantics. Ink rules top and bottom, light rules between rows. */
+  .blog-article-body .table-wrap {
+    margin-block: 1.75rem;
+    overflow-x: auto;
+    border-block: 2px solid var(--color-rule);
+  }
+  .blog-article-body table { width: 100%; border-collapse: collapse; font-size: 0.875rem; line-height: 1.45; }
+  .blog-article-body :is(th, td) { padding: 0.5rem 0.75rem; text-align: left; vertical-align: top; }
+  .blog-article-body th {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-ink);
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .blog-article-body tbody tr + tr { border-top: 1px solid var(--color-rule-light); }
+
+  :root:not([data-theme='xp']) .blog-article-body h2 {
+    padding-top: 0.9rem;
+    border-top: 2px solid var(--color-rule);
+  }
+  :root:not([data-theme='xp']) .blog-article-body ul { list-style: none; padding-left: 1.4rem; }
+  :root:not([data-theme='xp']) .blog-article-body ul > li { position: relative; }
+  :root:not([data-theme='xp']) .blog-article-body ul > li::before {
+    content: '';
+    position: absolute;
+    top: 0.65em;
+    left: -1.1rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    background: var(--color-accent);
+  }
+
+  /* Ink stamp — a worn rubber stamp on current roles. The #ink-wear SVG
+     filter lives once in Experience.tsx. */
+  .ink-stamp {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    border: 2px solid currentColor;
+    outline: 1px solid currentColor;
+    outline-offset: 2px;
+    rotate: -8deg;
+    mix-blend-mode: multiply;
+    filter: url(#ink-wear);
+  }
+
+  /* Reading progress — fills along the bottom edge of its positioned parent. */
+  .reading-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--color-accent);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+    pointer-events: none;
+  }
+
+  /* Section rhythm — every other section sits on a full-bleed paper-dark
+     band (border-image paints past the max-w-7xl box without extra DOM).
+     Cards with no fill of their own get paper so they keep their edge. */
+  :root:not([data-theme='xp']) #main :is(#skills, #education, #blog) {
+    border-image: conic-gradient(var(--color-paper-dark) 0 0) fill 0 / / 0 100vw;
+  }
+
+  :where(:root:not([data-theme='xp']) #main :is(#skills, #education, #blog)) .px-card:not([class*='bg-']) {
+    background-color: var(--color-paper);
   }
 
   /* Skill tag */
@@ -289,6 +528,50 @@
   }
 }
 
+/* ─── Case-study card shell — 2-track row alignment ──────────────────────
+   The card is restructured to exactly 2 children (header, body+footer
+   shell), so a subgrid with 2 implicit tracks aligns the same landmark
+   across every card in a row without a fixed child count to keep in sync
+   with the breakpoint. Flex column is the baseline for every browser and
+   in both themes: unaligned cards are a defect in either publication, and
+   "the book must not regress" means it must not get worse, not that it must
+   never change. Subgrid stays progressive enhancement via @supports. */
+@layer components {
+  .card-shell-outer,
+  .card-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+}
+
+@supports (grid-template-rows: subgrid) {
+  :is(.card-shell, .card-shell-outer) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    height: auto;
+  }
+}
+
+/* ─── Lead case study — column span only ───────────────────────────────────
+   Gated in JS (theme !== 'book'), never applied in the book theme, so this
+   class carries only measure — no colour, radius, blur or shadow token that
+   would need a separate identity guard. No base rule: below 768px the grid
+   itself is single-column, and an unconditional span would force a second
+   implicit column, breaking "every card shares left/width" on mobile. */
+@media (min-width: 768px) {
+  .lead-track {
+    grid-column: span 2 / span 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lead-track {
+    grid-column: span 3 / span 3;
+  }
+}
+
 /* ─── Third-party brand colour ─────────────────────────────────────────────
    Technology brand colours (React blue, AWS orange, .NET purple) are fixed
    by their owners and were tuned in Skills.tsx to clear 3:1 against paper
@@ -315,737 +598,858 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   JOURNEY THEME
+   WINDOWS XP THEME (Luna)
    ═══════════════════════════════════════════════════════════════════════════
 
-   An alternate skin inspired by thatgamecompany's Book: no hard edges,
-   warm light, and a palette that drifts as the visitor descends the page.
+   An alternate skin that turns the portfolio into a Windows XP desktop.
+   Like the Book theme, it never touches a component: it restates the same
+   Tailwind CSS variables the newspaper @theme block defines, so every
+   shared component repaints without an edit. The newspaper @theme block
+   (lines 8-48) stays untouched — this block only overrides under
+   [data-theme='xp'].
 
-   Two things make it work without rewriting a single component:
+   The structural rules below paint the XP chrome: beveled 2px borders
+   (light #f4f7fb top/left, dark #808080 bottom/right, inverted on press),
+   the Luna desktop gradient, the taskbar, the window chrome and the
+   header-as-titlebar hybrid. Windows are STATIC chrome frames in this
+   change — no drag, no interactive start menu.                          */
 
-   1. Every colour utility already resolves through a CSS variable, so
-      restating the variables here repaints the whole site.
-   2. The palette is not fixed. A scroll observer writes --ch-* variables on
-      :root as each section comes into view (see src/theme/chapters.ts), and
-      the theme reads them with a fallback. If the engine never runs — JS
-      disabled, hydration failure — the fallbacks render the opening desert
-      instead of an unstyled page.
-
-   The structural rules further down are deliberate. Card surfaces are marked
-   in the markup by their border utility, not by a semantic class, so the
-   theme targets that. Doing it here keeps 85 border sites untouched and all
-   the Book knowledge in one file.                                       */
-
-html[data-theme='book'] {
-  /* Painted behind the fixed sky layer, so an overscroll bounce reveals
-     the current chapter's horizon instead of a white flash. */
-  background-color: var(--ch-page-3, #EDE4CE);
+html[data-theme='xp'] {
+  /* Painted behind the whole desktop so an overscroll bounce does not
+     flash a white gap below the fixed Luna gradient. */
+  background-color: #3a6ea5;
 }
 
-[data-theme='book'] {
-  /* ── Shape: a page, not a panel ──
-     Rounded corners and floating drop shadows are the vocabulary of a soft
-     modern app, and they were the single loudest reason this theme did not
-     read as a book. Paper has a cut edge. The radius drops to a hairline —
-     enough to avoid a brutalist corner, not enough to look like a widget —
-     and the laid grain comes back, because a page you cannot see the fibre
-     of is just a coloured rectangle. */
-  --radius-surface:   2px;
-  --radius-pill:      2px;
-  --texture-body:     var(--paper-grain);
-  --ease-surface:     cubic-bezier(0.22, 1, 0.36, 1);
-  --duration-surface: 420ms;
+[data-theme='xp'] {
+  /* ── Shape: an OS panel, not a page ──
+     Windows XP is brutally square. Corners drop to 0 and the laid paper
+     texture goes away; the surface is a flat, solid panel. */
+  --radius-surface:   0px;
+  --radius-pill:      0px;
+  --texture-body:     none;
+  --ease-surface:     cubic-bezier(0.1, 0.9, 0.2, 1);
+  --duration-surface: 120ms;
 
-  /* Laid paper: closely spaced horizontal wire lines with sparser chain
-     lines across them, which is what makes real book stock catch the light. */
-  --paper-grain:
-    repeating-linear-gradient(
-      0deg,
-      rgba(90, 66, 34, 0.030) 0px,
-      rgba(90, 66, 34, 0.030) 1px,
-      transparent 1px,
-      transparent 3px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(90, 66, 34, 0.022) 0px,
-      rgba(90, 66, 34, 0.022) 1px,
-      transparent 1px,
-      transparent 26px
-    );
+  /* ── Type: the Windows system stack ──
+     Tahoma first, then Segoe UI on modern Windows, then a generic
+     sans-serif. These are system faces with no @font-face request, so the
+     XP theme never adds a font download over the newspaper baseline. */
+  --font-sans:      Tahoma, 'Segoe UI', sans-serif;
+  --font-headline:  Tahoma, 'Segoe UI', sans-serif;
+  --font-mono:      'Courier New', monospace;
 
-  /* ── Colour: driven by the current chapter ── */
-  --color-ink:        var(--ch-ink,        #4A3020);
-  --color-ink-light:  var(--ch-ink-light,  #6B4A32);
-  --color-ink-muted:  var(--ch-ink-muted,  #93704F);
-  --color-accent:     var(--ch-accent,     #B4462F);
-  --color-on-ink:     var(--ch-on-ink,     #FDF0D5);
-  --color-rule:       var(--ch-rule,       rgba(74, 48, 32, 0.20));
-  --color-rule-light: var(--ch-rule,       rgba(74, 48, 32, 0.12));
+  /* ── Colour: the XP Luna chrome ──
+     Paper is the classic XP toolbar grey; ink is pure black (the strongest
+     possible contrast on that grey). The accent becomes XP's selection
+     blue, which repaints the shared focus ring and ::selection without a
+     single base rule changing. */
+  --color-paper:       #ECE9D8;   /* toolbar / window face */
+  --color-paper-dark:  #D4D0C8;   /* bevel shadow grey / alt surface */
+  --color-ink:         #000000;
+  --color-ink-light:   #3A3A3A;
+  --color-ink-muted:   #5A5A5A;   /* 5.65:1 on paper */
+  --color-rule:        #7A7A7A;
+  --color-rule-light:  #D4D0C8;
+  --color-accent:      #316AC5;   /* XP blue — focus ring, selection, taskbar */
+  --color-accent-dark: #2A57A3;
+  --color-on-ink:      #FFFFFF;   /* text on an ink fill — 21:1 on XP ink */
 
-  /* The page surface stops being opaque — the sky has to show through it. */
-  --color-paper:      transparent;
-  --color-paper-dark: transparent;
+  /* ── Elevation: a drop, not a pixel step ──
+     XP panels float with a soft shadow rather than a hard offset, so the
+     pixel shadows become tight drops. */
+  --shadow-pixel-sm:  0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-pixel:     0 2px 4px rgba(0, 0, 0, 0.30);
+  --shadow-pixel-lg:  0 4px 8px rgba(0, 0, 0, 0.30);
+  --shadow-pixel-xl:  0 8px 16px rgba(0, 0, 0, 0.30);
 
-  /* The veil is what makes a card readable on top of a moving sky. */
-  --veil:             var(--ch-veil,  rgba(255, 244, 224, 0.28));
-
-  /* A leaf of paper lying on a page does not levitate. The big soft drop
-     shadows are replaced by a tight contact shadow plus a hairline edge —
-     the same read you get from a card resting on a book, and the reason the
-     surfaces now sit IN the page instead of hovering above it. */
-  --shadow-pixel-sm:
-    0 1px 0 var(--ch-rule, rgba(74, 48, 32, 0.18)),
-    0 2px 3px -2px var(--ch-glow, rgba(74, 48, 32, 0.40));
-  --shadow-pixel:
-    0 1px 0 var(--ch-rule, rgba(74, 48, 32, 0.18)),
-    0 4px 6px -4px var(--ch-glow, rgba(74, 48, 32, 0.42));
-  --shadow-pixel-lg:
-    0 1px 0 var(--ch-rule, rgba(74, 48, 32, 0.18)),
-    0 8px 12px -8px var(--ch-glow, rgba(74, 48, 32, 0.45));
-  --shadow-pixel-xl:
-    0 1px 0 var(--ch-rule, rgba(74, 48, 32, 0.18)),
-    0 12px 18px -12px var(--ch-glow, rgba(74, 48, 32, 0.48));
+  /* ── Bevels: stacked 1px inset shadows, never a border ──
+     Raised = light top/left, dark bottom/right; sunken inverts it. Thin is
+     the one-pixel version for small chrome, field is XP's flat blue edit
+     border, and dither is the 2px checkerboard of a latched toggle. */
+  --xp-bevel-raised:
+    inset -1px -1px 0 #404040, inset 1px 1px 0 #FFFFFF,
+    inset -2px -2px 0 #808080, inset 2px 2px 0 #E3E3E3;
+  --xp-bevel-sunken:
+    inset 1px 1px 0 #404040, inset -1px -1px 0 #FFFFFF,
+    inset 2px 2px 0 #808080, inset -2px -2px 0 #E3E3E3;
+  --xp-bevel-thin:    inset -1px -1px 0 #808080, inset 1px 1px 0 #FFFFFF;
+  --xp-bevel-thin-in: inset 1px 1px 0 #808080, inset -1px -1px 0 #FFFFFF;
+  --xp-bevel-field:   inset 0 0 0 1px #7F9DB9, inset 2px 2px 0 rgba(0, 0, 0, 0.06);
+  --xp-hover-ring:    inset 0 0 0 1px #F9B653, inset 0 0 0 2px #FDD889;
+  --xp-dither:        repeating-conic-gradient(#FFFFFF 0% 25%, #D4D0C8 0% 50%) 0 0 / 2px 2px;
 }
 
-/* Colour drift. The chapter variables snap when the observer swaps them;
-   what makes the change read as a sunset rather than a cut is transitioning
-   the concrete properties that consume them. Specificity 0 on the universal
-   selector, so any component with its own transition still wins. */
-[data-theme='book'] *,
-[data-theme='book'] *::before,
-[data-theme='book'] *::after {
-  transition:
-    color            var(--duration-chapter) var(--ease-surface),
-    background-color var(--duration-chapter) var(--ease-surface),
-    border-color     var(--duration-chapter) var(--ease-surface),
-    box-shadow       var(--duration-chapter) var(--ease-surface);
+/* ── Scrollbar: XP's thin grey bar ── */
+[data-theme='xp'] ::-webkit-scrollbar {
+  width: 10px;
+}
+[data-theme='xp'] ::-webkit-scrollbar-track {
+  background: #ECE9D8;
+}
+[data-theme='xp'] ::-webkit-scrollbar-thumb {
+  background: #7A7A7A;
+  border: 1px solid #D4D0C8;
 }
 
-/* ── Card surfaces ──
-   Corner softness and the veil are separate concerns and must not share a
-   guard. The veil has to skip anything already carrying a solid fill, or it
-   paints over it — but the radius applies to every card without exception.
-   Sharing one rule is what made the selected item in a grid the only square
-   thing on the page, in the skills stack and in the blog filters alike.
-
-   :where() keeps specificity at 0 for the marker classes. */
-[data-theme='book'] :where(.border-2, .border-4) {
-  border-radius: var(--radius-surface);
+/* ── Raised pixel buttons become XP face buttons ──
+   The newspaper .px-btn is solid ink with a pixel shadow. On XP it becomes
+   the classic raised grey face: paper fill, 2px bevel, black text and a
+   pressed state that inverts the bevel. */
+[data-theme='xp'] .px-btn {
+  background: linear-gradient(180deg, #FFFFFF 0%, #ECEBE6 86%, #D6D0C5 100%);
+  color: #000;
+  border: 1px solid #003C74;
+  border-radius: 3px;
+  box-shadow: var(--xp-bevel-thin);
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
 }
 
-[data-theme='book'] :where(.border-2, .border-4):not(.bg-ink):not(.bg-accent) {
-  background-color: var(--veil);
-  backdrop-filter: blur(12px) saturate(1.08);
-  -webkit-backdrop-filter: blur(12px) saturate(1.08);
+/* XP answers hover with an orange glow ring, never with movement. */
+[data-theme='xp'] .px-btn:hover,
+[data-theme='xp'] .px-btn:focus-visible {
+  box-shadow: var(--xp-hover-ring);
+  transform: none;
 }
 
-/* ── The press becomes a lift ──
-   The newspaper answers a click by shoving the card 4px down-right into the
-   space its own hard shadow occupied. Book has no hard shadow to fall
-   into, so the same gesture reads as the element jumping out of alignment.
-
-   Tailwind v4 compiles these utilities to the `translate` property, NOT to
-   `transform`, so resetting transform here would silently do nothing.
-
-   Only prefixed variants are matched, plus the semantic pressed state — a
-   bare `-translate-x-1/2` is static centering and has to keep working. */
-[data-theme='book'] [class*='hover:translate-']:hover,
-[data-theme='book'] [class*='hover:-translate-']:hover,
-[data-theme='book'] [class*='active:translate-']:active,
-[data-theme='book'] [class*='active:-translate-']:active,
-[data-theme='book'] [aria-pressed='true'] {
-  translate: none;
+[data-theme='xp'] .px-btn:active {
+  background: #E3E3DB;
+  box-shadow: var(--xp-bevel-sunken);
+  transform: none;
 }
 
-/* Elevation carries the state the displacement used to. */
-[data-theme='book'] :where(.border-2, .border-4):hover,
-[data-theme='book'] :where(.border-2, .border-4)[aria-pressed='true'] {
-  box-shadow: var(--shadow-pixel);
+/* A latched toggle reads as held down: sunken bevel over a dither. */
+[data-theme='xp'] .px-btn[aria-pressed='true'] {
+  background: var(--xp-dither);
+  box-shadow: var(--xp-bevel-sunken);
 }
 
-/* Hover fills must still beat the veil. */
-[data-theme='book'] .hover\:bg-ink:hover {
-  background-color: var(--color-ink);
+[data-theme='xp'] .px-btn-outline,
+[data-theme='xp'] .px-btn-outline:hover {
+  background: transparent;
+  color: #000;
 }
 
-/* ── Newspaper rules become hairlines ──
-   Each direction is restated separately: forcing a shorthand would paint a
-   border on a side that never had one. */
-[data-theme='book'] .border-t-4 { border-top-width:    1px; }
-[data-theme='book'] .border-b-4 { border-bottom-width: 1px; }
-[data-theme='book'] .border-l-4 { border-left-width:   1px; }
-[data-theme='book'] .border-t-2 { border-top-width:    1px; }
-[data-theme='book'] .border-b-2 { border-bottom-width: 1px; }
-[data-theme='book'] .border-r-2 { border-right-width:  1px; }
-
-/* ── Controls lose their corners and their snap ── */
-[data-theme='book'] .px-btn,
-[data-theme='book'] .px-badge,
-[data-theme='book'] .skill-tag {
-  border-radius: var(--radius-pill);
+[data-theme='xp'] .xp-desktop :is(input[type='text'], input[type='search'], input[type='email'], textarea, select) {
+  background-color: #FFFFFF;
+  border-color: #7F9DB9;
+  box-shadow: var(--xp-bevel-field);
 }
 
-[data-theme='book'] .px-btn {
-  border-color: transparent;
-  transition: transform var(--duration-surface) var(--ease-surface),
-              box-shadow var(--duration-surface) var(--ease-surface);
+[data-theme='xp'] .px-badge,
+[data-theme='xp'] .skill-tag {
+  background: #ECE9D8;
+  color: #000;
+  border-color: #7A7A7A;
 }
 
-/* The outline variant has no fill — its border IS the button, so it cannot
-   inherit the transparent border above or it disappears entirely. */
-[data-theme='book'] .px-btn-outline {
-  border-color: var(--color-rule);
-  background: var(--veil);
-}
-
-/* .px-badge-accent and ::selection both hard-code white text, which only
-   works because the newspaper accent is a dark red. Book accents invert
-   with the chapter — pale blue in the ascent, pink at twilight — so they
-   follow the chapter's on-ink polarity instead. */
-[data-theme='book'] .px-badge-accent {
-  color: var(--color-on-ink);
-}
-
-[data-theme='book'] ::selection {
-  background: var(--color-accent);
-  color: var(--color-on-ink);
-}
-
-/* The header keeps its own veil.
-   Once --color-paper goes transparent, the scrolled header's bg-paper stops
-   painting anything and its nav would sit unreadable on top of moving
-   content. This restores a backdrop in both scroll states. */
-[data-theme='book'] header,
-[data-theme='book'] .chrome-bar {
-  background-color: var(--veil);
-  backdrop-filter: blur(14px) saturate(1.05);
-  -webkit-backdrop-filter: blur(14px) saturate(1.05);
-}
-
-/* Brand colours get a lit chip to stand on, so a dark purple .NET icon is
-   still a dark purple .NET icon at the bottom of a midnight chapter. */
-[data-theme='book'] .tech-chip {
-  background-color: rgba(255, 251, 242, 0.92);
-  border-color: transparent;
-}
-
-/* The dots keep their brand colour but gain a light ring, which is what
-   separates them from a dark sky without repainting them. */
-[data-theme='book'] .tech-dot {
-  box-shadow: 0 0 0 2px rgba(255, 251, 242, 0.8);
-}
-
-/* Long-form reading needs more cover than a section does.
-   The two card-shaped <article> elements already get the veil through their
-   border utility; this is the bare reading container in BlogArticle, which
-   would otherwise put body copy straight onto a drifting sky. */
-[data-theme='book'] article:not(.border-2) {
-  background-color: var(--veil);
-  backdrop-filter: blur(16px) saturate(1.05);
-  -webkit-backdrop-filter: blur(16px) saturate(1.05);
-  border-radius: var(--radius-surface);
-  padding: clamp(1.25rem, 4vw, 2.5rem);
-}
-
-/* The pixel press was a 2px shove down-right. Here the button rises. */
-[data-theme='book'] .px-btn:hover,
-[data-theme='book'] .px-btn:active {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-pixel);
-}
-
-/* The active blog tag fills itself with bg-ink. This block is unlayered and
-   would otherwise beat that utility, leaving the selected filter looking
-   exactly like the unselected ones. */
-[data-theme='book'] .skill-tag:not(.bg-ink) {
-  background: var(--veil);
-  border-color: var(--color-rule);
-}
-
-/* ── Typography loosens ──
-   The mono labels keep their identity but drop the brutalist weight. */
-[data-theme='book'] .kicker,
-[data-theme='book'] .nav-link,
-[data-theme='book'] .px-badge {
-  font-weight: 500;
-  letter-spacing: 0.22em;
-}
-
-[data-theme='book'] h1,
-[data-theme='book'] h2,
-[data-theme='book'] h3 {
-  letter-spacing: 0.01em;
-  font-weight: 700;
-}
-
-/* ── The insomnia labels ──
-   A card tied to an object, naming it and saying what it is for.
-
-   The card does NOT follow the chapter palette, and that is deliberate. A
-   piece of pale paper is pale paper whatever the light in the room, and more
-   practically: --color-ink inverts to a light value in the dark chapters, so
-   inheriting it would put near-white handwriting on a near-white card during
-   the cross-chapter drift. The pair below is fixed and measures 11.8:1. */
-[data-theme='book'] .insomnia-tag {
-  display: block;
+/* ── Desktop ──
+   XPShell mounts a full-bleed Luna gradient behind the windows. The
+   gradient runs vertically from the bright Luna top (#3a6ea5) to the deep
+   XP blue (#00008b); white text on the top end reads 5.31:1, so the
+   desktop carries light text only. It is position:relative so the
+   absolutely-positioned window layer anchors to it, and it carries no
+   padding so a maximized window can fill the viewport above the taskbar. */
+[data-theme='xp'] .xp-desktop {
   position: relative;
-  margin-top: 0.8rem;
-  padding-top: 0.85rem;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #3a6ea5 0%, #00008b 100%);
+  color: #FFFFFF;
 }
 
-[data-theme='book'] .insomnia-thread {
-  position: absolute;
-  top: 0;
-  left: 1.1rem;
-  width: 18px;
-  height: 0.85rem;
-  overflow: visible;
-  fill: none;
-  stroke: var(--color-ink-muted);
-  stroke-width: 1.1;
-  stroke-linecap: round;
-  opacity: 0.6;
+/* ── The XP theme is a browser-sized screen, not a scrollable page ──
+   The newspaper footer lives below the 100vh desktop canvas and would push
+   the document into scroll (painting a grey XP bar at the bottom). Inside
+   the XP metaphor the footer is page chrome, not desktop chrome, so it is
+   hidden, and on desktop widths the document itself is locked: windows
+   scroll internally (.xp-window-body is overflow:auto) while the canvas
+   never moves. The <640px fallback keeps document scroll so stacked windows
+   stay reachable. */
+[data-theme='xp'] #footer {
+  display: none;
 }
 
-[data-theme='book'] .insomnia-card {
-  display: block;
-  font-family: 'Caveat', var(--font-headline), cursive;
-  font-size: 1rem;
-  line-height: 1.2;
-  color: #3A342A;
-  background: rgba(253, 250, 240, 0.9);
-  border: 1px solid rgba(58, 52, 42, 0.28);
-  border-radius: 2px;
-  padding: 0.35rem 0.55rem;
-  /* Pinned at the knot, so the sway pivots where the thread holds it. */
-  transform-origin: 1.1rem 0;
-  rotate: var(--tag-tilt);
-  translate: var(--tag-drift) 0;
-  box-shadow: 0 3px 8px -5px rgba(40, 30, 16, 0.7);
-  /* The plague itself: the writing is going everywhere except on the object
-     currently being looked at. Opacity and blur, never a colour swap — the
-     text stays fully present for selection and for a screen reader. */
-  opacity: 0.4;
-  filter: blur(0.3px);
-  transition: opacity 420ms ease, filter 420ms ease;
-  animation: tag-sway 7s ease-in-out infinite;
-  animation-delay: var(--tag-delay);
-}
-
-[data-theme='book'] .insomnia-card.is-legible {
-  opacity: 1;
-  filter: none;
-}
-
-[data-theme='book'] .insomnia-card.is-still {
-  animation: none;
-}
-
-/* `rotate` is animated as its own property rather than through transform, so
-   it never clobbers the `translate` set alongside it. */
-@keyframes tag-sway {
-  0%, 100% { rotate: var(--tag-tilt); }
-  50%      { rotate: calc(var(--tag-tilt) + 1.5deg); }
-}
-
-/* The pixel press is a newspaper idiom: a hard offset shove that answers a
-   click like a rubber stamp. A page does not shove itself when you point at
-   it, so the book keeps the shadow response and drops the displacement.
-
-   This is also a correctness fix, not only a stylistic one. The shove moved
-   a card four pixels the instant the pointer entered it, which slid the
-   lineage tags out from under the cursor and fired pointerleave immediately
-   — the tracking state was set and cleared in the same gesture, so hovering
-   a tag appeared to do nothing at all. */
-[data-theme='book'] [class*='hover:translate-']:hover,
-[data-theme='book'] [class*='hover:-translate-']:hover,
-[data-theme='book'] [class*='active:translate-']:active,
-[data-theme='book'] [class*='active:-translate-']:active {
-  translate: none;
-}
-
-/* ── The lineage ──
-   A tool that outlived several roles carries the count of them. Pointing at
-   one dims every role it never touched, so the recurrence is read by what
-   stays lit rather than by counting badges. */
-[data-theme='book'] .lineage-tag {
-  position: relative;
-  cursor: help;
-  padding-right: 1.35rem;
-}
-
-[data-theme='book'] .lineage-count {
-  position: absolute;
-  right: 0.3rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.5rem;
-  font-weight: 700;
-  color: var(--color-accent);
-}
-
-[data-theme='book'] .lineage-tag.is-tracked {
-  background: var(--color-ink);
-  color: var(--color-on-ink);
-}
-
-[data-theme='book'] .lineage-tag.is-tracked .lineage-count {
-  color: var(--color-on-ink);
-}
-
-/* Roles the tracked tool never reached recede; the ones it survived stay.
-   Opacity rather than a colour change, so the dimming reads as depth of
-   field and not as a disabled state. */
-[data-theme='book'] .is-lineage-other {
-  opacity: 0.32;
-}
-
-[data-theme='book'] .is-lineage-kin {
-  box-shadow: var(--shadow-pixel-lg);
-}
-
-[data-theme='book'] .is-lineage-other,
-[data-theme='book'] .is-lineage-kin {
-  transition: opacity 260ms ease, box-shadow 260ms ease;
-}
-
-/* ── The ice ──
-   Frost over the portrait, cleared only where a hand is put on it. The sheet
-   is a real layer rather than a filter on the image, so the crystal texture
-   and the clearing can be composited independently. */
-[data-theme='book'] .ice-host {
-  position: relative;
-  isolation: isolate;
-}
-
-[data-theme='book'] .ice-sheet {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  /* Crystals: three overlapping conic sprays read as frost far better than
-     any single gradient, because real frost grows in branching directions
-     rather than radiating evenly. */
-  background-image:
-    repeating-conic-gradient(from 15deg at 30% 25%, rgba(255,255,255,0.55) 0deg 4deg, transparent 4deg 16deg),
-    repeating-conic-gradient(from 65deg at 72% 68%, rgba(255,255,255,0.45) 0deg 3deg, transparent 3deg 14deg),
-    repeating-conic-gradient(from 40deg at 20% 80%, rgba(255,255,255,0.40) 0deg 5deg, transparent 5deg 20deg),
-    linear-gradient(150deg, rgba(226,240,246,0.86), rgba(198,222,232,0.78));
-  backdrop-filter: blur(2.5px) saturate(0.6);
-  -webkit-backdrop-filter: blur(2.5px) saturate(0.6);
-  transition: opacity 700ms ease;
-}
-
-/* The cleared patch. The mask closes behind the hand rather than staying
-   wiped, so seeing the whole portrait means moving across it. */
-[data-theme='book'] .ice-sheet.is-touched {
-  mask-image: radial-gradient(
-    circle 74px at var(--hand-x) var(--hand-y),
-    transparent 0%,
-    transparent 38%,
-    rgba(0, 0, 0, 0.6) 62%,
-    black 100%
-  );
-  -webkit-mask-image: radial-gradient(
-    circle 74px at var(--hand-x) var(--hand-y),
-    transparent 0%,
-    transparent 38%,
-    rgba(0, 0, 0, 0.6) 62%,
-    black 100%
-  );
-}
-
-/* ── The wind ──
-   The scattered copy is painted over the intact one, which stays in the DOM
-   for assistive tech. Both occupy the same box so the footer never changes
-   height as the letters leave. */
-[data-theme='book'] .wind-host {
-  position: relative;
-}
-
-[data-theme='book'] .wind-source {
-  visibility: hidden;
-}
-
-[data-theme='book'] .wind-scattered {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-@media (min-width: 768px) {
-  [data-theme='book'] .wind-scattered {
-    flex-direction: row;
+/* Scoped to the rendered desktop: the full-page article view
+   (#blog/article/<slug>) replaces the desktop and has no internal scroll
+   container, so locking the document there makes the article unreadable. */
+@media (min-width: 640px) {
+  html[data-theme='xp']:has(.xp-desktop) {
+    overflow: hidden;
   }
 }
 
-[data-theme='book'] .wind-line {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--color-ink-muted);
-  white-space: pre-wrap;
+/* ── Window layer ──
+   Fills the whole desktop (border box = viewport) and is the positioning
+   context for the absolutely-positioned windows. Because the desktop carries
+   no padding, a maximized window at {0,0,w:vw,h:vh-40px} fills the visible
+   desktop above the taskbar edge-to-edge. */
+[data-theme='xp'] .xp-window-layer {
+  position: absolute;
+  inset: 0;
 }
 
-/* Each letter is its own body once the wind takes it. `will-change` is
-   deliberately absent: promoting several hundred spans costs more than the
-   transform it would save. */
-[data-theme='book'] .wind-letter {
-  display: inline-block;
-  transition: transform 120ms linear, opacity 120ms linear;
+/* ── Desktop-icon layer ──
+   The launcher icons sit on the desktop surface (z:1) below the windows
+   (z:10+), as a left-aligned column that leaves room for the header. */
+[data-theme='xp'] .xp-desktop-icons-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* 16px because the fixed header is gone in XP (design D3) — the top icons
+     no longer need to clear a 56px bar. */
+  padding: 16px 0 0 12px;
+  pointer-events: none;
 }
 
-/* ── The chapter opening ──
-   Mostly air, on purpose. Editorial practice is explicit that a publication
-   where every spread carries the same density fatigues the reader, and that
-   space around an element signals importance more reliably than size. The
-   newspaper deck this replaces was 5rem tall; this is the rest before the
-   dense block, so it is allowed to cost a third of a screen. */
-[data-theme='book'] .chapter-opening {
+[data-theme='xp'] .xp-desktop-icons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  pointer-events: auto;
+}
+
+[data-theme='xp'] .xp-desktop-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 4px;
+  width: 76px;
+  padding: 6px 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-desktop-icon-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #FFFFFF;
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.6));
+}
+
+[data-theme='xp'] .xp-desktop-icon-glyph svg { width: 28px; height: 28px; }
+
+[data-theme='xp'] .xp-desktop-icon-label {
+  padding: 0 2px;
+  font-size: 11px;
   text-align: center;
-  padding-block: clamp(4rem, 14vh, 9rem) clamp(3rem, 9vh, 6rem);
-  margin-bottom: clamp(2rem, 5vh, 3.5rem);
+  line-height: 1.15;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+  max-width: 76px;
+  overflow-wrap: anywhere;
 }
 
-/* The section's functional name, demoted to a running label — the book still
-   has to be navigable by someone looking for "Stack". */
-[data-theme='book'] .chapter-running {
-  font-family: var(--font-mono);
-  font-size: 0.5625rem;
-  letter-spacing: 0.42em;
-  text-transform: uppercase;
-  color: var(--color-ink-muted);
-  margin: 0 0 clamp(2rem, 6vh, 3.5rem);
-  /* The tracking adds a trailing gap that breaks optical centring. */
-  text-indent: 0.42em;
+[data-theme='xp'] .xp-desktop-icon:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
 
-[data-theme='book'] .chapter-numeral {
-  font-family: var(--font-headline);
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  color: var(--color-accent);
-  margin: 0 0 clamp(0.75rem, 2vh, 1.25rem);
-  text-indent: 0.18em;
+/* Selected = the label turns XP selection blue with a dotted focus edge. */
+[data-theme='xp'] .xp-desktop-icon:is(:active, :focus-visible) .xp-desktop-icon-label {
+  background: #316AC5;
+  outline: 1px dotted #FFFFFF;
 }
 
-[data-theme='book'] .chapter-name {
-  font-family: var(--font-headline);
-  font-size: clamp(2rem, 5.5vw, 4rem);
-  font-weight: 700;
-  font-style: italic;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  color: var(--color-ink);
-  margin: 0;
-  max-width: 18ch;
+[data-theme='xp'] .xp-desktop-icon:focus-visible {
+  outline: none;
 }
 
-/* The epigraph sits under a hairline, the way a chapter's standfirst does. */
-[data-theme='book'] .chapter-epigraph {
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-style: italic;
-  line-height: 1.7;
-  color: var(--color-ink-light);
-  max-width: 46ch;
-  margin: clamp(1.5rem, 4vh, 2.5rem) 0 0;
-  padding-top: clamp(1.25rem, 3vh, 2rem);
-  border-top: 1px solid var(--color-rule);
+/* ── Section neutralisers ──
+   The newspaper Hero forces min-h-screen and wide paddings that fight the
+   desktop metaphor. Inside the XP shell these are relaxed so the sections
+   sit comfortably inside their windows. */
+[data-theme='xp'] .xp-desktop section {
+  max-width: 100%;
 }
 
-/* ── Measure ──
-   A book is a single-column manuscript grid. Prose gets a reading measure
-   instead of running the full width of a catalogue card. */
-[data-theme='book'] .blog-article-body {
-  max-width: 68ch;
-  margin-inline: auto;
+[data-theme='xp'] .xp-desktop #hero {
+  min-height: 0;
 }
 
-/* ── The folio ──
-   A book counts its own pages. Derived from reading depth, so it advances
-   as the reader descends. */
-.book-folio {
-  position: fixed;
-  bottom: 1.15rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 30;
-  font-family: var(--font-headline);
-  font-size: 0.75rem;
-  letter-spacing: 0.22em;
-  color: var(--color-ink-muted);
-  pointer-events: none;
-  opacity: 0.75;
+/* The Hero ghost column rules read as stray vertical lines inside a window. */
+[data-theme='xp'] .hero-columns { display: none; }
+
+[data-theme='xp'] .xp-window-body #hero {
+  min-height: 0;
 }
 
-/* ── The page ──
-   Fixed behind everything: the reader moves through the book, the sheet
-   under them does not slide away. */
-.book-page {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+/* ── Window chrome ──
+   An interactive XP window: a 2px beveled frame with a title bar, the three
+   window controls on the right, and a paper body. Position and size come from
+   the manager via inline styles; the active window gets a stronger highlight. */
+[data-theme='xp'] .xp-window {
+  background: #ECE9D8;
+  /* Luna frame: a 2px blue rim with rounded top corners. */
+  border: 2px solid #7A96DF;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  /* No overflow:hidden here — the resize handles straddle the 2px border
+     (top:-2px etc.) and would be clipped by it. The body keeps its own
+     overflow:auto + fixed height (design D6). */
 }
 
-.book-page-ground {
-  position: absolute;
-  inset: 0;
-  transition: background var(--duration-chapter, 900ms) ease;
+/* The active window stands out: saturated rim and a deeper drop. */
+[data-theme='xp'] .xp-window[data-active='true'] {
+  border-color: #0831D9;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
-/* The laid grain. This is the detail that separates paper from a beige
-   rectangle, and it is why --texture-body is restored in this theme. */
-.book-page-grain {
-  position: absolute;
-  inset: 0;
-  background-image: var(--paper-grain);
-  mix-blend-mode: multiply;
-}
-
-/* Foxing. Bound to scroll depth, so the stock visibly ages as the reader
-   goes further in; multiply keeps the blooms in the paper rather than on
-   top of it, the way a real stain is part of the fibre. */
-.book-page-foxing {
-  position: absolute;
-  inset: 0;
-  mix-blend-mode: multiply;
-  transition: opacity 400ms linear;
-}
-
-/* The measured margin a text block sits inside. Two hairlines, not a box:
-   a book rules where the type starts, it does not draw a frame around it. */
-.book-page-margins {
-  position: absolute;
-  inset: 0;
-  transition: opacity var(--duration-chapter, 900ms) ease;
-  background-image:
-    linear-gradient(90deg, var(--ch-rule, rgba(74,48,32,0.18)) 0 1px, transparent 1px),
-    linear-gradient(-90deg, var(--ch-rule, rgba(74,48,32,0.18)) 0 1px, transparent 1px);
-  background-position: 6vw 0, right 6vw top;
-  background-size: 1px 100%, 1px 100%;
-  background-repeat: no-repeat;
-}
-
-@media (max-width: 900px) {
-  /* On a phone the margin rules would crowd the text block, so the page
-     keeps its grain and drops its ruling. */
-  .book-page-margins { display: none; }
-}
-
-/* The filter host itself takes no space. */
-.book-defs {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}
-
-/* ── Ink on absorbent stock ──
-   Applied to the rule divs, which are pure graphics. `:where()` keeps the
-   specificity at zero so a component can always opt out. */
-[data-theme='book'] :where(.border-t-4, .border-t, .border-b-4) {
-  filter: url(#ink-bleed);
-}
-
-/* ── Set like a book, not like a page of UI ──
-   Justified with hyphenation and a real measure. Justification without
-   hyphens tears rivers through a narrow column, so the two ship together
-   or not at all. */
-[data-theme='book'] .blog-article-body p,
-[data-theme='book'] .font-sans.leading-relaxed {
-  text-align: justify;
-  hyphens: auto;
-  -webkit-hyphens: auto;
-  text-wrap: pretty;
-}
-
-/* Headings stop shouting. A book title is set, not weight-stacked. */
-[data-theme='book'] h1 {
-  font-weight: 700;
-  letter-spacing: -0.005em;
-}
-
-/* ── The registro ──
-   The ribbon sewn into the spine, hanging from the top of the page and
-   lengthening as the reader goes deeper. */
-.book-ribbon {
-  position: fixed;
-  top: 0;
-  right: clamp(1rem, 3.2vw, 3rem);
-  z-index: 30;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  pointer-events: none;
-}
-
-.book-ribbon-tail {
-  width: 6px;
-  background: var(--ch-accent, #8C3A24);
-  opacity: 0.68;
-  transition: height 220ms var(--ease-surface, ease);
-  /* The forked end of a real registro. */
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 9px), 0 100%);
-}
-
-.book-ribbon-label {
-  margin-top: 0.55rem;
-  writing-mode: vertical-rl;
+[data-theme='xp'] .xp-window-titlebar {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.5625rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: var(--color-ink-muted);
-}
-
-.book-ribbon-numeral {
-  font-family: var(--font-headline);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  color: var(--color-accent);
-}
-
-@media (max-width: 900px) {
-  .book-ribbon-label { display: none; }
-}
-
-/* ── The annunciation ──
-   The canvas floats over the reference cards rather than behind them: a
-   butterfly that lands on the edge of a card has to be ON the card to read
-   as having landed. It never takes the pointer, so the cards underneath stay
-   fully hoverable and clickable. */
-.annunciation-host {
+  justify-content: space-between;
+  gap: 8px;
+  height: 32px;
+  padding: 0 4px 0 8px;
+  border-radius: 6px 6px 0 0;
+  /* Luna gloss: a light highlight at the top edge, the #0054E3 body that
+     carries the white title (6.2:1) through the glyph band, and a darker
+     bottom lip. Inactive windows swap in the muted variant below. */
+  background: linear-gradient(180deg, #3D95FF 0%, #0A5FDB 14%, #0054E3 50%, #0058EE 86%, #003DD7 100%);
+  color: #FFFFFF;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45);
+  user-select: none;
+  cursor: move;
+  /* z-index 40 beats both the resize handles (30) AND the window-body content
+     (the Hero carries `relative z-10`, so a z2 titlebar would lose to it) —
+     the titlebar drag + controls win every overlap band. The top n-strip's
+     in-titlebar band yields to the titlebar; full n-resize stays reachable via
+     Shift+Up and the bottom/side strips + corners (design D6). */
   position: relative;
+  z-index: 40;
 }
 
-.annunciation-canvas {
+[data-theme='xp'] .xp-window-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme='xp'] .xp-window-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* The muted title bar of a background window; white still reads 4.7:1 on
+   its #5570C0 body. */
+[data-theme='xp'] .xp-window[data-active='false'] .xp-window-titlebar {
+  background: linear-gradient(180deg, #A9C3F2 0%, #7B9FE6 14%, #5570C0 50%, #5A76C6 86%, #4A66B6 100%);
+}
+
+/* Glossy Luna controls: white-rimmed rounded buttons with white glyphs; the
+   Close button is the red-orange one. */
+[data-theme='xp'] .xp-window-controls button {
+  width: 21px;
+  height: 21px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #5C9CF8 0%, #2A6CE3 45%, #1D55CF 100%);
+  color: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.35), inset -1px -1px 0 rgba(0, 0, 0, 0.2);
+  font-size: 9px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-window-controls button[aria-label='Close'] {
+  background: linear-gradient(180deg, #EE8363 0%, #E04343 45%, #C13D1C 100%);
+}
+
+[data-theme='xp'] .xp-window-controls button:hover {
+  filter: brightness(1.15);
+}
+
+[data-theme='xp'] .xp-window-controls button:active {
+  filter: brightness(0.85);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='xp'] .xp-window[data-active='false'] .xp-window-controls button {
+  opacity: 0.8;
+}
+
+[data-theme='xp'] .xp-window-body {
+  background: #ECE9D8;
+  color: #000;
+  padding: 0;
+  max-width: none;
+  /* Fill the fixed-height window below the 32px title bar and scroll
+     independently — a dragged/resized window never pushes the desktop. */
+  height: calc(100% - 32px);
+  overflow: auto;
+  container-type: inline-size;
+}
+
+/* Focus ring on the draggable title bar (keyboard users). */
+[data-theme='xp'] .xp-window-titlebar:focus-visible {
+  outline: 1px dotted #FFFFFF;
+  outline-offset: -2px;
+}
+
+/* ── Resize handles (design D6, Slice 2) ──
+   Eight absolutely-positioned zones (6px border strips / 16px corners) that
+   drive the manager's resize(id,dx,dy,dir). Strips straddle the 2px border
+   (top:-2px etc.); each carries the matching resize cursor. They sit at
+   z-index 30, above the window-body content (which uses z-10) but below the
+   titlebar (z-index 40), so the titlebar drag + controls win their overlap
+   bands. Hidden below 640px where the desktop stops being a draggable
+   canvas. */
+[data-theme='xp'] .xp-resize-handle {
   position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
+  /* 30 beats the window-body content (Hero carries `relative z-10`) so the
+     strips/corners are pointer-clickable; the titlebar sits at 40 so drag and
+     the window controls still win their overlap bands (design D6). */
+  z-index: 30;
+  touch-action: none;
 }
 
-/* The scrollbar stops being a hard ink bar. */
-[data-theme='book'] ::-webkit-scrollbar-track { background: transparent; }
-[data-theme='book'] ::-webkit-scrollbar-thumb {
-  background: var(--color-rule);
-  border-radius: 999px;
+[data-theme='xp'] .xp-resize-n,
+[data-theme='xp'] .xp-resize-s {
+  left: 8px;
+  right: 8px;
+  height: 6px;
+}
+[data-theme='xp'] .xp-resize-n { top: -2px; cursor: n-resize; }
+[data-theme='xp'] .xp-resize-s { bottom: -2px; cursor: s-resize; }
+
+[data-theme='xp'] .xp-resize-e,
+[data-theme='xp'] .xp-resize-w {
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+}
+[data-theme='xp'] .xp-resize-e { right: -2px; cursor: e-resize; }
+[data-theme='xp'] .xp-resize-w { left: -2px; cursor: w-resize; }
+
+[data-theme='xp'] .xp-resize-ne,
+[data-theme='xp'] .xp-resize-nw,
+[data-theme='xp'] .xp-resize-se,
+[data-theme='xp'] .xp-resize-sw {
+  width: 16px;
+  height: 16px;
+}
+[data-theme='xp'] .xp-resize-ne { top: -2px; right: -2px; cursor: ne-resize; }
+[data-theme='xp'] .xp-resize-nw { top: -2px; left: -2px; cursor: nw-resize; }
+[data-theme='xp'] .xp-resize-se { bottom: -2px; right: -2px; cursor: se-resize; }
+[data-theme='xp'] .xp-resize-sw { bottom: -2px; left: -2px; cursor: sw-resize; }
+
+/* ── Help window content (design D5, Slice 3) ──
+   The compact "?" Help body: a keyboard-shortcut list and a "Return to
+   newspaper" button. Rendered inside the standard .xp-window-body, which owns
+   its own scroll/height. */
+[data-theme='xp'] .xp-help {
+  padding: 14px 16px;
+  color: #000;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+[data-theme='xp'] .xp-help-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+[data-theme='xp'] .xp-help-shortcuts ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+[data-theme='xp'] .xp-help-shortcuts li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+[data-theme='xp'] .xp-help-shortcuts kbd {
+  flex: 0 0 auto;
+  min-width: 92px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  background: #F4F4F0;
+  border: 1px solid #808080;
+  border-bottom-width: 2px;
+  border-radius: 2px;
+  padding: 2px 6px;
+}
+
+[data-theme='xp'] .xp-help-return-row {
+  margin-top: 16px;
+  text-align: right;
+}
+
+[data-theme='xp'] .xp-help-return {
+  background: #ECE9D8;
+  color: #000;
+  border: 1px solid #003C74;
+  border-radius: 3px;
+  box-shadow: var(--xp-bevel-thin);
+  font-size: 12px;
+  padding: 5px 14px;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-help-return:hover {
+  box-shadow: var(--xp-hover-ring);
+}
+
+[data-theme='xp'] .xp-help-return:active {
+  background: #D4D0C8;
+  box-shadow: var(--xp-bevel-sunken);
+}
+
+[data-theme='xp'] .xp-help-return:focus-visible {
+  outline: 2px solid #316AC5;
+  outline-offset: -2px;
+}
+
+/* ── XP window content width ──
+   The newspaper sections carry their own horizontal spacing (px-6 +
+   max-w-* mx-auto), so the window body adds none of its own. If it did, the
+   extra window/desktop padding would steal width below the newspaper card
+   grids' minimum content width and force horizontal scroll at 375px. The
+   sections keep their own padding inside the window body. */
+[data-theme='xp'] .xp-window-body :is(section:not(#hero), #hero > div) {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.5rem 1rem; /* newspaper py-20/px-6 is sized for a page, not a 480px window */
+}
+[data-theme='xp'] .xp-window-body #hero h1 { font-size: clamp(2rem, 9cqi, 3.5rem) !important; }
+[data-theme='xp'] .xp-window-body [data-opening-rank] h2 { font-size: clamp(1.5rem, 7cqi, 2.5rem); }
+
+/* ── XP card grids stay within the window ──
+   The newspaper case-study grid uses an auto-sized single column, which
+   resolves to the card's max-content and overflows any container narrower
+   than the widest unbreakable token. Inside the XP window body the available
+   width is smaller, so the tracks must be allowed to shrink (minmax(0,1fr)),
+   and flex/grid card items must be able to shrink below their content
+   min-size (min-width:0). This keeps the XP desktop from scrolling
+   horizontally while the newspaper branch is untouched. */
+[data-theme='xp'] .xp-window-body #projects .grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+[data-theme='xp'] .xp-window-body .card-shell-outer,
+[data-theme='xp'] .xp-window-body .card-shell-outer * {
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  [data-theme='xp'] .xp-window-body #projects .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  [data-theme='xp'] .xp-window-body #projects .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ── Taskbar ──
+   Fixed to the bottom: the Luna blue bar (white text reads 5.9:1 on its
+   #245EDB body) with a light top highlight, the green Start pill, one label
+   per open window, and the lighter tray + clock well on the right. */
+[data-theme='xp'] .xp-taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  background: linear-gradient(180deg, #3F8CF3 0%, #245EDB 10%, #245EDB 88%, #1941A5 100%);
+  border-top: 1px solid #0831D9;
+  box-shadow: inset 0 1px 0 #5A9CF7;
+}
+
+/* The Start pill runs the full bar height, flush left, rounded right. */
+[data-theme='xp'] .xp-taskbar .xp-start-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: stretch;
+  margin-left: -8px;
+  padding: 0 22px 0 12px;
+  background: linear-gradient(180deg, #5EB55A 0%, #3C9A3C 14%, #2E8B2E 82%, #1F6E1F 100%);
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 0 14px 14px 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), inset -2px 0 3px rgba(0, 0, 0, 0.3);
+  font-size: 17px;
+  font-weight: 700;
+  font-style: italic;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-taskbar .xp-start-btn:hover {
+  filter: brightness(1.1);
+}
+
+[data-theme='xp'] .xp-taskbar .xp-start-btn:active,
+[data-theme='xp'] .xp-taskbar .xp-start-btn[aria-expanded='true'] {
+  background: linear-gradient(180deg, #1F6E1F 0%, #2E8B2E 30%, #3C9A3C 100%);
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='xp'] .xp-taskbar [role='list'] {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 3px;
+  min-width: 0;
+}
+
+[data-theme='xp'] .xp-taskbar .xp-window-label {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 160px;
+  flex: 0 1 160px;
+  height: 30px;
+  padding: 0 10px;
+  background: linear-gradient(180deg, #4C8FF5 0%, #3C81F3 50%, #2D6CE8 100%);
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.3), inset -1px -1px 0 rgba(0, 0, 0, 0.3);
+  font-family: inherit;
+  font-size: 12px;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-taskbar .xp-window-label:hover {
+  filter: brightness(1.1);
+}
+
+/* The focused window's label is pressed in. */
+[data-theme='xp'] .xp-taskbar .xp-window-label[data-active='true'] {
+  background: #1E49B5;
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.55), inset -1px -1px 0 rgba(255, 255, 255, 0.15);
+  font-weight: 700;
+}
+
+/* Tray + clock share one lighter inset well with a bevelled left edge.
+   margin-left:auto pushes it right (DOM order: Start → labels → tray → clock). */
+[data-theme='xp'] .xp-tray,
+[data-theme='xp'] .xp-taskbar .xp-clock {
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(180deg, #1FA2F2 0%, #1290E8 12%, #0E7FD6 88%, #1A6FC7 100%);
+}
+
+[data-theme='xp'] .xp-tray {
+  margin-left: auto;
+  gap: 4px;
+  padding-left: 10px;
+  border-left: 1px solid #092E8F;
+  box-shadow: inset 1px 0 0 #5DB5F7;
+}
+
+/* Tray buttons are flat toolbar buttons: they pop a thin bevel on hover and
+   sink on press, like the XP notification area. */
+[data-theme='xp'] .xp-tray :is(.xp-tray-btn, button[aria-pressed]) {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 6px;
+  background: transparent;
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 2px;
+  box-shadow: none;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-tray :is(.xp-tray-btn, button[aria-pressed]):hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
+  box-shadow: var(--xp-bevel-thin);
+}
+
+[data-theme='xp'] .xp-tray :is(.xp-tray-btn, button[aria-pressed]):active {
+  background: rgba(0, 0, 0, 0.18);
+  box-shadow: var(--xp-bevel-thin-in);
+}
+
+[data-theme='xp'] .xp-tray button[aria-pressed='true'],
+[data-theme='xp'] .xp-tray button[aria-pressed='true']:hover {
+  background: var(--xp-dither);
+  color: #000;
+  box-shadow: var(--xp-bevel-sunken);
+}
+
+[data-theme='xp'] .xp-taskbar .xp-clock {
+  margin: 0 -8px;
+  padding: 0 14px 0 8px;
+  color: #FFFFFF;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ── Start menu panel ──
+   The functional XP Start menu: a two-column Luna panel anchored above the Start
+   button. The left column lists the 7 app menuitems under the Programs group
+   header; the pale-blue right column holds the My Computer easter egg. */
+[data-theme='xp'] .xp-startmenu {
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  width: min(380px, 100vw);
+  z-index: 59;
+  background: #FFFFFF;
+  color: #000;
+  border: 1px solid #0831D9;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='xp'] .xp-startmenu-cols { display: grid; grid-template-columns: 1fr 1fr; }
+
+[data-theme='xp'] .xp-startmenu-avatar {
+  display: inline-grid; place-items: center; width: 36px; height: 36px;
+  border: 2px solid #FFFFFF; border-radius: 3px; background: linear-gradient(135deg, #F6A04D, #D9661F);
+}
+
+[data-theme='xp'] .xp-startmenu-bar { height: 30px; background: linear-gradient(180deg, #4282D6, #245EDB 60%, #1941A5); }
+
+[data-theme='xp'] .xp-startmenu-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(180deg, #3F8CF3 0%, #245EDB 20%, #1C4FC6 100%);
+  border-bottom: 2px solid #E68B2C;
+}
+
+[data-theme='xp'] .xp-startmenu-group {
+  padding: 6px 4px;
+}
+
+[data-theme='xp'] .xp-startmenu-group-label {
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #316AC5;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+[data-theme='xp'] .xp-startmenu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #000;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-startmenu-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+[data-theme='xp'] .xp-startmenu-item:hover {
+  background: #316AC5;
+  color: #FFFFFF;
+}
+
+[data-theme='xp'] .xp-startmenu-item:focus-visible {
+  outline: 2px solid #316AC5;
+  outline-offset: -2px;
+}
+
+[data-theme='xp'] .xp-startmenu-footer {
+  background: #D3E5FA;
+  border-left: 1px solid #95BDEE;
+  padding: 6px 4px;
+}
+
+[data-theme='xp'] .xp-startmenu-easteregg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #000;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-startmenu-easteregg:hover {
+  background: #316AC5;
+  color: #FFFFFF;
+}
+
+[data-theme='xp'] .xp-startmenu-easteregg:focus-visible {
+  outline: 2px solid #316AC5;
+  outline-offset: -2px;
+}
+
+/* ── Skip link / focus ring land on the XP blue ── */
+[data-theme='xp'] ::selection {
+  background: #316AC5;
+  color: #FFFFFF;
+}
+
+[data-theme='xp'] :focus-visible {
+  outline: 2px solid #316AC5;
+  outline-offset: 1px;
 }
 
 /* ─── Reduced Motion ───────────────────────────────────────────────────────
@@ -1069,9 +1473,9 @@ html[data-theme='book'] {
   /* Keep the affordance, drop the displacement: the shadow still answers
      the interaction, nothing slides under the pointer.
 
-     The card press lives in Tailwind utilities on the components themselves
-     (hover:/active:translate-*), not in a .px-card class, so it has to be
-     neutralised through the utility rather than a component selector.
+     Cards press through .px-card-interactive; any remaining ad-hoc press
+     lives in Tailwind utilities (hover:/active:translate-*). Both are
+     neutralised below.
 
      Both signs are matched: Tailwind writes the negative variant as
      `hover:-translate-x-0.5`, where the leading `-` sits between the modifier
@@ -1095,7 +1499,142 @@ html[data-theme='book'] {
   [class*='hover:translate-']:hover,
   [class*='hover:-translate-']:hover,
   [class*='active:translate-']:active,
-  [class*='active:-translate-']:active {
+  [class*='active:-translate-']:active,
+  .px-card-interactive:hover,
+  .px-card-interactive:active {
     translate: none !important;
+  }
+}
+
+/* ── Tabs (design D6) ──
+   Reusable tab bar used by the skills-experience and blog windows: a raised
+   XP tab strip above a paper panel. The active tab reads as pressed; the
+   inactive panels stay in the DOM (hidden via `aria-hidden`/`hidden`) so a
+   tab swap never remounts the content (spec Risk 5 — blog MiniSearch). */
+[data-theme='xp'] .xp-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+[data-theme='xp'] .xp-tablist {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 6px 6px 0;
+  background: linear-gradient(180deg, #3a6ea5 0%, #316AC5 100%);
+  border-bottom: 2px solid #f4f7fb;
+  flex-shrink: 0;
+}
+
+[data-theme='xp'] .xp-tab {
+  appearance: none;
+  font-family: inherit;
+  font-size: 12px;
+  color: #FFFFFF;
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid transparent;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  padding: 5px 14px;
+  cursor: pointer;
+}
+
+[data-theme='xp'] .xp-tab:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='xp'] .xp-tab-active,
+[data-theme='xp'] .xp-tab[aria-selected='true'] {
+  background: #ECE9D8;
+  color: #000;
+  border-color: #f4f7fb;
+  font-weight: 700;
+}
+
+[data-theme='xp'] .xp-tab:focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: -2px;
+}
+
+[data-theme='xp'] .xp-tabpanel {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #ECE9D8;
+  color: #000;
+}
+
+/* Blog "reading" tab is a lightweight panel; keep it pleasant. */
+[data-theme='xp'] .xp-blog-reading {
+  padding: 40px 24px;
+  text-align: center;
+}
+
+[data-theme='xp'] .xp-blog-reading-hint {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+[data-theme='xp'] .xp-blog-reading-sub {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #444;
+}
+
+/* ── Mobile fallback < 640px (design D8) ──
+   Below 640px the desktop stops being a draggable canvas: windows stack
+   full-width and scroll vertically, and drag is disabled (the Window
+   component also gates pointer/keyboard drag via matchMedia). `!important`
+   overrides the inline absolute positioning the manager applies on desktop. */
+@media (max-width: 639px) {
+  [data-theme='xp'] .xp-desktop {
+    min-height: 0;
+  }
+
+  [data-theme='xp'] .xp-window-layer {
+    position: static;
+  }
+
+  [data-theme='xp'] .xp-window {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    left: auto !important;
+    top: auto !important;
+    height: auto !important;
+    min-height: 40vh;
+    margin-bottom: 12px;
+  }
+
+  [data-theme='xp'] .xp-window-body {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* Resize handles are hidden below 640px — the desktop stops being a
+     draggable canvas and windows stack full-width (design D6). */
+  [data-theme='xp'] .xp-resize-handle {
+    display: none;
+  }
+
+  /* Let the stacked windows scroll on the document, never horizontally. */
+  [data-theme='xp'] .xp-desktop-icons-layer {
+    display: none;
+  }
+
+  [data-theme='xp'] .xp-taskbar {
+    position: sticky;
+    bottom: 0;
+  }
+
+  [data-theme='xp'] .xp-desktop {
+    overflow-x: hidden;
+  }
+
+  html,
+  body {
+    overflow-x: hidden;
   }
 }

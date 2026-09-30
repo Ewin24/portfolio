@@ -62,18 +62,18 @@ export function Hero() {
   ]
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-paper">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
 
       {/* Fondo: líneas tipográficas decorativas (newspaper columns ghost) */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="hero-columns absolute inset-0 opacity-[0.09] pointer-events-none"
         style={{
-          backgroundImage: 'repeating-linear-gradient(90deg, #1A1A1A 0px, #1A1A1A 1px, transparent 1px, transparent calc((100% - 8px) / 12))',
+          backgroundImage: 'linear-gradient(90deg, #1A1A1A 1px, transparent 1px)',
           backgroundSize: 'calc(100% / 12) 100%',
         }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 pt-24 pb-16 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-16 w-full">
 
         {/* Kicker */}
         <FadeIn>
@@ -129,11 +129,24 @@ export function Hero() {
 
         {/* Stats — valores de negocio, no GitHub metrics */}
         <FadeIn delay={0.4}>
-          <div className="grid grid-cols-3 border-2 border-rule shadow-pixel-sm">
+          <div className="grid grid-cols-3 border-2 border-t-8 border-rule shadow-pixel-sm">
             {stats.map((stat, i) => (
+              /*
+               * The founding: a world so recent that many things had no name
+               * yet, and to mention them you had to point.
+               *
+               * So in the book the quantities are there from the first frame
+               * and their names are not — you point at a number to learn what
+               * it counts. Applied to the stats and deliberately NOT to the
+               * headline: the h1 is the first thing a reader and a crawler
+               * both meet, and a name withheld there is a cost, not a joke.
+               *
+               * The label element is always in the DOM at full text, only
+               * faded. Nothing is withheld from a screen reader or a crawler.
+               */
               <div
                 key={stat.label}
-                className={`p-5 text-center ${i < stats.length - 1 ? 'border-r-2 border-rule' : ''}`}
+                className={`p-5 text-center${i < stats.length - 1 ? ' border-r-2 border-rule' : ''}`}
               >
                 <motion.p
                   className="font-headline text-3xl md:text-4xl font-black text-ink leading-none"

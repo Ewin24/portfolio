@@ -13,6 +13,11 @@ import {
   Coffee,
   Globe,
   Server,
+  CloudCog,
+  HardDrive,
+  Bug,
+  TestTube,
+  ScanSearch,
 } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
@@ -189,6 +194,71 @@ const TECH_DATA: TechData[] = [
       'skills.azure.milestone3',
     ],
     referenceKey: 'skills.azure.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'cfworkers',
+    name: 'Cloudflare Workers',
+    icon: CloudCog,
+    color: '#A85400',
+    milestoneKeys: [
+      'skills.cfworkers.milestone1',
+      'skills.cfworkers.milestone2',
+      'skills.cfworkers.milestone3',
+    ],
+    referenceKey: 'skills.cfworkers.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'indexeddb',
+    name: 'IndexedDB',
+    icon: HardDrive,
+    color: '#7A3E9D',
+    milestoneKeys: [
+      'skills.indexeddb.milestone1',
+      'skills.indexeddb.milestone2',
+      'skills.indexeddb.milestone3',
+    ],
+    referenceKey: 'skills.indexeddb.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'playwright',
+    name: 'Playwright',
+    icon: Bug,
+    color: '#1F7A24',
+    milestoneKeys: [
+      'skills.playwright.milestone1',
+      'skills.playwright.milestone2',
+      'skills.playwright.milestone3',
+    ],
+    referenceKey: 'skills.playwright.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'vitest',
+    name: 'Vitest',
+    icon: TestTube,
+    color: '#8A6B00',
+    milestoneKeys: [
+      'skills.vitest.milestone1',
+      'skills.vitest.milestone2',
+      'skills.vitest.milestone3',
+    ],
+    referenceKey: 'skills.vitest.reference',
+    referenceUrl: '#projects',
+  },
+  {
+    id: 'geo',
+    name: 'AI Discoverability',
+    icon: ScanSearch,
+    color: '#0F6E6E',
+    milestoneKeys: [
+      'skills.geo.milestone1',
+      'skills.geo.milestone2',
+      'skills.geo.milestone3',
+    ],
+    referenceKey: 'skills.geo.reference',
     referenceUrl: '#projects',
   },
 ]

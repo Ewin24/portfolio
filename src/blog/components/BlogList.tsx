@@ -1,12 +1,11 @@
 import { useState } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { motion } from 'motion/react'
 import { Clock, Tag, ArrowRight } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../../components/ui/FadeIn'
-import { Decipher } from '../../components/book/Decipher'
 import { useBlogContext } from '../context/BlogContext'
 import { EmptyState } from './EmptyState'
+import { markRead } from '../readState'
 import type { BlogPost } from '../types'
 
 const PAGE_SIZE = 6
@@ -15,37 +14,26 @@ const PAGE_SIZE = 6
 
 function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRead: () => void }) {
   const { lang } = useTranslation()
-  const { theme, stillness } = useTheme()
-  const reduceMotion = useReducedMotion()
-
-  // The manuscripts: everything already written, waiting to be deciphered.
-  const ciphered = theme === 'book'
-  const still = Boolean(reduceMotion) || stillness
 
   const title = lang === 'es' ? post.title : post.titleEn
   const excerpt = lang === 'es' ? post.excerpt : post.excerptEn
 
   return (
     <FadeIn delay={index * 0.08}>
-      <article className="border-2 border-rule bg-paper shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 flex flex-col h-full">
+      <article className="px-card px-card-sm px-card-interactive bg-paper flex flex-col h-full">
         <div className="p-5 flex-1 flex flex-col gap-3">
           {/* Tags row */}
           <div className="flex flex-wrap gap-1">
             {post.tags.slice(0, 3).map((tag) => (
-              <span key={tag} className="skill-tag text-[9px] flex items-center gap-1">
+              <span key={tag} className="skill-tag text-[10px] flex items-center gap-1">
                 <Tag size={7} /> {tag}
               </span>
             ))}
           </div>
 
           {/* Title */}
-          <h3 className="font-headline text-lg font-bold text-ink leading-tight line-clamp-2">
-            <Decipher
-              text={title}
-              active={ciphered}
-              still={still}
-              delay={(index % 6) * 110}
-            />
+          <h3 className="font-headline text-lg font-bold text-ink leading-tight line-clamp-2 flex items-center gap-1.5">
+            {title}
           </h3>
 
           {/* Excerpt */}
@@ -94,6 +82,7 @@ export function BlogList() {
   }
 
   const handleRead = (post: BlogPost) => {
+    markRead(post.slug)
     // pushState + a manual hashchange rather than assigning location.hash.
     // Same navigation, but it is the pattern App and BlogArticle already use,
     // and assigning to location.hash trips the compiler's "this value cannot

@@ -1,25 +1,26 @@
-import { useReducedMotion } from 'motion/react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
-import { useTheme } from '../../theme/ThemeContext'
 import { FadeIn } from '../ui/FadeIn'
-import { TheIce } from '../book/TheIce'
+import { SectionOpening } from '../ui/SectionOpening'
 
 export function About() {
   const { user } = useApp()
   const { t } = useTranslation()
-  const { theme, stillness } = useTheme()
-  const reduceMotion = useReducedMotion()
+  const description = t('about.description')
+  // The pull quote reuses the shortest sentence of the existing copy.
+  const pullQuote = description
+    .split(/(?<=\.)\s+/)
+    .reduce((a, b) => (b.length < a.length ? b : a))
 
   return (
-    <section id="about" className="py-20 px-6 max-w-5xl mx-auto">
+    <section id="about" className="py-20 px-6 max-w-7xl mx-auto">
       <FadeIn>
-        <div className="grid md:grid-cols-[1fr_2fr] border-2 border-rule shadow-pixel">
+        <SectionOpening section="about" title={t('about.title')} subtitle={t('about.subtitle')} />
+        <div className="grid md:grid-cols-[1fr_2fr] px-card">
 
           {/* Columna foto */}
           <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-8 bg-paper-dark flex flex-col items-center justify-start gap-4">
             {user?.avatar_url ? (
-              <TheIce active={theme === 'book'} still={Boolean(reduceMotion) || stillness}>
               <div className="border-4 border-rule shadow-pixel overflow-hidden">
                 {/* width/height match w-36 h-36 (144px) so the box is
                     reserved before the remote avatar arrives — no layout shift */}
@@ -34,7 +35,6 @@ export function About() {
                   style={{ imageRendering: 'pixelated' }}
                 />
               </div>
-              </TheIce>
             ) : (
               <div className="w-36 h-36 border-4 border-rule bg-paper-dark flex items-center justify-center">
                 <span className="font-headline text-4xl font-black text-ink-muted">ET</span>
@@ -58,16 +58,13 @@ export function About() {
 
           {/* Columna texto */}
           <div className="p-8">
-            <div className="border-t-4 border-rule mb-1" />
-            <div className="border-t border-rule mb-5" />
-            <h2 className="font-headline text-3xl md:text-4xl font-black text-ink leading-none mb-1">
-              {t('about.title')}
-            </h2>
-            <p className="font-mono text-[10px] text-ink-muted uppercase tracking-widest mb-6">
-              {t('about.subtitle')}
+            <p className="font-sans text-base text-ink-light leading-relaxed drop-cap max-w-prose">
+              {description}
             </p>
-            <p className="font-sans text-base text-ink-light leading-relaxed drop-cap">
-              {t('about.description')}
+            {/* Repeats a sentence from the text above, so it is hidden from
+                assistive tech to avoid reading it twice. */}
+            <p aria-hidden="true" className="pull-quote max-w-prose">
+              {pullQuote}
             </p>
           </div>
         </div>
