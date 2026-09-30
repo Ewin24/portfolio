@@ -20,12 +20,12 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
 
   return (
     <FadeIn delay={index * 0.08}>
-      <article className="border-2 border-rule bg-paper shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 flex flex-col h-full">
+      <article className="px-card px-card-sm px-card-interactive bg-paper flex flex-col h-full">
         <div className="p-5 flex-1 flex flex-col gap-3">
           {/* Tags row */}
           <div className="flex flex-wrap gap-1">
             {post.tags.slice(0, 3).map((tag) => (
-              <span key={tag} className="skill-tag text-[9px] flex items-center gap-1">
+              <span key={tag} className="skill-tag text-[10px] flex items-center gap-1">
                 <Tag size={7} /> {tag}
               </span>
             ))}

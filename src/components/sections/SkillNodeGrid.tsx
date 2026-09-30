@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react'
 import type { ComponentType, CSSProperties } from 'react'
 import type { LucideProps } from 'lucide-react'
+import { useTranslation } from '../../hooks/useTranslation'
 
 interface Technology {
   id: string
@@ -23,6 +24,7 @@ export function SkillNodeGrid({
   onSelect,
 }: SkillNodeGridProps) {
   const reduceMotion = useReducedMotion()
+  const { t } = useTranslation()
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -45,11 +47,11 @@ export function SkillNodeGrid({
             aria-pressed={isSelected}
             className={`
               w-full text-left
-              border-2 cursor-pointer p-4 select-none
+              px-card cursor-pointer p-4 select-none
               transition-all duration-75
               ${isSelected
-                ? 'bg-ink text-paper shadow-none translate-x-1 translate-y-1 border-rule'
-                : 'bg-paper text-ink shadow-pixel border-rule hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1'
+                ? 'bg-ink text-paper shadow-none translate-x-1 translate-y-1'
+                : 'px-card-interactive bg-paper text-ink'
               }
             `}
           >
@@ -87,7 +89,7 @@ export function SkillNodeGrid({
                     ${isSelected ? 'text-paper opacity-70' : 'text-ink-muted'}
                   `}
                 >
-                  {tech.milestones.length} milestones
+                  {tech.milestones.length} {t('skills.milestoneCount')}
                 </p>
               </div>
             </div>

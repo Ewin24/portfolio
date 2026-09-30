@@ -1,5 +1,5 @@
 import { useLayoutEffect, type ReactNode } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 import { useTranslation } from '../hooks/useTranslation'
 import { SectionOpening } from '../components/ui/SectionOpening'
 import { BlogProvider, useBlogContext } from './context/BlogContext'
@@ -13,6 +13,7 @@ import { BlogSearch } from './components/BlogSearch'
 
 function BlogRouter() {
   const { t } = useTranslation()
+  const reduceMotion = useReducedMotion()
   const nav = useBlogNavigation()
   const { posts, selectedPost, setSelectedPost, setFilter } = useBlogContext()
 
@@ -63,21 +64,18 @@ function BlogRouter() {
 
   return (
     <section id="blog" className="py-20 px-6 max-w-7xl mx-auto">
-      {/* Section header — style from original Blog.tsx */}
-      <div className="mb-10">
-        <SectionOpening
-          section="blog"
-          title={t('blog.title')}
-          subtitle={t('blog.subtitle')}
-        />
-      </div>
+      <SectionOpening
+        section="blog"
+        title={t('blog.title')}
+        subtitle={t('blog.subtitle')}
+      />
 
       <AnimatePresence mode="sync">
         <motion.div
           key={viewKey}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
+          exit={{ opacity: 0, y: reduceMotion ? 0 : -10 }}
           transition={{ duration: 0.2 }}
         >
           {renderView()}

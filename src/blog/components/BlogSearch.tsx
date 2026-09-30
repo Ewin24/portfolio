@@ -180,8 +180,8 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
                           {highlightText(excerpt, debouncedQuery)}
                         </p>
                         <div className="flex items-center gap-2 mt-1.5">
-                          <span className="font-mono text-[9px] text-ink-muted">{post.date}</span>
-                          <span className="font-mono text-[9px] text-ink-muted">{post.readingTime} min</span>
+                          <span className="font-mono text-[10px] text-ink-muted">{post.date}</span>
+                          <span className="font-mono text-[10px] text-ink-muted">{post.readingTime} min</span>
                         </div>
                       </button>
                     </li>

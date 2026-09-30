@@ -1,15 +1,17 @@
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
+import { SectionOpening } from '../ui/SectionOpening'
 
 export function About() {
   const { user } = useApp()
   const { t } = useTranslation()
 
   return (
-    <section id="about" className="py-20 px-6 max-w-5xl mx-auto">
+    <section id="about" className="py-20 px-6 max-w-7xl mx-auto">
       <FadeIn>
-        <div className="grid md:grid-cols-[1fr_2fr] border-2 border-rule shadow-pixel">
+        <SectionOpening section="about" title={t('about.title')} subtitle={t('about.subtitle')} />
+        <div className="grid md:grid-cols-[1fr_2fr] px-card">
 
           {/* Columna foto */}
           <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-8 bg-paper-dark flex flex-col items-center justify-start gap-4">
@@ -51,15 +53,7 @@ export function About() {
 
           {/* Columna texto */}
           <div className="p-8">
-            <div className="border-t-4 border-rule mb-1" />
-            <div className="border-t border-rule mb-5" />
-            <h2 className="font-headline text-3xl md:text-4xl font-black text-ink leading-none mb-1">
-              {t('about.title')}
-            </h2>
-            <p className="font-mono text-[10px] text-ink-muted uppercase tracking-widest mb-6">
-              {t('about.subtitle')}
-            </p>
-            <p className="font-sans text-base text-ink-light leading-relaxed drop-cap">
+            <p className="font-sans text-base text-ink-light leading-relaxed drop-cap max-w-prose">
               {t('about.description')}
             </p>
           </div>

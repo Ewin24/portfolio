@@ -14,7 +14,7 @@ function EducationCard({ item, index }: { item: EducationType; index: number }) 
 
   return (
     <FadeIn delay={index * 0.1}>
-      <div className="grid md:grid-cols-[200px_1fr] gap-0 border-2 border-rule shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75">
+      <div className="grid md:grid-cols-[200px_1fr] gap-0 px-card">
 
         {/* Left column — metadata */}
         <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-5 bg-paper-dark flex flex-col gap-3">
@@ -53,7 +53,7 @@ export function Education() {
   const { t } = useTranslation()
 
   return (
-    <section id="education" className="py-20 px-6 max-w-5xl mx-auto">
+    <section id="education" className="py-20 px-6 max-w-7xl mx-auto">
 
       {/* Section header */}
       <FadeIn>

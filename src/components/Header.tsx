@@ -33,7 +33,7 @@ export function Header() {
       className={`xp-header fixed top-0 left-0 right-0 z-50 transition-all duration-150 ${
         scrolled
           ? 'bg-paper border-b-2 border-rule shadow-pixel-sm'
-          : 'bg-paper/90 backdrop-blur-sm'
+          : 'bg-paper'
       }`}
     >
       <nav className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
@@ -84,6 +84,7 @@ export function Header() {
           onClick={() => setMobileOpen(!mobileOpen)}
           className="md:hidden p-1.5 border-2 border-rule text-ink cursor-pointer"
           aria-label="Menu"
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
@@ -123,6 +124,7 @@ export function Header() {
                   href="https://github.com/Ewin24"
                   target="_blank" rel="noopener noreferrer"
                   className="border-2 border-rule p-1.5 text-ink"
+                  aria-label="GitHub"
                 >
                   <GithubIcon size={16} />
                 </a>

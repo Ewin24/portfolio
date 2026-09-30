@@ -90,8 +90,8 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
     <FadeIn delay={index * 0.1} className={isLead ? 'card-shell-outer lead-track' : 'card-shell-outer'}>
       <article
         data-card={isLead ? 'lead' : 'secondary'}
-        className={`border-2 border-rule bg-paper hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75 card-shell${
-          isLead ? ' shadow-pixel-lg' : ' shadow-pixel'
+        className={`px-card bg-paper card-shell${
+          isLead ? ' shadow-pixel-lg' : ''
         }`}
       >
 
@@ -156,7 +156,7 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
             {/* Architecture Diagram (si existe) */}
             {study.architectureDiagram && (
               <div className="border border-rule-light p-3 bg-paper-dark">
-                <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink-muted mb-1">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
                   {t('projects.architecture')}
                 </p>
                 <p className="font-mono text-[10px] text-ink-light leading-relaxed">
