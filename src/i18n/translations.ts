@@ -123,7 +123,7 @@ export type TranslationKeys = {
   // Experience
   'experience.title': string
   'experience.subtitle': string
-  'experience.current': string
+  'experience.stamp': string
   'experience.achievements': string
   // Blog
   'blog.title': string
@@ -305,7 +305,7 @@ const translations: Record<Language, TranslationKeys> = {
     // Experience
     'experience.title': 'Trayectoria',
     'experience.subtitle': 'Experiencia profesional con impacto medible',
-    'experience.current': 'Actual',
+    'experience.stamp': 'En curso',
     'experience.achievements': 'Logros clave',
 
     // Blog
@@ -491,7 +491,7 @@ const translations: Record<Language, TranslationKeys> = {
     // Experience
     'experience.title': 'Experience',
     'experience.subtitle': 'Professional track record with measurable impact',
-    'experience.current': 'Current',
+    'experience.stamp': 'Current',
     'experience.achievements': 'Key achievements',
 
     // Blog
