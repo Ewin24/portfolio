@@ -59,7 +59,7 @@ export function Recommendations({ currentPost }: Props) {
                   {/* Tags */}
                   <div className="flex flex-wrap gap-1">
                     {post.tags.slice(0, 2).map((tag) => (
-                      <span key={tag} className="skill-tag text-[8px] flex items-center gap-1">
+                      <span key={tag} className="skill-tag text-[10px] flex items-center gap-1">
                         <Tag size={6} /> {tag}
                       </span>
                     ))}
@@ -76,7 +76,7 @@ export function Recommendations({ currentPost }: Props) {
                   </p>
 
                   {/* Read link */}
-                  <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-accent hover:text-accent-dark flex items-center gap-1 mt-auto pt-2 transition-colors">
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-accent hover:text-accent-dark flex items-center gap-1 mt-auto pt-2 transition-colors">
                     {lang === 'es' ? 'Leer' : 'Read'} <ArrowRight size={9} />
                   </span>
                 </button>

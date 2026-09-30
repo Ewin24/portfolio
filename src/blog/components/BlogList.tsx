@@ -25,7 +25,7 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
           {/* Tags row */}
           <div className="flex flex-wrap gap-1">
             {post.tags.slice(0, 3).map((tag) => (
-              <span key={tag} className="skill-tag text-[9px] flex items-center gap-1">
+              <span key={tag} className="skill-tag text-[10px] flex items-center gap-1">
                 <Tag size={7} /> {tag}
               </span>
             ))}

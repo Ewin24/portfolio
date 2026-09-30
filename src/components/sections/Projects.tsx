@@ -156,7 +156,7 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
             {/* Architecture Diagram (si existe) */}
             {study.architectureDiagram && (
               <div className="border border-rule-light p-3 bg-paper-dark">
-                <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-ink-muted mb-1">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
                   {t('projects.architecture')}
                 </p>
                 <p className="font-mono text-[10px] text-ink-light leading-relaxed">

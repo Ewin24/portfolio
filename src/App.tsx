@@ -115,7 +115,7 @@ function App() {
                 <ArrowLeft size={14} />
                 {lang === 'es' ? 'Volver al portfolio' : 'Back to portfolio'}
               </button>
-              <span className="font-mono text-[9px] text-ink-muted uppercase tracking-widest">
+              <span className="font-mono text-[10px] text-ink-muted uppercase tracking-widest">
                 Blog
               </span>
             </div>

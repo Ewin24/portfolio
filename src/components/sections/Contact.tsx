@@ -16,7 +16,7 @@ export function Contact() {
           <div className="border-b-4 border-rule p-6 bg-ink text-paper">
             <div className="border-t-4 border-paper mb-1" />
             <div className="border-t border-paper mb-4" />
-            <h2 className="font-headline text-4xl md:text-5xl font-black leading-none">
+            <h2 className="font-headline text-4xl md:text-5xl font-black leading-none text-paper">
               {t('contact.title')}
             </h2>
             <p className="font-mono text-xs text-paper opacity-70 mt-2 uppercase tracking-widest">
