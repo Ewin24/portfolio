@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from './hooks/useTranslation'
 import { useTheme } from './theme/ThemeContext'
 import { Header } from './components/Header'
+import { ReadingProgress } from './components/ui/ReadingProgress'
 import { XPShell } from './components/xp/XPShell'
 import { Taskbar } from './components/xp/Taskbar'
 import { WindowManagerProvider } from './components/xp/WindowManager'
@@ -119,6 +120,7 @@ function App() {
                 Blog
               </span>
             </div>
+            <ReadingProgress />
           </div>
 
           {/* Full-page blog content */}

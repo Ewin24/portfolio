@@ -4,6 +4,7 @@ import { Menu, X, Globe } from 'lucide-react'
 import { useTranslation } from '../hooks/useTranslation'
 import { GithubIcon } from './ui/GithubIcon'
 import { ThemeToggle } from './xp/ThemeToggle'
+import { ReadingProgress } from './ui/ReadingProgress'
 
 const NAV_ITEMS = [
   { key: 'nav.about'      as const, href: '#about' },
@@ -133,6 +134,7 @@ export function Header() {
           </motion.div>
         )}
       </AnimatePresence>
+      <ReadingProgress />
     </header>
   )
 }

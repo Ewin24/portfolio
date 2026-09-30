@@ -224,6 +224,19 @@
     margin-top: 0.25rem;
   }
 
+  /* Reading progress — fills along the bottom edge of its positioned parent. */
+  .reading-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--color-accent);
+    transform: scaleX(var(--p, 0));
+    transform-origin: left;
+    pointer-events: none;
+  }
+
   /* Skill tag */
   .skill-tag {
     display: inline-block;
