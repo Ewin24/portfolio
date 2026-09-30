@@ -156,7 +156,7 @@ export function Hero() {
                 >
                   {stat.value}
                 </motion.p>
-                <p className="font-mono text-[11px] text-ink-muted mt-1 uppercase tracking-wide unnamed-label">
+                <p className="font-mono text-[11px] text-ink-muted mt-1 uppercase tracking-wide">
                   {stat.label}
                 </p>
               </div>

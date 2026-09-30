@@ -42,6 +42,7 @@ export type TranslationKeys = {
   'skills.activity': string
   'skills.heading': string
   'skills.milestones': string
+  'skills.milestoneCount': string
   'skills.detail': string
   // Tech milestones (content — translatable)
   'skills.dotnet.milestone1': string
@@ -220,6 +221,7 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.activity': 'Uso por repositorios públicos',
     'skills.heading': 'Logros Clave',
     'skills.milestones': 'Hitos',
+    'skills.milestoneCount': 'hitos',
     'skills.detail': 'Detalle técnico',
     'skills.dotnet.milestone1': 'Clean Architecture en sistemas de producción',
     'skills.dotnet.milestone2': 'Migración de .NET Framework a .NET Core',
@@ -405,6 +407,7 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.activity': 'Usage by public repositories',
     'skills.heading': 'Key Achievements',
     'skills.milestones': 'Milestones',
+    'skills.milestoneCount': 'milestones',
     'skills.detail': 'Technical Detail',
     'skills.dotnet.milestone1': 'Clean Architecture in production systems',
     'skills.dotnet.milestone2': 'Migration from .NET Framework to .NET Core',
