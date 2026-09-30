@@ -146,6 +146,32 @@
     color: var(--color-on-ink);
   }
 
+  /* Pixel Card — the one card recipe. `.px-card` is the static surface
+     (rule border + pixel shadow); `.px-card-interactive` adds the press for
+     cards that are links or buttons. A shadow-pixel-* utility resizes the
+     shadow; `.px-card-sm` also shrinks the press to match it. */
+  .px-card {
+    --card-press: 4px;
+    border: 2px solid var(--color-rule);
+    box-shadow: var(--shadow-pixel);
+  }
+
+  .px-card-sm {
+    --card-press: 2px;
+    box-shadow: var(--shadow-pixel-sm);
+  }
+
+  .px-card-interactive {
+    cursor: pointer;
+    transition: box-shadow 75ms ease, translate 75ms ease;
+  }
+
+  .px-card-interactive:hover,
+  .px-card-interactive:active {
+    box-shadow: none;
+    translate: var(--card-press) var(--card-press);
+  }
+
   /* Pixel Badge / Tag */
   .px-badge {
     display: inline-block;
@@ -1152,9 +1178,9 @@ html[data-theme='xp'] {
   /* Keep the affordance, drop the displacement: the shadow still answers
      the interaction, nothing slides under the pointer.
 
-     The card press lives in Tailwind utilities on the components themselves
-     (hover:/active:translate-*), not in a .px-card class, so it has to be
-     neutralised through the utility rather than a component selector.
+     Cards press through .px-card-interactive; any remaining ad-hoc press
+     lives in Tailwind utilities (hover:/active:translate-*). Both are
+     neutralised below.
 
      Both signs are matched: Tailwind writes the negative variant as
      `hover:-translate-x-0.5`, where the leading `-` sits between the modifier
@@ -1178,7 +1204,9 @@ html[data-theme='xp'] {
   [class*='hover:translate-']:hover,
   [class*='hover:-translate-']:hover,
   [class*='active:translate-']:active,
-  [class*='active:-translate-']:active {
+  [class*='active:-translate-']:active,
+  .px-card-interactive:hover,
+  .px-card-interactive:active {
     translate: none !important;
   }
 }

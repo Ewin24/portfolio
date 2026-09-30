@@ -73,7 +73,7 @@ export function Hero() {
         }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 pt-24 pb-16 w-full">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-16 w-full">
 
         {/* Kicker */}
         <FadeIn>

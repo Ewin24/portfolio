@@ -8,7 +8,7 @@ export function Testimonials() {
   const { lang } = useTranslation()
 
   return (
-    <section id="testimonials" className="py-20 px-6 max-w-5xl mx-auto">
+    <section id="testimonials" className="py-20 px-6 max-w-7xl mx-auto">
       <FadeIn>
         <SectionOpening
           section="testimonials"
@@ -30,7 +30,7 @@ export function Testimonials() {
           return (
             <FadeIn key={t.id} delay={i * 0.1}>
               <div
-                className="border-2 border-rule bg-paper shadow-pixel-sm hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all duration-75 flex flex-col h-full"
+                className="px-card px-card-sm bg-paper flex flex-col h-full"
               >
                 {/* Quote */}
                 <div className="p-6 flex-1">

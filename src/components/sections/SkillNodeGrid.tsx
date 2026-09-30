@@ -45,11 +45,11 @@ export function SkillNodeGrid({
             aria-pressed={isSelected}
             className={`
               w-full text-left
-              border-2 cursor-pointer p-4 select-none
+              px-card cursor-pointer p-4 select-none
               transition-all duration-75
               ${isSelected
-                ? 'bg-ink text-paper shadow-none translate-x-1 translate-y-1 border-rule'
-                : 'bg-paper text-ink shadow-pixel border-rule hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1'
+                ? 'bg-ink text-paper shadow-none translate-x-1 translate-y-1'
+                : 'px-card-interactive bg-paper text-ink'
               }
             `}
           >

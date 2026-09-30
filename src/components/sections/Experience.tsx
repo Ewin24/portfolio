@@ -65,7 +65,7 @@ function ExperienceCard({
   return (
     <FadeIn delay={index * 0.1}>
       <div
-        className={`grid md:grid-cols-[200px_1fr] gap-0 border-2 border-rule shadow-pixel hover:shadow-none hover:translate-x-1 hover:translate-y-1 active:shadow-none active:translate-x-1 active:translate-y-1 transition-all duration-75${
+        className={`grid md:grid-cols-[200px_1fr] gap-0 px-card${
           carriesTracked ? ' is-lineage-kin' : ''
         }${tracked && !carriesTracked ? ' is-lineage-other' : ''}`}
       >
@@ -173,7 +173,7 @@ export function Experience() {
   return (
     <section
       id="experience"
-      className={`py-20 px-6 max-w-5xl mx-auto${tracked ? ' is-tracing' : ''}`}
+      className={`py-20 px-6 max-w-7xl mx-auto${tracked ? ' is-tracing' : ''}`}
     >
 
       {/* Section header */}
