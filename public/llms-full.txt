@@ -1,6 +1,6 @@
 # Edwin Trigos | Software Architect & Full Stack Developer
 
-> Portfolio of Edwin Trigos — Software Architect and Full Stack Developer specializing in .NET, Clean Architecture, and financial systems. 5+ years building production systems. Bilingual technical blog (ES/EN). Remote from Bucaramanga, Colombia.
+> Portfolio of Edwin Trigos — Tech Lead and .NET Developer specializing in .NET, SQL Server, Clean Architecture, and financial systems. 5+ years building production systems. Bilingual technical blog (ES/EN). Remote from Bucaramanga, Colombia.
 
 Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure, Cloudflare Workers, IndexedDB, Playwright, Vitest.
 
@@ -310,7 +310,7 @@ https://portfolio.edwintrigos.workers.dev/#projects
 
 **Solution**: Domain, ports and adapters behind a composition root with IndexedDB as the data layer. A Cloudflare Workers relay solves CORS and adds conditional GET, size and time limits, an SSRF guard re-applied on every redirect hop, and an explicitly non-authenticating origin guard. Parsers for RSS 2.0, RDF, Atom and JSON Feed normalize onto one entry model; DOMPurify sanitisation at a single choke point. OPML import/export, read/unread/starred state with per-field timestamps, per-feed failure reporting.
 
-**Impact**: 426 tests at ~95% statement coverage against an enforced 70% gate. 248 kB raw bundle, 88 kB gzipped. GitHub Actions runs lint, typecheck and tests before deploying to Cloudflare Workers. Public MIT-licensed repository.
+**Impact**: 787 tests with lint and typecheck clean, and an enforced 70% coverage gate (the last measurement, at 426 tests, gave ~95% statement coverage and a 248 kB raw bundle, 88 kB gzipped). GitHub Actions runs lint, typecheck and tests before deploying to Cloudflare Workers. Public MIT-licensed repository.
 
 ---
 
@@ -334,7 +334,7 @@ https://portfolio.edwintrigos.workers.dev/#projects
 
 ## About Edwin Trigos
 
-Software Architect and Full Stack Developer with 5+ years building production systems in fintech, ERP, and SaaS. Specialized in .NET ecosystem, Clean Architecture, and cloud infrastructure.
+Tech Lead and .NET Developer with 5+ years building production systems. Leads the credit area of a Colombian consumer-credit fintech: loan origination, credit-limit and credit-risk calculation, identity validation and bureau integration, on .NET, SQL Server and Clean Architecture. Based in Bucaramanga, Colombia. Remote-ready.
 
 **Location**: Bucaramanga, Colombia (Remote)
 **GitHub**: https://github.com/Ewin24

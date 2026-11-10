@@ -1638,3 +1638,37 @@ html[data-theme='xp'] {
     overflow-x: hidden;
   }
 }
+/* ─── Disclosures ──────────────────────────────────────────────────────────
+   Native <details>: the long form of a case study and the tail of a role's
+   achievements. The summary is styled as a text control, with its own marker
+   because the default triangle is drawn differently in every engine. */
+.disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  border-bottom: 2px solid var(--color-rule);
+  padding-bottom: 2px;
+}
+.disclosure::-webkit-details-marker { display: none; }
+.disclosure::before { content: '+'; color: var(--color-accent); }
+details[open] > .disclosure::before { content: '−'; }
+.disclosure:hover { color: var(--color-accent); }
+.disclosure:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+
+/* The clamped teaser and the full text say the same thing; only one shows. */
+.case-body:has(.case-full[open]) .case-teaser { display: none; }
+
+/* ─── XP window fit ────────────────────────────────────────────────────────
+   Breakpoints follow the viewport, not the window: a 480px window on a wide
+   screen would get two education columns. The scroll hint points at a page
+   the window does not have, and sat on top of the stat labels. */
+[data-theme='xp'] .xp-window-body .edu-grid { grid-template-columns: minmax(0, 1fr); }
+[data-theme='xp'] .hero-scroll-hint { display: none; }

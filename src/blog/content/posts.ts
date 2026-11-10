@@ -3143,7 +3143,7 @@ And the JNI rule: if the native API changes frequently or has many methods, use 
     title: 'BOT Ubica + Prueba de Vida: cómo validé identidad biométrica en tiempo real con fallback humano y catálogo de diagnósticos',
     titleEn: 'BOT Ubica + Proof of Life: how I validated biometric identity in real-time with human fallback and diagnostic catalog',
     date: '2026-07-15',
-    tags: ['dotnet', 'biometrics', 'strategy-pattern', 'catalog-driven', 'fintech', 'orchestration', 'liveness-detection', 'geolocation'],
+    tags: ['.NET', 'biometrics', 'strategy-pattern', 'catalog-driven', 'fintech', 'orchestration', 'liveness-detection', 'geolocation'],
     category: 'arquitectura',
     featured: true,
     excerpt:
@@ -3830,7 +3830,7 @@ Both classes have barriers now. The dev command boots the relay, a missing relay
     title: 'Una interfaz uniforme no arregla una asimetría semántica',
     titleEn: 'A Uniform Interface Does Not Fix a Semantic Asymmetry',
     date: '2026-09-12',
-    tags: ['arquitectura', 'strategy-pattern', 'feature-flags', 'dotnet', 'integration'],
+    tags: ['arquitectura', 'strategy-pattern', 'feature-flags', '.NET', 'integration'],
     category: 'arquitectura',
     featured: false,
     excerpt:
@@ -4463,7 +4463,7 @@ The last part was the hardest to accept. To trust the gate again I had to prove 
     title: 'El atributo de autorización que ninguna prueba unitaria puede ver',
     titleEn: 'The Authorization Attribute a Unit Test Cannot See',
     date: '2026-09-26',
-    tags: ['testing', 'tdd', 'ASP.NET Core', 'dotnet', 'authorization'],
+    tags: ['testing', 'tdd', 'ASP.NET Core', '.NET', 'authorization'],
     category: 'arquitectura',
     featured: false,
     excerpt:

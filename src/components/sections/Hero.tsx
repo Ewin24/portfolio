@@ -9,8 +9,8 @@ import { workExperience, caseStudies } from '../../content'
  * Stats que venden INGENIERÍA, no GitHub metrics
  *
  * yearsExp    → calculado desde el trabajo más antiguo en content/experience
- * systems     → número de case studies (proyectos en producción)
- * stack       → número de tecnologías únicas en todos los casos + experience
+ * systems     → número de case studies
+ * tests       → pruebas automatizadas de la API del LOS (ver case-studies.ts)
  */
 /**
  * Año en que arranca la carrera: el menor año que aparezca en cualquier período.
@@ -37,28 +37,21 @@ function computeStats() {
   const startYear = earliestCareerYear() ?? currentYear - 5
   const yearsExp = Math.max(0, currentYear - startYear)
 
-  // Sistemas en producción = case studies con NDA (proyectos reales de empresa)
   const systems = caseStudies.length
 
-  // Stack único: unión de todos los stacks
-  const allTechs = new Set([
-    ...workExperience.flatMap((j) => j.stack),
-    ...caseStudies.flatMap((p) => p.stack),
-  ])
-
-  return { yearsExp, systems, stackCount: allTechs.size }
+  return { yearsExp, systems }
 }
 
 export function Hero() {
   const { user } = useApp()
   const { t, lang } = useTranslation()
   const reduceMotion = useReducedMotion()
-  const { yearsExp, systems, stackCount } = computeStats()
+  const { yearsExp, systems } = computeStats()
 
   const stats = [
     { value: `${yearsExp}+`, label: t('hero.stats.yearsExp') },
     { value: `${systems}`,   label: t('hero.stats.systems') },
-    { value: `${stackCount}`, label: t('hero.stats.stack') },
+    { value: lang === 'es' ? '3.009' : '3,009', label: t('hero.stats.stack') },
   ]
 
   return (
@@ -176,7 +169,7 @@ export function Hero() {
       {/* Scroll indicator — the loop is decorative, so it stops entirely
           under reduced motion instead of running forever off-screen. */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        className="hero-scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2"
         animate={reduceMotion ? undefined : { y: [0, 6, 0] }}
         transition={reduceMotion ? undefined : { repeat: Infinity, duration: 2 }}
         aria-hidden="true"

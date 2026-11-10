@@ -9,7 +9,7 @@ export const inMemoryTestsLieAboutTransactions: Omit<BlogPost, 'readingTime'> = 
   title: 'Las pruebas InMemory mienten sobre las transacciones',
   titleEn: 'InMemory Tests Lie About Transactions',
   date: '2026-11-07',
-  tags: ['testing', 'EF Core', 'SQL Server', 'dotnet', 'concurrency'],
+  tags: ['testing', 'EF Core', 'SQL Server', '.NET', 'concurrency'],
   category: 'arquitectura',
   featured: false,
   excerpt:

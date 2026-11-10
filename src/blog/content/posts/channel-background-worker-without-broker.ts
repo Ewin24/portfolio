@@ -6,7 +6,7 @@ export const channelBackgroundWorkerWithoutBroker: Omit<BlogPost, 'readingTime'>
   title: 'Trabajo en segundo plano en .NET sin un broker de mensajes',
   titleEn: 'Background Work in .NET Without a Message Broker',
   date: '2026-10-20',
-  tags: ['dotnet', 'ASP.NET Core', 'arquitectura', 'BackgroundService', 'Channel'],
+  tags: ['.NET', 'ASP.NET Core', 'arquitectura', 'BackgroundService', 'Channel'],
   category: 'arquitectura',
   featured: false,
   excerpt:
