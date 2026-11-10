@@ -7,6 +7,20 @@ import { workExperience } from './src/content/experience'
 import { education } from './src/content/education'
 import { blogPosts } from './src/blog/content/posts'
 
+// The build fails on a broken blog graph instead of shipping a dead related link
+// or two posts fighting over one URL. Posts live in separate files, so nothing else checks this.
+for (const field of ['id', 'slug'] as const) {
+  const seen = new Set<string>()
+  for (const p of blogPosts) {
+    if (seen.has(p[field])) throw new Error(`Duplicate blog post ${field} "${p[field]}"`)
+    seen.add(p[field])
+  }
+}
+const postIds = new Set(blogPosts.map((p) => p.id))
+for (const p of blogPosts) {
+  for (const r of p.relatedIds ?? []) if (!postIds.has(r)) throw new Error(`${p.id}: relatedIds "${r}" matches no post`)
+}
+
 const SITE_URL = 'https://ewin24.github.io/portfolio/'
 /** Newest post date — the content-derived "last modified" for the home page and its JSON-LD. */
 const latestPostDate = blogPosts.reduce((max, p) => (p.date > max ? p.date : max), '')
@@ -142,7 +156,7 @@ function generateArticleSchemas(): string {
     keywords: post.tags.join(', '),
     articleSection: post.category,
     wordCount: post.readingTime * 200,
-    mainEntityOfPage: `https://ewin24.github.io/portfolio/#/blog/article/${post.slug}`,
+    mainEntityOfPage: `https://ewin24.github.io/portfolio/#blog/article/${post.slug}`,
     speakable: {
       '@type': 'SpeakableSpecification',
       cssSelector: ['.blog-article h1', '.blog-article .excerpt', 'h1', 'h2'],
@@ -367,7 +381,7 @@ function generatePageWrapperSchemas(): string {
       '@type': 'ListItem',
       position: idx + 1,
       name: post.title,
-      url: `https://ewin24.github.io/portfolio/#/blog/article/${post.slug}`,
+      url: `https://ewin24.github.io/portfolio/#blog/article/${post.slug}`,
       description: post.excerpt,
     })),
   }
@@ -383,7 +397,7 @@ function generatePageWrapperSchemas(): string {
 /**
  * sitemap.xml generated from the same content the JSON-LD comes from, so it
  * cannot drift from `blogPosts`: home (with hreflang alternates), the section
- * anchors, one entry per post using the app's `#/blog/article/<slug>` route
+ * anchors, one entry per post using the app's `#blog/article/<slug>` route
  * with `lastmod` = post date, and the two llms files.
  */
 function generateSitemap(): string {
@@ -393,7 +407,7 @@ function generateSitemap(): string {
     `    <lastmod>${latestPostDate}</lastmod>\n    <xhtml:link rel="alternate" hreflang="en" href="${SITE_URL}?lang=en" />\n    <xhtml:link rel="alternate" hreflang="es" href="${SITE_URL}?lang=es" />\n`,
   )
   const sections = ['about', 'projects', 'skills', 'experience', 'blog', 'contact'].map((s) => entry(`${SITE_URL}#${s}`))
-  const posts = blogPosts.map((p) => entry(`${SITE_URL}#/blog/article/${p.slug}`, `    <lastmod>${p.date}</lastmod>\n`))
+  const posts = blogPosts.map((p) => entry(`${SITE_URL}#blog/article/${p.slug}`, `    <lastmod>${p.date}</lastmod>\n`))
   const llms = ['llms.txt', 'llms-full.txt'].map((f) => entry(`${SITE_URL}${f}`))
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${[home, ...sections, ...posts, ...llms].join('\n')}\n</urlset>\n`
 }

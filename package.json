@@ -11,6 +11,7 @@
     "test:xp": "node driver/xp-interactive.mjs",
     "test:newspaper": "node driver/newspaper.mjs",
     "test:newspaper:update": "node driver/newspaper.mjs --update",
+    "test:routes": "node driver/routes.mjs",
     "cv": "node driver/cv.mjs"
   },
   "dependencies": {

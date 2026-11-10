@@ -1,4 +1,10 @@
 import type { BlogPost } from '../types'
+import { asyncLocalDoesNotFlowBack } from './posts/asynclocal-does-not-flow-back'
+import { channelBackgroundWorkerWithoutBroker } from './posts/channel-background-worker-without-broker'
+import { characterizationTestsBeforeRefactor } from './posts/characterization-tests-before-refactor'
+import { getdateVsSysdatetime } from './posts/getdate-vs-sysdatetime'
+import { inMemoryTestsLieAboutTransactions } from './posts/inmemory-tests-lie-about-transactions'
+import { redactionGrepMissesCamelCase } from './posts/redaction-grep-misses-camelcase'
 
 function calcReadingTime(text: string): number {
   const words = text.split(/\s+/).length
@@ -4666,6 +4672,13 @@ Before touching anything I ran the full suite as a baseline, and after restoring
 **What gets mocked is a decision, not an accident of what is easy to instantiate.** Mocking the domain service was correct because it was already tested elsewhere; mocking authorization would have been correct only if this test were not, precisely, the test of authorization.`,
     relatedIds: ['domain-exception-problemdetails-pipeline', 'strict-tdd-committed-playwright-driver'],
   },
+  // Artículos 19–24: one file each under ./posts/
+  redactionGrepMissesCamelCase,
+  channelBackgroundWorkerWithoutBroker,
+  getdateVsSysdatetime,
+  characterizationTestsBeforeRefactor,
+  inMemoryTestsLieAboutTransactions,
+  asyncLocalDoesNotFlowBack,
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
