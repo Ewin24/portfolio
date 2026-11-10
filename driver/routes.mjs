@@ -21,8 +21,11 @@ function check(name, cond, extra = '') {
   else console.log(`  ✓ ${name}`)
 }
 
+/** Waits for the article heading (or times out and reports what rendered instead). */
 async function articleState(page) {
-  await page.waitForTimeout(800)
+  await page
+    .waitForFunction((t) => document.querySelector('h1')?.textContent?.includes(t), TITLE, { timeout: 10_000 })
+    .catch(() => {})
   return page.evaluate(() => ({
     h1: document.querySelector('h1')?.textContent ?? '',
     hash: location.hash,
@@ -48,6 +51,7 @@ async function run() {
       await page.evaluate((h) => { location.hash = h }, `#/blog/article/${SLUG}`)
       const s = await articleState(page)
       check('hashchange to #/blog/… in an open tab opens the article', s.h1.includes(TITLE), JSON.stringify(s))
+      check('hashchange to #/blog/… ends on the canonical hash', s.hash === `#blog/article/${SLUG}`, s.hash)
     } finally { await ctx.close() }
   } finally {
     await browser.close()
