@@ -28,7 +28,10 @@ function ExperienceCard({ job, index }: CardProps) {
         <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-5 bg-paper-dark flex flex-col gap-3">
           <div>
             <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
-              {job.period}
+              {lang === 'es' ? job.period : job.period.replace('Presente', 'Present').replace(/\bEne\b/g, 'Jan')}
+            </p>
+            <p className="font-mono text-[10px] text-ink-muted">
+              {t(`experience.employment.${job.employment}`)}
             </p>
             {/* Decorative: the period above already reads Presente/Present. */}
             {job.current && (

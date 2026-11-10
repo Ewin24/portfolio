@@ -48,4 +48,3 @@ Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, Typ
 ## Optional
 - [Contact](https://ewin24.github.io/portfolio/#contact): Contact information and links to GitHub and LinkedIn profiles.
 - [Education](https://ewin24.github.io/portfolio/#education): Academic background and certifications.
-- [Testimonials](https://ewin24.github.io/portfolio/#testimonials): Professional recommendations and endorsements.

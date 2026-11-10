@@ -139,6 +139,8 @@ export interface WorkExperience {
   /** Ej: "Mar 2021 – Presente" */
   period: string
   current: boolean
+  /** Tipo de vínculo: un reclutador lo lee para entender roles simultáneos. */
+  employment: 'full-time' | 'contract' | 'open-source' | 'bootcamp'
 
   location: string
   locationEn?: string
@@ -172,16 +174,3 @@ export interface Education {
   order: number
 }
 
-/**
- * Testimonial — Referencia profesional de colegas o clientes.
- */
-export interface Testimonial {
-  id: string
-  name: string
-  role: string
-  roleEn: string
-  company: string
-  text: string
-  textEn: string
-  avatarUrl?: string
-}

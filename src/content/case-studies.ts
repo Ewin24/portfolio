@@ -17,7 +17,7 @@ import type { CaseStudy } from '../types'
 
 export const caseStudies: CaseStudy[] = [
   // ═════════════════════════════════════════════════════════════════════════
-  // PROYECTO 1 — Fábricas de Crédito QUAC (LOS)
+  // PROYECTO 1 — Fintech de crédito de consumo (LOS)
   // Sistema de Originación de Crédito completo
   // ═════════════════════════════════════════════════════════════════════════
   {
@@ -27,10 +27,10 @@ export const caseStudies: CaseStudy[] = [
     lead: true,
     order: 1,
 
-    title: 'Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC',
-    titleEn: 'Loan Origination System (LOS) — Fábricas de Crédito QUAC',
+    title: 'Sistema de Originación de Crédito (LOS)',
+    titleEn: 'Loan Origination System (LOS)',
 
-    company: 'Fábricas de Crédito QUAC',
+    company: 'Fintech de crédito de consumo (NDA)',
     companyAnon: false,
     industry: 'Fintech / Crédito',
 
@@ -67,12 +67,12 @@ export const caseStudies: CaseStudy[] = [
     id: 'sovi-identity-verification',
     slug: 'sistema-orquestador-validacion-identidad',
     featured: true,
-    order: 2,
+    order: 4,
 
     title: 'SOVI — Sistema Orquestador de Validación de Identidad',
     titleEn: 'SOVI — Identity Validation Orchestrator System',
 
-    company: 'Fábricas de Crédito QUAC',
+    company: 'Fintech de crédito de consumo (NDA)',
     companyAnon: false,
     industry: 'Fintech / Seguridad',
 
@@ -152,7 +152,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'nominas-franquicias',
     slug: 'extension-plantillas-nomina-franquicias',
     featured: true,
-    order: 4,
+    order: 9,
 
     title: 'Sistema de Nómina — Generación de Documentos para Franquicias',
     titleEn: 'Payroll System — Document Generation for Franchise Chain',
@@ -193,7 +193,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'apiquac-admin-ui',
     slug: 'admin-module-realignment-los',
     featured: true,
-    order: 5,
+    order: 10,
 
     title: 'Arquitectura UI para Módulo Administrativo de LOS',
     titleEn: 'UI Architecture for LOS Admin Module',
@@ -233,7 +233,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'portfolio-hybrid',
     slug: 'portfolio-arquitectura-hibrida',
     featured: true,
-    order: 6,
+    order: 11,
 
     title: 'Portfolio con Arquitectura Híbrida (React 19 + Vite)',
     titleEn: 'Hybrid Architecture Portfolio (React 19 + Vite)',
@@ -275,7 +275,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'infobip-email-api',
     slug: 'api-centralizada-comunicaciones-infobip',
     featured: true,
-    order: 7,
+    order: 6,
 
     title: 'API Centralizada de Comunicaciones por Email — Infobip como Proveedor Único',
     titleEn: 'Centralized Email Communications API — Infobip as Single Provider',
@@ -318,7 +318,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'harmony-music-oss',
     slug: 'harmony-music-flutter-open-source-maintainer',
     featured: true,
-    order: -1,
+    order: 8,
 
     title: 'Harmony-Music — Mantenedor de App Flutter Open Source de Música Multiplataforma',
     titleEn: 'Harmony-Music — Maintainer of Cross-Platform Flutter Open Source Music App',
@@ -361,7 +361,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'starsol-saas',
     slug: 'starsol-saas-riesgos-financieros',
     featured: true,
-    order: 0,
+    order: 5,
 
     title: 'STARSOL — Plataforma SaaS para Gestión Integral de Riesgos',
     titleEn: 'STARSOL — SaaS Platform for Integrated Risk Management',
@@ -402,7 +402,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'readerss',
     slug: 'readerss-lector-rss-offline',
     featured: true,
-    order: 8,
+    order: 7,
 
     title: 'ReaderSS — Lector RSS con lectura offline y relay en el borde',
     titleEn: 'ReaderSS — RSS Reader with Offline Reading and an Edge Relay',

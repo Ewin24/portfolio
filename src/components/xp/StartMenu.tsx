@@ -16,7 +16,6 @@ const PROGRAMS: AppId[] = [
   'projects',
   'skills-experience',
   'education',
-  'testimonials',
   'blog',
   'contact',
 ]

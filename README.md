@@ -25,7 +25,7 @@ No escribo código porque sí. Construyo sistemas que:
 
 ## Proyectos Relevantes
 
-### 🏦 Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC
+### 🏦 Sistema de Originación de Crédito (LOS)
 Sistema completo de originación de crédito desde cero: base de datos transaccional (DDL, 30+ tablas, 4 esquemas, 23 estados), 27 stored procedures, API REST .NET con Clean Architecture (repositorios por esquema, servicios por dominio, controladores por canal), 114+ endpoints en 6 capas BFF. En 2026 sumé un endpoint administrativo que reemplazó una operación reservada al DBA, con su permiso probado por la tubería de autorización real (xUnit + TestServer), y rediseñé el espacio de trabajo del operador en commits pequeños y revisables.
 
 ### 🎙️ SOVI — Sistema Orquestador de Validación de Identidad

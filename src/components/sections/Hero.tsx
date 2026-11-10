@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react'
-import { ArrowDown, Mail } from 'lucide-react'
+import { ArrowDown, Download, Mail } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
@@ -51,7 +51,7 @@ function computeStats() {
 
 export function Hero() {
   const { user } = useApp()
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
   const reduceMotion = useReducedMotion()
   const { yearsExp, systems, stackCount } = computeStats()
 
@@ -105,7 +105,7 @@ export function Hero() {
                 {t('hero.role')}
               </p>
               <p className="font-mono text-xs text-ink-muted mt-2">
-                {user?.location || 'Colombia'}
+                {t('hero.availability')}
               </p>
             </div>
             <p className="font-sans text-base text-ink-light leading-relaxed">
@@ -117,7 +117,15 @@ export function Hero() {
         {/* CTAs */}
         <FadeIn delay={0.3}>
           <div className="flex flex-wrap gap-4 mb-12">
-            <a href="#projects" className="px-btn">
+            <a
+              href={`${import.meta.env.BASE_URL}cv/Edwin-Trigos-CV-${lang === 'es' ? 'ES' : 'EN'}.pdf`}
+              className="px-btn"
+              download
+            >
+              <Download size={14} />
+              {t('hero.cta.cv')}
+            </a>
+            <a href="#projects" className="px-btn px-btn-outline">
               {t('hero.cta.projects')}
             </a>
             <a href="#contact" className="px-btn px-btn-outline">
