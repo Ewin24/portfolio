@@ -492,7 +492,9 @@ function preloadStaticContent(): import('vite').Plugin {
 }
 
 export default defineConfig({
-  base: '/portfolio/',
+  // GitHub Pages serves the site under /portfolio/. Cloudflare Pages (CF_PAGES=1) and Vercel (VERCEL=1)
+  // set those variables at build time and serve the site at the root.
+  base: process.env.CF_PAGES || process.env.VERCEL ? '/' : '/portfolio/',
   plugins: [react(), tailwindcss(), preloadStaticContent()],
   resolve: {
     alias: {
