@@ -50,7 +50,7 @@ function generatePreloadedContent(): string {
     `<h1>Edwin Trigos — Software Architect &amp; Full Stack Developer</h1>`,
   )
   lines.push(
-    `<p>Software Architect and Full Stack Developer with 5+ years building production systems in .NET, Clean Architecture, fintech, and cloud infrastructure. Based in Bucaramanga, Colombia. Remote-ready.</p>`,
+    `<p>Tech Lead and .NET Developer with 5+ years building production systems. Leads the credit area of a Colombian consumer-credit fintech: loan origination, credit-limit and credit-risk calculation, identity validation and bureau integration, on .NET, SQL Server and Clean Architecture. Based in Bucaramanga, Colombia. Remote-ready.</p>`,
   )
 
   // About

@@ -50,7 +50,7 @@ Fork mantenido de una app de música multiplataforma abandonada por su autor. Tr
 Unificación de 5 silos de envío de correo en una sola API, con diagnóstico de entregas que pasó de 30 minutos a 5 segundos.
 
 ### 📰 ReaderSS — Lector RSS con lectura offline
-Lector RSS en el navegador con dominio, puertos y adaptadores sobre IndexedDB, y un relay en Cloudflare Workers que resuelve CORS con GET condicional y guarda SSRF por salto de redirección. 426 pruebas, repositorio público con licencia MIT.
+Lector RSS en el navegador con dominio, puertos y adaptadores sobre IndexedDB, y un relay en Cloudflare Workers que resuelve CORS con GET condicional y guarda SSRF por salto de redirección. 787 pruebas, repositorio público con licencia MIT.
 
 > ℹ️ Varios proyectos contienen información confidencial (NDA). Los casos de estudio completos con detalle de arquitectura, diagramas e impacto están disponibles en el portafolio en vivo.
 
