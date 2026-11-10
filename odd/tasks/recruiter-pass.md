@@ -15,15 +15,17 @@ Branch: feat/recruiter-pass · Delivery: ask-on-risk, ~400-line slices · Checks
 
 ## Tasks
 
-- [ ] T1 S1 hero — inline
-- [ ] T2 S2,S3 experience — inline
-- [ ] T3 S4 remove testimonials — inline
-- [ ] T4 S5,S6 anonymize + order + skills — inline
-- [ ] T5 S7,S9 DevManager + new metrics — inline
-- [ ] T6 S8 CV PDF — inline
+- [x] T1 S1 hero — inline — 48d7b3e
+- [x] T2 S2,S3 experience — inline — 48d7b3e
+- [x] T3 S4 remove testimonials — inline — 48d7b3e
+- [x] T4 S5,S6 anonymize + order + skills — inline — 48d7b3e
+- [x] T5 S7,S9 DevManager + new metrics — inline — slice 2
+- [x] T6 S8 CV PDF (`npm run cv`, 2 pages each) — inline — slice 2
 
 ## Log
 
 - L1 (2026-11-10) "con lo que hemos desarrollado, quiero que vuelvas a revisar engram y los proyectos y traigas todo lo que sea de valor en mi portfolio, si es necesario genera agentes especializados encargados de dar ese valor y auditar el portfolio, para que resulte de interes a reclutadores"
 - L2 4 read-only agents harvested Engram + recruiter audit; summary in Engram `portfolio/recruiter-value-harvest`.
 - L3 User answers: DevManager is own thesis → independent product; English B1; title "lider de desarrollo, lider tecnico o desarrollador .net"; BAGUER + Espejos Glam full-time, STARSOL contracts; director of credit area; testimonials fake → remove.
+- L4 Checks: tsc OK; lint 16 errors = baseline 16 (pre-existing); XP 100/100; newspaper 8/8 after intentional baseline re-cut; CV PDFs 2 pages; data-protection sweep of added lines: 0 forbidden tokens.
+- L5 Assumption: "Cliente — Franquicias de Ropa" marked as contract (user did not state it). Pending: blog articles from harvest (AsyncLocal, characterization tests, GETDATE vs SYSDATETIME, Channel<T>, InMemory vs transactions, redaction grep).

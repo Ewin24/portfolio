@@ -75,7 +75,7 @@ export const workExperience: WorkExperience[] = [
       'Leading a phased Laravel 8→13 and PHP 7.3→8.3 upgrade in production against a 1,143-test baseline run in isolated Docker: every phase closes with 0 new failures and 0 deprecations (in progress)',
     ],
     stack: ['PHP', 'Laravel', 'AWS', '.NET MAUI', 'MySQL', 'Docker', 'CI/CD'],
-    order: 4,
+    order: 6,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -114,7 +114,7 @@ export const workExperience: WorkExperience[] = [
       'Added an administrative endpoint that replaced an operation only a DBA could previously run, with its guarding permission proven through the real authorization pipeline in integration tests (xUnit + TestServer), and redesigned the operator case workspace, delivered as small reviewable commits',
     ],
     stack: ['.NET 8', 'C#', 'SQL Server', 'Clean Architecture', 'Flutter', 'Dapper', 'React', 'TypeScript'],
-    order: 3,
+    order: 7,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -143,7 +143,7 @@ export const workExperience: WorkExperience[] = [
       'Participated in migration from .NET Framework to .NET Core applications, applying dependency injection and modern architecture patterns',
     ],
     stack: ['C#', '.NET Core', 'Dapper', 'SQL Server', 'REST API', 'Crystal Reports'],
-    order: 1,
+    order: 2,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -169,7 +169,7 @@ export const workExperience: WorkExperience[] = [
       'Implemented dynamic document routing by modifying contract, letter, and termination generation logic, achieving a non-invasive extension with zero regressions on existing operations',
     ],
     stack: ['C#', '.NET Framework', 'Crystal Reports', 'SQL Server', 'ERP', 'CRM'],
-    order: 2,
+    order: 4,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -198,7 +198,7 @@ export const workExperience: WorkExperience[] = [
       'Consumed backend services through a dynamic and interactive frontend built with JavaScript, ensuring long-term code quality and maintainability',
     ],
     stack: ['C#', '.NET', 'MySQL', 'JavaScript', 'HTML/CSS', 'Scrum'],
-    order: 2,
+    order: 3,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -223,7 +223,7 @@ export const workExperience: WorkExperience[] = [
       'Executed business logic integration, content optimization, and automated deployment to production servers, ensuring site stability',
     ],
     stack: ['PHP', 'JavaScript', 'HTML', 'CSS', 'UI/UX', 'Deployment'],
-    order: 0,
+    order: 1,
   },
 ]
 
