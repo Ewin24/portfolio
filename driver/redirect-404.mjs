@@ -7,6 +7,7 @@ const cases = [
   ['ewin24.github.io', '/portfolio/', '', null],
   ['portfolio.vercel.app', '/missing', '#x', 'https://portfolio.vercel.app/#x'],
   ['portfolio.vercel.app', '/portfolio/', '#blog/article/x', 'https://portfolio.vercel.app/#blog/article/x'],
+  ['portfolio.pages.dev', '/portfolio/', '#blog/article/x', 'https://portfolio.pages.dev/#blog/article/x'],
   ['portfolio.vercel.app', '/portfolio-old', '', 'https://portfolio.vercel.app/'],
   ['portfolio.vercel.app', '/', '', null],
 ]
