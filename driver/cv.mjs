@@ -54,7 +54,7 @@ function html(lang) {
 <h1>Edwin Trigos Guevara</h1>
 <p class="role">${esc(t('hero.role', lang))}</p>
 <p class="meta">${esc(t('hero.availability', lang))}<br>
-edwintrigos24@gmail.com · <a href="https://www.linkedin.com/in/edwintrigosguevara">linkedin.com/in/edwintrigosguevara</a> · <a href="https://github.com/Ewin24">github.com/Ewin24</a> · <a href="https://ewin24.github.io/portfolio/">ewin24.github.io/portfolio</a></p>
+edwintrigos24@gmail.com · <a href="https://www.linkedin.com/in/edwintrigosguevara">linkedin.com/in/edwintrigosguevara</a> · <a href="https://github.com/Ewin24">github.com/Ewin24</a> · <a href="https://portfolio.edwintrigos.workers.dev/">portfolio.edwintrigos.workers.dev</a></p>
 
 <h2>${L.summary}</h2>
 <p>${esc(t('hero.subtitle', lang))}</p>

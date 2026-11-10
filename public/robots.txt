@@ -67,5 +67,5 @@ User-agent: OAI-SearchBot
 Allow: /
 
 # Sitemaps and AI-readable content
-Sitemap: https://ewin24.github.io/portfolio/sitemap.xml
-Sitemap: https://ewin24.github.io/portfolio/llms.txt
+Sitemap: https://portfolio.edwintrigos.workers.dev/sitemap.xml
+Sitemap: https://portfolio.edwintrigos.workers.dev/llms.txt

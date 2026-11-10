@@ -9,7 +9,7 @@ Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, Typ
 ## Blog — Technical Architecture Articles
 
 ### AsyncLocal<T> no sube al llamador: dos logs que no podían ser ciertos a la vez
-https://ewin24.github.io/portfolio/#blog/article/asynclocal-no-sube-al-llamador
+https://portfolio.edwintrigos.workers.dev/#blog/article/asynclocal-no-sube-al-llamador
 
 **Published**: 2026-11-10 | **Language**: ES/EN | **English title**: AsyncLocal<T> Does Not Flow Back to the Caller: Two Logs That Could Not Both Be True
 
@@ -18,7 +18,7 @@ A DelegatingHandler captured the HTTP exchange with an external provider and pub
 ---
 
 ### Las pruebas InMemory mienten sobre las transacciones
-https://ewin24.github.io/portfolio/#blog/article/pruebas-inmemory-mienten-sobre-transacciones
+https://portfolio.edwintrigos.workers.dev/#blog/article/pruebas-inmemory-mienten-sobre-transacciones
 
 **Published**: 2026-11-07 | **Language**: ES/EN | **English title**: InMemory Tests Lie About Transactions
 
@@ -27,7 +27,7 @@ In DevManager, a suite of about 400 tests on the EF Core InMemory provider was g
 ---
 
 ### Pruebas de caracterización antes de refactorizar: fijar lo que el código hace, no lo que debería hacer
-https://ewin24.github.io/portfolio/#blog/article/pruebas-caracterizacion-antes-de-refactorizar
+https://portfolio.edwintrigos.workers.dev/#blog/article/pruebas-caracterizacion-antes-de-refactorizar
 
 **Published**: 2026-11-03 | **Language**: ES/EN | **English title**: Characterization Tests Before Refactoring: Pin What the Code Does, Not What It Should Do
 
@@ -36,7 +36,7 @@ Three methods of 167, 161 and 137 lines in an inherited .NET service, and not a 
 ---
 
 ### GETDATE() contra SYSDATETIME(): el reloj que retrocede dos de cada tres veces
-https://ewin24.github.io/portfolio/#blog/article/getdate-vs-sysdatetime-reloj-que-retrocede
+https://portfolio.edwintrigos.workers.dev/#blog/article/getdate-vs-sysdatetime-reloj-que-retrocede
 
 **Published**: 2026-10-27 | **Language**: ES/EN | **English title**: GETDATE() vs SYSDATETIME(): The Clock That Runs Backwards Two Times Out of Three
 
@@ -45,7 +45,7 @@ A database test failed intermittently on a guard that requires one event to happ
 ---
 
 ### Trabajo en segundo plano en .NET sin un broker de mensajes
-https://ewin24.github.io/portfolio/#blog/article/trabajo-en-segundo-plano-channel-sin-broker
+https://portfolio.edwintrigos.workers.dev/#blog/article/trabajo-en-segundo-plano-channel-sin-broker
 
 **Published**: 2026-10-20 | **Language**: ES/EN | **English title**: Background Work in .NET Without a Message Broker
 
@@ -54,7 +54,7 @@ A synchronous call to an external voice-bot provider kept the HTTP request open 
 ---
 
 ### El grep de redacción que no puede ver un identificador en camelCase
-https://ewin24.github.io/portfolio/#blog/article/grep-redaccion-no-ve-camelcase
+https://portfolio.edwintrigos.workers.dev/#blog/article/grep-redaccion-no-ve-camelcase
 
 **Published**: 2026-10-13 | **Language**: ES/EN | **English title**: The Redaction Grep That Cannot See a camelCased Identifier
 
@@ -63,7 +63,7 @@ While publishing this very portfolio's blog with AI agents, a redaction sweep ov
 ---
 
 ### El atributo de autorización que ninguna prueba unitaria puede ver
-https://ewin24.github.io/portfolio/#blog/article/atributo-autorizacion-invisible-prueba-unitaria
+https://portfolio.edwintrigos.workers.dev/#blog/article/atributo-autorizacion-invisible-prueba-unitaria
 
 **Published**: 2026-09-26 | **Language**: ES/EN | **English title**: The Authorization Attribute a Unit Test Cannot See
 
@@ -72,7 +72,7 @@ I added an administrative endpoint that replaces an operation only a DBA could p
 ---
 
 ### TDD estricto contra un driver Playwright versionado
-https://ewin24.github.io/portfolio/#blog/article/tdd-estricto-contra-driver-playwright-versionado
+https://portfolio.edwintrigos.workers.dev/#blog/article/tdd-estricto-contra-driver-playwright-versionado
 
 **Published**: 2026-09-19 | **Language**: ES/EN | **English title**: Strict TDD Against a Committed Playwright Driver
 
@@ -81,7 +81,7 @@ I built an interactive desktop inside a portfolio whose other theme may not move
 ---
 
 ### Una interfaz uniforme no arregla una asimetría semántica
-https://ewin24.github.io/portfolio/#blog/article/interfaz-uniforme-no-arregla-asimetria-semantica
+https://portfolio.edwintrigos.workers.dev/#blog/article/interfaz-uniforme-no-arregla-asimetria-semantica
 
 **Published**: 2026-09-12 | **Language**: ES/EN | **English title**: A Uniform Interface Does Not Fix a Semantic Asymmetry
 
@@ -90,7 +90,7 @@ Two external risk-data providers, one refactor that looked obvious, and a unifor
 ---
 
 ### Once rondas de revisión adversarial no encontraron los dos defectos que un usuario halló en minutos
-https://ewin24.github.io/portfolio/#blog/article/revision-adversarial-no-encontro-lo-que-el-usuario-si
+https://portfolio.edwintrigos.workers.dev/#blog/article/revision-adversarial-no-encontro-lo-que-el-usuario-si
 
 **Published**: 2026-09-05 | **Language**: ES/EN | **English title**: Eleven Rounds of Adversarial Review Missed the Two Defects a User Found in Minutes
 
@@ -99,7 +99,7 @@ ReaderSS shipped with 426 tests, ~95% coverage against an enforced 70% gate, ele
 ---
 
 ### Una orden de trabajo recorre 3 sistemas sin que ninguno se acople al otro: el orquestador es un método, no un microservicio
-https://ewin24.github.io/portfolio/#blog/article/orquestacion-cross-system-sin-acoplamiento
+https://portfolio.edwintrigos.workers.dev/#blog/article/orquestacion-cross-system-sin-acoplamiento
 
 **Published**: 2026-09-01 | **Language**: ES/EN | **English title**: A work order travels through 3 systems without any coupling to each other: the orchestrator is a method, not a microservice
 
@@ -108,7 +108,7 @@ When a production order needs to notify by email, save PDFs to the cloud, and up
 ---
 
 ### Versioné 24 controladores de una API en producción sin cambiar ni una sola URL existente
-https://ewin24.github.io/portfolio/#blog/article/versionado-api-transparente-sin-romper-clientes
+https://portfolio.edwintrigos.workers.dev/#blog/article/versionado-api-transparente-sin-romper-clientes
 
 **Published**: 2026-08-15 | **Language**: ES/EN | **English title**: I versioned 24 production API controllers without changing a single existing URL
 
@@ -117,7 +117,7 @@ When 24 controllers are in production and clients can't all update simultaneousl
 ---
 
 ### No uso Entity Framework. En 3 años de ERP, cero migraciones, cero N+1, cero sorpresas en producción
-https://ewin24.github.io/portfolio/#blog/article/dapper-stored-procedures-en-lugar-de-ef-core
+https://portfolio.edwintrigos.workers.dev/#blog/article/dapper-stored-procedures-en-lugar-de-ef-core
 
 **Published**: 2026-08-01 | **Language**: ES/EN | **English title**: I don't use Entity Framework. In 3 years of ERP development, zero migrations, zero N+1, zero production surprises
 
@@ -126,7 +126,7 @@ Every time someone says "use EF Core, it's the standard", I wonder if their data
 ---
 
 ### Todo el error handling de mi API se reduce a dos archivos: así eliminé los try-catch de mis controladores
-https://ewin24.github.io/portfolio/#blog/article/error-handling-middleware-pipeline
+https://portfolio.edwintrigos.workers.dev/#blog/article/error-handling-middleware-pipeline
 
 **Published**: 2026-07-15 | **Language**: ES/EN | **English title**: My entire API error handling lives in two files: how I eliminated try-catch from my controllers
 
@@ -135,7 +135,7 @@ Every controller had its own try-catch, each error returned a different format, 
 ---
 
 ### BOT Ubica + Prueba de Vida: cómo validé identidad biométrica en tiempo real con fallback humano y catálogo de diagnósticos
-https://ewin24.github.io/portfolio/#blog/article/validacion-biometrica-geolocalizacion-credito
+https://portfolio.edwintrigos.workers.dev/#blog/article/validacion-biometrica-geolocalizacion-credito
 
 **Published**: 2026-07-15 | **Language**: ES/EN | **English title**: BOT Ubica + Proof of Life: how I validated biometric identity in real-time with human fallback and diagnostic catalog
 
@@ -144,7 +144,7 @@ In a loan origination system, validating identity is not just confirming a docum
 ---
 
 ### Diseñé un ERP donde la capa de presentación (Blazor) y la REST API son intercambiables gracias a Clean Architecture
-https://ewin24.github.io/portfolio/#blog/article/dual-frontend-clean-architecture-dotnet-10
+https://portfolio.edwintrigos.workers.dev/#blog/article/dual-frontend-clean-architecture-dotnet-10
 
 **Published**: 2026-07-01 | **Language**: ES/EN | **English title**: I Designed an ERP Where the Presentation Layer (Blazor) and REST API Are Interchangeable Thanks to Clean Architecture
 
@@ -153,7 +153,7 @@ How I made Blazor and the API share identical business logic in a production ERP
 ---
 
 ### Lo que realmente heredas al hacer un fork de un proyecto Flutter "no mantenido"
-https://ewin24.github.io/portfolio/#blog/article/heredar-proyecto-flutter-no-mantenido
+https://portfolio.edwintrigos.workers.dev/#blog/article/heredar-proyecto-flutter-no-mantenido
 
 **Published**: 2026-06-26 | **Language**: ES/EN | **English title**: What you actually inherit when you fork an "unmaintained" Flutter project
 
@@ -162,7 +162,7 @@ An "unmaintained" repo does not mean "does not compile". It means: abandoned pac
 ---
 
 ### Audio multiplataforma en Flutter: dos engines, una API, tres plataformas
-https://ewin24.github.io/portfolio/#blog/article/audio-multiplataforma-flutter-arquitectura
+https://portfolio.edwintrigos.workers.dev/#blog/article/audio-multiplataforma-flutter-arquitectura
 
 **Published**: 2026-06-26 | **Language**: ES/EN | **English title**: Cross-platform audio in Flutter: two engines, one API, three platforms
 
@@ -171,7 +171,7 @@ There is no single Flutter audio engine that covers Android, Windows, and Linux 
 ---
 
 ### Cuando tu app depende de una API que no controlas: reverse-engineering YouTube Music
-https://ewin24.github.io/portfolio/#blog/article/youtube-innertube-api-resiliencia
+https://portfolio.edwintrigos.workers.dev/#blog/article/youtube-innertube-api-resiliencia
 
 **Published**: 2026-06-26 | **Language**: ES/EN | **English title**: When your app depends on an API you don't control: reverse-engineering YouTube Music
 
@@ -180,7 +180,7 @@ Harmony-Music does not use the official YouTube API. It uses InnerTube, the inte
 ---
 
 ### El precio de la modernización: actualizar un proyecto Flutter abandonado a Flutter 3.5+
-https://ewin24.github.io/portfolio/#blog/article/modernizacion-build-flutter-upgrade
+https://portfolio.edwintrigos.workers.dev/#blog/article/modernizacion-build-flutter-upgrade
 
 **Published**: 2026-06-26 | **Language**: ES/EN | **English title**: The upgrade tax: modernizing an abandoned Flutter project to Flutter 3.5+
 
@@ -189,7 +189,7 @@ Upgrading a Flutter project that sat for 6 months without maintenance is not a v
 ---
 
 ### Audio en background en Android 14+ cuando heredaste código de Android 9
-https://ewin24.github.io/portfolio/#blog/article/android-14-audio-background-modernizacion
+https://portfolio.edwintrigos.workers.dev/#blog/article/android-14-audio-background-modernizacion
 
 **Published**: 2026-06-26 | **Language**: ES/EN | **English title**: Background audio on Android 14+ when you inherited Android 9 code
 
@@ -198,7 +198,7 @@ A music app you inherited with Android 9 code has three problems running on Andr
 ---
 
 ### Centralicé todos los correos de la empresa en una API con Clean Architecture (y dejé de preguntarle al proveedor qué pasó)
-https://ewin24.github.io/portfolio/#blog/article/api-centralizada-comunicaciones
+https://portfolio.edwintrigos.workers.dev/#blog/article/api-centralizada-comunicaciones
 
 **Published**: 2026-06-15 | **Language**: ES/EN | **English title**: I centralized every corporate email into a single Clean Architecture API (and stopped asking the provider what happened)
 
@@ -207,7 +207,7 @@ Every business area managed email on its own —its own implementation, its own 
 ---
 
 ### Eliminé todos los if/switch de mi motor de decisiones (y por qué deberías hacer lo mismo)
-https://ewin24.github.io/portfolio/#blog/article/motor-decisiones-catalog-driven-sin-if
+https://portfolio.edwintrigos.workers.dev/#blog/article/motor-decisiones-catalog-driven-sin-if
 
 **Published**: 2026-03-20 | **Language**: ES/EN | **English title**: I eliminated every if/switch from my decision engine (and why you should too)
 
@@ -216,7 +216,7 @@ When you build a system that makes decisions based on external diagnoses (a voic
 ---
 
 ### Clean Architecture en un Sistema de Originación de Crédito: Cómo evité el caos antes de escribir la primera línea de código
-https://ewin24.github.io/portfolio/#blog/article/arquitectura-limpa-sistema-originacion-credito
+https://portfolio.edwintrigos.workers.dev/#blog/article/arquitectura-limpa-sistema-originacion-credito
 
 **Published**: 2026-01-15 | **Language**: ES/EN | **English title**: Clean Architecture in a Loan Origination System: How I avoided chaos before writing the first line of code
 
@@ -227,14 +227,14 @@ When you get a greenfield project, the temptation is to open Visual Studio and s
 ## Case Studies — Production Systems
 
 ### STARSOL — SaaS Platform for Integrated Risk Management
-https://ewin24.github.io/portfolio/#projects
+https://portfolio.edwintrigos.workers.dev/#projects
 **Period**: 2024-Present | **Role**: Cloud Software Architect & Independent Developer
 **Stack**: PHP, Laravel, AWS, .NET MAUI, MySQL, Docker, CI/CD
 
 B2B SaaS platform for the solidarity sector covering SARLAFT, SARC, and SIAR risk management. Async architecture with 3 background workers processing jobs simultaneously, decoupling file uploads from the main web server thread. .NET MAUI client app with offline sync. AWS high-availability infrastructure with CI/CD pipelines.
 
 ### LOS — Loan Origination System
-https://ewin24.github.io/portfolio/#projects
+https://portfolio.edwintrigos.workers.dev/#projects
 **Period**: 2025-2026 | **Role**: Software Architect / Full Stack Developer
 **Stack**: .NET 8+, C#, Dapper, SQL Server, Clean Architecture, REST API, JWT, Strategy Pattern
 
@@ -243,35 +243,35 @@ Complete loan origination system built from scratch. Data layer: DDL with 4 logi
 **Impact**: 114+ API endpoints across 6 BFF layers (Admin/Core/Store/Web/Handoff/Util). 27 stored procedures in production. 23-state loan lifecycle with full traceability. Automated identity verification via voice bot with manual Plan B as a first-class citizen. Immutable audit trail of all operations. 474/474 tests green after making the risk-data provider configurable, delivered as 3 chained PRs. I then redesigned the operator's case workspace so every action gets its own dialog instead of sharing a generic one, delivered as 10 chained commits of at most 400 lines each and closed with 23 requirements and 117 verified scenarios. An administrative endpoint replaced an operation only a DBA could previously run, delivered as 3 chained PRs, with its guarding permission proven through the real HTTP pipeline rather than a direct method call.
 
 ### SOVI — Identity Validation Orchestrator
-https://ewin24.github.io/portfolio/#projects
+https://portfolio.edwintrigos.workers.dev/#projects
 **Period**: 2026 | **Role**: Software Architect
 **Stack**: .NET, C#, SQL Server, Strategy Pattern, REST API
 
 Strategy pattern with two validation strategies: BotValidacionStrategy (voice bot) and ManualValidacionStrategy (human advisor). Catalog-driven decision engine — no hardcoded if/switch. Each bot diagnosis triggers a SystemAction from database catalog. Complete traceability per study with 10+ categorized bot diagnoses.
 
 ### Datacredito API Integration
-https://ewin24.github.io/portfolio/#projects
+https://portfolio.edwintrigos.workers.dev/#projects
 **Period**: 2024-2025 | **Role**: Backend Developer
 **Stack**: .NET 8, C#, Dapper, SQL Server, Polly, Serilog, JWT, REST API
 
 Credit bureau REST API with resilience patterns (Polly circuit breaker + retry policy). JWT authentication. Structured logging with Serilog. Request/response logging middleware with sensitive field sanitization. Query times reduced from 3s to 400ms through index optimization.
 
 ### Payroll System — ERP Document Generation for Franchise Chain
-https://ewin24.github.io/portfolio/#projects
+https://portfolio.edwintrigos.workers.dev/#projects
 **Period**: 2025-2026 | **Role**: Full Stack Developer
 **Stack**: C#, .NET Framework, Crystal Reports, SQL Server, ERP
 
 Extended CRM document routing for 3 new franchise-chain payroll types. Modified dynamic routing logic, added 21 .rpt templates organized by payroll type. Non-invasive extension — zero breaks in 45+ legacy payroll types.
 
 ### Admin Module UI Architecture
-https://ewin24.github.io/portfolio/#projects
+https://portfolio.edwintrigos.workers.dev/#projects
 **Period**: 2026 | **Role**: Frontend Architect
 **Stack**: React, TypeScript, REST API, UI Architecture
 
 Restructured admin module into two macro-modules: "Panel de Control" (monitoring dashboard) and "Módulo Administrar" (CRUD configuration with tabs). Navigation reflects clean backend architecture. Scalable — new capabilities require only a new tab in the corresponding macro-module.
 
 ### Portfolio — Hybrid Architecture
-https://ewin24.github.io/portfolio/#projects
+https://portfolio.edwintrigos.workers.dev/#projects
 **Period**: 2026-Present | **Role**: Frontend Developer & Designer
 **Stack**: React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion, GitHub API, Playwright
 
@@ -280,7 +280,7 @@ Designed a hybrid architecture: curated content layer (STAR-format case studies 
 **Impact**: Architecture that prioritizes business impact over source code. NDA-compliant case studies without exposing confidential information. Native i18n without external libraries. Custom design system that visually stands out from generic portfolios. Adding a case study = 1 TypeScript object. The XP desktop was built with strict TDD against a committed Playwright driver —98/98 checks, RED before GREEN on every work unit— and a second committed driver pixel-diffs the newspaper theme across 4 viewports × 2 locales against committed baselines: it demands 0 differing pixels, so the editorial design cannot drift while the second theme evolves.
 
 ### Centralized Email Communications API — Single Provider
-https://ewin24.github.io/portfolio/#projects
+https://portfolio.edwintrigos.workers.dev/#projects
 **Period**: 2024 | **Role**: Backend Architect / API Designer
 **Stack**: .NET 8, C#, Clean Architecture, Dapper, SQL Server, Serilog, Polly, Azure Blob Storage, JWT
 
@@ -291,7 +291,7 @@ https://ewin24.github.io/portfolio/#projects
 **Impact**: Diagnosis time for an undelivered email from 30 minutes to 5 seconds. Zero hardcoded credentials, rotatable without redeploy. Provider change measured in hours, not weeks. Zero orphan emails. 7 REST controllers (one per consumption channel) sharing the same application service.
 
 ### Harmony-Music — Cross-Platform Flutter Open Source Music App
-https://ewin24.github.io/portfolio/#projects
+https://portfolio.edwintrigos.workers.dev/#projects
 **Period**: 2026-Present | **Role**: Open Source Maintainer & Flutter Developer
 **Stack**: Flutter 3.44+, Dart, GetX, just_audio, media_kit, audio_service, youtube_explode_dart, Hive, Dio, JNI
 
@@ -302,7 +302,7 @@ https://ewin24.github.io/portfolio/#projects
 **Impact**: ~36 commits in 3 days from "does not compile" to release v1.12.2 with a modern toolchain. Working search with the new InnerTube format. Clean build on Flutter 3.44+. Audio on 3 platforms. Complete documentation, releases and changelog.
 
 ### ReaderSS — RSS Reader with Offline Reading and an Edge Relay
-https://ewin24.github.io/portfolio/#projects
+https://portfolio.edwintrigos.workers.dev/#projects
 **Period**: 2026 | **Role**: Architect & Full Stack Developer
 **Stack**: TypeScript, Preact, Vite, IndexedDB, Cloudflare Workers, DOMPurify, Vitest, GitHub Actions
 
