@@ -3,6 +3,7 @@ import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
 import { sortedExperience } from '../../content'
+import { periodLabel } from '../../lib/text'
 import type { WorkExperience } from '../../types'
 
 interface CardProps {
@@ -28,7 +29,10 @@ function ExperienceCard({ job, index }: CardProps) {
         <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-5 bg-paper-dark flex flex-col gap-3">
           <div>
             <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
-              {job.period}
+              {periodLabel(job.period, lang)}
+            </p>
+            <p className="font-mono text-[10px] text-ink-muted">
+              {t(`experience.employment.${job.employment}`)}
             </p>
             {/* Decorative: the period above already reads Presente/Present. */}
             {job.current && (

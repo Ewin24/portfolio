@@ -17,7 +17,7 @@ import type { CaseStudy } from '../types'
 
 export const caseStudies: CaseStudy[] = [
   // ═════════════════════════════════════════════════════════════════════════
-  // PROYECTO 1 — Fábricas de Crédito QUAC (LOS)
+  // PROYECTO 1 — Fintech de crédito de consumo (LOS)
   // Sistema de Originación de Crédito completo
   // ═════════════════════════════════════════════════════════════════════════
   {
@@ -27,10 +27,10 @@ export const caseStudies: CaseStudy[] = [
     lead: true,
     order: 1,
 
-    title: 'Sistema de Originación de Crédito (LOS) — Fábricas de Crédito QUAC',
-    titleEn: 'Loan Origination System (LOS) — Fábricas de Crédito QUAC',
+    title: 'Sistema de Originación de Crédito (LOS)',
+    titleEn: 'Loan Origination System (LOS)',
 
-    company: 'Fábricas de Crédito QUAC',
+    company: 'Fintech de crédito de consumo (NDA)',
     companyAnon: false,
     industry: 'Fintech / Crédito',
 
@@ -49,9 +49,9 @@ export const caseStudies: CaseStudy[] = [
       'Designed and built the complete system from scratch. Data layer: DDL with 4 logical schemas (cfg/cat/fab/aud), 30+ transactional tables, 23-state state machine, and 27 optimized stored procedures. Service layer: REST API in .NET with Clean Architecture — repositories per schema, services per functional domain (Study, ThirdParty, OTP, Biometrics), controllers per channel (Admin/Store/Web/Handoff). Implemented SOVI (Identity Validation Orchestrator System) with Strategy pattern for voice bot verification + manual validation, with a catalog-driven decision engine (no hardcoded if/switch). Integrated fraud detection with biometric photo analysis and a complete INSERT-ONLY audit trail. Later I made the risk-data provider configurable through a strategy interface (`IContactDataProvider`) and a resolver that maps the configured provider to its implementation by dictionary —adding a third provider is one new class and one dependency-injection registration, zero `if`— behind a feature flag that acts as a kill switch without redeployment, and with an explicit-fail stub for the branch whose semantic mapping is not defined yet: it never silently approves or denies, and never falls back to the other provider.',
 
     impact:
-      '114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones. 474/474 pruebas verdes tras hacer configurable el proveedor de datos de riesgo, entregado como 3 PRs encadenados. Después rediseñé el espacio de trabajo del operador sobre cada caso: cada acción pasó a tener su propio diálogo en lugar de compartir uno genérico, entregado como 10 commits encadenados de no más de 400 líneas cada uno y cerrado con 23 requisitos y 117 escenarios verificados. Un endpoint administrativo reemplazó una operación que antes solo podía ejecutar un DBA, entregado como 3 PRs encadenados, con el permiso que lo protege demostrado a través de la tubería HTTP real y no de una llamada directa al método.',
+      'La API pasó de 8 archivos de prueba a 3.009 pruebas automatizadas en verde en ~10 semanas, con 0 fallos en cada gate de verificación. Sobre el mismo motor de flujo entregué un segundo canal de venta (autoservicio web) con 0 regresiones en el canal presencial. 114+ endpoints API en 6 capas BFF (Admin/Core/Tienda/Web/Handoff/Util). 27 stored procedures en producción. 23 estados de ciclo de vida de crédito con trazabilidad completa. Verificación de identidad automatizada vía bot de voz con plan B manual como ciudadano de primera clase. Auditoría inmutable de todas las operaciones. 474/474 pruebas verdes tras hacer configurable el proveedor de datos de riesgo, entregado como 3 PRs encadenados. Después rediseñé el espacio de trabajo del operador sobre cada caso: cada acción pasó a tener su propio diálogo en lugar de compartir uno genérico, entregado como 10 commits encadenados de no más de 400 líneas cada uno y cerrado con 23 requisitos y 117 escenarios verificados. Un endpoint administrativo reemplazó una operación que antes solo podía ejecutar un DBA, entregado como 3 PRs encadenados, con el permiso que lo protege demostrado a través de la tubería HTTP real y no de una llamada directa al método.',
     impactEn:
-      '114+ API endpoints across 6 BFF layers (Admin/Core/Store/Web/Handoff/Util). 27 stored procedures in production. 23-state loan lifecycle with full traceability. Automated identity verification via voice bot with manual Plan B as a first-class citizen. Immutable audit trail of all operations. 474/474 tests green after making the risk-data provider configurable, delivered as 3 chained PRs. I then redesigned the operator\'s case workspace so every action gets its own dialog instead of sharing a generic one, delivered as 10 chained commits of at most 400 lines each and closed with 23 requirements and 117 verified scenarios. An administrative endpoint replaced an operation only a DBA could previously run, delivered as 3 chained PRs, with its guarding permission proven through the real HTTP pipeline rather than a direct method call.',
+      'The API went from 8 test files to 3,009 passing automated tests in ~10 weeks, with 0 failures at every verification gate. On the same workflow engine I shipped a second sales channel (web self-service) with 0 regressions in the in-store channel. 114+ API endpoints across 6 BFF layers (Admin/Core/Store/Web/Handoff/Util). 27 stored procedures in production. 23-state loan lifecycle with full traceability. Automated identity verification via voice bot with manual Plan B as a first-class citizen. Immutable audit trail of all operations. 474/474 tests green after making the risk-data provider configurable, delivered as 3 chained PRs. I then redesigned the operator\'s case workspace so every action gets its own dialog instead of sharing a generic one, delivered as 10 chained commits of at most 400 lines each and closed with 23 requirements and 117 verified scenarios. An administrative endpoint replaced an operation only a DBA could previously run, delivered as 3 chained PRs, with its guarding permission proven through the real HTTP pipeline rather than a direct method call.',
 
     stack: ['.NET 8+', 'C#', 'Dapper', 'SQL Server', 'Clean Architecture', 'REST API', 'JWT', 'Strategy Pattern'],
     architectureDiagram: 'Arquitectura en 3 capas: BFFs (Admin/Tienda/Web/Handoff/Util) → Domain Services (Estudio, Tercero, OTP, Biometría) → Repositories por Schema (cfg/cat/fab/aud). Cada BFF inyecta los mismos servicios de dominio. Sin duplicación entre canales.',
@@ -67,12 +67,12 @@ export const caseStudies: CaseStudy[] = [
     id: 'sovi-identity-verification',
     slug: 'sistema-orquestador-validacion-identidad',
     featured: true,
-    order: 2,
+    order: 4,
 
     title: 'SOVI — Sistema Orquestador de Validación de Identidad',
     titleEn: 'SOVI — Identity Validation Orchestrator System',
 
-    company: 'Fábricas de Crédito QUAC',
+    company: 'Fintech de crédito de consumo (NDA)',
     companyAnon: false,
     industry: 'Fintech / Seguridad',
 
@@ -152,7 +152,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'nominas-franquicias',
     slug: 'extension-plantillas-nomina-franquicias',
     featured: true,
-    order: 4,
+    order: 9,
 
     title: 'Sistema de Nómina — Generación de Documentos para Franquicias',
     titleEn: 'Payroll System — Document Generation for Franchise Chain',
@@ -193,7 +193,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'apiquac-admin-ui',
     slug: 'admin-module-realignment-los',
     featured: true,
-    order: 5,
+    order: 10,
 
     title: 'Arquitectura UI para Módulo Administrativo de LOS',
     titleEn: 'UI Architecture for LOS Admin Module',
@@ -233,7 +233,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'portfolio-hybrid',
     slug: 'portfolio-arquitectura-hibrida',
     featured: true,
-    order: 6,
+    order: 11,
 
     title: 'Portfolio con Arquitectura Híbrida (React 19 + Vite)',
     titleEn: 'Hybrid Architecture Portfolio (React 19 + Vite)',
@@ -275,7 +275,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'infobip-email-api',
     slug: 'api-centralizada-comunicaciones-infobip',
     featured: true,
-    order: 7,
+    order: 6,
 
     title: 'API Centralizada de Comunicaciones por Email — Infobip como Proveedor Único',
     titleEn: 'Centralized Email Communications API — Infobip as Single Provider',
@@ -318,7 +318,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'harmony-music-oss',
     slug: 'harmony-music-flutter-open-source-maintainer',
     featured: true,
-    order: -1,
+    order: 8,
 
     title: 'Harmony-Music — Mantenedor de App Flutter Open Source de Música Multiplataforma',
     titleEn: 'Harmony-Music — Maintainer of Cross-Platform Flutter Open Source Music App',
@@ -361,7 +361,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'starsol-saas',
     slug: 'starsol-saas-riesgos-financieros',
     featured: true,
-    order: 0,
+    order: 5,
 
     title: 'STARSOL — Plataforma SaaS para Gestión Integral de Riesgos',
     titleEn: 'STARSOL — SaaS Platform for Integrated Risk Management',
@@ -402,7 +402,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'readerss',
     slug: 'readerss-lector-rss-offline',
     featured: true,
-    order: 8,
+    order: 7,
 
     title: 'ReaderSS — Lector RSS con lectura offline y relay en el borde',
     titleEn: 'ReaderSS — RSS Reader with Offline Reading and an Edge Relay',
@@ -435,6 +435,48 @@ export const caseStudies: CaseStudy[] = [
     githubUrl: 'https://github.com/Ewin24/ReaderSS',
     hasNDA: false,
     tags: ['open-source', 'oss', 'typescript', 'preact', 'offline-first', 'cloudflare-workers', 'indexeddb', 'testing'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // PROYECTO 9 — DevManager (proyecto de grado → producto propio)
+  // Agente de IA con aprobación humana sobre un SaaS multi-tenant
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'devmanager-ai-saas',
+    slug: 'devmanager-saas-agente-ia',
+    featured: true,
+    order: 2,
+
+    title: 'DevManager — SaaS multi-tenant de proyectos y talento humano con agente de IA',
+    titleEn: 'DevManager — Multi-tenant Project and HR SaaS with an AI Agent',
+
+    company: 'Producto propio (proyecto de grado)',
+    companyAnon: false,
+    industry: 'SaaS / IA aplicada',
+
+    period: 'Proyecto de grado – Presente',
+    role: 'Fundador, Arquitecto y Desarrollador Full Stack',
+    roleEn: 'Founder, Architect & Full Stack Developer',
+
+    problem:
+      'Los equipos pequeños gestionan proyectos, tiempos y talento humano en herramientas separadas, y los asistentes de IA que prometen ayudar actúan sin control: crean registros por su cuenta, ignoran los permisos del usuario y consumen tokens sin límite. Un agente útil en una empresa necesita respetar quién puede ver qué, no inventar datos y no ejecutar nada crítico sin que una persona lo confirme.',
+    problemEn:
+      'Small teams manage projects, time and HR in separate tools, and the AI assistants that promise to help act without control: they create records on their own, ignore user permissions and burn tokens without limit. A useful agent inside a company has to respect who can see what, avoid inventing data, and execute nothing critical without a person confirming it.',
+
+    solution:
+      'Empezó como mi proyecto de grado y lo seguí desarrollando como producto independiente. API en .NET 8 con Clean Architecture sobre SQL Server y frontend en React. El orquestador de IA usa tool calling filtrado por los permisos del usuario, transmite eventos tipados por SSE (meta, tool, delta, refusal, done, error) y responde una negativa sin llamar al LLM cuando todos los módulos que pide están denegados. El agente convierte un requerimiento escrito en tareas propuestas: la entrada se trata como no confiable, la salida se valida contra un esquema y nada se crea hasta que una persona confirma. La confirmación es una única transacción con cambio de estado condicional, así que aprobar dos veces no duplica nada (quien pierde la carrera recibe HTTP 409). Cada llamada a la IA descuenta de una cuota diaria de tokens por organización, la sugerencia de responsables usa una regla de puntuación determinística para no enviar datos personales al modelo, y cada módulo (sprints, tiempos, dependencias) se activa por organización.',
+    solutionEn:
+      'It started as my degree project and I kept building it as an independent product. A .NET 8 API with Clean Architecture on SQL Server and a React frontend. The AI orchestrator uses tool calling filtered by the user\'s permissions, streams typed events over SSE (meta, tool, delta, refusal, done, error), and answers a refusal without calling the LLM when every module requested is denied. The agent turns a written requirement into proposed tasks: the input is treated as untrusted, the output is validated against a schema, and nothing is created until a person confirms. Confirmation is a single transaction with a conditional state change, so approving twice duplicates nothing (the loser of the race gets HTTP 409). Every AI call is charged against a daily per-organization token quota, assignee suggestions use a deterministic scoring rule so no personal data reaches the model, and each module (sprints, time tracking, dependencies) is switched on per organization.',
+
+    impact:
+      '852 pruebas de API y 52 pruebas end-to-end con Playwright, construidas entrega a entrega en slices de menos de 400 líneas. La verificación contra un SQL Server real encontró bloqueadores que la suite InMemory no podía ver (un bloqueo, una carrera entre dos escrituras y un hueco de rollback), y se corrigieron antes de entregar. Llevar la confirmación a una transacción condicional también cerró una carrera de doble aprobación en el flujo general de aprobaciones del agente.',
+    impactEn:
+      '852 API tests and 52 Playwright end-to-end tests, built delivery by delivery in slices under 400 lines. Verification against a real SQL Server found blockers the InMemory suite could not see (a lock, a race between two writes, and a rollback gap), fixed before delivery. Moving confirmation into a conditional transaction also closed a double-approval race in the agent\'s general approval flow.',
+
+    stack: ['.NET 8', 'C#', 'Clean Architecture', 'SQL Server', 'React', 'TypeScript', 'LLM tool calling', 'SSE', 'xUnit', 'Playwright'],
+    architectureDiagram: 'React → API .NET 8 (Clean Architecture) → orquestador de IA (tool calling filtrado por permisos, cuota de tokens por organización) → propuestas pendientes → confirmación humana en una transacción condicional → SQL Server. Streaming de eventos tipados por SSE hacia el chat.',
+    hasNDA: false,
+    tags: ['ai', 'llm', 'human-in-the-loop', 'saas', 'multi-tenant', 'dotnet', 'react', 'testing'],
   },
 ]
 

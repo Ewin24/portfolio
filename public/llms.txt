@@ -1,8 +1,8 @@
-# Edwin Trigos | Software Architect & Full Stack Developer
+# Edwin Trigos | Tech Lead & .NET Developer
 
-> Portfolio of Edwin Trigos — Software Architect and Full Stack Developer specializing in .NET, Clean Architecture, and financial systems (fintech, loan origination, credit bureaus). 5+ years building production systems including a 114-endpoint LOS API, identity validation orchestrator, centralized communications platform, and a B2B SaaS risk management platform. Bilingual technical blog (ES/EN) covering architecture decisions, design patterns, and real production tradeoffs. Based in Bucaramanga, Colombia.
+> Portfolio of Edwin Trigos — Tech Lead and .NET Developer who leads development of the credit area at a Colombian consumer-credit fintech (loan origination, credit-limit and credit-risk calculation, identity verification, credit bureaus). Open to remote roles, UTC−5, English B1. Downloadable CV: https://ewin24.github.io/portfolio/cv/Edwin-Trigos-CV-EN.pdf. 5+ years building production systems including a 114-endpoint LOS API, identity validation orchestrator, centralized communications platform, and a B2B SaaS risk management platform. Bilingual technical blog (ES/EN) covering architecture decisions, design patterns, and real production tradeoffs. Based in Bucaramanga, Colombia.
 
-Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, Java/Spring Boot, PostgreSQL, Azure, Cloudflare Workers, IndexedDB, Playwright, Vitest.
+Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, LLM tool calling, SSE, Cloudflare Workers, IndexedDB, Playwright, Vitest.
 
 ## Blog — Technical Architecture Articles
 - [El atributo de autorización que ninguna prueba unitaria puede ver](https://ewin24.github.io/portfolio/#/blog/article/atributo-autorizacion-invisible-prueba-unitaria): Published 2026-09-26 (ES/EN).
@@ -25,11 +25,12 @@ Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, Typ
 - [Clean Architecture en un Sistema de Originación de Crédito: Cómo evité el caos antes de escribir la primera línea de código](https://ewin24.github.io/portfolio/#/blog/article/arquitectura-limpa-sistema-originacion-credito): Published 2026-01-15 (ES/EN).
 
 ## Case Studies — Production Systems
-- [STARSOL SaaS Platform](https://ewin24.github.io/portfolio/#projects): B2B SaaS for financial risk management (SARLAFT, SARC, SIAR). Async architecture with 3 background workers, .NET MAUI client, AWS infrastructure.
-- [LOS — Loan Origination System](https://ewin24.github.io/portfolio/#projects): 114+ API endpoints, 27 stored procedures, 23-state lifecycle, biometric verification, INSERT-ONLY audit. Built from scratch with Clean Architecture. Later: configurable risk-data provider behind a kill switch, operator case workspace redesigned in chained commits, and an administrative endpoint whose permission is proven through the real HTTP pipeline.
+- [LOS — Loan Origination System](https://ewin24.github.io/portfolio/#projects): Test suite grown from 8 test files to 3,009 passing tests in ~10 weeks; a second sales channel (web self-service) shipped with 0 regressions in the in-store channel. 114+ API endpoints, 27 stored procedures, 23-state lifecycle, biometric verification, INSERT-ONLY audit. Built from scratch with Clean Architecture. Later: configurable risk-data provider behind a kill switch, operator case workspace redesigned in chained commits, and an administrative endpoint whose permission is proven through the real HTTP pipeline.
+- [DevManager — Multi-tenant SaaS with an AI Agent](https://ewin24.github.io/portfolio/#projects): Degree project grown into an independent product. .NET 8 + React; permission-filtered LLM tool calling, typed SSE event stream, per-organization token quota, human-in-the-loop confirmation as one conditional transaction (double approve returns 409). 852 API tests + 52 Playwright e2e tests.
+- [STARSOL SaaS Platform](https://ewin24.github.io/portfolio/#projects): B2B SaaS for financial risk management (SARLAFT, SARC, SIAR). Async architecture with 3 background workers, .NET MAUI client, AWS infrastructure. N+1 fix that ended 7-hour timeouts in the nightly regulatory calculation; phased Laravel 8→13 upgrade against a 1,143-test baseline (in progress).
 - [SOVI — Identity Validation Orchestrator](https://ewin24.github.io/portfolio/#projects): Strategy pattern with voice bot + manual fallback. Catalog-driven decision engine. Full biometric audit trail.
 - [Datacredito API Integration](https://ewin24.github.io/portfolio/#projects): Credit bureau API with Polly circuit breaker + retry. Query times reduced from 3s to 400ms. JWT auth + Serilog structured logging.
-- [Payroll System — ERP Document Generation for Franchise Chain](https://ewin24.github.io/portfolio/#projects): Extended CRM routing for 48 payroll types. 21 Crystal Reports templates. Non-invasive extension — zero breaks in legacy payroll types.
+- [Payroll System — ERP Document Generation for Franchise Chain](https://ewin24.github.io/portfolio/#projects): Extended CRM routing with 3 new payroll types on top of 45+ existing ones. 21 Crystal Reports templates. Non-invasive extension — zero breaks in legacy payroll types.
 - [Admin Module UI Architecture](https://ewin24.github.io/portfolio/#projects): Separated monitoring dashboard from CRUD configuration. Navigation reflects Clean Architecture backend domains.
 - [Portfolio — Hybrid Architecture](https://ewin24.github.io/portfolio/#projects): Curated content layer + GitHub API widget, native i18n, an XP-style desktop theme built with strict TDD against a committed Playwright driver (98/98 checks), a pixel-diff gate for the newspaper theme, and JSON-LD + llms.txt that took a GEO audit from 58 to 83/100.
 - [Centralized Email Communications API](https://ewin24.github.io/portfolio/#projects): 5 email silos unified into one Clean Architecture API with a provider-agnostic interface, 8 multi-tenant accounts, GUID traceability per transaction. Diagnosis time from 30 minutes to 5 seconds.
@@ -37,15 +38,14 @@ Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, Typ
 - [ReaderSS — RSS Reader with Offline Reading](https://ewin24.github.io/portfolio/#projects): Ports-and-adapters client on IndexedDB, Cloudflare Workers relay with SSRF guard, 4 feed parsers, 426 tests at ~95% coverage, 88 kB gzipped bundle.
 
 ## Skills & Technologies
-- [Full Technology Stack](https://ewin24.github.io/portfolio/#skills): .NET / C#, PHP / Laravel, SQL Server, React, TypeScript, AWS, Flutter, Clean Architecture, Docker, Java / Spring Boot, PostgreSQL, Azure, Cloudflare Workers, IndexedDB, Playwright, Vitest, AI Discoverability. 17 technologies with production milestones.
+- [Full Technology Stack](https://ewin24.github.io/portfolio/#skills): .NET / C#, PHP / Laravel, SQL Server, React, TypeScript, AWS, Flutter, Clean Architecture, Docker, LLM / AI Agents, Cloudflare Workers, IndexedDB, Playwright, Vitest, AI Discoverability. 15 technologies with production milestones.
 
 ## Experience
-- [Work History](https://ewin24.github.io/portfolio/#experience): Harmony-Music (Open Source Maintainer (Fork) & Flutter Developer, Jun 2026-Present), STARSOL (Cloud Software Architect & Independent Developer, Jan 2024-Present), BAGUER S.A.S (Full Stack C# .NET & Mobile Developer, 2024-Present), Cliente — Franquicias de Ropa (Full Stack .NET Developer, 2025-2026), CAMPUSLANDS (Full Stack Developer (.NET & JavaScript), Feb 2023-Jan 2024), BAGUER S.A.S (.NET Backend Developer, 2021-2023), ESPEJOS GLAM (Web Developer, Jan 2022-Jan 2023).
+- [Work History](https://ewin24.github.io/portfolio/#experience): BAGUER S.A.S (Credit Area Tech Lead · .NET Developer, full-time, 2024-Present), STARSOL (Cloud Software Architect & Independent Developer, contract, Jan 2024-Present), Harmony-Music (Open Source Maintainer, Jun 2026-Present), Client — Clothing Franchises (Full Stack .NET Developer, contract, 2025-2026), CAMPUSLANDS (bootcamp, Feb 2023-Jan 2024), BAGUER S.A.S (.NET Backend Developer, full-time, 2021-2023), ESPEJOS GLAM (Web Developer, full-time, Jan 2022-Jan 2023).
 
 ## About
-- [About Edwin Trigos](https://ewin24.github.io/portfolio/#about): Software Architect and Full Stack Developer. Remote from Colombia. GitHub: Ewin24. LinkedIn: edwintrigosguevara. Email: edwintrigos24@gmail.com.
+- [About Edwin Trigos](https://ewin24.github.io/portfolio/#about): Tech Lead and .NET Developer. Open to remote roles from Colombia (UTC−5). English B1. GitHub: Ewin24. LinkedIn: edwintrigosguevara. Email: edwintrigos24@gmail.com.
 
 ## Optional
 - [Contact](https://ewin24.github.io/portfolio/#contact): Contact information and links to GitHub and LinkedIn profiles.
 - [Education](https://ewin24.github.io/portfolio/#education): Academic background and certifications.
-- [Testimonials](https://ewin24.github.io/portfolio/#testimonials): Professional recommendations and endorsements.

@@ -6,7 +6,6 @@ export type TranslationKeys = {
   'nav.projects': string
   'nav.skills': string
   'nav.experience': string
-  'nav.testimonials': string
   'nav.education': string
   'nav.blog': string
   'nav.contact': string
@@ -16,6 +15,8 @@ export type TranslationKeys = {
   'hero.subtitle': string
   'hero.cta.projects': string
   'hero.cta.contact': string
+  'hero.cta.cv': string
+  'hero.availability': string
   'hero.stats.yearsExp': string
   'hero.stats.systems': string
   'hero.stats.stack': string
@@ -81,18 +82,10 @@ export type TranslationKeys = {
   'skills.docker.milestone2': string
   'skills.docker.milestone3': string
   'skills.docker.reference': string
-  'skills.java.milestone1': string
-  'skills.java.milestone2': string
-  'skills.java.milestone3': string
-  'skills.java.reference': string
-  'skills.postgresql.milestone1': string
-  'skills.postgresql.milestone2': string
-  'skills.postgresql.milestone3': string
-  'skills.postgresql.reference': string
-  'skills.azure.milestone1': string
-  'skills.azure.milestone2': string
-  'skills.azure.milestone3': string
-  'skills.azure.reference': string
+  'skills.ai.milestone1': string
+  'skills.ai.milestone2': string
+  'skills.ai.milestone3': string
+  'skills.ai.reference': string
   'skills.cfworkers.milestone1': string
   'skills.cfworkers.milestone2': string
   'skills.cfworkers.milestone3': string
@@ -125,6 +118,10 @@ export type TranslationKeys = {
   'experience.subtitle': string
   'experience.stamp': string
   'experience.achievements': string
+  'experience.employment.full-time': string
+  'experience.employment.contract': string
+  'experience.employment.open-source': string
+  'experience.employment.bootcamp': string
   // Blog
   'blog.title': string
   'blog.subtitle': string
@@ -141,9 +138,6 @@ export type TranslationKeys = {
   'blog.nextArticle': string
   'blog.articles': string
   'blog.reading': string
-  // Testimonials
-  'testimonials.title': string
-  'testimonials.subtitle': string
   // Contact
   'contact.title': string
   'contact.subtitle': string
@@ -180,18 +174,19 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.projects': 'Casos de Estudio',
     'nav.skills': 'Stack',
     'nav.experience': 'Experiencia',
-    'nav.testimonials': 'Referencias',
     'nav.education': 'Formación',
     'nav.blog': 'Blog',
     'nav.contact': 'Contacto',
 
     // Hero — Copy Senior, vende ingeniería no código
     'hero.greeting': 'Edición digital · Colombia',
-    'hero.role': 'Ingeniería de Software',
+    'hero.role': 'Líder Técnico · Desarrollador .NET',
     'hero.subtitle':
-      'Ingeniero de Software y Desarrollador Full-Stack especializado en sistemas distribuidos, microservicios y plataformas SaaS. Experiencia comprobable modernizando ERPs, integrando soluciones Fintech y desplegando en la nube. Apasionado por el Clean Code, la optimización de bases de datos y las arquitecturas resilientes orientadas a resolver cuellos de botella.',
+      'Dirijo el desarrollo del área de crédito de una fintech colombiana: originación de crédito, cálculo de cupos y riesgo crediticio, validación de identidad e integración con burós. .NET 8/10 con Clean Architecture, SQL Server con Dapper y stored procedures, APIs resilientes y entrega con TDD y revisión adversarial asistida por agentes de IA.',
     'hero.cta.projects': 'Ver Casos de Estudio',
     'hero.cta.contact': 'Hablemos',
+    'hero.cta.cv': 'Descargar CV',
+    'hero.availability': 'Abierto a roles remotos · Colombia (UTC−5) · Inglés B1',
 
     // Stats con valor real
     'hero.stats.yearsExp': 'Años de experiencia',
@@ -249,18 +244,10 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.docker.milestone2': 'CI/CD con GitHub Actions',
     'skills.docker.milestone3': 'Despliegue en entornos productivos',
     'skills.docker.reference': 'Ver Casos de Estudio',
-    'skills.java.milestone1': 'APIs reactivas con Spring WebFlux y Project Reactor',
-    'skills.java.milestone2': 'Microservicios con Spring Boot y Spring Cloud',
-    'skills.java.milestone3': 'Arquitecturas resilientes con patrones de tolerancia a fallos',
-    'skills.java.reference': 'Ver Casos de Estudio',
-    'skills.postgresql.milestone1': 'Modelado relacional con índices y constraints',
-    'skills.postgresql.milestone2': 'Consultas optimizadas con EXPLAIN ANALYZE y CTEs',
-    'skills.postgresql.milestone3': 'Integración con APIs REST y ORMs',
-    'skills.postgresql.reference': 'Ver Casos de Estudio',
-    'skills.azure.milestone1': 'Aprovisionamiento de recursos cloud con Azure Portal',
-    'skills.azure.milestone2': 'CI/CD con Azure DevOps',
-    'skills.azure.milestone3': 'Contenedores y orquestación en Azure Kubernetes',
-    'skills.azure.reference': 'Ver Casos de Estudio',
+    'skills.ai.milestone1': 'Agente LLM con tool calling por permisos, streaming SSE y presupuesto de tokens por organización',
+    'skills.ai.milestone2': 'Acciones de IA con aprobación humana: la confirmación es una transacción idempotente, no un botón',
+    'skills.ai.milestone3': 'Entrega con agentes de IA: specs, verificadores independientes y PRs de menos de 400 líneas',
+    'skills.ai.reference': 'Ver Casos de Estudio',
     'skills.cfworkers.milestone1': 'Relay de feeds en el borde con CORS y GET condicional',
     'skills.cfworkers.milestone2': 'Guarda SSRF reaplicada en cada salto de redirección',
     'skills.cfworkers.milestone3': 'Despliegue automatizado con GitHub Actions',
@@ -309,6 +296,10 @@ const translations: Record<Language, TranslationKeys> = {
     'experience.subtitle': 'Experiencia profesional con impacto medible',
     'experience.stamp': 'En curso',
     'experience.achievements': 'Logros clave',
+    'experience.employment.full-time': 'Tiempo completo',
+    'experience.employment.contract': 'Contrato',
+    'experience.employment.open-source': 'Open source',
+    'experience.employment.bootcamp': 'Bootcamp',
 
     // Blog
     'blog.title': 'Blog Técnico',
@@ -327,9 +318,6 @@ const translations: Record<Language, TranslationKeys> = {
     'blog.articles': 'Artículos',
     'blog.reading': 'Lectura',
 
-    // Testimonials
-    'testimonials.title': 'Referencias',
-    'testimonials.subtitle': 'Lo que dicen quienes han trabajado conmigo',
 
     // Contact
     'contact.title': 'Contacto',
@@ -368,18 +356,19 @@ const translations: Record<Language, TranslationKeys> = {
     'nav.projects': 'Case Studies',
     'nav.skills': 'Stack',
     'nav.experience': 'Experience',
-    'nav.testimonials': 'References',
     'nav.education': 'Education',
     'nav.blog': 'Blog',
     'nav.contact': 'Contact',
 
     // Hero
     'hero.greeting': 'Digital edition · Colombia',
-    'hero.role': 'Engineering Solutions',
+    'hero.role': 'Tech Lead · .NET Developer',
     'hero.subtitle':
-      'Software Engineer and Full-Stack Developer specialized in distributed systems, microservices, and high-performance SaaS platforms. Proven track record modernizing enterprise ERPs, integrating Fintech solutions, and deploying to the cloud. Passionate about Clean Code, database optimization, and resilient architectures that solve bottlenecks and deliver direct business value.',
+      'I lead development of the credit area at a Colombian fintech: loan origination, credit-limit and credit-risk calculation, identity verification, and credit-bureau integrations. .NET 8/10 with Clean Architecture, SQL Server with Dapper and stored procedures, resilient APIs, and delivery through TDD and adversarial review assisted by AI agents.',
     'hero.cta.projects': 'View Case Studies',
     'hero.cta.contact': "Let's Talk",
+    'hero.cta.cv': 'Download CV',
+    'hero.availability': 'Open to remote roles · Colombia (UTC−5) · English B1',
 
     // Stats
     'hero.stats.yearsExp': 'Years of experience',
@@ -437,18 +426,10 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.docker.milestone2': 'CI/CD with GitHub Actions',
     'skills.docker.milestone3': 'Production environment deployment',
     'skills.docker.reference': 'View Case Studies',
-    'skills.java.milestone1': 'Reactive APIs with Spring WebFlux and Project Reactor',
-    'skills.java.milestone2': 'Microservices with Spring Boot and Spring Cloud',
-    'skills.java.milestone3': 'Resilient architectures with fault tolerance patterns',
-    'skills.java.reference': 'View Case Studies',
-    'skills.postgresql.milestone1': 'Relational modeling with indexes and constraints',
-    'skills.postgresql.milestone2': 'Query optimization with EXPLAIN ANALYZE and CTEs',
-    'skills.postgresql.milestone3': 'Integration with REST APIs and ORMs',
-    'skills.postgresql.reference': 'View Case Studies',
-    'skills.azure.milestone1': 'Cloud resource provisioning with Azure Portal',
-    'skills.azure.milestone2': 'CI/CD with Azure DevOps',
-    'skills.azure.milestone3': 'Containers and orchestration in Azure Kubernetes',
-    'skills.azure.reference': 'View Case Studies',
+    'skills.ai.milestone1': 'LLM agent with permission-aware tool calling, SSE streaming, and per-organization token budgets',
+    'skills.ai.milestone2': 'Human-in-the-loop AI actions: confirmation is an idempotent transaction, not a button',
+    'skills.ai.milestone3': 'Delivery with AI agents: specs, independent verifiers, and PRs under 400 lines',
+    'skills.ai.reference': 'View Case Studies',
     'skills.cfworkers.milestone1': 'Edge feed relay with CORS and conditional GET',
     'skills.cfworkers.milestone2': 'SSRF guard re-applied on every redirect hop',
     'skills.cfworkers.milestone3': 'Automated deployment via GitHub Actions',
@@ -497,6 +478,10 @@ const translations: Record<Language, TranslationKeys> = {
     'experience.subtitle': 'Professional track record with measurable impact',
     'experience.stamp': 'Current',
     'experience.achievements': 'Key achievements',
+    'experience.employment.full-time': 'Full-time',
+    'experience.employment.contract': 'Contract',
+    'experience.employment.open-source': 'Open source',
+    'experience.employment.bootcamp': 'Bootcamp',
 
     // Blog
     'blog.title': 'Technical Blog',
@@ -515,9 +500,6 @@ const translations: Record<Language, TranslationKeys> = {
     'blog.articles': 'Articles',
     'blog.reading': 'Reading',
 
-    // Testimonials
-    'testimonials.title': 'References',
-    'testimonials.subtitle': 'What people say about working with me',
 
     // Contact
     'contact.title': 'Contact',

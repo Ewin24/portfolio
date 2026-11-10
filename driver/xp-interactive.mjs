@@ -257,7 +257,7 @@ async function run() {
         await page.waitForTimeout(200)
         check('Start aria-expanded=true after click', await startBtn.getAttribute('aria-expanded') === 'true')
         check('Start menu role=menu renders', await page.locator('.xp-startmenu[role="menu"]').count() === 1)
-        check('Start menu has 7 menuitem', await page.locator('.xp-startmenu [role="menuitem"]').count() === 7)
+        check('Start menu has 6 menuitem', await page.locator('.xp-startmenu [role="menuitem"]').count() === 6)
 
         await page.locator('.xp-startmenu [role="menuitem"]').filter({ hasText: 'Case Studies' }).click()
         await page.waitForTimeout(300)
@@ -296,7 +296,7 @@ async function run() {
     {
       const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[2])
       try {
-        check('7 desktop icons render', await page.locator('.xp-desktop-icon').count() === 7)
+        check('6 desktop icons render', await page.locator('.xp-desktop-icon').count() === 6)
         for (const id of APP_IDS.filter((i) => i !== 'about')) {
           await page.locator(`.xp-desktop-icon[data-app="${id}"]`).click()
           await page.waitForTimeout(250)
@@ -673,7 +673,7 @@ async function run() {
         check('help: "?" button present in controls', await helpBtn.count() === 1, `count=${await helpBtn.count()}`)
 
         // help is a hidden registry app: still 7 desktop icons, none for help.
-        check('help: desktop still shows 7 icons', await page.locator('.xp-desktop-icon').count() === 7)
+        check('help: desktop still shows 6 icons', await page.locator('.xp-desktop-icon').count() === 6)
         check('help: no help desktop icon', await page.locator('.xp-desktop-icon[data-app="help"]').count() === 0)
 
         // Click "?" on the default window opens the Help window in the open-set.

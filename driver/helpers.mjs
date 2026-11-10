@@ -18,14 +18,13 @@ export const VIEWPORTS = [
 export const LOCALES = ['es', 'en']
 
 /**
- * All 7 apps in the XP desktop registry, in z-order/display order (spec M0).
+ * All 6 apps in the XP desktop registry, in z-order/display order (spec M0).
  */
 export const APP_IDS = [
   'about',
   'projects',
   'skills-experience',
   'education',
-  'testimonials',
   'blog',
   'contact',
 ]

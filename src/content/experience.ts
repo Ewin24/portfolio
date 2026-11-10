@@ -23,6 +23,7 @@ export const workExperience: WorkExperience[] = [
     roleEn: 'Open Source Maintainer (Fork) & Flutter Developer',
     period: 'Jun 2026 – Presente',
     current: true,
+    employment: 'open-source',
     location: 'Colombia (Remoto)',
     achievements: [
       'Tomé el mantenimiento del fork de Harmony-Music (app Flutter de música streaming para Android, Windows y Linux) tras el abandono del creador original en diciembre 2025, aplicando una metodología de triage en 4 fases que llevó la app de "no compila" a release v1.12.2 con toolchain moderno',
@@ -51,6 +52,7 @@ export const workExperience: WorkExperience[] = [
     roleEn: 'Cloud Software Architect & Independent Developer',
     period: 'Ene 2024 – Presente',
     current: true,
+    employment: 'contract',
     location: 'Colombia (Remoto)',
     achievements: [
       'Lideré el diseño arquitectónico, desarrollo end-to-end y despliegue en la nube de STARSOL, una plataforma SaaS B2B para el sector solidario que gestiona el Sistema Integral de Administración de Riesgos (SARLAFT, SARC, SIAR), digitalizando y automatizando flujos complejos de originación de crédito y monitoreo normativo',
@@ -58,6 +60,9 @@ export const workExperience: WorkExperience[] = [
       'Desarrollé una aplicación cliente en .NET MAUI para gestión avanzada de archivos integrada con el ecosistema STARSOL, habilitando procesamiento offline y sincronización con el backend en la nube',
       'Orquesté el aprovisionamiento de entornos de alta disponibilidad en AWS con prácticas CI/CD, garantizando escalabilidad y seguridad para el procesamiento de datos financieros sensibles',
       'Construí el módulo de ingesta regulatoria ADA/SICSES con un validador de estructura CSV que detecta marcador, separador y fila de encabezado antes de validar, verificado contra 12 archivos reales de cliente sin errores bloqueantes',
+      'Eliminé un patrón N+1 en el cálculo regulatorio nocturno que ejecutaba 50.000–100.000 consultas sobre 15.000–50.000 registros y agotaba el timeout de 7 horas, precargando las relaciones antes del ciclo',
+      'Construí acceso delegado para contratistas en múltiples tenants (permiso por contratista y tenant, auditoría bajo el tenant actuado) en 12 PRs encadenados de menos de 400 líneas, con 43 pruebas',
+      'Lidero la actualización por fases de Laravel 8 a 13 y PHP 7.3 a 8.3 en producción contra una línea base de 1.143 pruebas en Docker aislado: cada fase cierra con 0 fallos nuevos y 0 deprecaciones (en curso)',
     ],
     achievementsEn: [
       'Led the architectural design, end-to-end development, and cloud deployment of STARSOL, a B2B SaaS platform for the solidarity sector managing the Integral Risk Management System (SARLAFT, SARC, SIAR), digitizing and automating complex loan origination and regulatory monitoring workflows',
@@ -65,9 +70,12 @@ export const workExperience: WorkExperience[] = [
       'Developed a .NET MAUI client application for advanced file management integrated with the STARSOL ecosystem, enabling offline processing and cloud backend synchronization',
       'Orchestrated high-availability environment provisioning on AWS with CI/CD practices, ensuring scalability and security for sensitive financial data processing',
       'Built the ADA/SICSES regulatory ingestion module with a CSV structure validator that detects marker, separator and header row before validating, verified against 12 real client files with no blocking errors',
+      'Removed an N+1 pattern from the nightly regulatory calculation that issued 50,000–100,000 queries over 15,000–50,000 records and kept hitting its 7-hour timeout, by preloading relations before the loop',
+      'Built delegated contractor access across tenants (permission per contractor and tenant, audit recorded under the acted-on tenant) as 12 stacked PRs under 400 lines each, with 43 tests',
+      'Leading a phased Laravel 8→13 and PHP 7.3→8.3 upgrade in production against a 1,143-test baseline run in isolated Docker: every phase closes with 0 new failures and 0 deprecations (in progress)',
     ],
     stack: ['PHP', 'Laravel', 'AWS', '.NET MAUI', 'MySQL', 'Docker', 'CI/CD'],
-    order: 4,
+    order: 6,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -77,12 +85,17 @@ export const workExperience: WorkExperience[] = [
     id: 'baguer-software',
     company: 'BAGUER S.A.S',
     companyUrl: undefined,
-    role: 'Programador Full Stack C# .NET & Mobile',
-    roleEn: 'Full Stack C# .NET & Mobile Developer',
+    role: 'Líder Técnico del Área de Crédito · Desarrollador .NET',
+    roleEn: 'Credit Area Tech Lead · .NET Developer',
     period: '2024 – Presente',
     current: true,
+    employment: 'full-time',
     location: 'Colombia (Remoto)',
     achievements: [
+      'Dirijo el desarrollo de toda el área de crédito para una fintech de crédito de consumo: originación, cálculo de cupos, riesgo crediticio, validación de identidad e integración con burós',
+      'Llevé la API principal de 8 archivos de prueba a 3.009 pruebas automatizadas en verde en ~10 semanas, con 0 fallos en cada gate de verificación',
+      'Diseñé y entregué un segundo canal de venta (autoservicio web) sobre el mismo motor de flujo: 16 slices, 41 commits en 2 repositorios, 5 migraciones aditivas reversibles y 0 regresiones en la matriz de 11 escenarios del canal presencial',
+      'Reemplacé la asignación por menor carga de la cola de soporte por enrutamiento por competencias: una única función de base de datos define quién puede atender cada caso y un test de deriva fija el contrato entre C# y la base de datos',
       'Construí desde cero el Sistema de Originación de Crédito (LOS) con Clean Architecture en .NET 8 — DDL con 30+ tablas y 4 esquemas lógicos, 27 stored procedures, API REST con 114+ endpoints organizados en 6 capas BFF sin duplicación de lógica entre canales',
       'Diseñé el SOVI (Sistema Orquestador de Validación de Identidad) con patrón Strategy para verificación por bot de voz + respaldo manual, implementando un motor de decisiones catalog-driven que eliminó todo if/switch hardcodeado del flujo de validación',
       'Implementé la API de integración con burós de crédito (Datacredito) en .NET 8 con patrones de resiliencia (Polly circuit breaker + retry policy), autenticación JWT y logging estructurado con Serilog, reduciendo tiempos de consulta de 3s a 400ms mediante optimización de índices y queries',
@@ -90,6 +103,10 @@ export const workExperience: WorkExperience[] = [
       'Sumé un endpoint administrativo que reemplazó una operación que antes solo un DBA podía ejecutar, con su permiso probado a través de la tubería de autorización real en pruebas de integración (xUnit + TestServer), y rediseñé el espacio de trabajo de casos del operador entregándolo en commits pequeños y revisables',
     ],
     achievementsEn: [
+      'Lead development of the entire credit area for a consumer-credit fintech: loan origination, credit-limit calculation, credit risk, identity verification, and credit-bureau integrations',
+      'Took the core API from 8 test files to 3,009 passing automated tests in ~10 weeks, with 0 failures at every verification gate',
+      'Designed and shipped a second sales channel (web self-service) on the same workflow engine: 16 slices, 41 commits across 2 repositories, 5 additive rollback-safe migrations, and 0 regressions across the 11-scenario in-store channel matrix',
+      'Replaced least-loaded assignment in the support queue with skill-based routing: a single database function defines who can handle each case, and a drift test pins the contract between C# and the database',
       'Built the Loan Origination System (LOS) from scratch with Clean Architecture in .NET 8 — DDL with 30+ tables and 4 logical schemas, 27 stored procedures, REST API with 114+ endpoints organized across 6 BFF layers with zero logic duplication between channels',
       'Designed SOVI (Identity Validation Orchestrator System) with Strategy pattern for voice bot verification + manual backup, implementing a catalog-driven decision engine that eliminated all hardcoded if/switch from the validation flow',
       'Implemented credit bureau integration API (Datacredito) in .NET 8 with resilience patterns (Polly circuit breaker + retry policy), JWT authentication, and structured logging with Serilog, reducing query times from 3s to 400ms through index and query optimization',
@@ -97,7 +114,7 @@ export const workExperience: WorkExperience[] = [
       'Added an administrative endpoint that replaced an operation only a DBA could previously run, with its guarding permission proven through the real authorization pipeline in integration tests (xUnit + TestServer), and redesigned the operator case workspace, delivered as small reviewable commits',
     ],
     stack: ['.NET 8', 'C#', 'SQL Server', 'Clean Architecture', 'Flutter', 'Dapper', 'React', 'TypeScript'],
-    order: 3,
+    order: 7,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -111,21 +128,22 @@ export const workExperience: WorkExperience[] = [
     roleEn: '.NET Backend Developer',
     period: '2021 – 2023',
     current: false,
+    employment: 'full-time',
     location: 'Colombia (Remoto)',
     achievements: [
       'Desarrollé y mantuve integraciones con APIs de terceros (burós de crédito CIFIN, pasarelas de pago, servicios de mensajería Infobip) procesando miles de transacciones diarias',
-      'Implementé APIs REST en .NET con Dapper y SQL Server, optimizando consultas mediante índices y caching que redujeron tiempos de respuesta de 3s a 400ms',
+      'Implementé APIs REST en .NET con Dapper y SQL Server, optimizando consultas mediante índices y caching',
       'Construí sistemas de reportes automatizados con Crystal Reports integrados al ERP, eliminando horas de trabajo manual del equipo de análisis',
       'Participé en la migración de aplicaciones .NET Framework a .NET Core, aplicando inyección de dependencias y patrones modernos de arquitectura',
     ],
     achievementsEn: [
       'Developed and maintained third-party API integrations (CIFIN credit bureaus, payment gateways, Infobip messaging services) processing thousands of daily transactions',
-      'Implemented REST APIs in .NET with Dapper and SQL Server, optimizing queries through indexes and caching that reduced response times from 3s to 400ms',
+      'Implemented REST APIs in .NET with Dapper and SQL Server, optimizing queries through indexes and caching',
       'Built automated reporting systems with Crystal Reports integrated into the ERP, eliminating hours of manual work from the analytics team',
       'Participated in migration from .NET Framework to .NET Core applications, applying dependency injection and modern architecture patterns',
     ],
     stack: ['C#', '.NET Core', 'Dapper', 'SQL Server', 'REST API', 'Crystal Reports'],
-    order: 1,
+    order: 2,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -138,11 +156,12 @@ export const workExperience: WorkExperience[] = [
     roleEn: 'Full Stack .NET Developer',
     period: '2025 – 2026',
     current: false,
+    employment: 'contract',
     location: 'Colombia (Remoto)',
     achievements: [
       'Extendí el sistema de enrutamiento de documentos del CRM corporativo para soportar 3 nuevos tipos de nómina (Comercial, Administrativa, Temporada) para una cadena de franquicias de tiendas de ropa, agregando IDs y casos específicos sin afectar los 45+ tipos legacy existentes',
       'Diseñé e implementé 21 plantillas Crystal Reports (7 por tipo de nómina) organizadas en una estructura de carpetas dedicada, siguiendo el patrón del sistema existente para mantener consistencia',
-      'Implementé enrutamiento dinámico de documentos modificando la lógica de generación de contratos, cartas y terminaciones, logrando una extensión no-invasiva sin regressiones en la operación existente',
+      'Implementé enrutamiento dinámico de documentos modificando la lógica de generación de contratos, cartas y terminaciones, logrando una extensión no-invasiva sin regresiones en la operación existente',
     ],
     achievementsEn: [
       'Extended the corporate CRM document routing system to support 3 new payroll types (Commercial, Administrative, Seasonal) for a clothing franchise chain, adding IDs and specific cases without affecting 45+ existing legacy types',
@@ -150,7 +169,7 @@ export const workExperience: WorkExperience[] = [
       'Implemented dynamic document routing by modifying contract, letter, and termination generation logic, achieving a non-invasive extension with zero regressions on existing operations',
     ],
     stack: ['C#', '.NET Framework', 'Crystal Reports', 'SQL Server', 'ERP', 'CRM'],
-    order: 2,
+    order: 4,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -164,6 +183,7 @@ export const workExperience: WorkExperience[] = [
     roleEn: 'Full Stack Developer (.NET & JavaScript)',
     period: 'Feb 2023 – Ene 2024',
     current: false,
+    employment: 'bootcamp',
     location: 'Colombia',
     achievements: [
       'Desarrollé una solución de software integral bajo metodología ágil Scrum para la gestión operativa de un modelo logístico',
@@ -178,7 +198,7 @@ export const workExperience: WorkExperience[] = [
       'Consumed backend services through a dynamic and interactive frontend built with JavaScript, ensuring long-term code quality and maintainability',
     ],
     stack: ['C#', '.NET', 'MySQL', 'JavaScript', 'HTML/CSS', 'Scrum'],
-    order: 2,
+    order: 3,
   },
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -192,6 +212,7 @@ export const workExperience: WorkExperience[] = [
     roleEn: 'Web Developer',
     period: 'Ene 2022 – Ene 2023',
     current: false,
+    employment: 'full-time',
     location: 'Colombia',
     achievements: [
       'Fui responsable del desarrollo end-to-end de la plataforma web comercial, gestionando todo el ciclo de vida del producto: desde la toma de requerimientos y diseño de interfaces (UI/UX) mediante mockups, hasta la implementación técnica utilizando PHP, JavaScript, HTML y CSS',
@@ -202,7 +223,7 @@ export const workExperience: WorkExperience[] = [
       'Executed business logic integration, content optimization, and automated deployment to production servers, ensuring site stability',
     ],
     stack: ['PHP', 'JavaScript', 'HTML', 'CSS', 'UI/UX', 'Deployment'],
-    order: 0,
+    order: 1,
   },
 ]
 

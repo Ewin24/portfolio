@@ -6,7 +6,6 @@ import { caseStudies } from './src/content/case-studies'
 import { workExperience } from './src/content/experience'
 import { education } from './src/content/education'
 import { blogPosts } from './src/blog/content/posts'
-import { testimonials } from './src/content/testimonials'
 
 const SITE_URL = 'https://ewin24.github.io/portfolio/'
 /** Newest post date — the content-derived "last modified" for the home page and its JSON-LD. */
@@ -86,7 +85,7 @@ function generatePreloadedContent(): string {
     lines.push(
       `<article>`,
       `<h3>${escapeHtml(job.role)} — ${escapeHtml(job.company)}</h3>`,
-      `<p><strong>Period</strong>: ${escapeHtml(job.period)}. <strong>Location</strong>: ${escapeHtml(job.location)}.${job.current ? ' <strong>Current</strong>.' : ''}</p>`,
+      `<p><strong>Period</strong>: ${escapeHtml(job.period)}. <strong>Employment</strong>: ${job.employment}. <strong>Location</strong>: ${escapeHtml(job.location)}.${job.current ? ' <strong>Current</strong>.' : ''}</p>`,
       `<ul>`,
       ...job.achievements.map((a) => `<li>${escapeHtml(a)}</li>`),
       `</ul>`,
@@ -103,17 +102,6 @@ function generatePreloadedContent(): string {
       `<h3>${escapeHtml(ed.degree)} — ${escapeHtml(ed.institution)}</h3>`,
       `<p><strong>Period</strong>: ${escapeHtml(ed.period)}</p>`,
       ed.description !== undefined ? `<p>${escapeHtml(ed.description)}</p>` : '',
-      `</article>`,
-    )
-  })
-
-  // Testimonials
-  lines.push(`<h2>Testimonials</h2>`)
-  testimonials.forEach((t) => {
-    lines.push(
-      `<article>`,
-      `<blockquote>${escapeHtml(t.text)}</blockquote>`,
-      `<p>— ${escapeHtml(t.name)}, ${escapeHtml(t.role)} at ${escapeHtml(t.company)}</p>`,
       `</article>`,
     )
   })
@@ -220,7 +208,7 @@ function generateFaqSchema(): string {
         name: '¿Cómo diseñar una base de datos para un sistema de originación de crédito?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Tres reglas: (1) Organizar en esquemas lógicos por responsabilidad: cfg (configuración), cat (catálogos), fab (fábrica/producción), aud (auditoría); (2) Usar stored procedures para operaciones transaccionales complejas — son el contrato entre la app y la BD; (3) Auditoría INSERT-ONLY — nunca updates ni deletes en tablas de auditoría, cada cambio es un nuevo registro. En el LOS QUAC: 4 esquemas, 30+ tablas, 27 stored procedures, 23 estados de ciclo de vida, trazabilidad completa desde solicitud hasta desembolso.',
+          text: 'Tres reglas: (1) Organizar en esquemas lógicos por responsabilidad: cfg (configuración), cat (catálogos), fab (fábrica/producción), aud (auditoría); (2) Usar stored procedures para operaciones transaccionales complejas — son el contrato entre la app y la BD; (3) Auditoría INSERT-ONLY — nunca updates ni deletes en tablas de auditoría, cada cambio es un nuevo registro. En el LOS: 4 esquemas, 30+ tablas, 27 stored procedures, 23 estados de ciclo de vida, trazabilidad completa desde solicitud hasta desembolso.',
         },
       },
     ],
