@@ -9,6 +9,7 @@ import { workExperience } from '../src/content/experience.ts'
 import { education } from '../src/content/education.ts'
 import { featuredCaseStudies } from '../src/content/case-studies.ts'
 import { t } from '../src/i18n/translations.ts'
+import { periodLabel as period } from '../src/lib/text.ts'
 
 const OUT = new URL('../public/cv/', import.meta.url)
 const CASES_IN_CV = 3
@@ -23,9 +24,9 @@ const LABELS = {
 
 const firstSentence = (s) => s.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? s
 
-function period(p, lang) {
-  return lang === 'es' ? p : p.replace('Presente', 'Present').replace(/\bEne\b/g, 'Jan')
-}
+// Spanish words that must never reach the English CV. Fails the build of the
+// PDF instead of shipping it, since nothing else reads the generated text.
+const SPANISH_IN_EN = /\b(Presente|Proyecto de grado|Tiempo completo|Contrato)\b/
 
 function html(lang) {
   const L = LABELS[lang]
@@ -83,6 +84,8 @@ const browser = await chromium.launch()
 const page = await browser.newPage()
 for (const lang of ['es', 'en']) {
   await page.setContent(html(lang), { waitUntil: 'load' })
+  const leak = lang === 'en' && (await page.innerText('body')).match(SPANISH_IN_EN)
+  if (leak) throw new Error(`English CV contains Spanish text: "${leak[0]}"`)
   const path = fileURLToPath(new URL(`Edwin-Trigos-CV-${lang.toUpperCase()}.pdf`, OUT))
   await page.pdf({ path, format: 'A4', printBackground: true })
   console.log(`wrote ${path}`)

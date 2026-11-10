@@ -121,3 +121,18 @@ export function clampToSentence(text: string, budget: number): ClampResult {
 
   return { head: `${text.slice(0, cut)}…`, rest: text.slice(cut) }
 }
+
+/**
+ * Content periods are authored in Spanish ('Ene 2024 – Presente'). The English
+ * page and the English CV read them through here, so a Spanish word never
+ * leaks into English output. Add a pair when a new Spanish word enters a period.
+ */
+const PERIOD_EN: ReadonlyArray<[RegExp, string]> = [
+  [/\bPresente\b/g, 'Present'],
+  [/\bEne\b/g, 'Jan'],
+  [/\bProyecto de grado\b/g, 'Degree project'],
+]
+
+export function periodLabel(period: string, lang: 'es' | 'en'): string {
+  return lang === 'es' ? period : PERIOD_EN.reduce((s, [es, en]) => s.replace(es, en), period)
+}

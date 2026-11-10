@@ -6,7 +6,7 @@ import { getFeaturedRepos } from '../../services/github'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
 import { featuredCaseStudies } from '../../content'
-import { clampToSentence } from '../../lib/text'
+import { clampToSentence, periodLabel } from '../../lib/text'
 import type { CaseStudy } from '../../types'
 
 /**
@@ -125,7 +125,7 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
               </>
             )}
             <span className="text-rule-light font-mono text-xs">·</span>
-            <span className="font-mono text-xs text-ink-muted">{study.period}</span>
+            <span className="font-mono text-xs text-ink-muted">{periodLabel(study.period, lang)}</span>
           </div>
           <p className="font-mono text-xs text-ink-muted mt-1 italic">{role}</p>
         </div>
