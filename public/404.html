@@ -10,31 +10,18 @@
   <meta name="theme-color" content="#0a0a0f" />
   <title>Edwin Trigos | Full Stack Developer</title>
   <script>
-    // GitHub Pages SPA fallback for hash-routed apps.
-    // The app uses hash-based routing (#blog/article/<slug>),
-    // so we just need to redirect any 404 hit to the root index.html
-    // and preserve the path so the app can read it from location.pathname.
-    // For hash-routed apps, the simpler trick: just reload at root.
+    // SPA fallback for a hash-routed app (#blog/article/<slug>): any unknown path
+    // goes back to the site root, keeping the hash. The root is /portfolio/ on
+    // GitHub Pages and / on Vercel. Never redirect when already at the root,
+    // or a missing index would reload forever.
     var l = window.location;
-    // If the path is something other than the SPA root, redirect to root
-    // while preserving any hash.
-    if (l.pathname !== '/portfolio/' && l.pathname !== '/portfolio') {
-      // For hash-routed apps, the canonical URL is always root + #route.
-      // Any unknown path under /portfolio/* should resolve to root.
-      l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-                '/portfolio/' + l.hash);
-    } else {
-      // If already at the root, just show the SPA (which is index.html)
-      // but Vite served us a 404, so we need to load the actual app.
-      // For hash-routing this shouldn't happen, but handle it gracefully.
-      l.replace(l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-                '/portfolio/' + l.hash);
-    }
+    var root = l.pathname.indexOf('/portfolio') === 0 ? '/portfolio/' : '/';
+    if (l.pathname !== root) l.replace(l.origin + root + l.hash);
   </script>
 </head>
 <body>
   <noscript>
-    <p>Redirecting to <a href="/portfolio/">Edwin Trigos Portfolio</a>...</p>
+    <p>Redirecting to <a href="./">Edwin Trigos Portfolio</a>...</p>
   </noscript>
 </body>
 </html>

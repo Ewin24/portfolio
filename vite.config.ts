@@ -492,7 +492,8 @@ function preloadStaticContent(): import('vite').Plugin {
 }
 
 export default defineConfig({
-  base: '/portfolio/',
+  // GitHub Pages serves the site under /portfolio/; Vercel (which sets VERCEL=1 at build) serves it at the root.
+  base: process.env.VERCEL ? '/' : '/portfolio/',
   plugins: [react(), tailwindcss(), preloadStaticContent()],
   resolve: {
     alias: {
