@@ -11,11 +11,12 @@
   <title>Edwin Trigos | Full Stack Developer</title>
   <script>
     // SPA fallback for a hash-routed app (#blog/article/<slug>): any unknown path
-    // goes back to the site root, keeping the hash. The root is /portfolio/ on
-    // GitHub Pages and / on Vercel. Never redirect when already at the root,
-    // or a missing index would reload forever.
+    // goes back to the site root, keeping the hash. The root depends on the host,
+    // not on the requested path: /portfolio/ on GitHub Pages, / anywhere else
+    // (Vercel), so an old /portfolio/... link on Vercel still lands on the app.
+    // Never redirect when already at the root, or a missing index would reload forever.
     var l = window.location;
-    var root = l.pathname.indexOf('/portfolio') === 0 ? '/portfolio/' : '/';
+    var root = /\.github\.io$/.test(l.hostname) ? '/portfolio/' : '/';
     if (l.pathname !== root) l.replace(l.origin + root + l.hash);
   </script>
 </head>

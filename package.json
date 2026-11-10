@@ -12,6 +12,7 @@
     "test:newspaper": "node driver/newspaper.mjs",
     "test:newspaper:update": "node driver/newspaper.mjs --update",
     "test:routes": "node driver/routes.mjs",
+    "test:404": "node driver/redirect-404.mjs",
     "cv": "node driver/cv.mjs"
   },
   "dependencies": {
