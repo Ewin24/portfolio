@@ -68,30 +68,30 @@ protected override async Task ExecuteAsync(CancellationToken stop)
     await foreach (var req in _channel.Reader.ReadAllAsync(stop))
     {
         using var scope = _scopes.CreateScope();
-        var client = scope.ServiceProvider.GetRequiredService<IVoiceBotClient>();
-        var outcome = await client.StartCallAsync(req, stop);
-        await RecordAsync(scope, req, outcome, stop);
+        try { await ProcessAsync(scope, req, stop); } // call provider, record outcome
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        { _logger.LogError(ex, "Call {Id} failed", req.Id); } // never kill the loop
     }
 }
 \`\`\`
 
-Cada solicitud vive en su propio alcance, igual que si hubiera llegado por HTTP: sus dependencias nacen y mueren con ella. El worker distingue tres respuestas del proveedor. Si el bot excede su propio tiempo, se registra y la campaña se queda "en llamada", porque el callback todavía puede llegar. Si el proveedor devuelve un error técnico, la campaña se cierra como fallida. Si devuelve un diagnóstico normal, se procesa por el mismo camino que usaría el callback, de modo que no existen dos implementaciones del cierre.
+Cada solicitud vive en su propio alcance, igual que si hubiera llegado por HTTP: sus dependencias nacen y mueren con ella. Y cada una va envuelta en su propio try/catch: una excepción no controlada dentro de ExecuteAsync detiene el BackgroundService, y con él la cola entera. El worker distingue tres respuestas del proveedor. Si el bot excede su propio tiempo, se registra y la campaña se queda "en llamada", porque el callback todavía puede llegar. Si el proveedor devuelve un error técnico, la campaña se cierra como fallida. Si devuelve un diagnóstico normal, se procesa por el mismo camino que usaría el callback, de modo que no existen dos implementaciones del cierre.
 
 La segunda mitad es la consulta. No agregué columnas de estado nuevas. La fase que ve el cliente se calcula a partir de lo que la tabla ya tenía: el estado de la campaña, el código de diagnóstico y la fecha de creación.
 
 \`\`\`csharp
-static CallPhase PhaseOf(CampaignRow c, DateTime now, TimeSpan timeout)
+static CallPhase PhaseOf(CampaignRow c, DateTime now, TimeSpan timeout, TimeSpan dialing)
 {
     var elapsed = now - c.CreatedAt;
     if (c.Status == Status.InProgress && elapsed > timeout) return CallPhase.Expired;
     if (c.Status == Status.Completed) return CallPhase.Completed;
     if (c.Status == Status.Failed) return CallPhase.Failed;
-    return c.Code == Codes.Dialing && elapsed <= TimeSpan.FromSeconds(60)
+    return c.Code == Codes.Dialing && elapsed <= dialing
         ? CallPhase.Dialing : CallPhase.AwaitingCallback;
 }
 \`\`\`
 
-Esa función es pura: recibe una fila y un reloj y devuelve una fase. Por eso se prueba con casos fijos sin levantar nada: "en llamada" con 30 segundos, "en llamada" con 90 segundos, completada, vencida.
+Las dos ventanas, la espera total y cuánto tiempo se muestra "marcando" antes de pasar a "esperando respuesta", vienen de configuración, no del código. Esa función es pura: recibe una fila, un reloj y esas dos ventanas, y devuelve una fase. Por eso se prueba con casos fijos sin levantar nada: "en llamada" con 30 segundos, "en llamada" con 90 segundos, completada, vencida.
 
 Cuando la fase calculada es "expirada", la misma consulta escribe el cierre definitivo de la campaña. Eso es la expiración pasiva: no hay un proceso barredor recorriendo la tabla cada minuto. Una campaña vencida se cierra la primera vez que alguien la mira. El límite de tiempo vive en la configuración de reglas de negocio, no en el código, así que ajustarlo no exige desplegar.
 
@@ -193,30 +193,30 @@ protected override async Task ExecuteAsync(CancellationToken stop)
     await foreach (var req in _channel.Reader.ReadAllAsync(stop))
     {
         using var scope = _scopes.CreateScope();
-        var client = scope.ServiceProvider.GetRequiredService<IVoiceBotClient>();
-        var outcome = await client.StartCallAsync(req, stop);
-        await RecordAsync(scope, req, outcome, stop);
+        try { await ProcessAsync(scope, req, stop); } // call provider, record outcome
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        { _logger.LogError(ex, "Call {Id} failed", req.Id); } // never kill the loop
     }
 }
 \`\`\`
 
-Each request lives in its own scope, exactly as if it had arrived over HTTP: its dependencies are born and die with it. The worker tells three provider responses apart. If the bot hits its own timeout, that gets logged and the campaign stays "dialing", because the callback can still arrive. If the provider returns a technical error, the campaign is closed as failed. If it returns a normal diagnosis, it goes through the same path the callback would use, so there are never two implementations of the close.
+Each request lives in its own scope, exactly as if it had arrived over HTTP: its dependencies are born and die with it. And each one is wrapped in its own try/catch: an unhandled exception inside ExecuteAsync stops the BackgroundService, and the whole queue with it. The worker tells three provider responses apart. If the bot hits its own timeout, that gets logged and the campaign stays "dialing", because the callback can still arrive. If the provider returns a technical error, the campaign is closed as failed. If it returns a normal diagnosis, it goes through the same path the callback would use, so there are never two implementations of the close.
 
 The second half is the read side. I added no new status columns. The phase the client sees is computed from what the table already had: the campaign status, the diagnostic code, and the creation date.
 
 \`\`\`csharp
-static CallPhase PhaseOf(CampaignRow c, DateTime now, TimeSpan timeout)
+static CallPhase PhaseOf(CampaignRow c, DateTime now, TimeSpan timeout, TimeSpan dialing)
 {
     var elapsed = now - c.CreatedAt;
     if (c.Status == Status.InProgress && elapsed > timeout) return CallPhase.Expired;
     if (c.Status == Status.Completed) return CallPhase.Completed;
     if (c.Status == Status.Failed) return CallPhase.Failed;
-    return c.Code == Codes.Dialing && elapsed <= TimeSpan.FromSeconds(60)
+    return c.Code == Codes.Dialing && elapsed <= dialing
         ? CallPhase.Dialing : CallPhase.AwaitingCallback;
 }
 \`\`\`
 
-That function is pure: it takes a row and a clock and returns a phase. That is why it is tested with fixed cases without spinning anything up: dialing at 30 seconds, dialing at 90 seconds, completed, overdue.
+Both windows, the total wait and how long the card shows "dialing" before it moves to "awaiting callback", come from configuration, not from code. That function is pure: it takes a row, a clock and those two windows, and returns a phase. That is why it is tested with fixed cases without spinning anything up: dialing at 30 seconds, dialing at 90 seconds, completed, overdue.
 
 When the computed phase is "expired", the same read writes the campaign's final close. That is passive expiry: there is no sweeper walking the table every minute. An overdue campaign gets closed the first time someone looks at it. The time limit lives in the business-rules configuration, not in code, so tuning it does not require a deploy.
 

@@ -56,16 +56,16 @@ AsyncLocal<T> guarda su valor en el ExecutionContext. Cuando un flujo asíncrono
 
 Hay un matiz que hace este defecto más engañoso de lo que parece. Un método síncrono que asigna un AsyncLocal sí deja el valor visible para quien lo llamó, porque no hay frontera asíncrona de por medio. Un método async no: el constructor de la máquina de estados restaura el ExecutionContext del llamador cuando el método devuelve el control. SendAsync en un DelegatingHandler es asíncrono por naturaleza, así que la asignación quedaba siempre encerrada dentro de la llamada.
 
-La forma más corta de convencerse no es leer la documentación, es correr cinco líneas:
+La forma más corta de convencerse no es leer la documentación, es correr cuatro líneas:
 
 \`\`\`csharp
-static readonly AsyncLocal<string?> Slot = new();
+var slot = new AsyncLocal<string?>();
 
-static async Task Child() { await Task.Yield(); Slot.Value = "set by child"; }
+async Task Child() { await Task.Yield(); slot.Value = "set by child"; }
 
-Slot.Value = "set by parent";
+slot.Value = "set by parent";
 await Child();
-Console.WriteLine(Slot.Value); // "set by parent"
+Console.WriteLine(slot.Value); // "set by parent"
 \`\`\`
 
 El hijo asigna, termina, y el padre sigue viendo su propio valor. Si el padre no hubiera establecido nada, vería null, que es exactamente lo que veía el servicio en segundo plano. El diagrama del flujo real lo deja claro:
@@ -181,16 +181,16 @@ AsyncLocal<T> stores its value in the ExecutionContext. When an async flow start
 
 There is a nuance that makes this defect more deceptive than it looks. A synchronous method that assigns an AsyncLocal does leave the value visible to its caller, because there is no async boundary in between. An async method does not: the state machine's builder restores the caller's ExecutionContext when the method hands control back. SendAsync on a DelegatingHandler is async by nature, so the assignment was always sealed inside the call.
 
-The fastest way to be convinced is not reading the docs, it is running five lines:
+The fastest way to be convinced is not reading the docs, it is running four lines:
 
 \`\`\`csharp
-static readonly AsyncLocal<string?> Slot = new();
+var slot = new AsyncLocal<string?>();
 
-static async Task Child() { await Task.Yield(); Slot.Value = "set by child"; }
+async Task Child() { await Task.Yield(); slot.Value = "set by child"; }
 
-Slot.Value = "set by parent";
+slot.Value = "set by parent";
 await Child();
-Console.WriteLine(Slot.Value); // "set by parent"
+Console.WriteLine(slot.Value); // "set by parent"
 \`\`\`
 
 The child assigns, returns, and the parent still sees its own value. Had the parent set nothing, it would see null, which is exactly what the background service saw. The diagram of the real flow makes it plain:

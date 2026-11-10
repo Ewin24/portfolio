@@ -7,6 +7,16 @@ import { workExperience } from './src/content/experience'
 import { education } from './src/content/education'
 import { blogPosts } from './src/blog/content/posts'
 
+// The build fails on a broken blog graph instead of shipping a dead related link
+// or two posts fighting over one URL. Posts live in separate files, so nothing else checks this.
+const postIds = new Set(blogPosts.map((p) => p.id))
+if (postIds.size !== blogPosts.length || new Set(blogPosts.map((p) => p.slug)).size !== blogPosts.length) {
+  throw new Error('Duplicate blog post id or slug')
+}
+for (const p of blogPosts) {
+  for (const r of p.relatedIds ?? []) if (!postIds.has(r)) throw new Error(`${p.id}: relatedIds "${r}" matches no post`)
+}
+
 const SITE_URL = 'https://ewin24.github.io/portfolio/'
 /** Newest post date — the content-derived "last modified" for the home page and its JSON-LD. */
 const latestPostDate = blogPosts.reduce((max, p) => (p.date > max ? p.date : max), '')

@@ -52,7 +52,7 @@ public async Task Second_confirm_loses_ILLUSION()
 }
 \`\`\`
 
-Pasa por la razón equivocada. Dos llamadas secuenciales sobre el mismo contexto no son una carrera: la segunda ve el estado que dejó la primera porque no hay nada entre ellas. Y aunque las lanzara en paralelo, InMemory no tiene lo que la prueba necesita medir. El proveedor no es una base de datos relacional: no implementa transacciones (BeginTransaction se ignora y, por defecto, solo emite una advertencia en el log), no tiene bloqueos ni niveles de aislamiento, y no hace cumplir los índices únicos que declaras en el modelo. Una fila duplicada que el motor rechazaría con un error, InMemory la guarda sin decir nada.
+Pasa por la razón equivocada. Dos llamadas secuenciales sobre el mismo contexto no son una carrera: la segunda ve el estado que dejó la primera porque no hay nada entre ellas. Y aunque las lanzara en paralelo, InMemory no tiene lo que la prueba necesita medir. El proveedor no es una base de datos relacional. No implementa transacciones: por defecto, abrir una lanza una excepción, y la salida habitual para que una suite siga corriendo es configurar el proveedor para ignorar esa advertencia, con lo que el código transaccional pasa sin ninguna atomicidad. No tiene bloqueos ni niveles de aislamiento, y no hace cumplir los índices únicos que declaras en el modelo. Una fila duplicada que el motor rechazaría con un error, InMemory la guarda sin decir nada.
 
 Eso significa que tres de las garantías que el diseño prometía, atomicidad, exclusión mutua y unicidad, no se ejercitaban en ninguna prueba. La suite no mentía sobre la lógica de negocio: validaba bien el esquema de la propuesta, el tope de tareas por lote o el cálculo del orden en el tablero. Mentía por omisión sobre todo lo que depende del motor, y lo hacía con el mismo color verde que usaba para lo demás.
 
@@ -68,13 +68,15 @@ var won = await db.Proposals
     .Where(p => p.Id == id && p.Status == ProposalStatus.Pending && p.CreatedAt >= cutoff)
     .ExecuteUpdateAsync(s => s.SetProperty(p => p.Status, ProposalStatus.Approved), ct);
 if (won == 0) return Conflict(); // 409: someone else already decided
-var first = await ReserveNumbersAsync(boardId, items.Count, ct);
+var first = await ReserveNumbersAsync(projectId, items.Count, ct);
 db.Tasks.AddRange(BuildTasks(items, first));
 await db.SaveChangesAsync(ct);
 await tx.CommitAsync(ct);
 \`\`\`
 
 La diferencia no está en la sintaxis sino en quién decide. En la versión anterior decidía la aplicación, con un dato que podía estar viejo en el momento de guardar. Aquí decide el motor: el UPDATE bloquea la fila mientras la evalúa, una segunda petición que llega a la misma fila espera a que la primera confirme o revierta, y cuando por fin la evalúa ya no la encuentra en estado pendiente. Cero filas, 409. Nadie tiene que comparar nada en memoria.
+
+Ese camino ni siquiera se puede ejecutar sobre InMemory: ExecuteUpdate solo funciona con proveedores relacionales. La suite rápida podía cubrir lo que rodeaba a la confirmación, pero no la transición en sí, y por eso la nota de cierre de esa entrega decía que la concurrencia y el rollback contra el motor real quedaban sin probar.
 
 La reserva de números sigue la misma idea: un UPDATE sobre el contador del proyecto que suma el tamaño del lote y devuelve el valor nuevo en la misma sentencia. El bloqueo de fila que toma ese UPDATE serializa las reservas de un mismo proyecto sin frenar a los demás. El índice único sobre proyecto y número queda como red de seguridad: si alguna ruta futura se salta el contador, el motor rechaza el duplicado en lugar de guardarlo.
 
@@ -83,8 +85,8 @@ confirm ──► BEGIN TRAN
              │
              ├─ UPDATE proposal WHERE status = Pending ── 0 rows ──► ROLLBACK ──► 409
              │     (row lock held until commit)
-             ├─ UPDATE board counter + n, OUTPUT new value   (reserve n numbers)
-             ├─ INSERT n tasks          (unique index: board + number)
+             ├─ UPDATE project counter + n, OUTPUT new value (reserve n numbers)
+             ├─ INSERT n tasks          (unique index: project + number)
              └─ COMMIT ──► notify requester
 \`\`\`
 
@@ -98,7 +100,7 @@ var b = Task.Run(() => ConfirmOnNewConnectionAsync(proposalId));
 var codes = await Task.WhenAll(a, b);
 Assert.Single(codes, c => c == 200);
 Assert.Single(codes, c => c == 409);
-Assert.Equal(expectedTasks, await CountTasksAsync(boardId)); // state, not return values
+Assert.Equal(expectedTasks, await CountTasksAsync(projectId)); // state, not return values
 \`\`\`
 
 Cada sonda dispara las operaciones en conexiones distintas y afirma sobre el estado que quedó en la base: cuántas peticiones ganaron, cuántas perdieron, cuántas filas existen después y si los números siguen siendo únicos. No sobre lo que devolvió un método. Esa distinción es la que separa una prueba de concurrencia de una prueba que solo tiene concurrencia en el nombre.
@@ -123,14 +125,15 @@ La regla que quedó en mis notas del proyecto es corta: InMemory no cubre transa
 
 **Lo delicado se verifica contra el motor real, con conexiones separadas.** Doble aprobación, reservas concurrentes, rollback a mitad de camino: cada camino así merece una sonda que afirme sobre el estado final de la base, no sobre el retorno de un método.
 
-**Si conservas InMemory, haz que confiese lo que ignora.** EF Core permite convertir en excepción la advertencia de transacción ignorada:
+**Si conservas InMemory, no silencies lo que te avisa.** Por defecto, abrir una transacción en InMemory lanza una excepción. La línea que la mayoría agrega para seguir adelante es justo la que vuelve silenciosa la mentira:
 
 \`\`\`csharp
 options.UseInMemoryDatabase("unit")
-       .ConfigureWarnings(w => w.Throw(InMemoryEventId.TransactionIgnoredWarning));
+       // Makes every transaction a no-op: green tests, zero atomicity.
+       .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
 \`\`\`
 
-Así, la primera prueba que abre una transacción falla en lugar de pasar, y te obliga a decidir si ese caso pertenece a la suite rápida o a la del motor real.`,
+Deja la advertencia en su valor por defecto. Así, la primera prueba que abre una transacción falla en lugar de pasar, y te obliga a decidir si ese caso pertenece a la suite rápida o a la del motor real.`,
   contentEn: `DevManager started as my degree project and is now a multi-tenant SaaS I keep building: .NET 8, EF Core and SQL Server, with several organizations sharing one database, separated by an organization id on every row. A few weeks ago I added an activities module in the style of a task board, with one piece I cared about more than the rest: the AI can propose a batch of tasks from a requirement written in plain language, but no task exists until a person reviews the proposal and confirms it.
 
 That "until a person confirms it" is the human boundary of the flow, and it is exactly where concurrency stops being theoretical. A pending proposal shows up in the project panel and also in the chat card where it was generated. Two people with permission can open it at the same time. The same person can click the button twice because the network was slow. The requirement I wrote in the design was short: confirmation is a single transaction; if two approvals arrive together, one wins and the other gets a 409, and the board never ends up with duplicated tasks or repeated task numbers.
@@ -167,7 +170,7 @@ public async Task Second_confirm_loses_ILLUSION()
 }
 \`\`\`
 
-It passes for the wrong reason. Two sequential calls on the same context are not a race: the second one sees the state the first one left because nothing sits between them. And even if I fired them in parallel, InMemory does not have what the test needs to measure. The provider is not a relational database: it does not implement transactions (BeginTransaction is ignored and, by default, only logs a warning), it has no locks or isolation levels, and it does not enforce the unique indexes you declare in the model. A duplicate row the engine would reject with an error, InMemory stores without a word.
+It passes for the wrong reason. Two sequential calls on the same context are not a race: the second one sees the state the first one left because nothing sits between them. And even if I fired them in parallel, InMemory does not have what the test needs to measure. The provider is not a relational database. It does not implement transactions: by default, opening one throws, and the usual way to keep a suite running is to configure the provider to ignore that warning, which lets transactional code pass with no atomicity at all. It has no locks or isolation levels, and it does not enforce the unique indexes you declare in the model. A duplicate row the engine would reject with an error, InMemory stores without a word.
 
 That means three of the guarantees the design promised, atomicity, mutual exclusion and uniqueness, were exercised by no test at all. The suite did not lie about business logic: it validated the proposal schema, the per-batch task cap, and the board ordering math just fine. It lied by omission about everything that depends on the engine, and it did so in the same shade of green it used for everything else.
 
@@ -183,13 +186,15 @@ var won = await db.Proposals
     .Where(p => p.Id == id && p.Status == ProposalStatus.Pending && p.CreatedAt >= cutoff)
     .ExecuteUpdateAsync(s => s.SetProperty(p => p.Status, ProposalStatus.Approved), ct);
 if (won == 0) return Conflict(); // 409: someone else already decided
-var first = await ReserveNumbersAsync(boardId, items.Count, ct);
+var first = await ReserveNumbersAsync(projectId, items.Count, ct);
 db.Tasks.AddRange(BuildTasks(items, first));
 await db.SaveChangesAsync(ct);
 await tx.CommitAsync(ct);
 \`\`\`
 
 The difference is not the syntax but who decides. In the old version the application decided, using data that could already be stale by the time it saved. Here the engine decides: the UPDATE locks the row while it evaluates it, a second request hitting the same row waits for the first one to commit or roll back, and when it finally evaluates the row it no longer finds it pending. Zero rows, 409. Nobody has to compare anything in memory.
+
+That path cannot even run on InMemory: ExecuteUpdate only works with relational providers. The fast suite could cover what surrounded the confirmation, but not the transition itself, which is why that delivery's closing note said concurrency and rollback against the real engine were left untested.
 
 The number reservation follows the same idea: an UPDATE on the project counter that adds the batch size and returns the new value in the same statement. The row lock that UPDATE takes serializes reservations within one project without slowing down any other. The unique index on project and number stays as the safety net: if some future path skips the counter, the engine rejects the duplicate instead of storing it.
 
@@ -198,8 +203,8 @@ confirm ──► BEGIN TRAN
              │
              ├─ UPDATE proposal WHERE status = Pending ── 0 rows ──► ROLLBACK ──► 409
              │     (row lock held until commit)
-             ├─ UPDATE board counter + n, OUTPUT new value   (reserve n numbers)
-             ├─ INSERT n tasks          (unique index: board + number)
+             ├─ UPDATE project counter + n, OUTPUT new value (reserve n numbers)
+             ├─ INSERT n tasks          (unique index: project + number)
              └─ COMMIT ──► notify requester
 \`\`\`
 
@@ -213,7 +218,7 @@ var b = Task.Run(() => ConfirmOnNewConnectionAsync(proposalId));
 var codes = await Task.WhenAll(a, b);
 Assert.Single(codes, c => c == 200);
 Assert.Single(codes, c => c == 409);
-Assert.Equal(expectedTasks, await CountTasksAsync(boardId)); // state, not return values
+Assert.Equal(expectedTasks, await CountTasksAsync(projectId)); // state, not return values
 \`\`\`
 
 Each probe fires the operations on separate connections and asserts on the state left in the database: how many requests won, how many lost, how many rows exist afterwards, and whether the numbers are still unique. Not on what a method returned. That distinction is what separates a concurrency test from a test that only has concurrency in its name.
@@ -238,13 +243,14 @@ The rule that ended up in my project notes is short: InMemory does not cover tra
 
 **Verify the delicate paths against the real engine, on separate connections.** Double approval, concurrent reservations, rollback halfway through: every path like that deserves a probe that asserts on the final state of the database, not on a method's return value.
 
-**If you keep InMemory, make it confess what it ignores.** EF Core lets you turn the ignored-transaction warning into an exception:
+**If you keep InMemory, do not silence what it warns you about.** By default, opening a transaction on InMemory throws. The line most people add to move on is exactly the one that makes the lie silent:
 
 \`\`\`csharp
 options.UseInMemoryDatabase("unit")
-       .ConfigureWarnings(w => w.Throw(InMemoryEventId.TransactionIgnoredWarning));
+       // Makes every transaction a no-op: green tests, zero atomicity.
+       .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
 \`\`\`
 
-That way, the first test that opens a transaction fails instead of passing, and forces you to decide whether that case belongs in the fast suite or in the one that runs against the real engine.`,
+Leave the warning at its default. That way, the first test that opens a transaction fails instead of passing, and forces you to decide whether that case belongs in the fast suite or in the one that runs against the real engine.`,
   relatedIds: ['adversarial-review-missed-user-defects', 'authorization-attribute-invisible-to-unit-test'],
 }
