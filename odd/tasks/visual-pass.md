@@ -15,8 +15,8 @@ Assumption (not a user requirement): published text follows `skills/business-dat
 - [x] T1 (S1, inline) Case-study cards: metric strip, full text behind a native disclosure. Commit 1.
 - [x] T2 (S1, inline) Experience: first four achievements visible, rest behind a disclosure. Commit 1.
 - [x] T3 (S1, inline) About copy and pull quote, hero stats, skill tile caption, education layout, XP hero overlap, blog tag casing. Commit 1.
-- [x] T4 (S2, inline after one read-only Engram explorer; trigger: more than 5 lookups across 12 Engram projects) Refresh case studies. Commit 2. No new case study added: the explorer found none finished enough.
-- [x] T5 (S1, S2) Baselines re-cut, CV regenerated, llms/noscript surfaces in sync. Commit 2.
+- [x] T4 (S2, inline after one read-only Engram explorer; trigger: more than 5 lookups across 12 Engram projects) Refresh case studies. Commit 1 (same file as the highlights). No new case study added: the explorer found none finished enough.
+- [x] T5 (S1, S2) Baselines re-cut, CV regenerated, llms/noscript surfaces in sync. Baselines in commit 1, the rest in commit 2.
 
 ## Log
 
