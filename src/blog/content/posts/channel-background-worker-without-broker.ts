@@ -91,7 +91,7 @@ static CallPhase PhaseOf(CampaignRow c, DateTime now, TimeSpan timeout, TimeSpan
 }
 \`\`\`
 
-Las dos ventanas, la espera total y cuánto tiempo se muestra "marcando" antes de pasar a "esperando respuesta", vienen de configuración, no del código. Esa función es pura: recibe una fila, un reloj y esas dos ventanas, y devuelve una fase. Por eso se prueba con casos fijos sin levantar nada: "en llamada" con 30 segundos, "en llamada" con 90 segundos, completada, vencida.
+Las dos ventanas, la espera total y cuánto tiempo se muestra "marcando" antes de pasar a "esperando respuesta", vienen de configuración, no del código. Esa función es pura: recibe una fila, un reloj y esas dos ventanas, y devuelve una fase. Por eso se prueba con casos fijos sin levantar nada: con una ventana de marcado de 60 segundos, una campaña "en llamada" a los 30 segundos se ve "marcando" y a los 90 ya "esperando respuesta"; además, completada y vencida.
 
 Cuando la fase calculada es "expirada", la misma consulta escribe el cierre definitivo de la campaña. Eso es la expiración pasiva: no hay un proceso barredor recorriendo la tabla cada minuto. Una campaña vencida se cierra la primera vez que alguien la mira. El límite de tiempo vive en la configuración de reglas de negocio, no en el código, así que ajustarlo no exige desplegar.
 
@@ -216,7 +216,7 @@ static CallPhase PhaseOf(CampaignRow c, DateTime now, TimeSpan timeout, TimeSpan
 }
 \`\`\`
 
-Both windows, the total wait and how long the card shows "dialing" before it moves to "awaiting callback", come from configuration, not from code. That function is pure: it takes a row, a clock and those two windows, and returns a phase. That is why it is tested with fixed cases without spinning anything up: dialing at 30 seconds, dialing at 90 seconds, completed, overdue.
+Both windows, the total wait and how long the card shows "dialing" before it moves to "awaiting callback", come from configuration, not from code. That function is pure: it takes a row, a clock and those two windows, and returns a phase. That is why it is tested with fixed cases without spinning anything up: with a 60-second dialing window, an in-progress campaign reads "dialing" at 30 seconds and "awaiting callback" at 90; plus completed and overdue.
 
 When the computed phase is "expired", the same read writes the campaign's final close. That is passive expiry: there is no sweeper walking the table every minute. An overdue campaign gets closed the first time someone looks at it. The time limit lives in the business-rules configuration, not in code, so tuning it does not require a deploy.
 

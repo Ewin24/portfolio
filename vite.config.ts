@@ -9,10 +9,14 @@ import { blogPosts } from './src/blog/content/posts'
 
 // The build fails on a broken blog graph instead of shipping a dead related link
 // or two posts fighting over one URL. Posts live in separate files, so nothing else checks this.
-const postIds = new Set(blogPosts.map((p) => p.id))
-if (postIds.size !== blogPosts.length || new Set(blogPosts.map((p) => p.slug)).size !== blogPosts.length) {
-  throw new Error('Duplicate blog post id or slug')
+for (const field of ['id', 'slug'] as const) {
+  const seen = new Set<string>()
+  for (const p of blogPosts) {
+    if (seen.has(p[field])) throw new Error(`Duplicate blog post ${field} "${p[field]}"`)
+    seen.add(p[field])
+  }
 }
+const postIds = new Set(blogPosts.map((p) => p.id))
 for (const p of blogPosts) {
   for (const r of p.relatedIds ?? []) if (!postIds.has(r)) throw new Error(`${p.id}: relatedIds "${r}" matches no post`)
 }
