@@ -21,7 +21,7 @@ for (const p of blogPosts) {
   for (const r of p.relatedIds ?? []) if (!postIds.has(r)) throw new Error(`${p.id}: relatedIds "${r}" matches no post`)
 }
 
-const SITE_URL = 'https://ewin24.github.io/portfolio/'
+const SITE_URL = 'https://portfolio.edwintrigos.workers.dev/'
 /** Newest post date — the content-derived "last modified" for the home page and its JSON-LD. */
 const latestPostDate = blogPosts.reduce((max, p) => (p.date > max ? p.date : max), '')
 
@@ -132,7 +132,7 @@ function generatePreloadedContent(): string {
   )
 
   lines.push(
-    `<p><em>To see the full interactive portfolio, please enable JavaScript. Visit <a href="https://ewin24.github.io/portfolio/">ewin24.github.io/portfolio/</a>.</em></p>`,
+    `<p><em>To see the full interactive portfolio, please enable JavaScript. Visit <a href="https://portfolio.edwintrigos.workers.dev/">portfolio.edwintrigos.workers.dev/</a>.</em></p>`,
   )
 
   return lines.join('\n')
@@ -145,18 +145,18 @@ function generatePreloadedContent(): string {
 function generateArticleSchemas(): string {
   const articles = blogPosts.map((post) => ({
     '@type': 'Article',
-    '@id': `https://ewin24.github.io/portfolio/#article-${post.id}`,
+    '@id': `https://portfolio.edwintrigos.workers.dev/#article-${post.id}`,
     headline: post.title,
     description: post.excerpt,
     inLanguage: 'es',
     datePublished: `${post.date}T08:00:00-05:00`,
     dateModified: `${post.date}T08:00:00-05:00`,
-    author: { '@id': 'https://ewin24.github.io/portfolio/#person' },
-    publisher: { '@id': 'https://ewin24.github.io/portfolio/#person' },
+    author: { '@id': 'https://portfolio.edwintrigos.workers.dev/#person' },
+    publisher: { '@id': 'https://portfolio.edwintrigos.workers.dev/#person' },
     keywords: post.tags.join(', '),
     articleSection: post.category,
     wordCount: post.readingTime * 200,
-    mainEntityOfPage: `https://ewin24.github.io/portfolio/#blog/article/${post.slug}`,
+    mainEntityOfPage: `https://portfolio.edwintrigos.workers.dev/#blog/article/${post.slug}`,
     speakable: {
       '@type': 'SpeakableSpecification',
       cssSelector: ['.blog-article h1', '.blog-article .excerpt', 'h1', 'h2'],
@@ -295,12 +295,12 @@ ${JSON.stringify(howto, null, 2)}
 function generateCaseStudySchemas(): string {
   const works = caseStudies.map((cs) => ({
     '@type': 'CreativeWork',
-    '@id': `https://ewin24.github.io/portfolio/#case-${cs.id}`,
+    '@id': `https://portfolio.edwintrigos.workers.dev/#case-${cs.id}`,
     name: cs.title,
     description: cs.impact,
     inLanguage: 'es',
     dateCreated: cs.period.split('–')[0].trim(),
-    author: { '@id': 'https://ewin24.github.io/portfolio/#person' },
+    author: { '@id': 'https://portfolio.edwintrigos.workers.dev/#person' },
     keywords: cs.tags.join(', '),
     about: {
       '@type': 'Thing',
@@ -322,28 +322,28 @@ function generatePageWrapperSchemas(): string {
   const profilePage = {
     '@context': 'https://schema.org',
     '@type': 'ProfilePage',
-    '@id': 'https://ewin24.github.io/portfolio/#profilepage',
-    url: 'https://ewin24.github.io/portfolio/',
+    '@id': 'https://portfolio.edwintrigos.workers.dev/#profilepage',
+    url: 'https://portfolio.edwintrigos.workers.dev/',
     name: 'Edwin Trigos — Software Architect & Full Stack Developer',
     description:
       'Personal portfolio featuring production case studies, technical blog, and professional experience.',
     inLanguage: ['en', 'es'],
-    mainEntity: { '@id': 'https://ewin24.github.io/portfolio/#person' },
-    about: { '@id': 'https://ewin24.github.io/portfolio/#person' },
-    isPartOf: { '@id': 'https://ewin24.github.io/portfolio/#website' },
+    mainEntity: { '@id': 'https://portfolio.edwintrigos.workers.dev/#person' },
+    about: { '@id': 'https://portfolio.edwintrigos.workers.dev/#person' },
+    isPartOf: { '@id': 'https://portfolio.edwintrigos.workers.dev/#website' },
     dateModified: latestPostDate,
   }
 
   const webPage = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    '@id': 'https://ewin24.github.io/portfolio/#webpage',
-    url: 'https://ewin24.github.io/portfolio/',
+    '@id': 'https://portfolio.edwintrigos.workers.dev/#webpage',
+    url: 'https://portfolio.edwintrigos.workers.dev/',
     name: 'Edwin Trigos | Software Architect & Full Stack Developer',
     description:
       'Software Architect and Full Stack Developer specializing in .NET, Clean Architecture, and financial systems.',
     inLanguage: ['en', 'es'],
-    isPartOf: { '@id': 'https://ewin24.github.io/portfolio/#website' },
+    isPartOf: { '@id': 'https://portfolio.edwintrigos.workers.dev/#website' },
     primaryImageOfPage: {
       '@type': 'ImageObject',
       url: 'https://avatars.githubusercontent.com/Ewin24',
@@ -365,7 +365,7 @@ function generatePageWrapperSchemas(): string {
       '@type': 'ListItem',
       position: idx + 1,
       name: cs.title,
-      url: `https://ewin24.github.io/portfolio/#projects`,
+      url: `https://portfolio.edwintrigos.workers.dev/#projects`,
       description: cs.impact,
     })),
   }
@@ -381,7 +381,7 @@ function generatePageWrapperSchemas(): string {
       '@type': 'ListItem',
       position: idx + 1,
       name: post.title,
-      url: `https://ewin24.github.io/portfolio/#blog/article/${post.slug}`,
+      url: `https://portfolio.edwintrigos.workers.dev/#blog/article/${post.slug}`,
       description: post.excerpt,
     })),
   }
