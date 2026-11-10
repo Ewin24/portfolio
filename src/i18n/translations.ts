@@ -34,6 +34,9 @@ export type TranslationKeys = {
   'projects.impact': string
   'projects.architecture': string
   'projects.stack': string
+  'projects.readMore': string
+  'experience.more': string
+  'about.quote': string
   // Skills
   'skills.title': string
   'skills.subtitle': string
@@ -43,7 +46,6 @@ export type TranslationKeys = {
   'skills.activity': string
   'skills.heading': string
   'skills.milestones': string
-  'skills.milestoneCount': string
   'skills.detail': string
   // Tech milestones (content — translatable)
   'skills.dotnet.milestone1': string
@@ -190,8 +192,8 @@ const translations: Record<Language, TranslationKeys> = {
 
     // Stats con valor real
     'hero.stats.yearsExp': 'Años de experiencia',
-    'hero.stats.systems': 'Sistemas en producción',
-    'hero.stats.stack': 'Tecnologías en producción',
+    'hero.stats.systems': 'Casos de estudio documentados',
+    'hero.stats.stack': 'Pruebas en la API que lidero',
 
     // Projects
     'projects.title': 'Casos de Estudio',
@@ -208,6 +210,7 @@ const translations: Record<Language, TranslationKeys> = {
     'projects.impact': 'Impacto',
     'projects.architecture': 'Arquitectura',
     'projects.stack': 'Stack',
+    'projects.readMore': 'Leer el caso completo',
 
     // Skills
     'skills.title': 'Stack Tecnológico',
@@ -218,7 +221,6 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.activity': 'Uso por repositorios públicos',
     'skills.heading': 'Logros Clave',
     'skills.milestones': 'Hitos',
-    'skills.milestoneCount': 'hitos',
     'skills.detail': 'Detalle técnico',
     'skills.dotnet.milestone1': 'Clean Architecture en sistemas de producción',
     'skills.dotnet.milestone2': 'Migración de .NET Framework a .NET Core',
@@ -260,7 +262,7 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.playwright.milestone2': 'Regresión visual contra líneas base con 0 píxeles de diferencia',
     'skills.playwright.milestone3': '98 verificaciones de comportamiento sobre el escritorio XP',
     'skills.playwright.reference': 'Ver Casos de Estudio',
-    'skills.vitest.milestone1': '426 pruebas con ~95% de cobertura sobre una puerta exigida del 70%',
+    'skills.vitest.milestone1': '787 pruebas bajo una puerta de cobertura exigida del 70%',
     'skills.vitest.milestone2': 'Pruebas de extremo a extremo contra el almacén real',
     'skills.vitest.milestone3': 'Cobertura exigida en CI antes del despliegue',
     'skills.vitest.reference': 'Ver Casos de Estudio',
@@ -283,9 +285,10 @@ const translations: Record<Language, TranslationKeys> = {
 
     // About
     'about.title': 'Sobre mí',
-    'about.subtitle': 'Ingeniero de Software Full Stack',
+    'about.subtitle': 'Líder técnico · .NET, SQL Server y entrega verificable',
+    'about.quote': 'Prefiero un sistema que falla en voz alta a uno que aprueba en silencio.',
     'about.description':
-      'Ingeniero de Software y Desarrollador Full-Stack especializado en la construcción de sistemas distribuidos, microservicios y plataformas SaaS de alto rendimiento. Experiencia comprobable en la modernización de arquitecturas empresariales (ERPs), integración de soluciones financieras (Fintech) y despliegues Cloud. Apasionado por el Clean Code, la optimización de bases de datos y el diseño de arquitecturas resilientes orientadas a resolver cuellos de botella y aportar valor directo al negocio.',
+      'Lidero el área de crédito de una fintech colombiana de crédito de consumo: diseñé y construí su sistema de originación desde la base de datos hasta la API, y llevé esa API de 8 archivos de prueba a 3.009 pruebas automatizadas en unas diez semanas. En paralelo trabajo por contrato en una plataforma SaaS de gestión de riesgos para el sector solidario, y sigo desarrollando DevManager, el producto que nació como mi proyecto de grado. Trabajo con .NET y SQL Server, entrego en cambios pequeños y revisables, y trato cada cifra que publico como algo que otra persona debe poder comprobar.',
 
     // Education
     'education.title': 'Formación',
@@ -296,6 +299,7 @@ const translations: Record<Language, TranslationKeys> = {
     'experience.subtitle': 'Experiencia profesional con impacto medible',
     'experience.stamp': 'En curso',
     'experience.achievements': 'Logros clave',
+    'experience.more': 'logros más',
     'experience.employment.full-time': 'Tiempo completo',
     'experience.employment.contract': 'Contrato',
     'experience.employment.open-source': 'Open source',
@@ -372,8 +376,8 @@ const translations: Record<Language, TranslationKeys> = {
 
     // Stats
     'hero.stats.yearsExp': 'Years of experience',
-    'hero.stats.systems': 'Production systems',
-    'hero.stats.stack': 'Technologies shipped',
+    'hero.stats.systems': 'Documented case studies',
+    'hero.stats.stack': 'Tests on the API I lead',
 
     // Projects
     'projects.title': 'Case Studies',
@@ -390,6 +394,7 @@ const translations: Record<Language, TranslationKeys> = {
     'projects.impact': 'Impact',
     'projects.architecture': 'Architecture',
     'projects.stack': 'Stack',
+    'projects.readMore': 'Read the full case',
 
     // Skills
     'skills.title': 'Tech Stack',
@@ -400,7 +405,6 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.activity': 'Usage by public repositories',
     'skills.heading': 'Key Achievements',
     'skills.milestones': 'Milestones',
-    'skills.milestoneCount': 'milestones',
     'skills.detail': 'Technical Detail',
     'skills.dotnet.milestone1': 'Clean Architecture in production systems',
     'skills.dotnet.milestone2': 'Migration from .NET Framework to .NET Core',
@@ -442,7 +446,7 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.playwright.milestone2': 'Visual regression against committed baselines at 0 differing pixels',
     'skills.playwright.milestone3': '98 behavior checks over the XP desktop',
     'skills.playwright.reference': 'View Case Studies',
-    'skills.vitest.milestone1': '426 tests at ~95% coverage against an enforced 70% gate',
+    'skills.vitest.milestone1': '787 tests under an enforced 70% coverage gate',
     'skills.vitest.milestone2': 'End-to-end tests against the real store',
     'skills.vitest.milestone3': 'Coverage enforced in CI before deployment',
     'skills.vitest.reference': 'View Case Studies',
@@ -465,9 +469,10 @@ const translations: Record<Language, TranslationKeys> = {
 
     // About
     'about.title': 'About',
-    'about.subtitle': 'Full Stack Software Engineer',
+    'about.subtitle': 'Tech lead · .NET, SQL Server and verifiable delivery',
+    'about.quote': 'I would rather have a system that fails out loud than one that approves in silence.',
     'about.description':
-      'Software Engineer and Full-Stack Developer specialized in building distributed systems, microservices, and high-performance SaaS platforms. Proven experience in enterprise architecture modernization (ERPs), financial solutions integration (Fintech), and Cloud deployments. Passionate about Clean Code, database optimization, and designing resilient architectures that solve bottlenecks and deliver direct business value.',
+      'I lead the credit area of a Colombian consumer-credit fintech: I designed and built its loan origination system from the database up to the API, and took that API from 8 test files to 3,009 automated tests in about ten weeks. Alongside it I work on contract on a SaaS risk-management platform for the cooperative sector, and I keep building DevManager, the product that started as my degree project. I work with .NET and SQL Server, ship in small reviewable changes, and treat every figure I publish as something another person should be able to check.',
 
     // Education
     'education.title': 'Education',
@@ -478,6 +483,7 @@ const translations: Record<Language, TranslationKeys> = {
     'experience.subtitle': 'Professional track record with measurable impact',
     'experience.stamp': 'Current',
     'experience.achievements': 'Key achievements',
+    'experience.more': 'more achievements',
     'experience.employment.full-time': 'Full-time',
     'experience.employment.contract': 'Contract',
     'experience.employment.open-source': 'Open source',

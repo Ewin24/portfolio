@@ -19,8 +19,8 @@ import type { CaseStudy } from '../../types'
  * breakpoint except 1440px and the browser then re-cut the text mid-word,
  * reintroducing the exact defect this truncation exists to prevent.
  *
- * Nothing is lost when a card clamps: the remainder stays in the DOM in a sr-only
- * sibling, both for screen readers and for the pre-render.
+ * Nothing is lost when a card clamps: the full text sits in the card's
+ * "read the full case" disclosure, in the DOM whether it is open or not.
  */
 const SECONDARY_BUDGET = 96
 
@@ -60,6 +60,12 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
   const problemClamp = clampToSentence(problem, budget)
   const solutionClamp = clampToSentence(solution, budget)
 
+  const fullCase: [string, string][] = [
+    [t('projects.problem'), problem],
+    [t('projects.solution'), solution],
+    [t('projects.impact'), impact],
+  ]
+
   const crucible = (
     <>
       <div>
@@ -72,7 +78,6 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
         <p data-copy="problem" className={`font-sans text-sm text-ink-light leading-relaxed ${clampClass}`}>
           {problemClamp.head}
         </p>
-        {problemClamp.rest && <span className="sr-only">{problemClamp.rest}</span>}
       </div>
       <div>
         <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
@@ -81,7 +86,6 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
         <p data-copy="solution" className={`font-sans text-sm text-ink-light leading-relaxed ${clampClass}`}>
           {solutionClamp.head}
         </p>
-        {solutionClamp.rest && <span className="sr-only">{solutionClamp.rest}</span>}
       </div>
     </>
   )
@@ -132,38 +136,61 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
 
         {/* Cuerpo + pie + disclaimer — track 2 del subgrid, un único hijo */}
         <div className="flex-1 flex flex-col">
-          <div className="p-5 flex-1 flex flex-col gap-4">
+          <div className="case-body p-5 flex-1 flex flex-col gap-4">
+
+            {/* The figures first: a reader scanning the page gets the scale
+                of the work without opening anything. */}
+            {study.highlights && (
+              <dl className="flex border-2 border-rule">
+                {study.highlights.map((h, i) => (
+                  <div key={h.label} className={`flex-1 min-w-0 p-2.5 flex flex-col${i > 0 ? ' border-l-2 border-rule' : ''}`}>
+                    <dt className="font-mono text-[10px] text-ink-muted leading-tight mt-1">
+                      {lang === 'es' ? h.label : h.labelEn}
+                    </dt>
+                    <dd className={`order-first font-headline font-black text-ink leading-none ${isLead ? 'text-2xl md:text-3xl' : 'text-lg'}`}>
+                      {lang === 'es' ? h.value : (h.valueEn ?? h.value)}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )}
 
             {/* Problema → Solución. En el libro es una transmutación.
                 Lead: columna dividida por una regla vertical, no un
                 bloque genérico — mismos tokens, solo cambia la medida. */}
             {isLead ? (
-              <div className="grid md:grid-cols-2 gap-x-6 gap-y-4 [&>*:nth-child(2)]:md:border-l-2 [&>*:nth-child(2)]:md:border-rule [&>*:nth-child(2)]:md:pl-4">
+              <div className="case-teaser grid md:grid-cols-2 gap-x-6 gap-y-4 [&>*:nth-child(2)]:md:border-l-2 [&>*:nth-child(2)]:md:border-rule [&>*:nth-child(2)]:md:pl-4">
                 {crucible}
               </div>
-            ) : crucible}
+            ) : <div className="case-teaser flex flex-col gap-4">{crucible}</div>}
 
-            {/* Impacto */}
-            <div className="border-l-4 border-rule pl-3">
-              <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
-                {t('projects.impact')}
-              </p>
-              <p className="font-sans text-sm font-semibold text-ink leading-snug">
-                {impact}
-              </p>
-            </div>
-
-            {/* Architecture Diagram (si existe) */}
-            {study.architectureDiagram && (
-              <div className="border border-rule-light p-3 bg-paper-dark">
-                <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
-                  {t('projects.architecture')}
-                </p>
-                <p className="font-mono text-[10px] text-ink-light leading-relaxed">
-                  {study.architectureDiagram}
-                </p>
+            {/* The whole case, unclamped. Native disclosure: keyboard and
+                screen-reader behaviour come from the platform, and the text
+                is in the DOM while closed. The teaser above hides while this
+                is open (see .case-body in index.css) so nothing reads twice. */}
+            <details className="case-full mt-auto">
+              <summary className="disclosure">{t('projects.readMore')}</summary>
+              <div className="flex flex-col gap-4 pt-4">
+                {fullCase.map(([label, text]) => (
+                  <div key={label}>
+                    <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
+                      {label}
+                    </p>
+                    <p className="font-sans text-sm text-ink-light leading-relaxed max-w-prose">{text}</p>
+                  </div>
+                ))}
+                {study.architectureDiagram && (
+                  <div className="border border-rule-light p-3 bg-paper-dark">
+                    <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
+                      {t('projects.architecture')}
+                    </p>
+                    <p className="font-mono text-[10px] text-ink-light leading-relaxed">
+                      {study.architectureDiagram}
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
+            </details>
           </div>
 
           {/* Footer: stack + links */}

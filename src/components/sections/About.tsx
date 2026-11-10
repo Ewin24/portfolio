@@ -7,10 +7,6 @@ export function About() {
   const { user } = useApp()
   const { t } = useTranslation()
   const description = t('about.description')
-  // The pull quote reuses the shortest sentence of the existing copy.
-  const pullQuote = description
-    .split(/(?<=\.)\s+/)
-    .reduce((a, b) => (b.length < a.length ? b : a))
 
   return (
     <section id="about" className="py-20 px-6 max-w-7xl mx-auto">
@@ -61,10 +57,8 @@ export function About() {
             <p className="font-sans text-base text-ink-light leading-relaxed drop-cap max-w-prose">
               {description}
             </p>
-            {/* Repeats a sentence from the text above, so it is hidden from
-                assistive tech to avoid reading it twice. */}
-            <p aria-hidden="true" className="pull-quote max-w-prose">
-              {pullQuote}
+            <p className="pull-quote max-w-prose">
+              {t('about.quote')}
             </p>
           </div>
         </div>

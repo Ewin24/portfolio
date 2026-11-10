@@ -52,6 +52,14 @@ export interface Section {
  * Usado para proyectos principales, incluidos los privados/NDA.
  * El código fuente es OPCIONAL. El contexto y el impacto son OBLIGATORIOS.
  */
+export interface CaseStudyHighlight {
+  value: string
+  /** Only when the figure is written differently in English (3.009 → 3,009). */
+  valueEn?: string
+  label: string
+  labelEn: string
+}
+
 export interface CaseStudy {
   id: string
   slug: string
@@ -100,6 +108,13 @@ export interface CaseStudy {
 
   /** Stack de tecnologías utilizado */
   stack: string[]
+
+  /**
+   * Up to three figures a reader can take in at a glance, shown as a strip at
+   * the top of the card. Every value must already be stated in `impact` or
+   * `solution` — this is a summary of the text, never a second source.
+   */
+  highlights?: CaseStudyHighlight[]
 
   /** URL a diagrama de arquitectura (Excalidraw, draw.io, imagen) */
   architectureDiagram?: string

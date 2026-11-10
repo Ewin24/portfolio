@@ -53,6 +53,11 @@ export const caseStudies: CaseStudy[] = [
     impactEn:
       'The API went from 8 test files to 3,009 passing automated tests in ~10 weeks, with 0 failures at every verification gate. On the same workflow engine I shipped a second sales channel (web self-service) with 0 regressions in the in-store channel. 114+ API endpoints across 6 BFF layers (Admin/Core/Store/Web/Handoff/Util). 27 stored procedures in production. 23-state loan lifecycle with full traceability. Automated identity verification via voice bot with manual Plan B as a first-class citizen. Immutable audit trail of all operations. 474/474 tests green after making the risk-data provider configurable, delivered as 3 chained PRs. I then redesigned the operator\'s case workspace so every action gets its own dialog instead of sharing a generic one, delivered as 10 chained commits of at most 400 lines each and closed with 23 requirements and 117 verified scenarios. An administrative endpoint replaced an operation only a DBA could previously run, delivered as 3 chained PRs, with its guarding permission proven through the real HTTP pipeline rather than a direct method call.',
 
+    highlights: [
+      { value: '3.009', valueEn: '3,009', label: 'pruebas automatizadas', labelEn: 'automated tests' },
+      { value: '114+', label: 'endpoints en 6 capas BFF', labelEn: 'endpoints across 6 BFF layers' },
+      { value: '23', label: 'estados del ciclo de crédito', labelEn: 'loan lifecycle states' },
+    ],
     stack: ['.NET 8+', 'C#', 'Dapper', 'SQL Server', 'Clean Architecture', 'REST API', 'JWT', 'Strategy Pattern'],
     architectureDiagram: 'Arquitectura en 3 capas: BFFs (Admin/Tienda/Web/Handoff/Util) → Domain Services (Estudio, Tercero, OTP, Biometría) → Repositories por Schema (cfg/cat/fab/aud). Cada BFF inyecta los mismos servicios de dominio. Sin duplicación entre canales.',
     hasNDA: true,
@@ -91,10 +96,15 @@ export const caseStudies: CaseStudy[] = [
       'Designed SOVI with three specialized tables (diagnosis catalog, campaigns per study, attempts with biometrics). Implemented the Strategy pattern with two strategies: BotValidacionStrategy (automatic via voice bot) and ManualValidacionStrategy (human advisor as Plan B). The decision engine has no hardcoded if/switch — each bot diagnosis triggers a SystemAction from the database catalog. Each attempt logs timestamps, audio URL, and biometric data for complete audit trail.',
 
     impact:
-      'Validación de identidad en tiempo real sin intervención humana en el flujo estándar. Plan B manual como ciudadano de primera clase (no un fallback after-thought). Motor de decisiones catalog-driven: agregar nuevos diagnósticos no requiere cambios de código. Trazabilidad completa por estudio con 10+ diagnósticos de bot categorizados.',
+      'Validación de identidad en tiempo real sin intervención humana en el flujo estándar. Plan B manual como ciudadano de primera clase (no un fallback after-thought). Motor de decisiones catalog-driven: agregar nuevos diagnósticos no requiere cambios de código. Trazabilidad completa por estudio con 10+ diagnósticos de bot categorizados. Cuando el bot agota sus intentos sin respuesta, el caso escala a soporte humano en lugar de quedar en un punto muerto.',
     impactEn:
-      'Real-time identity validation without human intervention in the standard flow. Manual Plan B as a first-class citizen (not a fallback after-thought). Catalog-driven decision engine: adding new diagnoses requires no code changes. Full traceability per study with 10+ categorized bot diagnoses.',
+      'Real-time identity validation without human intervention in the standard flow. Manual Plan B as a first-class citizen (not a fallback after-thought). Catalog-driven decision engine: adding new diagnoses requires no code changes. Full traceability per study with 10+ categorized bot diagnoses. When the bot exhausts its attempts with no answer, the case escalates to human support instead of dead-ending.',
 
+    highlights: [
+      { value: '2', label: 'estrategias: bot de voz y manual', labelEn: 'strategies: voice bot and manual' },
+      { value: '10+', label: 'diagnósticos de bot catalogados', labelEn: 'catalogued bot diagnoses' },
+      { value: '3', label: 'tablas especializadas', labelEn: 'purpose-built tables' },
+    ],
     stack: ['.NET', 'C#', 'SQL Server', 'Strategy Pattern', 'REST API'],
     architectureDiagram: 'Strategy Pattern: IValidacionStrategy → BotValidacionStrategy + ManualValidacionStrategy. Motor de decisiones catalog-driven: cat.CatalogoDiagnosticosBot.AccionSistema determina el flujo. Cada intento registra timestamp + UrlAudio + biometría en fab.IntentosValidacionBot.',
     hasNDA: true,
@@ -137,6 +147,11 @@ export const caseStudies: CaseStudy[] = [
     impactEn:
       'Drastic query time reduction (from 3+ seconds to sub-second) through optimized indexes and credential caching. Centralized CredentialFactory: zero key duplication, adding a new provider without deploying code. Operational resilience: circuit breaker isolates provider failures without affecting other integrations. Complete traceability: every query is logged with its real provider response — when an analyst reports a failure, it is reproduced in seconds by opening the audit table. Always-register pattern: FueExitoso=true/false for all services, no exceptions. Architecture ready for .NET 10 migration without structural changes.',
 
+    highlights: [
+      { value: '<1 s', label: 'por consulta (antes 3 s+)', labelEn: 'per query (was 3 s+)' },
+      { value: '0', label: 'credenciales en código', labelEn: 'credentials in code' },
+      { value: '100%', label: 'consultas con registro de auditoría', labelEn: 'queries with an audit record' },
+    ],
     stack: ['.NET 8', 'C#', 'Dapper', 'SQL Server', 'Polly', 'Serilog', 'JWT', 'REST API', 'Strategy Pattern', 'Factory Pattern'],
     architectureDiagram:
       'Flujo: Cliente → [Controller] → [CredentialFactory] → ICredentialProvider (BD) → Token con caché por servicio\n                                              ↓\n                                     [Polly: retry + circuit breaker]\n                                              ↓\n                                     [5 Servicios del proveedor]\n                                              ↓\n                          Preselecta | CrossCore | Historia | Evidente | Reconocer\n                                              ↓\n                                     [Dapper] → SQL Server (con índices optimizados)\n                                              ↓\n                                     [Always-Register: FueExitoso + response payload]\n                                              ↓\n                                     [Serilog: console + file + BD] ← auditoría completa',
@@ -180,6 +195,11 @@ export const caseStudies: CaseStudy[] = [
     impactEn:
       'Non-invasive extension: zero breaks in legacy payroll types. 21 Crystal Reports templates organized by payroll type. Reusable pattern for future contract types. Dynamic routing system tested with 48 payroll types.',
 
+    highlights: [
+      { value: '48', label: 'tipos de nómina enrutados', labelEn: 'payroll types routed' },
+      { value: '21', label: 'plantillas de reporte', labelEn: 'report templates' },
+      { value: '0', label: 'roturas en nóminas existentes', labelEn: 'breaks in existing payrolls' },
+    ],
     stack: ['C#', '.NET Framework', 'Crystal Reports', 'SQL Server', 'ERP'],
     hasNDA: true,
     tags: ['erp', 'crm', 'reports', 'dotnet', 'payroll'],
@@ -221,6 +241,11 @@ export const caseStudies: CaseStudy[] = [
     impactEn:
       'Clear separation of UI responsibilities (monitoring vs. configuration). Scalable architecture: adding new capabilities only requires creating a new tab in the corresponding macro-module. No permission logic duplication. Consistency with the clean backend architecture.',
 
+    highlights: [
+      { value: '2', label: 'macro-módulos: monitoreo y configuración', labelEn: 'macro-modules: monitoring and configuration' },
+      { value: '3', label: 'pestañas, una por área del backend', labelEn: 'tabs, one per backend area' },
+      { value: '0', label: 'lógica de permisos duplicada', labelEn: 'duplicated permission logic' },
+    ],
     stack: ['React', 'TypeScript', 'REST API', 'UI Architecture'],
     hasNDA: true,
     tags: ['frontend', 'architecture', 'ui', 'fintech'],
@@ -257,10 +282,15 @@ export const caseStudies: CaseStudy[] = [
       'Designed a hybrid architecture: curated content layer (STAR-format case studies in TypeScript, work experience, blog) as the primary source of truth, and GitHub API as a secondary activity widget. Implemented native i18n (ES/EN), pixel-art editorial design system with pixel shadows and newspaper typography, and Framer Motion animations. Built with React 19 + Vite + TypeScript + Tailwind CSS v4. On top of that I added a second theme selected through `data-theme` —from the editorial newspaper to an interactive XP-style desktop— driven by a WindowManager that owns every rect, clamp and z-order: draggable windows, 8-handle resizing, a Start menu, a taskbar with a utilities tray, tabs inside a single window, and a Help window kept out of the visible registry. I also treated visibility to AI engines as measurable engineering: JSON-LD structured data plus `llms.txt` and `llms-full.txt`, which took an automated GEO audit from 58 to 83/100.',
 
     impact:
-      'Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript. El escritorio XP se construyó con TDD estricto contra un driver Playwright versionado —98/98 verificaciones, RED antes que GREEN en cada unidad de trabajo—, y un segundo driver versionado compara el tema periódico píxel a píxel en 4 viewports × 2 idiomas contra líneas base versionadas: exige 0 píxeles de diferencia, así que el diseño editorial no puede desviarse mientras evoluciona el segundo tema.',
+      'Arquitectura que prioriza el impacto de negocio sobre el código fuente. Casos de estudio con NDA sin exponer información confidencial. i18n nativo sin librerías externas. Design system propio que diferencia visualmente de portfolios genéricos. Agregar un caso de estudio = 1 objeto TypeScript. El escritorio XP se construyó con TDD estricto contra un driver Playwright versionado —100/100 verificaciones, RED antes que GREEN en cada unidad de trabajo—, y un segundo driver versionado compara el tema periódico píxel a píxel en 4 viewports × 2 idiomas contra líneas base versionadas: exige 0 píxeles de diferencia, así que el diseño editorial no puede desviarse mientras evoluciona el segundo tema.',
     impactEn:
-      'Architecture that prioritizes business impact over source code. NDA-compliant case studies without exposing confidential information. Native i18n without external libraries. Custom design system that visually stands out from generic portfolios. Adding a case study = 1 TypeScript object. The XP desktop was built with strict TDD against a committed Playwright driver —98/98 checks, RED before GREEN on every work unit— and a second committed driver pixel-diffs the newspaper theme across 4 viewports × 2 locales against committed baselines: it demands 0 differing pixels, so the editorial design cannot drift while the second theme evolves.',
+      'Architecture that prioritizes business impact over source code. NDA-compliant case studies without exposing confidential information. Native i18n without external libraries. Custom design system that visually stands out from generic portfolios. Adding a case study = 1 TypeScript object. The XP desktop was built with strict TDD against a committed Playwright driver —100/100 checks, RED before GREEN on every work unit— and a second committed driver pixel-diffs the newspaper theme across 4 viewports × 2 locales against committed baselines: it demands 0 differing pixels, so the editorial design cannot drift while the second theme evolves.',
 
+    highlights: [
+      { value: '100/100', label: 'verificaciones del escritorio XP', labelEn: 'XP desktop checks' },
+      { value: '0 px', label: 'de diferencia tolerada', labelEn: 'of tolerated difference' },
+      { value: '4 × 2', label: 'viewports × idiomas comparados', labelEn: 'viewports × languages compared' },
+    ],
     stack: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS v4', 'Framer Motion', 'GitHub API', 'Playwright'],
     githubUrl: 'https://github.com/Ewin24',
     hasNDA: false,
@@ -303,6 +333,11 @@ export const caseStudies: CaseStudy[] = [
     impactEn:
       'Average diagnosis time for undelivered email: from 30 minutes to 5 seconds (GUID search in the audit table). Zero hardcoded credentials: the 8 accounts live in the DB with encryption, rotatable without redeploy. Email provider change: from "rewrite 5 integrations" to "implement a new IEmailProvider" — measured in hours, not weeks. Zero orphan emails: every transaction has persisted state before calling the provider, no traceability loss if the request fails mid-way. Shared provider logs without leaking business context: internal sp_ names obfuscated, business prefixes in log messages removed. 7 REST controllers (one per consumption channel: admin, suppliers, employees, batch, webhooks, monitoring, admin-tools) consuming the same application service — zero logic duplication between channels.',
 
+    highlights: [
+      { value: '5 s', label: 'para diagnosticar un email (antes 30 min)', labelEn: 'to diagnose one email (was 30 min)' },
+      { value: '8', label: 'cuentas sin credenciales en código', labelEn: 'accounts with no credentials in code' },
+      { value: '7', label: 'canales sobre un mismo servicio', labelEn: 'channels on one service' },
+    ],
     stack: ['.NET 8', 'C#', 'Clean Architecture', 'Infobip Email API', 'Dapper', 'SQL Server', 'Serilog', 'Polly', 'Azure Blob Storage', 'JWT'],
     architectureDiagram:
       '4 Capas de Clean Architecture:\n[API: 7 Controllers] → [Application: EmailService + retry + audit] → [Domain: IEmailProvider + entities] → [Infrastructure: InfobipProvider + AzureBlobStorage]\n\nFlujo de transacción:\nController → GUID generado → Persist en BD (estado: Pending) → EmailService → IEmailProvider → Infobip API → respuesta → actualizar BD (estado: Sent/Failed) → Serilog (3 pipelines)\n\nMulti-tenant: 8 cuentas en BD indexadas por contexto de negocio (no por sistema origen). Ruteo automático sin hardcodear.',
@@ -346,6 +381,11 @@ export const caseStudies: CaseStudy[] = [
     impactEn:
       '~36 commits in 3 days that took the app from "does not compile" to "release v1.12.2" with modern toolchain. Working search with new InnerTube format (pageType classification, top 10 per bucket). Clean build with Flutter 3.44+. Working audio on 3 platforms with separate engines but unified API. Complete documentation (setup, contributing, API surface map, Postman collection). Actively maintained app on GitHub with releases and changelog.',
 
+    highlights: [
+      { value: '~36', label: 'commits en 3 días', labelEn: 'commits in 3 days' },
+      { value: 'v1.12.2', label: 'publicada desde "no compila"', labelEn: 'released from "does not build"' },
+      { value: '3', label: 'plataformas con audio funcional', labelEn: 'platforms with working audio' },
+    ],
     stack: ['Flutter 3.44+', 'Dart', 'GetX', 'just_audio', 'media_kit', 'audio_service', 'youtube_explode_dart', 'Hive', 'Dio', 'JNI'],
     architectureDiagram: 'Capa de UI (GetX controllers) → Capa de Servicios (MusicService/InnerTube, StreamService/youtube_explode, AudioHandler/audio_service) → Storage local (Hive boxes: AppPrefs, SongsCache, SongDownloads, SongsUrlCache) → Engines de audio: just_audio (Android/ExoPlayer) + just_audio_media_kit (Windows/Linux/mpv) + SMTC (Windows media keys). Aíslates para URL fetch. Debug overlay con ResponseRecorder + structured logger.',
     githubUrl: 'https://github.com/Ewin24/Harmony-Music',
@@ -385,10 +425,15 @@ export const caseStudies: CaseStudy[] = [
       'Designed and built STARSOL from scratch as a B2B SaaS platform in PHP with Laravel, implementing an asynchronous architecture with 3 background workers processing jobs simultaneously, completely decoupling file uploads from the main web server thread. For advanced file management, developed a .NET MAUI client application with offline capability that syncs with the cloud backend. At the infrastructure level, provisioned high-availability environments on AWS with CI/CD practices, ensuring scalability for sensitive financial data processing. In v2 I built a dedicated ADA/SICSES regulatory ingestion module whose CsvStructureValidator detects marker, separator and header row before validating —it counts the header row, never a data row— and in v3 I restructured the interface into 3 modules.',
 
     impact:
-      'Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR. El validador de estructura acepta 12 archivos reales de cliente (7 ADA + 5 SICSES) sin errores bloqueantes; activar una rama de validación de campos que nunca se había alcanzado en producción sacó a la luz tres desajustes de formato reales —fechas de 7 dígitos que perdían el cero inicial por coerción numérica, un valor monetario decimal contra una regla `integer`, y números de crédito con un espacio incrustado en uno de los formatos—, todos normalizados antes de validar para que el mismo crédito cargado por cualquiera de los dos formatos resuelva a un único identificador.',
+      'Arquitectura asíncrona que eliminó cuellos de botella del servidor web mediante 3 workers simultáneos. Aplicación cliente .NET MAUI con sincronización offline para gestión de archivos financieros. Infraestructura cloud en AWS con alta disponibilidad y CI/CD. Plataforma SaaS B2B completa para el sector solidario cubriendo SARLAFT, SARC y SIAR. El validador de estructura acepta 12 archivos reales de cliente (7 ADA + 5 SICSES) sin errores bloqueantes; activar una rama de validación de campos que nunca se había alcanzado en producción sacó a la luz tres desajustes de formato reales —fechas de 7 dígitos que perdían el cero inicial por coerción numérica, un valor monetario decimal contra una regla `integer`, y números de crédito con un espacio incrustado en uno de los formatos—, todos normalizados antes de validar para que el mismo crédito cargado por cualquiera de los dos formatos resuelva a un único identificador. Actualización de Laravel 8 a 13 en curso, por fases: tres fases cerradas (hasta Laravel 10 y PHPUnit 10), cada una con 0 fallos nuevos frente a la línea base y 0 deprecaciones, mientras la suite crecía de 1.143 a 1.173 pruebas.',
     impactEn:
-      'Asynchronous architecture eliminated web server bottlenecks through 3 simultaneous workers. .NET MAUI client application with offline sync for financial file management. AWS cloud infrastructure with high availability and CI/CD. Complete B2B SaaS platform for the solidarity sector covering SARLAFT, SARC, and SIAR. The structure validator accepts 12 real client files (7 ADA + 5 SICSES) with no blocking errors; switching on a field-validation branch that had never been reached in production surfaced three real format mismatches —7-digit dates losing their leading zero to numeric coercion, a decimal monetary value checked against an `integer` rule, and credit numbers carrying an embedded space in one of the formats— all normalized before validation so the same credit loaded through either format resolves to a single identifier.',
+      'Asynchronous architecture eliminated web server bottlenecks through 3 simultaneous workers. .NET MAUI client application with offline sync for financial file management. AWS cloud infrastructure with high availability and CI/CD. Complete B2B SaaS platform for the solidarity sector covering SARLAFT, SARC, and SIAR. The structure validator accepts 12 real client files (7 ADA + 5 SICSES) with no blocking errors; switching on a field-validation branch that had never been reached in production surfaced three real format mismatches —7-digit dates losing their leading zero to numeric coercion, a decimal monetary value checked against an `integer` rule, and credit numbers carrying an embedded space in one of the formats— all normalized before validation so the same credit loaded through either format resolves to a single identifier. A phased Laravel 8 to 13 upgrade is in progress: three phases closed (up to Laravel 10 and PHPUnit 10), each with 0 new failures against the baseline and 0 deprecations, while the suite grew from 1,143 to 1,173 tests.',
 
+    highlights: [
+      { value: '12', label: 'archivos regulatorios reales validados', labelEn: 'real regulatory files validated' },
+      { value: '3', label: 'workers en paralelo', labelEn: 'parallel workers' },
+      { value: '3', label: 'regímenes de riesgo cubiertos', labelEn: 'risk regimes covered' },
+    ],
     stack: ['PHP', 'Laravel', 'AWS', '.NET MAUI', 'MySQL', 'Docker', 'CI/CD'],
     hasNDA: false,
     tags: ['saas', 'fintech', 'architecture', 'cloud', 'laravel', 'regulatory', 'data-ingestion'],
@@ -426,10 +471,15 @@ export const caseStudies: CaseStudy[] = [
       'Built the client with a domain, ports and adapters behind a composition root, using IndexedDB as the data layer. Feed access goes through a Cloudflare Workers relay that solves CORS and adds conditional GET, size and time limits, an SSRF guard re-applied on every redirect hop, and an origin guard documented explicitly as non-authenticating. Parsers for RSS 2.0, RDF, Atom and JSON Feed normalize everything onto a single entry model; DOMPurify sanitisation lives at a single choke point before rendering. It ships OPML import and export, read/unread/starred state with per-field change timestamps, and a refresh that reports each feed\'s real failure instead of one aggregate error.',
 
     impact:
-      '426 pruebas con ~95% de cobertura de sentencias contra una puerta exigida del 70%. Bundle de 248 kB en crudo y 88 kB comprimido. GitHub Actions ejecuta lint, typecheck y pruebas antes de desplegar a Cloudflare Workers. Repositorio público con licencia MIT.',
+      '787 pruebas con lint y typecheck limpios, y una puerta de cobertura exigida del 70% (la última medición, con 426 pruebas, dio ~95% de sentencias y un bundle de 248 kB en crudo, 88 kB comprimido). GitHub Actions ejecuta lint, typecheck y pruebas antes de desplegar a Cloudflare Workers. Repositorio público con licencia MIT.',
     impactEn:
-      '426 tests at ~95% statement coverage against an enforced 70% gate. A 248 kB raw bundle, 88 kB gzipped. GitHub Actions runs lint, typecheck and tests before deploying to Cloudflare Workers. Public MIT-licensed repository.',
+      '787 tests with lint and typecheck clean, and an enforced 70% coverage gate (the last measurement, at 426 tests, gave ~95% statement coverage and a 248 kB raw bundle, 88 kB gzipped). GitHub Actions runs lint, typecheck and tests before deploying to Cloudflare Workers. Public MIT-licensed repository.',
 
+    highlights: [
+      { value: '787', label: 'pruebas', labelEn: 'tests' },
+      { value: '70%', label: 'puerta de cobertura exigida', labelEn: 'enforced coverage gate' },
+      { value: '4', label: 'formatos de feed normalizados', labelEn: 'feed formats normalized' },
+    ],
     stack: ['TypeScript', 'Preact', 'Vite', 'IndexedDB', 'Cloudflare Workers', 'DOMPurify', 'Vitest', 'GitHub Actions'],
     architectureDiagram: 'UI → services → ports → adapters (store IndexedDB, cliente del relay) → relay en Cloudflare Workers (CORS + GET condicional + guarda SSRF por salto) → origen del feed. Sanitización DOMPurify en un único punto de estrangulamiento antes de renderizar.',
     githubUrl: 'https://github.com/Ewin24/ReaderSS',
@@ -464,15 +514,20 @@ export const caseStudies: CaseStudy[] = [
       'Small teams manage projects, time and HR in separate tools, and the AI assistants that promise to help act without control: they create records on their own, ignore user permissions and burn tokens without limit. A useful agent inside a company has to respect who can see what, avoid inventing data, and execute nothing critical without a person confirming it.',
 
     solution:
-      'Empezó como mi proyecto de grado y lo seguí desarrollando como producto independiente. API en .NET 8 con Clean Architecture sobre SQL Server y frontend en React. El orquestador de IA usa tool calling filtrado por los permisos del usuario, transmite eventos tipados por SSE (meta, tool, delta, refusal, done, error) y responde una negativa sin llamar al LLM cuando todos los módulos que pide están denegados. El agente convierte un requerimiento escrito en tareas propuestas: la entrada se trata como no confiable, la salida se valida contra un esquema y nada se crea hasta que una persona confirma. La confirmación es una única transacción con cambio de estado condicional, así que aprobar dos veces no duplica nada (quien pierde la carrera recibe HTTP 409). Cada llamada a la IA descuenta de una cuota diaria de tokens por organización, la sugerencia de responsables usa una regla de puntuación determinística para no enviar datos personales al modelo, y cada módulo (sprints, tiempos, dependencias) se activa por organización.',
+      'Empezó como mi proyecto de grado y lo seguí desarrollando como producto independiente. API en .NET 8 con Clean Architecture sobre SQL Server y frontend en React. El orquestador de IA usa tool calling filtrado por los permisos del usuario, transmite eventos tipados por SSE (meta, tool, delta, refusal, done, error) y responde una negativa sin llamar al LLM cuando todos los módulos que pide están denegados. El agente convierte un requerimiento escrito en tareas propuestas: la entrada se trata como no confiable, la salida se valida contra un esquema y nada se crea hasta que una persona confirma. La confirmación es una única transacción con cambio de estado condicional, así que aprobar dos veces no duplica nada (quien pierde la carrera recibe HTTP 409). Cada llamada a la IA descuenta de una cuota diaria de tokens por organización, la sugerencia de responsables usa una regla de puntuación determinística para no enviar datos personales al modelo, y cada módulo (sprints, tiempos, dependencias) se activa por organización. Desde entonces sumé reporte de horas y burndown por sprint, carga masiva por CSV, recuperación de contraseña y control documental, con una habilidad del agente dedicada a documentos.',
     solutionEn:
-      'It started as my degree project and I kept building it as an independent product. A .NET 8 API with Clean Architecture on SQL Server and a React frontend. The AI orchestrator uses tool calling filtered by the user\'s permissions, streams typed events over SSE (meta, tool, delta, refusal, done, error), and answers a refusal without calling the LLM when every module requested is denied. The agent turns a written requirement into proposed tasks: the input is treated as untrusted, the output is validated against a schema, and nothing is created until a person confirms. Confirmation is a single transaction with a conditional state change, so approving twice duplicates nothing (the loser of the race gets HTTP 409). Every AI call is charged against a daily per-organization token quota, assignee suggestions use a deterministic scoring rule so no personal data reaches the model, and each module (sprints, time tracking, dependencies) is switched on per organization.',
+      'It started as my degree project and I kept building it as an independent product. A .NET 8 API with Clean Architecture on SQL Server and a React frontend. The AI orchestrator uses tool calling filtered by the user\'s permissions, streams typed events over SSE (meta, tool, delta, refusal, done, error), and answers a refusal without calling the LLM when every module requested is denied. The agent turns a written requirement into proposed tasks: the input is treated as untrusted, the output is validated against a schema, and nothing is created until a person confirms. Confirmation is a single transaction with a conditional state change, so approving twice duplicates nothing (the loser of the race gets HTTP 409). Every AI call is charged against a daily per-organization token quota, assignee suggestions use a deterministic scoring rule so no personal data reaches the model, and each module (sprints, time tracking, dependencies) is switched on per organization. Since then I added an hours report and sprint burndown, CSV bulk load, password recovery and document control, with an agent skill dedicated to documents.',
 
     impact:
-      '852 pruebas de API y 52 pruebas end-to-end con Playwright, construidas entrega a entrega en slices de menos de 400 líneas. La verificación contra un SQL Server real encontró bloqueadores que la suite InMemory no podía ver (un bloqueo, una carrera entre dos escrituras y un hueco de rollback), y se corrigieron antes de entregar. Llevar la confirmación a una transacción condicional también cerró una carrera de doble aprobación en el flujo general de aprobaciones del agente.',
+      '862 pruebas de API y 52 pruebas end-to-end con Playwright, construidas entrega a entrega en slices de menos de 400 líneas: la suite de API creció de 66 a 862 pruebas en menos de tres semanas. La verificación contra un SQL Server real encontró bloqueadores que la suite InMemory no podía ver (un bloqueo, una carrera entre dos escrituras y un hueco de rollback), y se corrigieron antes de entregar. Llevar la confirmación a una transacción condicional también cerró una carrera de doble aprobación en el flujo general de aprobaciones del agente.',
     impactEn:
-      '852 API tests and 52 Playwright end-to-end tests, built delivery by delivery in slices under 400 lines. Verification against a real SQL Server found blockers the InMemory suite could not see (a lock, a race between two writes, and a rollback gap), fixed before delivery. Moving confirmation into a conditional transaction also closed a double-approval race in the agent\'s general approval flow.',
+      '862 API tests and 52 Playwright end-to-end tests, built delivery by delivery in slices under 400 lines: the API suite grew from 66 to 862 tests in under three weeks. Verification against a real SQL Server found blockers the InMemory suite could not see (a lock, a race between two writes, and a rollback gap), fixed before delivery. Moving confirmation into a conditional transaction also closed a double-approval race in the agent\'s general approval flow.',
 
+    highlights: [
+      { value: '862', label: 'pruebas de API', labelEn: 'API tests' },
+      { value: '52', label: 'pruebas end-to-end', labelEn: 'end-to-end tests' },
+      { value: '<400', label: 'líneas por entrega', labelEn: 'lines per delivery' },
+    ],
     stack: ['.NET 8', 'C#', 'Clean Architecture', 'SQL Server', 'React', 'TypeScript', 'LLM tool calling', 'SSE', 'xUnit', 'Playwright'],
     architectureDiagram: 'React → API .NET 8 (Clean Architecture) → orquestador de IA (tool calling filtrado por permisos, cuota de tokens por organización) → propuestas pendientes → confirmación humana en una transacción condicional → SQL Server. Streaming de eventos tipados por SSE hacia el chat.',
     hasNDA: false,

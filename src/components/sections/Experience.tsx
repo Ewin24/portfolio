@@ -11,6 +11,26 @@ interface CardProps {
   index: number
 }
 
+/** Achievements are written most-important-first, so the first four carry
+ *  the role; the rest stay one click away instead of stretching the page. */
+const VISIBLE_ACHIEVEMENTS = 4
+
+function AchievementList({ items }: { items: string[] }) {
+  return (
+    <ul className="space-y-3">
+      {items.map((achievement, i) => (
+        <li key={i} className="flex items-start gap-3">
+          {/* Bullet cuadrado — pixel style */}
+          <span className="shrink-0 w-2 h-2 bg-ink mt-1.5" />
+          <p className="font-sans text-sm text-ink-light leading-relaxed">
+            {achievement}
+          </p>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function ExperienceCard({ job, index }: CardProps) {
   const { lang, t } = useTranslation()
   const reduceMotion = useReducedMotion()
@@ -84,17 +104,17 @@ function ExperienceCard({ job, index }: CardProps) {
             {t('experience.achievements')}
           </p>
 
-          <ul className="space-y-3">
-            {achievements.map((achievement, i) => (
-              <li key={i} className="flex items-start gap-3">
-                {/* Bullet cuadrado — pixel style */}
-                <span className="shrink-0 w-2 h-2 bg-ink mt-1.5" />
-                <p className="font-sans text-sm text-ink-light leading-relaxed">
-                  {achievement}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <AchievementList items={achievements.slice(0, VISIBLE_ACHIEVEMENTS)} />
+          {achievements.length > VISIBLE_ACHIEVEMENTS && (
+            <details className="mt-3">
+              <summary className="disclosure">
+                {achievements.length - VISIBLE_ACHIEVEMENTS} {t('experience.more')}
+              </summary>
+              <div className="pt-3">
+                <AchievementList items={achievements.slice(VISIBLE_ACHIEVEMENTS)} />
+              </div>
+            </details>
+          )}
         </div>
       </div>
     </FadeIn>

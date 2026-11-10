@@ -6,7 +6,7 @@ export const characterizationTestsBeforeRefactor: Omit<BlogPost, 'readingTime'> 
   title: 'Pruebas de caracterización antes de refactorizar: fijar lo que el código hace, no lo que debería hacer',
   titleEn: 'Characterization Tests Before Refactoring: Pin What the Code Does, Not What It Should Do',
   date: '2026-11-03',
-  tags: ['testing', 'refactoring', 'legacy-code', 'dotnet', 'moq'],
+  tags: ['testing', 'refactoring', 'legacy-code', '.NET', 'moq'],
   category: 'arquitectura',
   featured: false,
   excerpt:

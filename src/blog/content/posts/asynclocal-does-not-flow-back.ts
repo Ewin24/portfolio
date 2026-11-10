@@ -6,7 +6,7 @@ export const asyncLocalDoesNotFlowBack: Omit<BlogPost, 'readingTime'> = {
   title: 'AsyncLocal<T> no sube al llamador: dos logs que no podían ser ciertos a la vez',
   titleEn: 'AsyncLocal<T> Does Not Flow Back to the Caller: Two Logs That Could Not Both Be True',
   date: '2026-11-10',
-  tags: ['dotnet', 'csharp', 'async', 'HttpClient', 'debugging'],
+  tags: ['.NET', 'C#', 'async', 'HttpClient', 'debugging'],
   category: 'arquitectura',
   featured: false,
   excerpt:
