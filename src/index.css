@@ -635,8 +635,8 @@ html[data-theme='xp'] {
      sans-serif. These are system faces with no @font-face request, so the
      XP theme never adds a font download over the newspaper baseline. */
   --font-sans:      Tahoma, 'Segoe UI', sans-serif;
-  --font-headline:  Tahoma, 'Segoe UI', sans-serif;
-  --font-mono:      'Courier New', monospace;
+  --font-headline:  'Trebuchet MS', Tahoma, 'Segoe UI', sans-serif;
+  --font-mono:      'Lucida Console', 'Courier New', monospace;
 
   /* ── Colour: the XP Luna chrome ──
      Paper is the classic XP toolbar grey; ink is pure black (the strongest
@@ -679,16 +679,70 @@ html[data-theme='xp'] {
   --xp-dither:        repeating-conic-gradient(#FFFFFF 0% 25%, #D4D0C8 0% 50%) 0 0 / 2px 2px;
 }
 
-/* ── Scrollbar: XP's thin grey bar ── */
+/* ── Scrollbar: the Luna bar ──
+   A 17px pale track, a periwinkle thumb with a white rim and the two arrow
+   buttons. Every window scrolls internally, so this is on screen all the
+   time. The gradients run across the bar, so each orientation restates them. */
 [data-theme='xp'] ::-webkit-scrollbar {
-  width: 10px;
+  width: 17px;
+  height: 17px;
 }
-[data-theme='xp'] ::-webkit-scrollbar-track {
+[data-theme='xp'] ::-webkit-scrollbar-track:vertical {
+  background: linear-gradient(90deg, #F3F1EC, #FEFEFB);
+}
+[data-theme='xp'] ::-webkit-scrollbar-track:horizontal {
+  background: linear-gradient(180deg, #F3F1EC, #FEFEFB);
+}
+[data-theme='xp'] ::-webkit-scrollbar-corner {
   background: #ECE9D8;
 }
 [data-theme='xp'] ::-webkit-scrollbar-thumb {
-  background: #7A7A7A;
-  border: 1px solid #D4D0C8;
+  border: 1px solid #FFFFFF;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #98B1E4;
+}
+[data-theme='xp'] ::-webkit-scrollbar-thumb:vertical {
+  background: linear-gradient(90deg, #C9D7FB 0%, #BDD0FB 50%, #A9BEF3 100%);
+}
+[data-theme='xp'] ::-webkit-scrollbar-thumb:horizontal {
+  background: linear-gradient(180deg, #C9D7FB 0%, #BDD0FB 50%, #A9BEF3 100%);
+}
+[data-theme='xp'] ::-webkit-scrollbar-thumb:hover {
+  filter: brightness(1.06);
+}
+[data-theme='xp'] ::-webkit-scrollbar-button:single-button {
+  display: block;
+  width: 17px;
+  height: 17px;
+  border: 1px solid #FFFFFF;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #98B1E4;
+  background-color: #C0D2FB;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+[data-theme='xp'] ::-webkit-scrollbar-button:single-button:hover {
+  background-color: #D6E2FD;
+}
+[data-theme='xp'] ::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6'%3E%3Cpath d='M1 5l3.5-3.5L8 5' fill='none' stroke='%234D6185' stroke-width='2'/%3E%3C/svg%3E");
+}
+[data-theme='xp'] ::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6'%3E%3Cpath d='M1 1l3.5 3.5L8 1' fill='none' stroke='%234D6185' stroke-width='2'/%3E%3C/svg%3E");
+}
+[data-theme='xp'] ::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='9'%3E%3Cpath d='M5 1L1.5 4.5 5 8' fill='none' stroke='%234D6185' stroke-width='2'/%3E%3C/svg%3E");
+}
+[data-theme='xp'] ::-webkit-scrollbar-button:single-button:horizontal:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='9'%3E%3Cpath d='M1 1l3.5 3.5L1 8' fill='none' stroke='%234D6185' stroke-width='2'/%3E%3C/svg%3E");
+}
+/* Firefox has no scrollbar pseudo-elements: colours only. Guarded because a
+   standard scrollbar-color switches the ::-webkit-scrollbar rules off in
+   Chromium. */
+@supports not selector(::-webkit-scrollbar) {
+  [data-theme='xp'] * {
+    scrollbar-color: #B8CBF6 #F3F1EC;
+  }
 }
 
 /* ── Raised pixel buttons become XP face buttons ──
@@ -746,16 +800,24 @@ html[data-theme='xp'] {
 }
 
 /* ── Desktop ──
-   XPShell mounts a full-bleed Luna gradient behind the windows. The
-   gradient runs vertically from the bright Luna top (#3a6ea5) to the deep
-   XP blue (#00008b); white text on the top end reads 5.31:1, so the
-   desktop carries light text only. It is position:relative so the
-   absolutely-positioned window layer anchors to it, and it carries no
-   padding so a maximized window can fill the viewport above the taskbar. */
+   XPShell mounts a full-bleed wallpaper behind the windows: an original
+   green-hill-under-blue-sky landscape drawn with stacked gradients (no image
+   request). Top to bottom in paint order: two hills, three clouds, the sky.
+   The sky stays deep blue down to 62% so the white icon labels on the left
+   keep 4.5:1 (#2F74D8) before it fades to the pale horizon the hills cover.
+   It is position:relative so the absolutely-positioned window layer anchors
+   to it, and it carries no padding so a maximized window can fill the
+   viewport above the taskbar. */
 [data-theme='xp'] .xp-desktop {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(180deg, #3a6ea5 0%, #00008b 100%);
+  background:
+    radial-gradient(115% 62% at 22% 128%, #7CC043 0%, #5BA92E 55%, #3F8F1F 69.7%, transparent 70%),
+    radial-gradient(105% 58% at 88% 124%, #8ACB52 0%, #6DB63A 55%, #4E9E27 69.7%, transparent 70%),
+    radial-gradient(ellipse 16% 5% at 68% 20%, rgba(255, 255, 255, 0.85), transparent 72%),
+    radial-gradient(ellipse 11% 4% at 78% 24%, rgba(255, 255, 255, 0.7), transparent 72%),
+    radial-gradient(ellipse 13% 4% at 42% 36%, rgba(255, 255, 255, 0.55), transparent 72%),
+    linear-gradient(180deg, #1E5BC6 0%, #2A6DD4 40%, #2F74D8 62%, #9CCBF5 76%, #D6EBFB 84%);
   color: #FFFFFF;
 }
 
@@ -841,7 +903,7 @@ html[data-theme='xp'] {
   font-size: 11px;
   text-align: center;
   line-height: 1.15;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+  text-shadow: 1px 1px 1px #000, 0 0 3px rgba(0, 0, 0, 0.7);
   max-width: 76px;
   overflow-wrap: anywhere;
 }
@@ -984,8 +1046,14 @@ html[data-theme='xp'] {
   opacity: 0.8;
 }
 
+/* The content pane is white, as in an Explorer window: #ECE9D8 is the face
+   of dialogs and chrome, not of content. Restating the paper tokens here
+   repaints every section inside a window without touching a component. */
 [data-theme='xp'] .xp-window-body {
-  background: #ECE9D8;
+  --color-paper:      #FFFFFF;
+  --color-paper-dark: #F1EFE2;
+  --color-rule:       #ACA899;
+  background: #FFFFFF;
   color: #000;
   padding: 0;
   max-width: none;
@@ -1136,8 +1204,53 @@ html[data-theme='xp'] {
   margin-right: auto;
   padding: 1.5rem 1rem; /* newspaper py-20/px-6 is sized for a page, not a 480px window */
 }
-[data-theme='xp'] .xp-window-body #hero h1 { font-size: clamp(2rem, 9cqi, 3.5rem) !important; }
-[data-theme='xp'] .xp-window-body [data-opening-rank] h2 { font-size: clamp(1.5rem, 7cqi, 2.5rem); }
+/* Headings are sized for a window, not for a broadsheet: the large newspaper
+   display sizes are capped against the window's own width. */
+[data-theme='xp'] .xp-window-body :is([class*='text-3xl'], [class*='text-4xl'], [class*='text-5xl'], [class*='text-6xl']) {
+  font-size: clamp(1.125rem, 5cqi, 1.5rem);
+  line-height: 1.2;
+}
+[data-theme='xp'] .xp-window-body #hero h1 { font-size: clamp(1.75rem, 7.5cqi, 2.75rem) !important; }
+[data-theme='xp'] .xp-window-body [data-opening-rank] h2 { font-size: clamp(1.375rem, 5.5cqi, 2rem); }
+
+/* The section-opening subtitle refuses to shrink from the viewport's md
+   breakpoint up, which pushed narrow windows into horizontal scroll. */
+[data-theme='xp'] .xp-window-body [class*='md:shrink-0'] {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+/* The lead case study spans 2-3 columns by viewport; in a one-column window
+   that span created an implicit second column. 1 / -1 spans only the columns
+   the grid really has. */
+[data-theme='xp'] .xp-window-body .lead-track {
+  grid-column: 1 / -1;
+}
+
+/* The stack section splits into two columns on the VIEWPORT's md breakpoint,
+   which a 480px window on a wide screen still satisfies, crushing the tiles.
+   Inside a window the split follows the window's own width instead. */
+[data-theme='xp'] .xp-window-body #skills > .grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+@container (min-width: 760px) {
+  [data-theme='xp'] .xp-window-body #skills > .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Cards are flat group boxes: a hairline border, no drop, and a selection
+   edge on hover instead of the newspaper press. */
+[data-theme='xp'] .xp-window-body .px-card {
+  border-width: 1px;
+  border-radius: 4px;
+  box-shadow: none;
+}
+[data-theme='xp'] .xp-window-body .px-card-interactive:is(:hover, :active) {
+  translate: none;
+  border-color: #316AC5;
+  box-shadow: inset 0 0 0 1px #316AC5;
+}
 
 /* ── XP card grids stay within the window ──
    The newspaper case-study grid uses an auto-sized single column, which
@@ -1156,13 +1269,16 @@ html[data-theme='xp'] {
   min-width: 0;
 }
 
-@media (min-width: 768px) {
+/* Column count follows the WINDOW's width (container query), not the
+   viewport's: a 480px window on a 1440px screen used to get three 126px
+   columns. */
+@container (min-width: 640px) {
   [data-theme='xp'] .xp-window-body #projects .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1024px) {
+@container (min-width: 960px) {
   [data-theme='xp'] .xp-window-body #projects .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -1522,46 +1638,48 @@ html[data-theme='xp'] {
   align-items: flex-end;
   gap: 2px;
   padding: 6px 6px 0;
-  background: linear-gradient(180deg, #3a6ea5 0%, #316AC5 100%);
-  border-bottom: 2px solid #f4f7fb;
+  background: #ECE9D8;
+  border-bottom: 1px solid #919B9C;
   flex-shrink: 0;
 }
 
+/* Luna tabs: pale tabs on the dialog face; the selected one is white, merges
+   into the panel below and carries the orange top stripe. */
 [data-theme='xp'] .xp-tab {
   appearance: none;
   font-family: inherit;
   font-size: 12px;
-  color: #FFFFFF;
-  background: rgba(0, 0, 0, 0.25);
-  border: 2px solid transparent;
+  color: #000;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F0EFE6 100%);
+  border: 1px solid #919B9C;
   border-bottom: none;
   border-radius: 3px 3px 0 0;
-  padding: 5px 14px;
+  padding: 4px 14px;
   cursor: pointer;
 }
 
 [data-theme='xp'] .xp-tab:hover {
-  background: rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 2px 0 #FFC73C;
 }
 
 [data-theme='xp'] .xp-tab-active,
 [data-theme='xp'] .xp-tab[aria-selected='true'] {
-  background: #ECE9D8;
-  color: #000;
-  border-color: #f4f7fb;
-  font-weight: 700;
+  background: #FFFFFF;
+  padding-bottom: 6px;
+  margin-bottom: -1px;
+  box-shadow: inset 0 2px 0 #E68B2C;
 }
 
 [data-theme='xp'] .xp-tab:focus-visible {
-  outline: 2px solid #FFFFFF;
-  outline-offset: -2px;
+  outline: 1px dotted #000;
+  outline-offset: -4px;
 }
 
 [data-theme='xp'] .xp-tabpanel {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  background: #ECE9D8;
+  background: #FFFFFF;
   color: #000;
 }
 
