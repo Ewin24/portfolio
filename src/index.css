@@ -1713,6 +1713,86 @@ html[data-theme='xp'] {
   color: #444;
 }
 
+/* ── Start menu rise ──
+   A CSS animation is safe here: the menu mounts on open and is never
+   re-ordered in the DOM. The reduced-motion block above shortens it. */
+@keyframes xp-rise {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+[data-theme='xp'] .xp-startmenu {
+  animation: xp-rise 120ms ease-out;
+}
+
+/* ── Full-page article = a maximized window ──
+   #blog/article/<slug> replaces the desktop. Instead of a bare grey page it
+   reads as one maximized window: the sticky bar becomes the Luna title bar,
+   the page is the white content pane, and reading progress is the green
+   segmented XP progress bar. */
+[data-theme='xp'] .blog-full {
+  --color-paper:      #FFFFFF;
+  --color-paper-dark: #F1EFE2;
+  --color-rule:       #ACA899;
+  background: #FFFFFF;
+}
+
+[data-theme='xp'] .blog-full .chrome-bar {
+  background: linear-gradient(180deg, #3D95FF 0%, #0A5FDB 14%, #0054E3 50%, #0058EE 86%, #003DD7 100%);
+  border-bottom-color: #001EA0;
+}
+
+[data-theme='xp'] .blog-full .chrome-bar :is(button, span) {
+  color: #FFFFFF;
+  font-family: var(--font-headline);
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45);
+}
+
+[data-theme='xp'] .blog-full .chrome-bar button:hover {
+  text-decoration: underline;
+}
+
+[data-theme='xp'] .blog-full .chrome-bar button:focus-visible {
+  outline: 1px dotted #FFFFFF;
+}
+
+/* Clipped, not scaled: scaleX would squash the 8px blocks. */
+[data-theme='xp'] .blog-full .reading-progress {
+  height: 5px;
+  background: repeating-linear-gradient(90deg, #3FDC3F 0 8px, transparent 8px 10px);
+  transform: none;
+  clip-path: inset(0 calc((1 - var(--p, 0)) * 100%) 0 0);
+}
+
+[data-theme='xp'] .blog-full article h1 {
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  line-height: 1.15;
+}
+
+/* Code blocks are console windows: a small blue caption over grey-on-black
+   Lucida Console (#C0C0C0 on #000 reads 11.5:1). */
+[data-theme='xp'] .blog-article-body pre {
+  background: #000000;
+  color: #C0C0C0;
+  border: 1px solid #0054E3;
+  box-shadow: none;
+}
+
+[data-theme='xp'] .blog-article-body pre code {
+  color: inherit;
+  background: transparent;
+}
+
+[data-theme='xp'] .blog-article-body pre[data-lang]::before {
+  background: linear-gradient(180deg, #0A5FDB 0%, #0054E3 60%, #003DD7 100%);
+  color: #FFFFFF;
+  font-family: var(--font-headline);
+  letter-spacing: 0.04em;
+  filter: none;
+}
+
 /* ── Mobile fallback < 640px (design D8) ──
    Below 640px the desktop stops being a draggable canvas: windows stack
    full-width and scroll vertically, and drag is disabled (the Window

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { motion } from 'motion/react'
 import { Minus, Square, X, CircleHelp } from 'lucide-react'
 import { useWindowManager, type ResizeDir } from './WindowManager'
 import { useTheme } from '../../theme/ThemeContext'
@@ -223,7 +224,7 @@ export function Window({ id }: WindowProps) {
   }
 
   return (
-    <div
+    <motion.div
       className="xp-window"
       data-active={active ? 'true' : 'false'}
       style={style}
@@ -231,6 +232,12 @@ export function Window({ id }: WindowProps) {
       aria-modal="false"
       aria-labelledby={`xp-title-${id}`}
       onPointerDown={() => focus(id)}
+      // Open animation only: it runs once on mount and is owned by motion, so a
+      // z-order reorder (which re-inserts the DOM node) never replays it, as a
+      // CSS animation would. Closing stays instant, like the real thing.
+      initial={stillness || isMobile ? false : { opacity: 0, scale: 0.96 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.14, ease: 'easeOut' }}
     >
       <div
         ref={titlebarRef}
@@ -306,6 +313,6 @@ export function Window({ id }: WindowProps) {
         />
       ))}
       <div className="xp-window-body">{app?.render()}</div>
-    </div>
+    </motion.div>
   )
 }
