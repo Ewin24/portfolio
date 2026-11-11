@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { motion } from 'motion/react'
 import { Minus, Square, X, CircleHelp } from 'lucide-react'
 import { useWindowManager, type ResizeDir } from './WindowManager'
 import { useTheme } from '../../theme/ThemeContext'
@@ -12,7 +13,7 @@ interface WindowProps {
 const DRAG_STEP = 8 // px per arrow key (design D3)
 
 /** The 8 resize handle zones, in DOM order (design D6). Border strips straddle
- *  the 2px window border; corners sit at the 16px diagonal bands. */
+ *  the 3px window border; corners sit at the 16px diagonal bands. */
 const RESIZE_HANDLES: ResizeDir[] = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 
 /** True below 640px (Tailwind `sm`) — drag is disabled on mobile (design D8). */
@@ -223,7 +224,7 @@ export function Window({ id }: WindowProps) {
   }
 
   return (
-    <div
+    <motion.div
       className="xp-window"
       data-active={active ? 'true' : 'false'}
       style={style}
@@ -231,6 +232,12 @@ export function Window({ id }: WindowProps) {
       aria-modal="false"
       aria-labelledby={`xp-title-${id}`}
       onPointerDown={() => focus(id)}
+      // Open animation only: it runs once on mount and is owned by motion, so a
+      // z-order reorder (which re-inserts the DOM node) never replays it, as a
+      // CSS animation would. Closing stays instant, like the real thing.
+      initial={stillness || isMobile ? false : { opacity: 0, scale: 0.96 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.14, ease: 'easeOut' }}
     >
       <div
         ref={titlebarRef}
@@ -273,7 +280,7 @@ export function Window({ id }: WindowProps) {
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => minimize(id)}
           >
-            <Minus size={10} strokeWidth={2.5} />
+            <Minus size={12} strokeWidth={3} />
           </button>
           <button
             type="button"
@@ -281,7 +288,7 @@ export function Window({ id }: WindowProps) {
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => toggleMaximize(id)}
           >
-            <Square size={8} strokeWidth={2.5} />
+            <Square size={10} strokeWidth={3} />
           </button>
           <button
             type="button"
@@ -289,7 +296,7 @@ export function Window({ id }: WindowProps) {
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => handleClose(id)}
           >
-            <X size={10} strokeWidth={2.5} />
+            <X size={13} strokeWidth={3} />
           </button>
         </div>
       </div>
@@ -306,6 +313,6 @@ export function Window({ id }: WindowProps) {
         />
       ))}
       <div className="xp-window-body">{app?.render()}</div>
-    </div>
+    </motion.div>
   )
 }

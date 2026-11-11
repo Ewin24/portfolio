@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { User, FolderKanban, Layers, GraduationCap, FileText, Mail, CircleHelp } from 'lucide-react'
+import { XpIcon } from './icons'
 import type { TranslationKeys } from '../../i18n/translations'
 import { Hero } from '../sections/Hero'
 import { About } from '../sections/About'
@@ -41,7 +41,7 @@ export const APP_REGISTRY: AppEntry[] = [
   {
     id: 'about',
     titleKey: 'nav.about',
-    icon: <User size={14} />,
+    icon: <XpIcon name="about" />,
     render: () => (
       <>
         <Hero />
@@ -52,31 +52,31 @@ export const APP_REGISTRY: AppEntry[] = [
   {
     id: 'projects',
     titleKey: 'nav.projects',
-    icon: <FolderKanban size={14} />,
+    icon: <XpIcon name="projects" />,
     render: () => <Projects />,
   },
   {
     id: 'skills-experience',
     titleKey: 'nav.skills',
-    icon: <Layers size={14} />,
+    icon: <XpIcon name="skills-experience" />,
     render: () => <SkillsExperienceWindow />,
   },
   {
     id: 'education',
     titleKey: 'nav.education',
-    icon: <GraduationCap size={14} />,
+    icon: <XpIcon name="education" />,
     render: () => <Education />,
   },
   {
     id: 'blog',
     titleKey: 'nav.blog',
-    icon: <FileText size={14} />,
+    icon: <XpIcon name="blog" />,
     render: () => <BlogWindow />,
   },
   {
     id: 'contact',
     titleKey: 'nav.contact',
-    icon: <Mail size={14} />,
+    icon: <XpIcon name="contact" />,
     render: () => <Contact />,
   },
   {
@@ -87,7 +87,7 @@ export const APP_REGISTRY: AppEntry[] = [
     // "?" control on any window's title bar.
     id: 'help',
     titleKey: 'window.help',
-    icon: <CircleHelp size={14} />,
+    icon: <XpIcon name="help" />,
     hidden: true,
     defaultRect: (dw, dh) => ({
       x: Math.max(0, Math.floor((dw - 400) / 2)),

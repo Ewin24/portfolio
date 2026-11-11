@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { Computer } from 'lucide-react'
+import { XpIcon } from './icons'
 import { useWindowManager } from './WindowManager'
 import { useTranslation } from '../../hooks/useTranslation'
 import type { AppId } from './registry'
@@ -121,7 +121,7 @@ export function StartMenu({ open, onClose, startButtonRef }: StartMenuProps) {
 
       <div className="xp-startmenu-footer">
         <button type="button" className="xp-startmenu-easteregg" onClick={() => launch('about')}>
-          <Computer size={18} aria-hidden="true" />
+          <XpIcon name="computer" />
           <span>{t('startmenu.myComputer')}</span>
         </button>
       </div>

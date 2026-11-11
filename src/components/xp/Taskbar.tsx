@@ -87,7 +87,8 @@ export function Taskbar() {
             data-active={activeId === id ? 'true' : 'false'}
             onClick={() => onLabelClick(id)}
           >
-            {t(apps[id].titleKey)}
+            {apps[id].icon}
+            <span>{t(apps[id].titleKey)}</span>
           </button>
         ))}
       </div>
