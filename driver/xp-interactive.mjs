@@ -509,9 +509,9 @@ async function run() {
         const seBox = await se.boundingBox()
         const sx = seBox.x + seBox.width / 2
         const sy = seBox.y + seBox.height / 2
-        // Grow se by +400/+400: width/height increase (by at least 150px — the
-        // larger default window leaves ~190px of vertical room at 1024×768 before
-        // the clamp) but stay in desktop bounds.
+        // Grow se by +400/+400: width/height increase (by at least 150px — at
+        // 1024×768 the larger default window leaves ~310px of horizontal and
+        // ~190px of vertical room before the clamp) but stay in desktop bounds.
         await page.mouse.move(sx, sy)
         await page.mouse.down()
         await page.mouse.move(sx + 400, sy + 400, { steps: 15 })

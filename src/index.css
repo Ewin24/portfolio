@@ -955,8 +955,8 @@ html[data-theme='xp'] {
   border: 3px solid #7A96DF;
   border-radius: 8px 8px 0 0;
   box-shadow: 0 0 0 1px #5A6FB0, 0 2px 6px rgba(0, 0, 0, 0.25);
-  /* No overflow:hidden here — the resize handles straddle the 2px border
-     (top:-2px etc.) and would be clipped by it. The body keeps its own
+  /* No overflow:hidden here — the resize handles straddle the 3px border
+     (top:-3px etc.) and would be clipped by it. The body keeps its own
      overflow:auto + fixed height (design D6). */
 }
 
@@ -1053,12 +1053,16 @@ html[data-theme='xp'] {
 
 /* The content pane is white, as in an Explorer window: #ECE9D8 is the face
    of dialogs and chrome, not of content. Restating the paper tokens here
-   repaints every section inside a window without touching a component. */
-[data-theme='xp'] .xp-window-body {
+   repaints every section inside a window, and the full-page article (a
+   maximized window), without touching a component. */
+[data-theme='xp'] :is(.xp-window-body, .blog-full) {
   --color-paper:      #FFFFFF;
   --color-paper-dark: #F1EFE2;
   --color-rule:       #ACA899;
   background: #FFFFFF;
+}
+
+[data-theme='xp'] .xp-window-body {
   color: #000;
   padding: 0;
   max-width: none;
@@ -1077,8 +1081,8 @@ html[data-theme='xp'] {
 
 /* ── Resize handles (design D6, Slice 2) ──
    Eight absolutely-positioned zones (6px border strips / 16px corners) that
-   drive the manager's resize(id,dx,dy,dir). Strips straddle the 2px border
-   (top:-2px etc.); each carries the matching resize cursor. They sit at
+   drive the manager's resize(id,dx,dy,dir). Strips straddle the 3px border
+   (top:-3px etc.); each carries the matching resize cursor. They sit at
    z-index 30, above the window-body content (which uses z-10) but below the
    titlebar (z-index 40), so the titlebar drag + controls win their overlap
    bands. Hidden below 640px where the desktop stops being a draggable
@@ -1729,13 +1733,6 @@ html[data-theme='xp'] {
    reads as one maximized window: the sticky bar becomes the Luna title bar,
    the page is the white content pane, and reading progress is the green
    segmented XP progress bar. */
-[data-theme='xp'] .blog-full {
-  --color-paper:      #FFFFFF;
-  --color-paper-dark: #F1EFE2;
-  --color-rule:       #ACA899;
-  background: #FFFFFF;
-}
-
 [data-theme='xp'] .blog-full .chrome-bar {
   background: linear-gradient(180deg, #3D95FF 0%, #0A5FDB 14%, #0054E3 50%, #0058EE 86%, #003DD7 100%);
   border-bottom-color: #001EA0;

@@ -13,7 +13,7 @@ interface WindowProps {
 const DRAG_STEP = 8 // px per arrow key (design D3)
 
 /** The 8 resize handle zones, in DOM order (design D6). Border strips straddle
- *  the 2px window border; corners sit at the 16px diagonal bands. */
+ *  the 3px window border; corners sit at the 16px diagonal bands. */
 const RESIZE_HANDLES: ResizeDir[] = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 
 /** True below 640px (Tailwind `sm`) — drag is disabled on mobile (design D8). */
