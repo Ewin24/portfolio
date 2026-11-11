@@ -892,11 +892,14 @@ html[data-theme='xp'] {
   justify-content: center;
   width: 32px;
   height: 32px;
-  color: #FFFFFF;
-  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.5));
 }
 
-[data-theme='xp'] .xp-desktop-icon-glyph svg { width: 28px; height: 28px; }
+/* Colour icons (icons.tsx) are 16px by default — title bar and taskbar — and
+   each larger surface restates its own size. */
+[data-theme='xp'] .xp-icon { display: block; flex-shrink: 0; }
+[data-theme='xp'] .xp-desktop-icon-glyph .xp-icon { width: 32px; height: 32px; }
+[data-theme='xp'] :is(.xp-startmenu-item, .xp-startmenu-easteregg) .xp-icon { width: 22px; height: 22px; }
 
 [data-theme='xp'] .xp-desktop-icon-label {
   padding: 0 2px;
@@ -947,10 +950,11 @@ html[data-theme='xp'] {
    the manager via inline styles; the active window gets a stronger highlight. */
 [data-theme='xp'] .xp-window {
   background: #ECE9D8;
-  /* Luna frame: a 2px blue rim with rounded top corners. */
-  border: 2px solid #7A96DF;
+  /* Luna frame: a 3px blue rim with rounded top corners and a 1px darker
+     outer edge (drawn as a spread shadow so it adds no layout width). */
+  border: 3px solid #7A96DF;
   border-radius: 8px 8px 0 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 0 1px #5A6FB0, 0 2px 6px rgba(0, 0, 0, 0.25);
   /* No overflow:hidden here — the resize handles straddle the 2px border
      (top:-2px etc.) and would be clipped by it. The body keeps its own
      overflow:auto + fixed height (design D6). */
@@ -958,8 +962,8 @@ html[data-theme='xp'] {
 
 /* The active window stands out: saturated rim and a deeper drop. */
 [data-theme='xp'] .xp-window[data-active='true'] {
-  border-color: #0831D9;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  border-color: #0054E3;
+  box-shadow: 0 0 0 1px #001EA0, 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 [data-theme='xp'] .xp-window-titlebar {
@@ -969,7 +973,8 @@ html[data-theme='xp'] {
   gap: 8px;
   height: 32px;
   padding: 0 4px 0 8px;
-  border-radius: 6px 6px 0 0;
+  border-radius: 5px 5px 0 0;
+  font-family: var(--font-headline);
   /* Luna gloss: a light highlight at the top edge, the #0054E3 body that
      carries the white title (6.2:1) through the glyph band, and a darker
      bottom lip. Inactive windows swap in the muted variant below. */
@@ -992,7 +997,7 @@ html[data-theme='xp'] {
   align-items: center;
   gap: 6px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 13px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1093,8 +1098,8 @@ html[data-theme='xp'] {
   right: 8px;
   height: 6px;
 }
-[data-theme='xp'] .xp-resize-n { top: -2px; cursor: n-resize; }
-[data-theme='xp'] .xp-resize-s { bottom: -2px; cursor: s-resize; }
+[data-theme='xp'] .xp-resize-n { top: -3px; cursor: n-resize; }
+[data-theme='xp'] .xp-resize-s { bottom: -3px; cursor: s-resize; }
 
 [data-theme='xp'] .xp-resize-e,
 [data-theme='xp'] .xp-resize-w {
@@ -1102,8 +1107,8 @@ html[data-theme='xp'] {
   bottom: 8px;
   width: 6px;
 }
-[data-theme='xp'] .xp-resize-e { right: -2px; cursor: e-resize; }
-[data-theme='xp'] .xp-resize-w { left: -2px; cursor: w-resize; }
+[data-theme='xp'] .xp-resize-e { right: -3px; cursor: e-resize; }
+[data-theme='xp'] .xp-resize-w { left: -3px; cursor: w-resize; }
 
 [data-theme='xp'] .xp-resize-ne,
 [data-theme='xp'] .xp-resize-nw,
@@ -1112,10 +1117,10 @@ html[data-theme='xp'] {
   width: 16px;
   height: 16px;
 }
-[data-theme='xp'] .xp-resize-ne { top: -2px; right: -2px; cursor: ne-resize; }
-[data-theme='xp'] .xp-resize-nw { top: -2px; left: -2px; cursor: nw-resize; }
-[data-theme='xp'] .xp-resize-se { bottom: -2px; right: -2px; cursor: se-resize; }
-[data-theme='xp'] .xp-resize-sw { bottom: -2px; left: -2px; cursor: sw-resize; }
+[data-theme='xp'] .xp-resize-ne { top: -3px; right: -3px; cursor: ne-resize; }
+[data-theme='xp'] .xp-resize-nw { top: -3px; left: -3px; cursor: nw-resize; }
+[data-theme='xp'] .xp-resize-se { bottom: -3px; right: -3px; cursor: se-resize; }
+[data-theme='xp'] .xp-resize-sw { bottom: -3px; left: -3px; cursor: sw-resize; }
 
 /* ── Help window content (design D5, Slice 3) ──
    The compact "?" Help body: a keyboard-shortcut list and a "Return to
@@ -1344,11 +1349,12 @@ html[data-theme='xp'] {
 [data-theme='xp'] .xp-taskbar .xp-window-label {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   min-width: 0;
   max-width: 160px;
   flex: 0 1 160px;
   height: 30px;
-  padding: 0 10px;
+  padding: 0 8px;
   background: linear-gradient(180deg, #4C8FF5 0%, #3C81F3 50%, #2D6CE8 100%);
   color: #FFFFFF;
   border: 0;
@@ -1361,6 +1367,13 @@ html[data-theme='xp'] {
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
+}
+
+/* The label is a flex row (icon + text), so the ellipsis lives on the text. */
+[data-theme='xp'] .xp-taskbar .xp-window-label > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 [data-theme='xp'] .xp-taskbar .xp-window-label:hover {
@@ -1511,8 +1524,8 @@ html[data-theme='xp'] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
 }
 

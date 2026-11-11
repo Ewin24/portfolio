@@ -273,7 +273,7 @@ export function Window({ id }: WindowProps) {
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => minimize(id)}
           >
-            <Minus size={10} strokeWidth={2.5} />
+            <Minus size={12} strokeWidth={3} />
           </button>
           <button
             type="button"
@@ -281,7 +281,7 @@ export function Window({ id }: WindowProps) {
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => toggleMaximize(id)}
           >
-            <Square size={8} strokeWidth={2.5} />
+            <Square size={10} strokeWidth={3} />
           </button>
           <button
             type="button"
@@ -289,7 +289,7 @@ export function Window({ id }: WindowProps) {
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => handleClose(id)}
           >
-            <X size={10} strokeWidth={2.5} />
+            <X size={13} strokeWidth={3} />
           </button>
         </div>
       </div>
