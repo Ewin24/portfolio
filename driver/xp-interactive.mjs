@@ -464,16 +464,16 @@ async function run() {
     }
 
     // ── 12. Squared default geometry (Slice 1, S1.1 RED) ──
-    // A window MUST open at w=min(0.5×desktopW,480), h=min(0.6×desktopH,420);
+    // A window MUST open at w=min(0.6×desktopW,760), h=min(0.7×desktopH,560);
     // `about` opens on mount at that size; every subsequent open cascades +20px
     // from a base y:8 (the header is gone in XP).
     {
-      // @1440×900: about ≈ 480×420, base y=8.
+      // @1440×900: about ≈ 760×560, base y=8.
       const { ctx, page } = await loadXp(browser, 'en', VIEWPORTS[3])
       try {
         const r = await page.locator('.xp-window').first().boundingBox()
-        check('squared: about @1440 ≈ 480×420',
-          r && Math.abs(r.width - 480) <= 2 && Math.abs(r.height - 420) <= 2, JSON.stringify(r))
+        check('squared: about @1440 ≈ 760×560',
+          r && Math.abs(r.width - 760) <= 2 && Math.abs(r.height - 560) <= 2, JSON.stringify(r))
         check('squared: about base y=8 (header gone)',
           r && Math.abs(r.y - 8) <= 2, `y=${r?.y}`)
       } finally { await ctx.close() }
@@ -509,7 +509,9 @@ async function run() {
         const seBox = await se.boundingBox()
         const sx = seBox.x + seBox.width / 2
         const sy = seBox.y + seBox.height / 2
-        // Grow se by +400/+400: width/height increase but stay in desktop bounds.
+        // Grow se by +400/+400: width/height increase (by at least 150px — the
+        // larger default window leaves ~190px of vertical room at 1024×768 before
+        // the clamp) but stay in desktop bounds.
         await page.mouse.move(sx, sy)
         await page.mouse.down()
         await page.mouse.move(sx + 400, sy + 400, { steps: 15 })
@@ -518,8 +520,8 @@ async function run() {
         const grown = await win.first().boundingBox()
         const desktopW = 1024
         const desktopH = 768
-        check('resize: se drag grows w', grown.width > before.width + 300, `before=${before.width} after=${grown.width}`)
-        check('resize: se drag grows h', grown.height > before.height + 300, `before=${before.height} after=${grown.height}`)
+        check('resize: se drag grows w', grown.width > before.width + 150, `before=${before.width} after=${grown.width}`)
+        check('resize: se drag grows h', grown.height > before.height + 150, `before=${before.height} after=${grown.height}`)
         check('resize: right stays <= desktopW', grown.x + grown.width <= desktopW + 0.5, JSON.stringify(grown))
         check('resize: bottom stays <= desktopH-40', grown.y + grown.height <= desktopH - TASKBAR_H + 0.5, JSON.stringify(grown))
 

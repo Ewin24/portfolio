@@ -138,14 +138,14 @@ interface WindowManagerProviderProps {
   children: ReactNode
 }
 
-/** Default squared window size (design D2): w = min(0.5×desktopW, 480),
- *  h = min(0.6×desktopH, 420). Applies to `about` on mount and every
+/** Default squared window size (design D2): w = min(0.6×desktopW, 760),
+ *  h = min(0.7×desktopH, 560). Applies to `about` on mount and every
  *  subsequent open; later opens cascade +20px from a base y:8 (the header
  *  is gone in XP). */
 function defaultSize(desktopW: number, desktopH: number): { w: number; h: number } {
   return {
-    w: Math.max(0, Math.min(desktopW * 0.5, 480)),
-    h: Math.max(0, Math.min(desktopH * 0.6, 420)),
+    w: Math.max(0, Math.min(desktopW * 0.6, 760)),
+    h: Math.max(0, Math.min(desktopH * 0.7, 560)),
   }
 }
 
