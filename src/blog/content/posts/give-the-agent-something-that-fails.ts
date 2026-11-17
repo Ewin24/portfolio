@@ -41,7 +41,7 @@ Esto es distinto de lo que argumenté en [Con AI, el cuello de botella son tus p
 
 **El modelo**
 
-![Dos ciclos. En el primero, describir, generar y leer se repiten mientras alguien juzga si el resultado se parece, y el ciclo sale cuando alguien opina que ya está. En el segundo, una prueba en rojo, generar y ejecutar se repiten mientras la prueba siga en rojo, y el ciclo sale cuando el comando pasa.](blog/figures/agent-contract-loops-es.svg "Esquema conceptual, no datos medidos. El primer ciclo termina con una opinión; el segundo, con el resultado de un comando.")
+![Dos ciclos. En el primero, describir, generar y leer se repiten mientras alguien juzga si el resultado se parece, y el ciclo sale cuando alguien opina que ya está. En el segundo, una prueba en rojo, generar y ejecutar se repiten mientras la prueba siga en rojo, y el ciclo sale cuando el comando pasa.](figure/agent-contract-loops "Esquema conceptual, no datos medidos. El primer ciclo termina con una opinión; el segundo, con el resultado de un comando.")
 
 En el primero, describir, generar y leer, la única salida es que alguien decida que ya se parece. Ese juicio es caro si lo hago yo y poco fiable si lo hace quien generó. En el segundo, fallar, generar y pasar, la salida es un hecho: el comando terminó bien o no. El agente puede dar veinte vueltas sin que yo lea ninguna, y lo que me llega al final viene con su resultado.
 
@@ -118,7 +118,7 @@ This is a different point from the one I made in [AI Made Code Cheap. Your Tests
 
 **The model**
 
-![Two loops. In the first, describe, generate and read repeat while someone judges whether the result is close enough, and the loop ends when someone feels it is done. In the second, a failing test, generate and run repeat while the test is still red, and the loop ends when the command passes.](blog/figures/agent-contract-loops-en.svg "Conceptual sketch, not measured data. The first loop ends on an opinion; the second ends on the result of a command.")
+![Two loops. In the first, describe, generate and read repeat while someone judges whether the result is close enough, and the loop ends when someone feels it is done. In the second, a failing test, generate and run repeat while the test is still red, and the loop ends when the command passes.](figure/agent-contract-loops "Conceptual sketch, not measured data. The first loop ends on an opinion; the second ends on the result of a command.")
 
 In the first one, describe, generate, read, the only exit is someone deciding it is close enough. That judgement is expensive if I make it and unreliable if the generator makes it. In the second, fail, generate, pass, the exit is a fact: the command succeeded or it did not. The agent can go round twenty times without my reading any of it, and what reaches me at the end comes with its result attached.
 

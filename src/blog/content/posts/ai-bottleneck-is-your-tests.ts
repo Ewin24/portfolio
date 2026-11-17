@@ -25,7 +25,7 @@ Los datos que pude leer apuntan en esa dirección. El [resumen que Google Cloud 
 
 Lo que baja es la entrega. Al aumentar la adopción, el informe estima una caída de 1.5 % en el rendimiento de entrega y de 7.2 % en su estabilidad. Y el 39 % de los encuestados declaró poca o ninguna confianza en el código generado por AI.
 
-![Barras a los dos lados de un eje cero. Suben la calidad de la documentación (+7.5 %), la calidad del código (+3.4 %) y la velocidad de revisión de código (+3.1 %). Bajan el rendimiento de entrega (-1.5 %) y la estabilidad de entrega (-7.2 %).](blog/figures/ai-bottleneck-dora-2024-es.svg "Fuente: resumen de Google Cloud del informe DORA 2024. Las tres mejoras se asocian a un aumento del 25 % en la adopción de AI; las dos caídas son las estimaciones que el resumen reporta al aumentar la adopción.")
+![Barras a los dos lados de un eje cero. Suben la calidad de la documentación (+7.5 %), la calidad del código (+3.4 %) y la velocidad de revisión de código (+3.1 %). Bajan el rendimiento de entrega (-1.5 %) y la estabilidad de entrega (-7.2 %).](figure/ai-bottleneck-dora-2024 "Fuente: resumen de Google Cloud del informe DORA 2024. Las tres mejoras se asocian a un aumento del 25 % en la adopción de AI; las dos caídas son las estimaciones que el resumen reporta al aumentar la adopción.")
 
 La lectura que hace el propio equipo de DORA es prudente: mejorar el proceso de desarrollo no mejora automáticamente la entrega si no se respeta lo básico, y nombra dos cosas, lotes pequeños y mecanismos de prueba robustos. La [página del informe en dora.dev](https://dora.dev/research/2024/dora-report/) repite las mismas dos.
 
@@ -100,7 +100,7 @@ The data I was able to read points the same way. [Google Cloud's summary of the 
 
 What goes down is delivery. As AI adoption increased, the report estimates a 1.5% decrease in delivery throughput and a 7.2% reduction in delivery stability. And 39% of respondents reported little to no trust in AI-generated code.
 
-![Bars on both sides of a zero axis. Documentation quality (+7.5 %), code quality (+3.4 %) and code review speed (+3.1 %) go up. Delivery throughput (-1.5 %) and delivery stability (-7.2 %) go down.](blog/figures/ai-bottleneck-dora-2024-en.svg "Source: Google Cloud's summary of the 2024 DORA report. The three improvements are associated with a 25% increase in AI adoption; the two declines are the estimates the summary reports as adoption increased.")
+![Bars on both sides of a zero axis. Documentation quality (+7.5 %), code quality (+3.4 %) and code review speed (+3.1 %) go up. Delivery throughput (-1.5 %) and delivery stability (-7.2 %) go down.](figure/ai-bottleneck-dora-2024 "Source: Google Cloud's summary of the 2024 DORA report. The three improvements are associated with a 25% increase in AI adoption; the two declines are the estimates the summary reports as adoption increased.")
 
 The DORA team's own reading is careful: improving the development process does not automatically improve software delivery without the basics, and it names two of them, small batch sizes and robust testing mechanisms. The [report page on dora.dev](https://dora.dev/research/2024/dora-report/) repeats the same two.
 

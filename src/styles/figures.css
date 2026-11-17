@@ -1,0 +1,591 @@
+/* Interactive article figures (src/blog/figures).
+
+   Unlayered on purpose, like dark.css and reading.css: these rules have to win
+   over the article prose rules, which live in Tailwind's layers. Everything is
+   scoped under `.fig` (plus `.fig-fallback`, the alt text shown when a figure
+   cannot draw).
+
+   Colours are design tokens or currentColor only, so the dark theme and XP
+   restyle a figure by overriding the tokens. Layout is HTML and CSS; SVG is
+   used for arrow shafts and heads only. The stage is a size container: a
+   figure lays itself out by its own width, not the window's. */
+
+.fig-fallback {
+  padding: 0.75rem 0.875rem;
+  border: 2px solid var(--color-rule);
+  background: var(--color-paper);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-ink-light);
+}
+
+/* The caption is the article's; inside a figure nothing may render below 12px. */
+.blog-article-body figure[data-figure] figcaption {
+  font-size: 0.75rem;
+}
+
+.fig {
+  padding: 0.875rem;
+  border: 2px solid var(--color-rule);
+  background: var(--color-paper);
+  box-shadow: var(--shadow-pixel-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--color-ink);
+}
+.fig:focus-visible,
+.fig :focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+/* :where keeps this reset from outweighing the margins set further down. */
+.fig :where(p) { margin: 0; }
+.fig [data-strong='true'] { font-weight: 700; }
+
+.fig-stage {
+  container: fig / inline-size;
+}
+
+/* ── Steps ──
+   Every element carries the step it belongs to and whether that step has been
+   reached. Hidden elements keep their place, so stepping never moves the
+   layout. `--i` queues elements that enter on the same step. */
+.fig [data-step] {
+  --delay: calc(var(--i, 0) * 110ms);
+  transition: opacity 320ms ease var(--delay), transform 320ms ease var(--delay), visibility 0s var(--delay);
+}
+.fig [data-on='false'] {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 180ms ease, transform 180ms ease, visibility 0s 180ms;
+}
+.fig [data-reveal='box'][data-on='false'] { transform: translateY(6px); }
+
+/* Bars grow from their baseline. */
+.fig [data-reveal='grow'] {
+  transform-origin: left center;
+  transition: transform 520ms ease var(--delay), opacity 120ms ease var(--delay), visibility 0s var(--delay);
+}
+.fig [data-reveal='grow'][data-on='false'] { transform: scaleX(0); }
+
+/* Arrows draw along their shaft, then the head lands. */
+.fig [data-reveal='draw'] line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 260ms ease var(--delay);
+}
+.fig [data-reveal='draw'] path { transition: opacity 120ms ease calc(var(--delay) + 220ms); }
+.fig [data-reveal='draw'][data-on='false'] line { stroke-dashoffset: 1; transition-delay: 0s; }
+.fig [data-reveal='draw'][data-on='false'] path { opacity: 0; transition-delay: 0s; }
+
+/* Elbow connectors are uncovered from the end they leave from. */
+.fig [data-reveal='wipe'] {
+  clip-path: inset(-0.75rem);
+  transition: clip-path 480ms ease, opacity 60ms ease, visibility 0s;
+}
+.fig [data-reveal='wipe'][data-on='false'] { clip-path: var(--wipe-from); }
+
+@media (prefers-reduced-motion: reduce) {
+  .fig [data-step],
+  .fig [data-step] * {
+    transition-delay: 0s !important;
+  }
+}
+
+/* ── Narration and player ── */
+.fig-narration {
+  min-height: calc(2 * 1.45em + 0.625rem);
+  margin-top: 0.875rem;
+  padding-top: 0.625rem;
+  border-top: 1px solid var(--color-rule-light);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-ink);
+}
+
+.fig-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.625rem;
+}
+
+.fig-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.375rem;
+  border: 2px solid var(--color-ink);
+  border-radius: 0;
+  background: var(--color-paper);
+  box-shadow: var(--shadow-pixel-sm);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: box-shadow 75ms ease, transform 75ms ease;
+}
+.fig-btn:hover,
+.fig-btn:active {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+.fig-btn[data-fig-control='play'],
+.fig-btn[aria-expanded='true'] {
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+}
+.fig-btn[aria-disabled='true'] {
+  border-color: var(--color-rule-light);
+  box-shadow: none;
+  color: var(--color-ink-muted);
+  cursor: default;
+  transform: none;
+}
+.fig-btn-data {
+  margin-left: auto;
+  padding-inline: 0.5rem;
+}
+
+.fig-marks { display: inline-flex; }
+.fig-mark {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.fig-mark::before {
+  content: '';
+  width: 0.625rem;
+  height: 0.625rem;
+  border: 2px solid var(--color-ink);
+  transition: transform 75ms ease;
+}
+.fig-mark:hover::before { transform: translate(1px, 1px); }
+.fig-mark[data-done='true']::before { background: var(--color-ink); }
+/* The current step is also the taller mark, and the count beside it says so in text. */
+.fig-mark[aria-current='step']::before {
+  height: 1rem;
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+
+.fig-count {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+
+.blog-article-body .fig-table {
+  margin-block: 0.875rem 0;
+}
+.blog-article-body .fig-table th { font-size: 0.75rem; }
+.fig-table :is(th, td):not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── bars ── */
+.fig-bars {
+  position: relative;
+  display: grid;
+  gap: 0.625rem;
+}
+.fig-bar-label {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--color-ink);
+}
+.fig-bar-track {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  border-left: 2px solid var(--color-rule-light);
+}
+.fig-bar-fill {
+  flex: none;
+  /* The track keeps room for the value label beside the longest bar. */
+  width: calc((100% - 4.25rem) * var(--v));
+  min-width: 2px;
+  height: 0.875rem;
+  background: var(--color-ink);
+}
+.fig-bar-fill[data-tone='accent'] { background: var(--color-accent); }
+.fig-bar-fill[data-tone='muted'] { background: var(--color-ink-light); }
+.fig-bar-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+.fig-bar-note {
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+.fig-bars-note {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+}
+
+/* Labels in a column to the left of the bars. */
+.fig-bars[data-labels='side'] {
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.625rem;
+  row-gap: 0;
+}
+.fig-bars[data-labels='side'] .fig-bar-row { display: contents; }
+.fig-bars[data-labels='side'] .fig-bar-label { text-align: right; }
+.fig-bars[data-labels='side'] .fig-bar-track {
+  margin-top: 0;
+  padding-block: 0.375rem;
+}
+
+/* Diverging: a zero line down the middle, positive bars to its right. */
+.fig-bars[data-diverging='true']::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 calc(50% - 1px);
+  border-left: 2px solid var(--color-ink-muted);
+}
+.fig-bars[data-diverging='true'] .fig-bar-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.fig-bars[data-diverging='true'] :is(.fig-bar-label, .fig-bar-track) {
+  grid-column: 2;
+  padding-left: 0.375rem;
+  border: 0;
+}
+.fig-bars[data-diverging='true'] .fig-bar-track { padding-left: 1px; }
+.fig-bars[data-diverging='true'] [data-negative='true'] :is(.fig-bar-label, .fig-bar-track) {
+  grid-column: 1;
+  padding-inline: 0 0.375rem;
+  text-align: right;
+}
+.fig-bars[data-diverging='true'] [data-negative='true'] .fig-bar-track {
+  flex-direction: row-reverse;
+  padding-right: 1px;
+}
+.fig-bars[data-diverging='true'] [data-negative='true'] .fig-bar-fill { transform-origin: right center; }
+
+/* Split: the parts of one total. Narrow, they stack as bars drawn against the
+   total. Wide, they join into one bar: each part's label and value sit in its
+   own column, and a sliver of paper separates adjacent fills. */
+.fig-split,
+.fig-split-part {
+  display: grid;
+  row-gap: 0.375rem;
+}
+.fig-split { row-gap: 0.75rem; }
+.fig-split .fig-bar-fill {
+  width: calc(100% * var(--v));
+  height: 1.75rem;
+}
+@container fig (min-width: 28rem) {
+  .fig-split {
+    grid-template-columns: var(--cols);
+    column-gap: 2px;
+    row-gap: 0.375rem;
+  }
+  /* Subgrid: the fills line up even when one label wraps and the other does not. */
+  .fig-split-part {
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+  }
+  .fig-split .fig-bar-label { align-self: end; }
+  .fig-split .fig-bar-fill { width: auto; }
+}
+.fig-split-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.5rem;
+}
+.fig-split-value .fig-bar-value { font-size: 1.125rem; }
+
+/* ── matrix ── */
+.fig-matrix {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: 1fr 1fr auto auto;
+  column-gap: 0.25rem;
+}
+.fig-matrix-ylabel,
+.fig-matrix-ytick {
+  place-self: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+}
+.fig-matrix-ylabel { grid-area: 1 / 1 / 3 / 2; }
+.fig-matrix-ytick { grid-column: 2; }
+.fig-matrix-ytick,
+.fig-matrix-xtick { color: var(--color-ink-muted); }
+.fig-matrix-xtick {
+  grid-row: 3;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+.fig-matrix-xlabel {
+  grid-area: 4 / 3 / 5 / 5;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+/* The rule colour shows through the 2px gaps: that is the grid's cross. */
+.fig-matrix-plot {
+  grid-area: 1 / 3 / 3 / 5;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 2px;
+  border: 2px solid var(--color-rule);
+  background: var(--color-rule);
+}
+.fig-matrix-cell { background: var(--color-paper); }
+.fig-matrix-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  height: 100%;
+  min-height: 7rem;
+  padding: 0.625rem;
+  overflow-wrap: anywhere;
+}
+.fig-matrix-content[data-emphasis='true'] {
+  background: var(--color-paper-dark);
+  outline: 2px solid var(--color-accent);
+  outline-offset: -5px;
+}
+.fig-matrix-title { font-weight: 700; }
+.fig-matrix-text {
+  font-family: var(--font-sans);
+  color: var(--color-ink-light);
+}
+.fig-matrix-tag {
+  margin-top: auto;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+/* ── flow ──
+   Every item of a flow grid knows its place twice: narrow (`--nc`, `--nr`)
+   and wide (`--c`, `--r`). Narrow is the default; the container query swaps. */
+.fig-lane + .fig-lane {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--color-rule-light);
+}
+.fig-lane-title {
+  margin-bottom: 0.625rem;
+  font-weight: 700;
+}
+.fig-lane-note {
+  margin-top: 0.625rem;
+  color: var(--color-ink-light);
+}
+.fig-lane-note[data-strong='true'] { color: var(--color-ink); }
+
+.fig-flow-grid {
+  display: grid;
+  grid-template-columns: var(--ncols);
+}
+.fig-flow-grid > * {
+  grid-column: var(--nc);
+  grid-row: var(--nr);
+}
+.fig-flow-grid .fig-lane-title[data-later='true'] { margin-top: 1.25rem; }
+
+.fig-node {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.125rem;
+  min-height: 3.25rem;
+  padding: 0.375rem 0.5rem;
+  border: 2px solid var(--color-ink);
+  background: var(--color-paper);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.fig-node[data-tone='muted'] { border-color: var(--color-ink-light); }
+.fig-node[data-emphasis='soft'] {
+  border-color: var(--color-ink);
+  background: var(--color-paper-dark);
+}
+.fig-node[data-emphasis='accent'] {
+  border-color: var(--color-accent);
+  background: var(--color-paper-dark);
+  font-weight: 700;
+  color: var(--color-accent);
+}
+.fig-node[data-emphasis='invert'] {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  font-weight: 700;
+  color: var(--color-on-ink);
+}
+.fig-node-sub {
+  font-weight: 400;
+  color: var(--color-ink-light);
+}
+
+.fig-aside {
+  align-self: center;
+  padding-left: 0.75rem;
+  font-family: var(--font-sans);
+  color: var(--color-ink-light);
+}
+.fig-aside span { display: block; }
+.fig-aside [data-strong='true'] { color: var(--color-accent); }
+
+.fig-arrow {
+  display: grid;
+  place-items: center;
+  height: 1.75rem;
+  color: var(--color-ink);
+}
+.fig-arrow svg { display: block; }
+.fig-arrow line {
+  stroke: currentColor;
+  stroke-width: 2;
+}
+.fig-arrow path,
+.fig-elbow path { fill: currentColor; }
+
+.fig-end {
+  margin-top: 0;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-accent);
+}
+/* The dead end: a short shaft that stops at a bar. */
+.fig-end::before {
+  content: '';
+  display: block;
+  width: 2px;
+  height: 1rem;
+  margin-inline: auto;
+  background: currentColor;
+}
+.fig-end i {
+  display: block;
+  width: 5rem;
+  height: 2px;
+  margin: 0 auto 0.375rem;
+  background: currentColor;
+}
+
+.fig-loop-label {
+  margin-top: 0.375rem;
+  text-align: right;
+  color: var(--color-ink-light);
+}
+.fig-loop-label[data-tone='accent'] {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+/* Elbows are drawn with borders, so they stretch with the boxes they join.
+   Narrow: both run down the gutter to the right of the boxes. */
+.fig-elbow {
+  position: relative;
+  color: var(--color-ink);
+  --reach: 1.625rem; /* half a box of minimum height: where the line meets it */
+  --wipe-from: inset(100% 0 0 0);
+}
+.fig-elbow[data-tone='accent'] { color: var(--color-accent); }
+.fig-elbow i {
+  position: absolute;
+  inset: var(--reach) 0.375rem var(--reach) 0;
+  border: 2px solid currentColor;
+  border-left: 0;
+}
+.fig-elbow[data-dashed='true'] i { border-style: dashed; }
+.fig-elbow i + i { display: none; }
+.fig-elbow svg {
+  position: absolute;
+  top: calc(var(--reach) - 4px);
+  left: 0;
+  transform: rotate(-90deg);
+}
+/* The link leaves from the top and arrives at the bottom. */
+.fig-elbow[data-kind='link'] { --wipe-from: inset(0 0 100% 0); }
+.fig-elbow[data-kind='link'] svg {
+  top: auto;
+  bottom: calc(var(--reach) - 4px);
+}
+
+@container fig (min-width: 34rem) {
+  .fig-flow-grid { grid-template-columns: var(--cols); }
+  .fig-flow-grid > * {
+    grid-column: var(--c);
+    grid-row: var(--r);
+  }
+  .fig-flow-grid .fig-lane-title[data-later='true'] { margin-top: 0; }
+  .fig-flow-grid[data-layout='columns'] .fig-lane-title { text-align: center; }
+
+  /* Lanes that run left to right: the arrows turn with them. */
+  .fig-flow-grid[data-layout='rows'] .fig-arrow {
+    align-self: center;
+    transform: rotate(-90deg);
+  }
+  .fig-loop-label { text-align: center; }
+
+  /* Loop back under the row: down from the last box, along, and up into `to`.
+     `--edge` is half a box, so both ends meet their box at its middle. */
+  .fig-elbow[data-kind='loop'] {
+    height: 1.5rem;
+    --edge: calc((100% - (var(--k) - 1) * 1.75rem) / (2 * var(--k)));
+    --wipe-from: inset(0 0 0 100%);
+  }
+  .fig-elbow[data-kind='loop'] i {
+    inset: 0 var(--edge) 0.375rem var(--edge);
+    border: 2px solid currentColor;
+    border-top: 0;
+  }
+  .fig-elbow[data-kind='loop'][data-dashed='true'] i { border-style: dashed; }
+  .fig-elbow[data-kind='loop'] svg {
+    top: 0;
+    left: calc(var(--edge) - 4px);
+    transform: none;
+  }
+
+  /* Link across the gutter between two lanes: out of the last box on the
+     left, up the middle, and into the first box on the right. */
+  .fig-elbow[data-kind='link'] { --wipe-from: inset(0 100% 0 0); }
+  .fig-elbow[data-kind='link'] i {
+    inset: var(--reach) 50% var(--reach) 0;
+    border: 2px dashed currentColor;
+    border-top: 0;
+    border-left: 0;
+  }
+  .fig-elbow[data-kind='link'] i + i {
+    display: block;
+    inset: var(--reach) 0 auto 50%;
+    border: 0;
+    border-top: 2px dashed currentColor;
+  }
+  .fig-elbow[data-kind='link'] svg {
+    inset: calc(var(--reach) - 4px) 0 auto auto;
+    transform: rotate(90deg);
+  }
+}

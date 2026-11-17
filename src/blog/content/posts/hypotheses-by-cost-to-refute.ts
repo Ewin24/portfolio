@@ -53,7 +53,7 @@ La certeza prestada tiene el mismo efecto. El diseño original venía acompañad
 
 A cada explicación le hago dos preguntas: qué tan probable parece, y cuál es la observación más barata que la haría falsa. La segunda no es "cómo la investigo". Es "qué tendría que ver para tacharla".
 
-![Matriz de dos por dos. Eje horizontal: costo de refutar, de bajo a alto. Eje vertical: qué tan probable parece, de baja a alta. Probable y barata: probar ya. Improbable y barata: probar igual, la que se salta. Probable y cara: probar después. Improbable y cara: aparcar.](blog/figures/hypotheses-matrix-es.svg "El orden que propongo: primero la columna barata completa, después la cara por probabilidad. Esquema conceptual, no datos medidos.")
+![Matriz de dos por dos. Eje horizontal: costo de refutar, de bajo a alto. Eje vertical: qué tan probable parece, de baja a alta. Probable y barata: probar ya. Improbable y barata: probar igual, la que se salta. Probable y cara: probar después. Improbable y cara: aparcar.](figure/hypotheses-matrix "El orden que propongo: primero la columna barata completa, después la cara por probabilidad. Esquema conceptual, no datos medidos.")
 
 La celda de arriba a la izquierda no tiene discusión: probable y barata, se prueba ya. El desacuerdo con la visión común está en el segundo lugar. Ordenar por probabilidad manda a la celda de arriba a la derecha, la explicación probable y cara. Yo mando a la de abajo a la izquierda: la improbable que casi no cuesta. Si la descarto, perdí minutos. Si resulta cierta, me ahorré la rama cara completa. La explicación probable y cara espera a que la columna barata esté agotada, y la improbable y cara se aparca hasta que algo la vuelva probable.
 
@@ -124,7 +124,7 @@ Borrowed certainty does the same thing. The original design came with a code com
 
 I ask two questions of every explanation: how likely does it seem, and what is the cheapest observation that would make it false. The second is not "how do I investigate this". It is "what would I have to see to cross it off".
 
-![Two by two matrix. Horizontal axis: cost to refute, low to high. Vertical axis: how likely it seems, low to high. Likely and cheap: test now. Unlikely and cheap: test anyway, the one people skip. Likely and expensive: test later. Unlikely and expensive: park.](blog/figures/hypotheses-matrix-en.svg "The order I propose: the whole cheap column first, then the expensive one by probability. Conceptual sketch, not measured data.")
+![Two by two matrix. Horizontal axis: cost to refute, low to high. Vertical axis: how likely it seems, low to high. Likely and cheap: test now. Unlikely and cheap: test anyway, the one people skip. Likely and expensive: test later. Unlikely and expensive: park.](figure/hypotheses-matrix "The order I propose: the whole cheap column first, then the expensive one by probability. Conceptual sketch, not measured data.")
 
 The top-left cell is uncontroversial: likely and cheap, test it now. The disagreement with the common view is about what comes second. Ranking by probability sends you to the top-right cell, the likely and expensive explanation. I go to the bottom left: the unlikely one that costs almost nothing. If I rule it out, I lost minutes. If it turns out to be true, I skipped the entire expensive branch. The likely and expensive explanation waits until the cheap column is exhausted, and the unlikely and expensive one is parked until something makes it likely.
 

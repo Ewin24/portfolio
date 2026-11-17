@@ -45,7 +45,7 @@ De ahí sale mi objeción al botón: una persona que aprueba sobre una ruta de e
 
 El dibujo que uso tiene dos carriles.
 
-![Dos columnas. A la izquierda, el carril del modelo: requisito escrito, modelo, validación de esquema y propuesta pendiente, con una marca que dice que ahí termina su autoridad. Una línea punteada lleva la propuesta a la columna derecha, el carril determinístico: una persona confirma, guardas de permiso, estado y plazo, commit todo o nada, registro de la decisión y, al final, los datos del producto.](blog/figures/ai-proposes-lanes-es.svg "Esquema conceptual, no datos medidos. El carril del modelo termina en la propuesta; solo el carril determinístico llega a los datos.")
+![Dos columnas. A la izquierda, el carril del modelo: requisito escrito, modelo, validación de esquema y propuesta pendiente, con una marca que dice que ahí termina su autoridad. Una línea punteada lleva la propuesta a la columna derecha, el carril determinístico: una persona confirma, guardas de permiso, estado y plazo, commit todo o nada, registro de la decisión y, al final, los datos del producto.](figure/ai-proposes-lanes "Esquema conceptual, no datos medidos. El carril del modelo termina en la propuesta; solo el carril determinístico llega a los datos.")
 
 El carril del modelo va del requisito a la propuesta, y ahí termina. En mi caso, lo que entra se trata como no confiable, lo que sale se valida contra un esquema y cada lote tiene un tope de tareas. Las herramientas que el modelo puede invocar se filtran por los permisos de quien pregunta, y si todo lo que pide está denegado, el sistema responde con una negativa sin llamar al modelo. Todo eso reduce el daño de una mala propuesta. Nada de eso escribe en el tablero.
 
@@ -120,7 +120,7 @@ That is my objection to the button: a person approving over a badly built write 
 
 The sketch I use has two lanes.
 
-![Two columns. On the left, the model lane: written requirement, model, schema validation and a pending proposal, with a mark saying its authority ends there. A dashed line carries the proposal to the right column, the deterministic lane: a person confirms, guards on permission, state and expiry, an all-or-nothing commit, a record of the decision and, at the end, the product data.](blog/figures/ai-proposes-lanes-en.svg "Conceptual sketch, not measured data. The model lane ends at the proposal; only the deterministic lane reaches the data.")
+![Two columns. On the left, the model lane: written requirement, model, schema validation and a pending proposal, with a mark saying its authority ends there. A dashed line carries the proposal to the right column, the deterministic lane: a person confirms, guards on permission, state and expiry, an all-or-nothing commit, a record of the decision and, at the end, the product data.](figure/ai-proposes-lanes "Conceptual sketch, not measured data. The model lane ends at the proposal; only the deterministic lane reaches the data.")
 
 The model lane runs from the requirement to the proposal, and stops. In my case the input is treated as untrusted, the output is validated against a schema, and every batch has a cap on the number of tasks. The tools the model can call are filtered by the permissions of whoever is asking, and if everything requested is denied, the system answers with a refusal without calling the model at all. All of that limits the damage a bad proposal can do. None of it writes to the board.
 

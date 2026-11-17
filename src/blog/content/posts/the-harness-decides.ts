@@ -94,7 +94,7 @@ También es cierto que un modelo mejor vuelve innecesarias algunas reglas. Las q
 
 Para distinguir la regla que se gana su lugar de la que no, uso dos preguntas.
 
-![Cuadrícula de dos por dos. Filas: si la regla nació de un fallo real. Columnas: si algo puede comprobarla. Con fallo y comprobable, se queda. Con fallo y sin comprobación, hay que volverla prueba. Sin fallo y comprobable, queda a prueba. Sin fallo y sin comprobación, se borra.](blog/figures/harness-rule-test-es.svg "Esquema conceptual, no datos medidos. Dos preguntas para decidir qué hacer con cada regla del arnés.")
+![Cuadrícula de dos por dos. Filas: si la regla nació de un fallo real. Columnas: si algo puede comprobarla. Con fallo y comprobable, se queda. Con fallo y sin comprobación, hay que volverla prueba. Sin fallo y comprobable, queda a prueba. Sin fallo y sin comprobación, se borra.](figure/harness-rule-test "Esquema conceptual, no datos medidos. Dos preguntas para decidir qué hacer con cada regla del arnés.")
 
 La primera: ¿nació de un fallo real que puedo nombrar? La de exigir comando y salida nació de una certificación falsa. La de aprobar solo con cero píxeles distintos nació de una puerta que dejaba pasar un cambio de 5,755 píxeles. La segunda: ¿hay algo que pueda comprobar que se cumple?
 
@@ -186,7 +186,7 @@ It is also true that a better model makes some rules unnecessary. The ones that 
 
 To tell a rule that earns its place from one that does not, I ask two questions.
 
-![Two-by-two grid. Rows: whether the rule came from a real failure. Columns: whether something can check it. From a failure and checkable, keep it. From a failure with no check, make it a check. No failure but checkable, on probation. No failure and no check, delete it.](blog/figures/harness-rule-test-en.svg "Conceptual sketch, not measured data. Two questions for deciding what to do with each rule in the harness.")
+![Two-by-two grid. Rows: whether the rule came from a real failure. Columns: whether something can check it. From a failure and checkable, keep it. From a failure with no check, make it a check. No failure but checkable, on probation. No failure and no check, delete it.](figure/harness-rule-test "Conceptual sketch, not measured data. Two questions for deciding what to do with each rule in the harness.")
 
 The first: did it come from a real failure I can name? The rule demanding a command and its output came from a false certification. The rule of passing only at zero differing pixels came from a gate that let a 5,755-pixel change through. The second: is there something that can check it is being followed?
 

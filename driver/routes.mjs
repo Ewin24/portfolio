@@ -42,13 +42,12 @@ async function run() {
         const s = await articleState(page)
         check(`first load ${hash.slice(0, 15)}… opens the article`, s.h1.includes(TITLE), JSON.stringify(s))
         check(`first load ${hash.slice(0, 15)}… ends on the canonical hash`, s.hash === `#blog/article/${SLUG}`, s.hash)
-        // The article carries one figure; a decoded image proves its path resolved under the deploy base.
-        const fig = await page.evaluate(async () => {
-          const img = document.querySelector('.blog-article-body figure img')
-          if (!img) return null
-          img.loading = 'eager'
-          await img.decode().catch(() => {})
-          return { width: img.naturalWidth, caption: img.parentElement.querySelector('figcaption')?.textContent ?? '' }
+        // The article carries one interactive figure: it drew (not its alt-text fallback) and kept its caption.
+        await page.waitForSelector('.blog-article-body figure[data-figure] .fig', { timeout: 5_000 }).catch(() => {})
+        const fig = await page.evaluate(() => {
+          const figure = document.querySelector('.blog-article-body figure[data-figure]')
+          if (!figure) return null
+          return { width: figure.querySelector('.fig')?.getBoundingClientRect().width ?? 0, caption: figure.querySelector('figcaption')?.textContent ?? '' }
         })
         check(`first load ${hash.slice(0, 15)}… renders the figure with its caption`, !!fig && fig.width > 0 && fig.caption.length > 0, JSON.stringify(fig))
       } finally { await ctx.close() }
