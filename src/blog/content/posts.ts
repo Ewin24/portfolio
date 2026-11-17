@@ -8,6 +8,7 @@ import { redactionGrepMissesCamelCase } from './posts/redaction-grep-misses-came
 import { workaroundThatWorks } from './posts/workaround-that-works'
 import { aiBottleneckIsYourTests } from './posts/ai-bottleneck-is-your-tests'
 import { characterizeBeforeYouChange } from './posts/characterize-before-you-change'
+import { hypothesesByCostToRefute } from './posts/hypotheses-by-cost-to-refute'
 
 function calcReadingTime(text: string): number {
   const words = text.split(/\s+/).length
@@ -4686,6 +4687,7 @@ Before touching anything I ran the full suite as a baseline, and after restoring
   workaroundThatWorks,
   aiBottleneckIsYourTests,
   characterizeBeforeYouChange,
+  hypothesesByCostToRefute,
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),

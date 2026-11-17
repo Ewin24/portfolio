@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>Matriz conceptual: costo de refutar contra qué tan probable parece una hipótesis</title>
+  <desc>Cuadrícula de dos por dos. Eje horizontal: costo de refutar, de bajo a alto. Eje vertical: qué tan probable parece, de baja a alta. Probable y barata: probar ya. Improbable y barata: probar igual, es la que se suele saltar. Probable y cara: probar después, cuando las baratas se agoten. Improbable y cara: aparcar. Esquema conceptual, no datos medidos.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="450" fill="#FAFAF5" />
+
+  <!-- Highlighted cell: low likelihood, low cost. Identified by its tag text, not only by color. -->
+  <rect x="90" y="200" width="245" height="170" fill="#F0EFE8" />
+
+  <rect x="90" y="30" width="490" height="340" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <line x1="335" y1="30" x2="335" y2="370" stroke="#1A1A1A" stroke-width="2" />
+  <line x1="90" y1="200" x2="580" y2="200" stroke="#1A1A1A" stroke-width="2" />
+  <rect x="94" y="204" width="237" height="162" fill="none" stroke="#C41E1E" stroke-width="2" />
+
+  <!-- Vertical axis -->
+  <text transform="translate(28 200) rotate(-90)" text-anchor="middle" font-size="14" fill="#1A1A1A">qué tan probable parece →</text>
+  <text transform="translate(68 115) rotate(-90)" text-anchor="middle" font-size="14" fill="#6B6B6B">alta</text>
+  <text transform="translate(68 285) rotate(-90)" text-anchor="middle" font-size="14" fill="#6B6B6B">baja</text>
+
+  <!-- Horizontal axis -->
+  <text x="212" y="394" text-anchor="middle" font-size="14" fill="#6B6B6B">bajo</text>
+  <text x="457" y="394" text-anchor="middle" font-size="14" fill="#6B6B6B">alto</text>
+  <text x="335" y="428" text-anchor="middle" font-size="14" fill="#1A1A1A">costo de refutar →</text>
+
+  <!-- Top left: likely, cheap -->
+  <text x="106" y="70" font-size="16" font-weight="700" fill="#1A1A1A">1. PROBAR YA</text>
+  <text x="106" y="102" font-size="14" fill="#4A4A4A">Parece probable y</text>
+  <text x="106" y="122" font-size="14" fill="#4A4A4A">cuesta poco.</text>
+
+  <!-- Top right: likely, expensive -->
+  <text x="351" y="70" font-size="16" font-weight="700" fill="#1A1A1A">3. PROBAR DESPUÉS</text>
+  <text x="351" y="102" font-size="14" fill="#4A4A4A">Cuando las baratas</text>
+  <text x="351" y="122" font-size="14" fill="#4A4A4A">se agoten.</text>
+
+  <!-- Bottom left: unlikely, cheap -->
+  <text x="110" y="240" font-size="16" font-weight="700" fill="#1A1A1A">2. PROBAR IGUAL</text>
+  <text x="110" y="272" font-size="14" fill="#4A4A4A">Parece improbable,</text>
+  <text x="110" y="292" font-size="14" fill="#4A4A4A">pero es casi gratis.</text>
+  <text x="110" y="340" font-size="14" font-weight="700" fill="#C41E1E">la que se salta</text>
+
+  <!-- Bottom right: unlikely, expensive -->
+  <text x="351" y="240" font-size="16" font-weight="700" fill="#1A1A1A">4. APARCAR</text>
+  <text x="351" y="272" font-size="14" fill="#4A4A4A">Hasta que algo la</text>
+  <text x="351" y="292" font-size="14" fill="#4A4A4A">vuelva probable.</text>
+</svg>
