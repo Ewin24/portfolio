@@ -41,11 +41,14 @@ function BlogRouter() {
   }, [nav.currentRoute, nav.selectedSlug, nav.currentParams.tag])
 
   // Sync selectedPost for article route (useLayoutEffect = before paint)
+  // nav.tick: after an in-place swap (previous/next, next in the series) the
+  // route state still names the article the reader left, so going Back yields
+  // the same target as before; the tick is what says the reader moved.
   useLayoutEffect(() => {
     if (targetPost && targetPost !== selectedPost) {
       setSelectedPost(targetPost)
     }
-  }, [targetPost])
+  }, [targetPost, nav.tick])
 
   // AnimatePresence key: unique per route so transitions work
   const viewKey =
