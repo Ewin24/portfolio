@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 370" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>Dos caminos para cambiar algo heredado</title>
+  <desc>Esquema conceptual, no datos medidos. Camino A: cambiar sin registro, algo falla días después, averiguar qué hacía antes, y una flecha punteada que vuelve al inicio marcada como otra vuelta. Camino B: escribir lo que hace hoy, cambiar un paso, comparar con lo escrito; si no coincide, se revierte ese paso.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="370" fill="#FAFAF5" />
+
+  <!-- Path A: change first. The loop is dashed and labeled, so it never depends on color. -->
+  <text x="20" y="34" font-size="16" font-weight="700" fill="#1A1A1A">A. Cambiar primero</text>
+
+  <rect x="20" y="50" width="172" height="64" fill="#F0EFE8" stroke="#1A1A1A" stroke-width="2" />
+  <text x="106" y="78" text-anchor="middle" font-size="14" fill="#1A1A1A">Cambiar</text>
+  <text x="106" y="98" text-anchor="middle" font-size="14" fill="#1A1A1A">sin registro</text>
+
+  <line x1="192" y1="82" x2="206" y2="82" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="206,76 214,82 206,88" fill="#1A1A1A" />
+
+  <rect x="214" y="50" width="172" height="64" fill="#F0EFE8" stroke="#1A1A1A" stroke-width="2" />
+  <text x="300" y="78" text-anchor="middle" font-size="14" fill="#1A1A1A">Algo falla</text>
+  <text x="300" y="98" text-anchor="middle" font-size="14" fill="#1A1A1A">días después</text>
+
+  <line x1="386" y1="82" x2="400" y2="82" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="400,76 408,82 400,88" fill="#1A1A1A" />
+
+  <rect x="408" y="50" width="172" height="64" fill="#F0EFE8" stroke="#1A1A1A" stroke-width="2" />
+  <text x="494" y="78" text-anchor="middle" font-size="14" fill="#1A1A1A">Averiguar</text>
+  <text x="494" y="98" text-anchor="middle" font-size="14" fill="#1A1A1A">qué hacía antes</text>
+
+  <polyline points="494,114 494,150 106,150 106,124" fill="none" stroke="#C41E1E" stroke-width="2" stroke-dasharray="6 4" />
+  <polygon points="100,124 106,115 112,124" fill="#C41E1E" />
+  <text x="300" y="174" text-anchor="middle" font-size="14" font-weight="700" fill="#C41E1E">otra vuelta</text>
+
+  <line x1="20" y1="200" x2="580" y2="200" stroke="#D0CFC8" stroke-width="2" />
+
+  <!-- Path B: characterize first. The added step is the inverted box. -->
+  <text x="20" y="236" font-size="16" font-weight="700" fill="#1A1A1A">B. Caracterizar primero</text>
+
+  <rect x="20" y="252" width="172" height="64" fill="#1A1A1A" stroke="#1A1A1A" stroke-width="2" />
+  <text x="106" y="280" text-anchor="middle" font-size="14" font-weight="700" fill="#FAFAF5">Escribir lo</text>
+  <text x="106" y="300" text-anchor="middle" font-size="14" font-weight="700" fill="#FAFAF5">que hace hoy</text>
+
+  <line x1="192" y1="284" x2="206" y2="284" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="206,278 214,284 206,290" fill="#1A1A1A" />
+
+  <rect x="214" y="252" width="172" height="64" fill="#F0EFE8" stroke="#1A1A1A" stroke-width="2" />
+  <text x="300" y="280" text-anchor="middle" font-size="14" fill="#1A1A1A">Cambiar</text>
+  <text x="300" y="300" text-anchor="middle" font-size="14" fill="#1A1A1A">un paso</text>
+
+  <line x1="386" y1="284" x2="400" y2="284" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="400,278 408,284 400,290" fill="#1A1A1A" />
+
+  <rect x="408" y="252" width="172" height="64" fill="#F0EFE8" stroke="#1A1A1A" stroke-width="2" />
+  <text x="494" y="280" text-anchor="middle" font-size="14" fill="#1A1A1A">Comparar con</text>
+  <text x="494" y="300" text-anchor="middle" font-size="14" fill="#1A1A1A">lo escrito</text>
+
+  <text x="580" y="346" text-anchor="end" font-size="14" fill="#4A4A4A">Si no coincide: revertir ese paso</text>
+</svg>

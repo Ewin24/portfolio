@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>Conceptual matrix: cost to refute against how likely a hypothesis seems</title>
+  <desc>Two by two grid. Horizontal axis: cost to refute, low to high. Vertical axis: how likely it seems, low to high. Likely and cheap: test now. Unlikely and cheap: test anyway, the one people usually skip. Likely and expensive: test later, once the cheap ones are exhausted. Unlikely and expensive: park. Conceptual sketch, not measured data.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="450" fill="#FAFAF5" />
+
+  <!-- Highlighted cell: low likelihood, low cost. Identified by its tag text, not only by color. -->
+  <rect x="90" y="200" width="245" height="170" fill="#F0EFE8" />
+
+  <rect x="90" y="30" width="490" height="340" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <line x1="335" y1="30" x2="335" y2="370" stroke="#1A1A1A" stroke-width="2" />
+  <line x1="90" y1="200" x2="580" y2="200" stroke="#1A1A1A" stroke-width="2" />
+  <rect x="94" y="204" width="237" height="162" fill="none" stroke="#C41E1E" stroke-width="2" />
+
+  <!-- Vertical axis -->
+  <text transform="translate(28 200) rotate(-90)" text-anchor="middle" font-size="14" fill="#1A1A1A">how likely it seems →</text>
+  <text transform="translate(68 115) rotate(-90)" text-anchor="middle" font-size="14" fill="#6B6B6B">high</text>
+  <text transform="translate(68 285) rotate(-90)" text-anchor="middle" font-size="14" fill="#6B6B6B">low</text>
+
+  <!-- Horizontal axis -->
+  <text x="212" y="394" text-anchor="middle" font-size="14" fill="#6B6B6B">low</text>
+  <text x="457" y="394" text-anchor="middle" font-size="14" fill="#6B6B6B">high</text>
+  <text x="335" y="428" text-anchor="middle" font-size="14" fill="#1A1A1A">cost to refute →</text>
+
+  <!-- Top left: likely, cheap -->
+  <text x="106" y="70" font-size="16" font-weight="700" fill="#1A1A1A">1. TEST NOW</text>
+  <text x="106" y="102" font-size="14" fill="#4A4A4A">Seems likely and</text>
+  <text x="106" y="122" font-size="14" fill="#4A4A4A">cheap to refute.</text>
+
+  <!-- Top right: likely, expensive -->
+  <text x="351" y="70" font-size="16" font-weight="700" fill="#1A1A1A">3. TEST LATER</text>
+  <text x="351" y="102" font-size="14" fill="#4A4A4A">Once the cheap ones</text>
+  <text x="351" y="122" font-size="14" fill="#4A4A4A">are exhausted.</text>
+
+  <!-- Bottom left: unlikely, cheap -->
+  <text x="110" y="240" font-size="16" font-weight="700" fill="#1A1A1A">2. TEST ANYWAY</text>
+  <text x="110" y="272" font-size="14" fill="#4A4A4A">Seems unlikely, but</text>
+  <text x="110" y="292" font-size="14" fill="#4A4A4A">it is almost free.</text>
+  <text x="110" y="340" font-size="14" font-weight="700" fill="#C41E1E">the one people skip</text>
+
+  <!-- Bottom right: unlikely, expensive -->
+  <text x="351" y="240" font-size="16" font-weight="700" fill="#1A1A1A">4. PARK</text>
+  <text x="351" y="272" font-size="14" fill="#4A4A4A">Until something</text>
+  <text x="351" y="292" font-size="14" fill="#4A4A4A">makes it likely.</text>
+</svg>

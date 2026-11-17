@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 404" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>Three rungs of checkability: claim, number without method, number with method</title>
+  <desc>Conceptual sketch, not measured data. Three stacked, numbered blocks. 1, claim: the reader can only believe it or not. 2, number without method: the reader can compare and ask. 3, number with method: the reader can rerun it and refute it. A vertical arrow shows checkability growing from 1 to 3.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="404" fill="#FAFAF5" />
+
+  <!-- Axis: checkability grows downwards. Identity comes from the numbers 1-3, not from color. -->
+  <line x1="30" y1="20" x2="30" y2="340" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="22,338 38,338 30,352" fill="#1A1A1A" />
+
+  <rect x="57" y="21" width="522" height="98" fill="#FAFAF5" stroke="#6B6B6B" stroke-width="2" stroke-dasharray="8 6" />
+  <text x="80" y="52" font-size="16" font-weight="700" fill="#1A1A1A">1  CLAIM</text>
+  <text x="80" y="78" font-size="14" fill="#4A4A4A">SQL Server, Clean Architecture, Dapper</text>
+  <text x="80" y="102" font-size="14" fill="#6B6B6B">The reader can: believe it or not</text>
+
+  <rect x="57" y="137" width="522" height="98" fill="#F0EFE8" stroke="#1A1A1A" stroke-width="2" />
+  <text x="80" y="168" font-size="16" font-weight="700" fill="#1A1A1A">2  NUMBER WITHOUT METHOD</text>
+  <text x="80" y="194" font-size="14" fill="#4A4A4A">query times: from 3s to 400ms</text>
+  <text x="80" y="218" font-size="14" fill="#6B6B6B">The reader can: compare and ask</text>
+
+  <rect x="57" y="253" width="522" height="98" fill="#F0EFE8" stroke="#C41E1E" stroke-width="2" />
+  <rect x="56" y="252" width="12" height="100" fill="#C41E1E" />
+  <text x="80" y="284" font-size="16" font-weight="700" fill="#1A1A1A">3  NUMBER WITH METHOD</text>
+  <text x="80" y="310" font-size="14" fill="#4A4A4A">13,339 of 20,000 + the loop that counts it</text>
+  <text x="80" y="334" font-size="14" font-weight="700" fill="#1A1A1A">The reader can: rerun it and refute it</text>
+
+  <text x="56" y="384" font-size="14" fill="#6B6B6B">More checkable by the reader, from 1 to 3</text>
+</svg>

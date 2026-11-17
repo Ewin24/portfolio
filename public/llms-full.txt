@@ -8,6 +8,51 @@ Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, Typ
 
 ## Blog — Technical Architecture Articles
 
+### Publica lo que mediste, no lo que sabes
+https://portfolio.edwintrigos.workers.dev/#blog/article/publica-lo-que-mediste
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: A Number the Reader Can Check Beats a Skill You Claim
+
+A skills list reads the same whether it was written by someone who masters the tool, someone who used it for a week, or someone who is lying. A case with a measurement and its method gives the reader something to rerun. This essay argues for the second using this site as its only evidence, and says plainly what it lacks: any data on whether publishing this way brings work.
+
+---
+
+### Ordena las hipótesis por lo que cuesta refutarlas, no por lo probables que parecen
+https://portfolio.edwintrigos.workers.dev/#blog/article/ordena-las-hipotesis-por-costo-de-refutar
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Rank Your Hypotheses by What It Costs to Kill Them, Not by How Likely They Feel
+
+When something breaks, the usual move is to test the explanation that seems most likely. I argue the order should also weigh what each one costs to rule out, and that the explanation the symptom hands you is the one nobody tests, because it does not feel like a hypothesis. A log saying a provider was not answering could be refuted with one reading; what it invited me to do cost far more.
+
+---
+
+### Antes de cambiar lo que heredaste, escribe lo que hace hoy
+https://portfolio.edwintrigos.workers.dev/#blog/article/antes-de-cambiar-lo-que-heredaste
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Write Down What It Does Before You Change What You Inherited
+
+Chesterton's fence asks you to understand why something is there before you remove it. With inherited things that reason is rarely available; the behavior is. I argue that recording what something does today, in a form that can contradict you later, is a rule for leading change more than a testing technique. For systems I have my own evidence; for processes and teams it is an extension by analogy, and I say so.
+
+---
+
+### Con AI, el cuello de botella son tus pruebas, no tu código
+https://portfolio.edwintrigos.workers.dev/#blog/article/con-ai-el-cuello-de-botella-son-tus-pruebas
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: AI Made Code Cheap. Your Tests Are Now the Bottleneck
+
+When writing code gets cheap, the scarce thing is being able to trust what verifies it. A suite that runs against stand-ins for reality approves what it does not understand, and every line an assistant writes amplifies that error. Three cases of my own, the DORA 2024 figures, and four rules for knowing what your tests actually ran against.
+
+---
+
+### El arreglo que funciona es la forma más cara de no decidir
+https://portfolio.edwintrigos.workers.dev/#blog/article/el-arreglo-que-funciona-no-decide
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: A Workaround That Works Is a Decision Nobody Made
+
+A workaround that makes the test pass feels like a decision, and it rarely is one: it switches off the only signal of the defect and leaves behind an example ready to be copied. I saw it in a test suite where every case pushed a timestamp five seconds back, a convention that covered a defect showing up in 13,339 of 20,000 runs. The workaround is sometimes the right call; what gets expensive is leaving it with no note and no owner.
+
+---
+
 ### AsyncLocal<T> no sube al llamador: dos logs que no podían ser ciertos a la vez
 https://portfolio.edwintrigos.workers.dev/#blog/article/asynclocal-no-sube-al-llamador
 

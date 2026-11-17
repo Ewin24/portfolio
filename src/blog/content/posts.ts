@@ -5,6 +5,11 @@ import { characterizationTestsBeforeRefactor } from './posts/characterization-te
 import { getdateVsSysdatetime } from './posts/getdate-vs-sysdatetime'
 import { inMemoryTestsLieAboutTransactions } from './posts/inmemory-tests-lie-about-transactions'
 import { redactionGrepMissesCamelCase } from './posts/redaction-grep-misses-camelcase'
+import { workaroundThatWorks } from './posts/workaround-that-works'
+import { aiBottleneckIsYourTests } from './posts/ai-bottleneck-is-your-tests'
+import { characterizeBeforeYouChange } from './posts/characterize-before-you-change'
+import { hypothesesByCostToRefute } from './posts/hypotheses-by-cost-to-refute'
+import { publishWhatYouMeasured } from './posts/publish-what-you-measured'
 
 function calcReadingTime(text: string): number {
   const words = text.split(/\s+/).length
@@ -4679,6 +4684,12 @@ Before touching anything I ran the full suite as a baseline, and after restoring
   characterizationTestsBeforeRefactor,
   inMemoryTestsLieAboutTransactions,
   asyncLocalDoesNotFlowBack,
+  // Ensayos (category: ensayo): one file each under ./posts/
+  workaroundThatWorks,
+  aiBottleneckIsYourTests,
+  characterizeBeforeYouChange,
+  hypothesesByCostToRefute,
+  publishWhatYouMeasured,
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
