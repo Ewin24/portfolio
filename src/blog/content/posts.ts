@@ -9,6 +9,7 @@ import { workaroundThatWorks } from './posts/workaround-that-works'
 import { aiBottleneckIsYourTests } from './posts/ai-bottleneck-is-your-tests'
 import { characterizeBeforeYouChange } from './posts/characterize-before-you-change'
 import { hypothesesByCostToRefute } from './posts/hypotheses-by-cost-to-refute'
+import { publishWhatYouMeasured } from './posts/publish-what-you-measured'
 
 function calcReadingTime(text: string): number {
   const words = text.split(/\s+/).length
@@ -4688,6 +4689,7 @@ Before touching anything I ran the full suite as a baseline, and after restoring
   aiBottleneckIsYourTests,
   characterizeBeforeYouChange,
   hypothesesByCostToRefute,
+  publishWhatYouMeasured,
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
