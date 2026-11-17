@@ -66,8 +66,20 @@ async function go(page, hash) {
 }
 
 async function openArticle(page, slug) {
+  // Going from one article to another, the previous body is still in the page
+  // when the hash changes. Wait for the headline to change too, or a slow
+  // machine moves on before the new article has mounted and recorded its open.
+  const before = await page.evaluate((s) => ({
+    same: location.hash.endsWith(s),
+    h1: document.querySelector('.blog-full h1')?.textContent ?? null,
+  }), slug)
   await go(page, `#blog/article/${slug}`)
-  await page.waitForFunction((s) => location.hash.endsWith(s) && !!document.querySelector('.blog-full .blog-article-body'), slug, { timeout: 10_000 })
+  await page.waitForFunction(
+    ([s, b]) => location.hash.endsWith(s) && !!document.querySelector('.blog-full .blog-article-body') &&
+      (b.same || (document.querySelector('.blog-full h1')?.textContent ?? null) !== b.h1),
+    [slug, before],
+    { timeout: 15_000 },
+  )
   // The article scrolls itself to the top on open; let that settle, and let the first write land.
   await page.waitForTimeout(900)
 }
