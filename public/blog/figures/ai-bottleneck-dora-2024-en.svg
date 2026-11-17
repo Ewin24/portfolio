@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 340" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>DORA 2024: changes associated with higher AI adoption</title>
+  <desc>Horizontal bars on both sides of a zero axis. Up: documentation quality +7.5 %, code quality +3.4 %, code review speed +3.1 %. Down: delivery throughput -1.5 %, delivery stability -7.2 %.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="340" fill="#FAFAF5" />
+
+  <!-- Scale: 30 px per percentage point, zero axis at x = 300. -->
+  <line x1="300" y1="26" x2="300" y2="298" stroke="#6B6B6B" stroke-width="2" />
+
+  <text x="306" y="44" font-size="14" fill="#1A1A1A">documentation quality</text>
+  <rect x="301" y="52" width="225" height="22" fill="#1A1A1A" />
+  <text x="534" y="69" font-size="16" font-weight="700" fill="#1A1A1A">+7.5 %</text>
+
+  <text x="306" y="98" font-size="14" fill="#1A1A1A">code quality</text>
+  <rect x="301" y="106" width="102" height="22" fill="#1A1A1A" />
+  <text x="411" y="123" font-size="16" font-weight="700" fill="#1A1A1A">+3.4 %</text>
+
+  <text x="306" y="152" font-size="14" fill="#1A1A1A">code review speed</text>
+  <rect x="301" y="160" width="93" height="22" fill="#1A1A1A" />
+  <text x="402" y="177" font-size="16" font-weight="700" fill="#1A1A1A">+3.1 %</text>
+
+  <text x="294" y="206" text-anchor="end" font-size="14" fill="#1A1A1A">delivery throughput</text>
+  <rect x="254" y="214" width="45" height="22" fill="#C41E1E" />
+  <text x="246" y="231" text-anchor="end" font-size="16" font-weight="700" fill="#C41E1E">−1.5 %</text>
+
+  <text x="294" y="260" text-anchor="end" font-size="14" fill="#1A1A1A">delivery stability</text>
+  <rect x="83" y="268" width="216" height="22" fill="#C41E1E" />
+  <text x="75" y="285" text-anchor="end" font-size="16" font-weight="700" fill="#C41E1E">−7.2 %</text>
+
+  <text x="576" y="326" text-anchor="end" font-size="14" fill="#6B6B6B">DORA 2024</text>
+</svg>

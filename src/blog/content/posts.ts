@@ -6,6 +6,7 @@ import { getdateVsSysdatetime } from './posts/getdate-vs-sysdatetime'
 import { inMemoryTestsLieAboutTransactions } from './posts/inmemory-tests-lie-about-transactions'
 import { redactionGrepMissesCamelCase } from './posts/redaction-grep-misses-camelcase'
 import { workaroundThatWorks } from './posts/workaround-that-works'
+import { aiBottleneckIsYourTests } from './posts/ai-bottleneck-is-your-tests'
 
 function calcReadingTime(text: string): number {
   const words = text.split(/\s+/).length
@@ -4682,6 +4683,7 @@ Before touching anything I ran the full suite as a baseline, and after restoring
   asyncLocalDoesNotFlowBack,
   // Ensayos (category: ensayo): one file each under ./posts/
   workaroundThatWorks,
+  aiBottleneckIsYourTests,
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
