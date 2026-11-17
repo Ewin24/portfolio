@@ -153,11 +153,12 @@ function Player({ figure, renderer, alt }: ResolvedFigure & { alt: string }) {
         <div className="fig-table table-wrap">
           <table>
             <thead>
-              <tr>{table.head.map((cell) => <th key={cell} scope="col">{cell}</th>)}</tr>
+              {/* Keyed by position: two columns or two rows can carry the same text. */}
+              <tr>{table.head.map((cell, i) => <th key={i} scope="col">{cell}</th>)}</tr>
             </thead>
             <tbody>
-              {table.rows.map((row) => (
-                <tr key={row[0]}>{row.map((cell, i) => <td key={i}>{cell}</td>)}</tr>
+              {table.rows.map((row, r) => (
+                <tr key={r}>{row.map((cell, i) => <td key={i}>{cell}</td>)}</tr>
               ))}
             </tbody>
           </table>

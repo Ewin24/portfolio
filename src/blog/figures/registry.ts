@@ -37,9 +37,20 @@ export interface ResolvedFigure {
 export function resolveFigure(id: string): ResolvedFigure | null {
   const figure = figures.get(id)
   const renderer = figure && renderers.get(figure.type)
-  if (!figure || !renderer) return null
-  const count = Array.isArray(figure.steps) ? figure.steps.length : 0
-  if (count === 0) return null
-  if (!renderer.stepsUsed(figure).every((s) => Number.isInteger(s) && s >= 1 && s <= count)) return null
+  const count = figure && Array.isArray(figure.steps) ? figure.steps.length : 0
+  const why = !figure
+    ? 'no description has this id'
+    : !renderer
+      ? `no renderer for type "${figure.type}"`
+      : count === 0
+        ? 'it has no steps'
+        : !renderer.stepsUsed(figure).every((s) => Number.isInteger(s) && s >= 1 && s <= count)
+          ? 'an element sits on a step that does not exist'
+          : null
+  if (why || !figure || !renderer) {
+    // The reader gets the alt text either way; the author gets the reason while writing.
+    if (import.meta.env.DEV) console.warn(`[figures] "${id}" falls back to its alt text: ${why}`)
+    return null
+  }
   return { figure, renderer }
 }
