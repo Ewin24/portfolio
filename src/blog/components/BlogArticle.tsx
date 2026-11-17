@@ -134,8 +134,7 @@ export function BlogArticle() {
           )}
         </div>
 
-        {/* Tags. Anything added right under this row (share links) goes
-            between here and the body. */}
+        {/* Tags — hidden in reading mode. */}
         <div data-reading-hide className="flex flex-wrap gap-1.5 mb-8">
           {post.tags.map((tag) => (
             <span key={tag} className="skill-tag text-[10px]">{tag}</span>
