@@ -32,8 +32,8 @@ const BlogRoot = lazy(() =>
   import('./blog/BlogRoot').then((m) => ({ default: m.BlogRoot })),
 )
 /** Reads the same post bodies as the blog, so it rides the same lazy boundary. */
-const FeaturedEssays = lazy(() =>
-  import('./blog/components/FeaturedEssays').then((m) => ({ default: m.FeaturedEssays })),
+const SeriesShowcase = lazy(() =>
+  import('./blog/components/SeriesShowcase').then((m) => ({ default: m.SeriesShowcase })),
 )
 
 /** Placeholder that reserves roughly the blog header height, so the
@@ -163,7 +163,7 @@ function App() {
                   <Experience />
                   <Education />
                   <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
-                    <FeaturedEssays />
+                    <SeriesShowcase />
                     <BlogRoot />
                   </Suspense>
                   <Contact />

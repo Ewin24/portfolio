@@ -8,12 +8,13 @@ import { gfmTable, gfmTableHtml } from 'micromark-extension-gfm-table'
  * code blocks (the CSS label), a scroll box around tables, figures with a
  * caption for standalone images (a mount node instead of the image when the
  * path is `figure/<id>`), and real headings for the posts'
- * `**Section**` paragraphs (numbered ones become h3).
+ * `**Section**` paragraphs (numbered ones become h3), each h2 with an id.
  *
  * @param content - Markdown string
  * @returns Safe HTML string
  */
 export function parseMarkdown(content: string): string {
+  let section = 0
   return micromark(content, {
     allowDangerousHtml: false,
     extensions: [gfmTable()],
@@ -44,4 +45,16 @@ export function parseMarkdown(content: string): string {
       const tag = /^\d+\./.test(text) ? 'h3' : 'h2'
       return `<${tag}>${text}</${tag}>`
     })
+    // Sections get an id, in order, as a scroll target for the article's
+    // contents list. Never a link target: the router owns the hash.
+    .replace(/<h2>/g, () => `<h2 id="sec-${++section}">`)
+}
+
+/** The sections of a parsed article: every `h2`, with the id given above. */
+export function articleSections(html: string): { id: string; title: string }[] {
+  const scratch = document.createElement('div')
+  return [...html.matchAll(/<h2 id="(sec-\d+)">(.*?)<\/h2>/g)].map(([, id, inner]) => {
+    scratch.innerHTML = inner
+    return { id, title: scratch.textContent ?? '' }
+  })
 }
