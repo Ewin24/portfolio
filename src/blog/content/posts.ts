@@ -7,6 +7,7 @@ import { inMemoryTestsLieAboutTransactions } from './posts/inmemory-tests-lie-ab
 import { redactionGrepMissesCamelCase } from './posts/redaction-grep-misses-camelcase'
 import { workaroundThatWorks } from './posts/workaround-that-works'
 import { aiBottleneckIsYourTests } from './posts/ai-bottleneck-is-your-tests'
+import { characterizeBeforeYouChange } from './posts/characterize-before-you-change'
 
 function calcReadingTime(text: string): number {
   const words = text.split(/\s+/).length
@@ -4684,6 +4685,7 @@ Before touching anything I ran the full suite as a baseline, and after restoring
   // Ensayos (category: ensayo): one file each under ./posts/
   workaroundThatWorks,
   aiBottleneckIsYourTests,
+  characterizeBeforeYouChange,
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
