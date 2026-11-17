@@ -108,6 +108,27 @@ export type TranslationKeys = {
   'skills.geo.milestone2': string
   'skills.geo.milestone3': string
   'skills.geo.reference': string
+  // Stack section: areas, evidence, status and the map
+  'stack.rule': string
+  'stack.counts.note': string
+  'stack.status.current': string
+  'stack.status.past': string
+  'stack.groups': string
+  'stack.count.cases.one': string
+  'stack.count.cases.other': string
+  'stack.count.roles.one': string
+  'stack.count.roles.other': string
+  'stack.count.posts.one': string
+  'stack.count.posts.other': string
+  'stack.evidence': string
+  'stack.evidence.cases': string
+  'stack.evidence.roles': string
+  'stack.evidence.posts': string
+  'stack.evidence.none': string
+  'stack.evidence.more': string
+  'stack.map.title': string
+  'stack.map.alt': string
+  'stack.map.caption': string
   // About
   'about.title': string
   'about.subtitle': string
@@ -270,6 +291,26 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.geo.milestone2': 'llms.txt y llms-full.txt para rastreadores de IA, con robots.txt y sitemap',
     'skills.geo.milestone3': 'Auditoría GEO automatizada de 58 a 83/100, 14 de 14 hallazgos resueltos',
     'skills.geo.reference': 'Ver Casos de Estudio',
+    'stack.rule': '«En producción hoy»: está en el stack de un rol en curso. «Usado antes»: solo aparece en roles anteriores o en casos de estudio. Sin etiqueta: los datos de este sitio no lo deciden.',
+    'stack.counts.note': 'Las cifras cuentan dónde aparece cada tecnología en este sitio: casos de estudio, roles y artículos.',
+    'stack.status.current': 'En producción hoy',
+    'stack.status.past': 'Usado antes',
+    'stack.groups': 'Tecnologías por área',
+    'stack.count.cases.one': 'caso',
+    'stack.count.cases.other': 'casos',
+    'stack.count.roles.one': 'rol',
+    'stack.count.roles.other': 'roles',
+    'stack.count.posts.one': 'artículo',
+    'stack.count.posts.other': 'artículos',
+    'stack.evidence': 'Dónde aparece',
+    'stack.evidence.cases': 'Casos de estudio',
+    'stack.evidence.roles': 'Roles',
+    'stack.evidence.posts': 'Artículos',
+    'stack.evidence.none': 'Ningún caso de estudio, rol o artículo de este sitio la nombra.',
+    'stack.evidence.more': 'Ver los {n} restantes',
+    'stack.map.title': 'Mapa tecnología × caso de estudio',
+    'stack.map.alt': 'Mapa de las tecnologías que cada caso de estudio nombra en su stack, agrupadas por área.',
+    'stack.map.caption': 'Fuente: el stack declarado por cada caso de estudio de este sitio. Una marca dice que el caso nombra la tecnología; no mide cuánto se usó.',
     'skills.php.milestone1': 'Laravel con workers asíncronos y jobs',
     'skills.php.milestone2': 'SaaS B2B completo para sector solidario',
     'skills.php.milestone3': 'Procesamiento de archivos financieros en segundo plano',
@@ -454,6 +495,26 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.geo.milestone2': 'llms.txt and llms-full.txt for AI crawlers, plus robots.txt and a sitemap',
     'skills.geo.milestone3': 'Automated GEO audit from 58 to 83/100, 14 of 14 issues resolved',
     'skills.geo.reference': 'View Case Studies',
+    'stack.rule': '"In production today": it is in the stack of a current role. "Used before": it only appears in past roles or in case studies. No label: the data on this site does not decide.',
+    'stack.counts.note': 'The figures count where each technology appears on this site: case studies, roles and posts.',
+    'stack.status.current': 'In production today',
+    'stack.status.past': 'Used before',
+    'stack.groups': 'Technologies by area',
+    'stack.count.cases.one': 'case study',
+    'stack.count.cases.other': 'case studies',
+    'stack.count.roles.one': 'role',
+    'stack.count.roles.other': 'roles',
+    'stack.count.posts.one': 'post',
+    'stack.count.posts.other': 'posts',
+    'stack.evidence': 'Where it appears',
+    'stack.evidence.cases': 'Case studies',
+    'stack.evidence.roles': 'Roles',
+    'stack.evidence.posts': 'Posts',
+    'stack.evidence.none': 'No case study, role or post on this site names it.',
+    'stack.evidence.more': 'Show the other {n}',
+    'stack.map.title': 'Technology × case study map',
+    'stack.map.alt': 'Map of the technologies each case study names in its stack, grouped by area.',
+    'stack.map.caption': 'Source: the stack declared by each case study on this site. A mark says the study names the technology; it does not measure how much it was used.',
     'skills.php.milestone1': 'Laravel with async workers and jobs',
     'skills.php.milestone2': 'Complete B2B SaaS for solidarity sector',
     'skills.php.milestone3': 'Background processing of financial files',
