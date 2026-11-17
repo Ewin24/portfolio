@@ -1,278 +1,21 @@
-import { useState, useMemo } from 'react'
-import type { ComponentType } from 'react'
-import type { LucideProps } from 'lucide-react'
-import {
-  Code,
-  Terminal,
-  Zap,
-  Database,
-  Package,
-  Layout,
-  Cloud,
-  Smartphone,
-  Bot,
-  CloudCog,
-  HardDrive,
-  Bug,
-  TestTube,
-  ScanSearch,
-} from 'lucide-react'
+import { lazy, Suspense } from 'react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
-import { SkillNodeGrid } from './SkillNodeGrid'
-import { SkillHUD } from './SkillHUD'
 
-interface TechData {
-  id: string
-  name: string
-  icon: ComponentType<LucideProps>
-  color: string
-  milestoneKeys: [string, string, string]
-  referenceKey: string
-  referenceUrl: string
-}
-
-const TECH_DATA: TechData[] = [
-  {
-    id: 'dotnet',
-    name: '.NET / C#',
-    icon: Terminal,
-    color: '#512BD4',
-    milestoneKeys: [
-      'skills.dotnet.milestone1',
-      'skills.dotnet.milestone2',
-      'skills.dotnet.milestone3',
-    ],
-    referenceKey: 'skills.dotnet.reference',
-    referenceUrl: '#blog/article/arquitectura-limpa-sistema-originacion-credito',
-  },
-  {
-    id: 'php',
-    name: 'PHP / Laravel',
-    icon: Terminal,
-    color: '#FF2D20',
-    milestoneKeys: [
-      'skills.php.milestone1',
-      'skills.php.milestone2',
-      'skills.php.milestone3',
-    ],
-    referenceKey: 'skills.php.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'sqlserver',
-    name: 'SQL Server',
-    icon: Database,
-    color: '#CC2927',
-    milestoneKeys: [
-      'skills.sqlserver.milestone1',
-      'skills.sqlserver.milestone2',
-      'skills.sqlserver.milestone3',
-    ],
-    referenceKey: 'skills.sqlserver.reference',
-    referenceUrl: '#blog/article/dapper-stored-procedures-en-lugar-de-ef-core',
-  },
-  {
-    id: 'react',
-    name: 'React',
-    icon: Code,
-    // react.dev's dark brand blue. The classic #61DAFB is tuned for dark
-    // backgrounds and only reaches 1.55:1 against paper — invisible here.
-    color: '#087EA4',
-    milestoneKeys: [
-      'skills.react.milestone1',
-      'skills.react.milestone2',
-      'skills.react.milestone3',
-    ],
-    referenceKey: 'skills.react.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'typescript',
-    name: 'TypeScript',
-    icon: Zap,
-    color: '#3178C6',
-    milestoneKeys: [
-      'skills.typescript.milestone1',
-      'skills.typescript.milestone2',
-      'skills.typescript.milestone3',
-    ],
-    referenceKey: 'skills.typescript.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'aws',
-    name: 'AWS',
-    icon: Cloud,
-    // Darkened from #FF9900 (2.04:1 against paper) to clear the 3:1 floor
-    color: '#B35B00',
-    milestoneKeys: [
-      'skills.aws.milestone1',
-      'skills.aws.milestone2',
-      'skills.aws.milestone3',
-    ],
-    referenceKey: 'skills.aws.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'flutter',
-    name: 'Flutter',
-    icon: Smartphone,
-    color: '#02569B',
-    milestoneKeys: [
-      'skills.flutter.milestone1',
-      'skills.flutter.milestone2',
-      'skills.flutter.milestone3',
-    ],
-    referenceKey: 'skills.flutter.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'cleanarch',
-    name: 'Clean Architecture',
-    icon: Layout,
-    color: '#6C5CE7',
-    milestoneKeys: [
-      'skills.cleanarch.milestone1',
-      'skills.cleanarch.milestone2',
-      'skills.cleanarch.milestone3',
-    ],
-    referenceKey: 'skills.cleanarch.reference',
-    referenceUrl: '#blog/article/orquestacion-cross-system-sin-acoplamiento',
-  },
-  {
-    id: 'docker',
-    name: 'Docker',
-    icon: Package,
-    // #2496ED sat exactly on the 3:1 line; this keeps a usable margin
-    color: '#1D7DC7',
-    milestoneKeys: [
-      'skills.docker.milestone1',
-      'skills.docker.milestone2',
-      'skills.docker.milestone3',
-    ],
-    referenceKey: 'skills.docker.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'ai',
-    name: 'LLM / AI Agents',
-    icon: Bot,
-    color: '#5B3FA8',
-    milestoneKeys: [
-      'skills.ai.milestone1',
-      'skills.ai.milestone2',
-      'skills.ai.milestone3',
-    ],
-    referenceKey: 'skills.ai.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'cfworkers',
-    name: 'Cloudflare Workers',
-    icon: CloudCog,
-    color: '#A85400',
-    milestoneKeys: [
-      'skills.cfworkers.milestone1',
-      'skills.cfworkers.milestone2',
-      'skills.cfworkers.milestone3',
-    ],
-    referenceKey: 'skills.cfworkers.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'indexeddb',
-    name: 'IndexedDB',
-    icon: HardDrive,
-    color: '#7A3E9D',
-    milestoneKeys: [
-      'skills.indexeddb.milestone1',
-      'skills.indexeddb.milestone2',
-      'skills.indexeddb.milestone3',
-    ],
-    referenceKey: 'skills.indexeddb.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'playwright',
-    name: 'Playwright',
-    icon: Bug,
-    color: '#1F7A24',
-    milestoneKeys: [
-      'skills.playwright.milestone1',
-      'skills.playwright.milestone2',
-      'skills.playwright.milestone3',
-    ],
-    referenceKey: 'skills.playwright.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'vitest',
-    name: 'Vitest',
-    icon: TestTube,
-    color: '#8A6B00',
-    milestoneKeys: [
-      'skills.vitest.milestone1',
-      'skills.vitest.milestone2',
-      'skills.vitest.milestone3',
-    ],
-    referenceKey: 'skills.vitest.reference',
-    referenceUrl: '#projects',
-  },
-  {
-    id: 'geo',
-    name: 'AI Discoverability',
-    icon: ScanSearch,
-    color: '#0F6E6E',
-    milestoneKeys: [
-      'skills.geo.milestone1',
-      'skills.geo.milestone2',
-      'skills.geo.milestone3',
-    ],
-    referenceKey: 'skills.geo.reference',
-    referenceUrl: '#projects',
-  },
-]
-
-interface Technology {
-  id: string
-  name: string
-  icon: ComponentType<LucideProps>
-  color: string
-  milestones: string[]
-  reference: {
-    text: string
-    url: string
-  }
-}
+/**
+ * The body counts where each technology appears in the blog posts and draws a
+ * figure, so it reads the post bodies and the figure registry. Both already
+ * live behind the blog's lazy boundary; loading the body the same way keeps
+ * them out of the chunk that paints the Hero.
+ */
+const StackBody = lazy(() => import('./stack/StackBody'))
 
 export function Skills() {
   const { t } = useTranslation()
-  const [selectedId, setSelectedId] = useState<string>(TECH_DATA[0].id)
-
-  const technologies: Technology[] = useMemo(
-    () =>
-      TECH_DATA.map((tech) => ({
-        id: tech.id,
-        name: tech.name,
-        icon: tech.icon,
-        color: tech.color,
-        milestones: tech.milestoneKeys.map((key) => t(key as any)),
-        reference: {
-          text: t(tech.referenceKey as any),
-          url: tech.referenceUrl,
-        },
-      })),
-    [t],
-  )
-
-  const selected =
-    technologies.find((tech) => tech.id === selectedId) ?? technologies[0]
 
   return (
     <section id="skills" className="py-20 px-6 max-w-7xl mx-auto">
-      {/* Section header — pixel-art newspaper (Projects.tsx L233-249 verbatim) */}
       <FadeIn>
         <SectionOpening
           section="skills"
@@ -282,20 +25,10 @@ export function Skills() {
         />
       </FadeIn>
 
-      {/* Grid / HUD — side by side on desktop, stacked on mobile */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <FadeIn>
-          <SkillNodeGrid
-            technologies={technologies}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-          />
-        </FadeIn>
-
-        <FadeIn delay={0.1}>
-          <SkillHUD technology={selected} />
-        </FadeIn>
-      </div>
+      {/* The placeholder holds the section's height so the page below does not jump when the chunk lands. */}
+      <Suspense fallback={<div className="stack-fallback" aria-hidden="true" />}>
+        <StackBody />
+      </Suspense>
     </section>
   )
 }

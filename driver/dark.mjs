@@ -137,7 +137,8 @@ function contrastReport(page, samples) {
       }
     }
     const visible = (el) => {
-      if (el.closest('noscript, script, style, [disabled], [aria-disabled="true"]')) return false
+      // A figure element whose step has not been reached is at opacity 0 on purpose: it is not text a reader sees yet.
+      if (el.closest('noscript, script, style, [disabled], [aria-disabled="true"], .fig [data-on="false"]')) return false
       const r = el.getBoundingClientRect()
       if (r.width <= 1 || r.height <= 1) return false
       return getComputedStyle(el).visibility !== 'hidden'

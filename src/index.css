@@ -10,6 +10,9 @@
 @import "./styles/figures-ladder.css";
 @import "./styles/figures-layers.css";
 @import "./styles/figures-compare.css";
+@import "./styles/readstate.css";
+@import "./styles/stack.css";
+@import "./styles/blogfront.css";
 
 /* ─── Design Tokens — Pixel Art Newspaper ─────────────────────────────── */
 @theme {

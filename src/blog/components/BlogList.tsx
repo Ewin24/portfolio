@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Check, Clock, Tag, ArrowRight } from 'lucide-react'
+import { Clock, Tag, ArrowRight } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../../components/ui/FadeIn'
 import { useBlogContext } from '../context/BlogContext'
 import { EmptyState } from './EmptyState'
-import { markRead, readLabel } from '../readState'
+import { useReadSnapshot } from '../readState'
+import { ReadMark } from './ReadMark'
 import type { BlogPost } from '../types'
 
 const PAGE_SIZE = 6
@@ -17,11 +18,11 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
 
   const title = lang === 'es' ? post.title : post.titleEn
   const excerpt = lang === 'es' ? post.excerpt : post.excerptEn
-  const readMark = readLabel(post.slug, lang)
+  const readState = useReadSnapshot().stateOf(post.slug)
 
   return (
     <FadeIn delay={index * 0.08}>
-      <article data-slug={post.slug} className="px-card px-card-sm px-card-interactive bg-paper flex flex-col h-full">
+      <article data-slug={post.slug} data-read-state={readState} className="px-card px-card-sm px-card-interactive bg-paper flex flex-col h-full">
         <div className="p-5 flex-1 flex flex-col gap-3">
           {/* Tags row */}
           <div className="flex flex-wrap gap-1">
@@ -42,13 +43,8 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
             {excerpt}
           </p>
 
-          {/* Read mark — only on posts the reader has already opened */}
-          {readMark && (
-            <p data-read-mark className="font-mono text-[10px] text-ink-muted flex items-center gap-1">
-              <Check size={10} aria-hidden="true" />
-              {readMark}
-            </p>
-          )}
+          {/* Reading state — a stamp once read, "continue" once started; out of the flow */}
+          <ReadMark slug={post.slug} />
 
           {/* Footer: date + reading time + read button */}
           <div className="flex items-center justify-between pt-3 border-t border-rule-light mt-auto">
@@ -91,7 +87,7 @@ export function BlogList() {
   }
 
   const handleRead = (post: BlogPost) => {
-    markRead(post.slug)
+    // Opening is what makes it started; BlogArticle marks it read at its end.
     // pushState + a manual hashchange rather than assigning location.hash.
     // Same navigation, but it is the pattern App and BlogArticle already use,
     // and assigning to location.hash trips the compiler's "this value cannot

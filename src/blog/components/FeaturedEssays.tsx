@@ -4,7 +4,8 @@ import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../../components/ui/FadeIn'
 import { SectionOpening } from '../../components/ui/SectionOpening'
 import { blogPosts } from '../content/posts'
-import { markRead } from '../readState'
+import { useReadSnapshot } from '../readState'
+import { ReadMark } from './ReadMark'
 
 /** How many essays the block shows before the reader asks for the rest. */
 const FEATURED = 3
@@ -20,6 +21,7 @@ const essays = blogPosts
 export function FeaturedEssays() {
   const { lang } = useTranslation()
   const [showAll, setShowAll] = useState(false)
+  const readState = useReadSnapshot()
   const es = lang === 'es'
 
   if (essays.length === 0) return null
@@ -41,16 +43,17 @@ export function FeaturedEssays() {
           <FadeIn key={post.id} delay={(i % FEATURED) * 0.08}>
             <article
               data-essay-slug={post.slug}
+              data-read-state={readState.stateOf(post.slug)}
               className="px-card px-card-sm px-card-interactive bg-paper flex flex-col h-full relative"
             >
               <div className="p-5 flex-1 flex flex-col gap-3">
                 <span className="kicker">{es ? 'Ensayo' : 'Essay'}</span>
+                <ReadMark slug={post.slug} />
 
                 <h3 className="font-headline text-xl font-bold text-ink leading-tight">
                   {/* The link's ::after covers the card, so the whole card opens the article. */}
                   <a
                     href={`#blog/article/${post.slug}`}
-                    onClick={() => markRead(post.slug)}
                     className="after:absolute after:inset-0 hover:text-accent transition-colors duration-75"
                   >
                     {es ? post.title : post.titleEn}

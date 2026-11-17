@@ -1,6 +1,8 @@
 /**
  * Blog reading mode and dated read marks.
  *
+ * An article is marked read when the end of its body is reached, not when it
+ * is opened (driver/readstate.mjs covers the started state in between).
  * Read marks live in `localStorage['portfolio-read-posts']`: an array whose
  * items are a slug string (legacy, no date) or a `[slug, isoDate]` pair.
  * Reading mode lives on <html> as `data-reading="on"` + `data-reading-size`.
@@ -45,6 +47,16 @@ async function openArticle(page, slug) {
   await page.waitForSelector('.blog-article-body', { timeout: 10_000 })
 }
 
+/** Reaches the end of the article body and stays there: that is what marks it read. */
+async function finish(page) {
+  await page.waitForTimeout(900)
+  await page.evaluate(() => {
+    const r = document.querySelector('.blog-article-body').getBoundingClientRect()
+    window.scrollTo({ top: window.scrollY + r.bottom - window.innerHeight / 2, behavior: 'instant' })
+  })
+  await page.waitForTimeout(2300)
+}
+
 /** The article's own read line, or null. Waits briefly because it is set after mount. */
 async function articleMark(page) {
   await page.waitForSelector('.blog-full article [data-read-mark]', { timeout: 3_000 }).catch(() => {})
@@ -87,17 +99,19 @@ const readingState = (page) =>
 async function run() {
   const browser = await openBrowser()
   try {
-    // ── (1) (2) (4) direct link marks read with today's date; list shows it; date is sticky
+    // ── (1) (2) (4) a direct link read to its end is marked with today's date; list shows it; date is sticky
     {
       const { ctx, page, errors } = await open(browser)
       try {
         await openArticle(page, A)
         const date = await today(page)
+        check('(1) opening a direct link does not mark it read', (await articleMark(page)) === null && (await stored(page)) === null, (await stored(page)) ?? 'null')
+        await finish(page)
         const mark = await articleMark(page)
-        check('(1) direct link shows the read line with today\'s date', mark === `Read on ${date}`, JSON.stringify({ mark, date }))
+        check('(1) reaching the end shows the read line with today\'s date', mark === `Read on ${date}`, JSON.stringify({ mark, date }))
         const raw1 = await stored(page)
         const parsed = JSON.parse(raw1 ?? 'null')
-        check('(1) direct link stores [slug, isoDate]',
+        check('(1) reaching the end stores [slug, isoDate]',
           Array.isArray(parsed) && parsed.length === 1 && parsed[0]?.[0] === A && !Number.isNaN(Date.parse(parsed[0]?.[1])), raw1 ?? 'null')
 
         const list = await listMarks(page)
@@ -123,6 +137,7 @@ async function run() {
         check('(3) legacy slug is marked read without a date on the article', (await articleMark(page)) === 'Read')
         check('(3) opening a legacy article leaves the stored value untouched', (await stored(page)) === JSON.stringify([A]), (await stored(page)) ?? 'null')
         await openArticle(page, B)
+        await finish(page)
         await articleMark(page)
         const raw = await stored(page)
         const v = JSON.parse(raw ?? 'null')
@@ -230,6 +245,7 @@ async function run() {
           Storage.prototype.setItem = () => { throw new Error('quota') }
         })
         await openArticle(page, A)
+        await finish(page)
         const mark = await articleMark(page)
         await page.locator('[data-reading-toggle]').click()
         const s = await readingState(page)
