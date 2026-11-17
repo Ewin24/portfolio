@@ -16,7 +16,7 @@
     "test:disclosures": "node driver/disclosures.mjs",
     "test:dark": "node driver/dark.mjs",
     "test:reading": "node driver/reading.mjs",
-    "test:figures": "node driver/figures.mjs",
+    "test:figures": "node driver/figures.mjs && node driver/figures-line.mjs && node driver/figures-ladder.mjs && node driver/figures-layers.mjs && node driver/figures-compare.mjs",
     "test:promo": "node driver/promo.mjs && node driver/promo.mjs dist",
     "cv": "node driver/cv.mjs"
   },

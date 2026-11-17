@@ -1,3 +1,4 @@
+import type { LayersFigure } from '../renderers/layers'
 import type { MatrixAxis, MatrixFigure } from '../renderers/matrix'
 import type { FigureSet } from '../types'
 
@@ -53,4 +54,47 @@ const ruleTest: MatrixFigure = {
   ],
 }
 
-export default { 'harness-rule-test': ruleTest } satisfies FigureSet
+// Outside in, as the layers are numbered; the model, the one piece the accent marks, comes last.
+const layers: LayersFigure = {
+  type: 'layers',
+  steps: [
+    {
+      es: 'La capa de afuera es cómo se parte el trabajo: decide cuánto puede salir mal de una sola vez.',
+      en: 'The outer layer is how the work is split: it decides how much can go wrong in one go.',
+    },
+    {
+      es: 'Las reglas le dicen al agente qué se espera, pero una regla no impide nada.',
+      en: 'Rules tell the agent what is expected, but a rule prevents nothing.',
+    },
+    {
+      es: 'La lista de lo que puede tocar limita el daño de un error. No dice si lo que se escribió es correcto.',
+      en: 'The list of what it may touch limits the damage of a mistake. It does not say whether what was written is correct.',
+    },
+    {
+      es: 'Las comprobaciones dicen si es correcto, siempre que puedan fallar.',
+      en: 'Checks say whether it is correct, provided they can fail.',
+    },
+    {
+      es: 'Las condiciones de parada cubren lo que ninguna comprobación puede saber.',
+      en: 'Stop conditions cover what no check can know.',
+    },
+    {
+      es: 'En el centro queda el modelo: lo que se compara, y la pieza que un equipo solo puede elegir. Las cinco de afuera las escribe el equipo.',
+      en: 'In the middle sits the model: what gets compared, and the one piece a team can only choose. The five around it are written by the team.',
+    },
+  ],
+  layers: [
+    { label: { es: 'cómo se parte el trabajo', en: 'how the work is split' }, step: 1 },
+    { label: { es: 'reglas que lee antes de escribir', en: 'rules it reads before writing' }, step: 2 },
+    { label: { es: 'archivos y comandos que puede tocar', en: 'files and commands it may touch' }, step: 3 },
+    { label: { es: 'comprobaciones que debe pasar', en: 'checks its work must pass' }, step: 4 },
+    { label: { es: 'cuándo para y pregunta', en: 'when it stops and asks' }, step: 5 },
+  ],
+  core: {
+    title: { es: 'modelo', en: 'model' },
+    text: { es: 'lo que se compara', en: 'what gets compared' },
+    step: 6,
+  },
+}
+
+export default { 'harness-rule-test': ruleTest, 'harness-layers': layers } satisfies FigureSet

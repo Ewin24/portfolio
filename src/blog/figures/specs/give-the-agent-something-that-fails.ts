@@ -1,4 +1,5 @@
 import type { FlowFigure } from '../renderers/flow'
+import type { LadderFigure } from '../renderers/ladder'
 import type { FigureSet } from '../types'
 
 const generate = { es: 'generar', en: 'generate' }
@@ -44,4 +45,50 @@ const loops: FlowFigure = {
   ],
 }
 
-export default { 'agent-contract-loops': loops } satisfies FigureSet
+const ladder: LadderFigure = {
+  type: 'ladder',
+  direction: 'up',
+  steps: [
+    { es: 'Abajo, la descripción: se cumple si se parece.', en: 'At the bottom, the description: met if it looks close enough.' },
+    { es: 'Un criterio escrito: una persona marca sí o no.', en: 'A written criterion: a person ticks yes or no.' },
+    {
+      es: 'Un ejemplo con su resultado: entrada y salida esperada, por escrito.',
+      en: 'An example with its result: input and expected output, written down.',
+    },
+    { es: 'Arriba, una comprobación que hoy falla: la juzga un comando.', en: 'At the top, a check that fails today: a command judges it.' },
+    {
+      es: 'Cada peldaño es más comprobable. La regla es subir el encargo un peldaño antes de entregarlo.',
+      en: 'Each rung is more checkable. The rule is to move the request up one rung before handing it over.',
+    },
+  ],
+  axis: { label: { es: 'más comprobable →', en: 'more checkable →' }, step: 5 },
+  rungs: [
+    {
+      number: 1,
+      title: { es: 'DESCRIPCIÓN', en: 'DESCRIPTION' },
+      text: { es: 'Se cumple si se parece.', en: 'Met if it looks close enough.' },
+      step: 1,
+    },
+    {
+      number: 2,
+      title: { es: 'CRITERIO ESCRITO', en: 'WRITTEN CRITERION' },
+      text: { es: 'Una persona marca sí o no.', en: 'A person ticks yes or no.' },
+      step: 2,
+    },
+    {
+      number: 3,
+      title: { es: 'EJEMPLO CON RESULTADO', en: 'EXAMPLE WITH ITS RESULT' },
+      text: { es: 'Entrada y salida esperada, por escrito.', en: 'Input and expected output, written down.' },
+      step: 3,
+    },
+    {
+      number: 4,
+      title: { es: 'COMPROBACIÓN QUE FALLA HOY', en: 'A CHECK THAT FAILS TODAY' },
+      text: { es: 'La juzga un comando.', en: 'A command judges it.' },
+      style: 'accent',
+      step: 4,
+    },
+  ],
+}
+
+export default { 'agent-contract-loops': loops, 'agent-contract-ladder': ladder } satisfies FigureSet

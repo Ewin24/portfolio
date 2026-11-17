@@ -1,3 +1,4 @@
+import type { LadderFigure } from '../renderers/ladder'
 import type { MatrixFigure } from '../renderers/matrix'
 import type { FigureSet } from '../types'
 
@@ -57,4 +58,44 @@ const matrix: MatrixFigure = {
   ],
 }
 
-export default { 'hypotheses-matrix': matrix } satisfies FigureSet
+// The bar lengths only rank the four checks; they measure nothing.
+const caseChecks: LadderFigure = {
+  type: 'ladder',
+  layout: 'ranked',
+  direction: 'down',
+  steps: [
+    {
+      es: 'La comprobación más barata del caso: leer dos logs lado a lado.',
+      en: 'The cheapest check in the case: reading two logs side by side.',
+    },
+    {
+      es: 'La siguiente también era barata: una reproducción de cinco líneas, sin proveedor y sin red.',
+      en: 'The next one was cheap too: a five-line reproduction, with no provider and no network.',
+    },
+    {
+      es: 'Lo que la lectura obvia pedía era caro: revisar conectividad, tiempos de espera y credenciales.',
+      en: 'What the obvious reading asked for was expensive: checking connectivity, timeouts and credentials.',
+    },
+    { es: 'Y lo más caro: abrir una conversación con un tercero.', en: 'And the most expensive: opening a conversation with a third party.' },
+  ],
+  axis: { label: { es: 'costo de comprobar →', en: 'cost to check →' }, step: 1 },
+  rungs: [
+    {
+      group: { es: 'COMPROBACIONES BARATAS', en: 'CHEAP CHECKS' },
+      title: { es: 'Leer dos logs lado a lado', en: 'Read two logs side by side' },
+      rank: 0.25,
+      step: 1,
+    },
+    { title: { es: 'Reproducir en cinco líneas', en: 'Reproduce it in five lines' }, rank: 0.5, step: 2 },
+    {
+      group: { es: 'LO QUE LA LECTURA OBVIA PEDÍA', en: 'WHAT THE OBVIOUS READING ASKED FOR' },
+      title: { es: 'Conectividad, timeouts, credenciales', en: 'Connectivity, timeouts, credentials' },
+      rank: 0.75,
+      tone: 'accent',
+      step: 3,
+    },
+    { title: { es: 'Abrir conversación con un tercero', en: 'Open a thread with a third party' }, rank: 1, tone: 'accent', step: 4 },
+  ],
+}
+
+export default { 'hypotheses-matrix': matrix, 'hypotheses-case-checks': caseChecks } satisfies FigureSet

@@ -6,6 +6,10 @@
 @import "./styles/dark.css";
 @import "./styles/reading.css";
 @import "./styles/figures.css";
+@import "./styles/figures-line.css";
+@import "./styles/figures-ladder.css";
+@import "./styles/figures-layers.css";
+@import "./styles/figures-compare.css";
 
 /* ─── Design Tokens — Pixel Art Newspaper ─────────────────────────────── */
 @theme {

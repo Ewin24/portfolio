@@ -39,7 +39,7 @@ Aquí aparece una distinción que ordenar por probabilidad borra. Perseguir una 
 
 Esa comparación redujo el espacio de búsqueda de "algo en la red o en el proveedor" a un mecanismo y dos métodos. La hipótesis que quedó en pie, que el dato capturado no viajaba de vuelta por el canal que el código usaba, también era barata de comprobar: una reproducción de cinco líneas, sin proveedor y sin red.
 
-![Cuatro escalones de ancho creciente en dos grupos. Comprobaciones baratas: leer dos logs lado a lado y reproducir en cinco líneas. Lo que la lectura obvia pedía: revisar conectividad, timeouts y credenciales, y abrir conversación con un tercero.](blog/figures/hypotheses-case-checks-es.svg "Las comprobaciones del caso, de la más barata a la más cara. Esquema conceptual, no datos medidos: el ancho indica orden, no una duración.")
+![Cuatro escalones de ancho creciente en dos grupos. Comprobaciones baratas: leer dos logs lado a lado y reproducir en cinco líneas. Lo que la lectura obvia pedía: revisar conectividad, timeouts y credenciales, y abrir conversación con un tercero.](figure/hypotheses-case-checks "Las comprobaciones del caso, de la más barata a la más cara. Esquema conceptual, no datos medidos: el ancho indica orden, no una duración.")
 
 Del caso saco tres cosas que no dependen de la tecnología.
 
@@ -110,7 +110,7 @@ This is where a distinction shows up that ranking by probability erases. Chasing
 
 That comparison shrank the search space from "something in the network or the provider" to one mechanism and two methods. The hypothesis left standing, that the captured data was not traveling back through the channel the code used, was also cheap to check: a five-line reproduction, with no provider and no network.
 
-![Four steps of growing width in two groups. Cheap checks: read two logs side by side and reproduce it in five lines. What the obvious reading asked for: check connectivity, timeouts and credentials, and open a thread with a third party.](blog/figures/hypotheses-case-checks-en.svg "The checks in the case, from cheapest to most expensive. Conceptual sketch, not measured data: width shows order, not a duration.")
+![Four steps of growing width in two groups. Cheap checks: read two logs side by side and reproduce it in five lines. What the obvious reading asked for: check connectivity, timeouts and credentials, and open a thread with a third party.](figure/hypotheses-case-checks "The checks in the case, from cheapest to most expensive. Conceptual sketch, not measured data: width shows order, not a duration.")
 
 I take three things from the case that do not depend on the technology.
 

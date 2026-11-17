@@ -1,0 +1,117 @@
+/* Styles of one batch of figure renderers. Imported unlayered from src/index.css, after figures.css. */
+
+/* ── line ──
+   A conceptual sketch on two axes without a scale. The plot is a box with a
+   fixed proportion; the drawing inside is SVG stretched to it with strokes
+   that do not scale, and every label is HTML placed by percentages, so text
+   keeps its size at any width. */
+.fig .fig-line {
+  display: grid;
+  gap: 0.375rem;
+}
+.fig .fig-line-ytitle,
+.fig .fig-line-xtitle { color: var(--color-ink-muted); }
+.fig .fig-line-ytitle { padding-left: 0.75rem; }
+.fig .fig-line-xtitle { text-align: right; }
+
+.fig .fig-line-plot {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  /* Room for the arrowheads that close the axes. */
+  margin: 0.5rem 0.625rem 0 0.375rem;
+  border-left: 2px solid var(--color-rule-light);
+  border-bottom: 2px solid var(--color-rule-light);
+}
+.fig .fig-line-plot::before,
+.fig .fig-line-plot::after {
+  content: '';
+  position: absolute;
+  border: 6px solid transparent;
+}
+.fig .fig-line-plot::before {
+  left: -7px;
+  bottom: 100%;
+  border-top: 0;
+  border-bottom: 10px solid var(--color-rule-light);
+}
+.fig .fig-line-plot::after {
+  left: 100%;
+  bottom: -7px;
+  border-right: 0;
+  border-left: 10px solid var(--color-rule-light);
+}
+@container fig (min-width: 34rem) {
+  .fig .fig-line-plot { aspect-ratio: 2 / 1; }
+}
+
+.fig .fig-line-plot svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.fig .fig-line-plot polyline {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.fig .fig-line-series[data-tone='accent'] polyline { stroke: var(--color-accent); }
+.fig .fig-line-series[data-tone='muted'] polyline { stroke: var(--color-ink-light); }
+.fig .fig-line-series[data-dashed='true'] polyline { stroke-dasharray: 8 5; }
+/* A line takes a little longer to draw than a connector. */
+.fig .fig-line-series[data-reveal='wipe'] { transition-duration: 700ms, 60ms, 0s; }
+
+.fig .fig-line-areas polygon { fill: var(--color-paper-dark); }
+.fig .fig-line-areas polyline { stroke: var(--color-accent); }
+
+.fig .fig-line-ref { position: absolute; }
+.fig .fig-line-ref[data-axis='x'] {
+  top: 0;
+  bottom: 0;
+  border-left: 2px dashed var(--color-ink-muted);
+  --wipe-from: inset(100% -1rem -1rem -1rem);
+}
+.fig .fig-line-ref[data-axis='y'] {
+  left: 0;
+  right: 0;
+  border-bottom: 2px dashed var(--color-ink-muted);
+  --wipe-from: inset(-1rem 100% -1rem -1rem);
+}
+
+.fig .fig-line-mark {
+  position: absolute;
+  width: 0.625rem;
+  height: 0.625rem;
+  /* Centred on its point. */
+  margin: 0 0 -0.3125rem -0.3125rem;
+  border: 2px solid var(--color-ink);
+  background: var(--color-paper);
+}
+.fig .fig-line-mark[data-tone='accent'] { background: var(--color-accent); }
+
+.fig .fig-line-label {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  padding: 0.25rem 0.375rem;
+  line-height: 1.25;
+  color: var(--color-ink);
+}
+.fig .fig-line-label:is([data-anchor='nw'], [data-anchor='sw']) { text-align: right; }
+.fig .fig-line-label[data-tone='muted'],
+.fig .fig-line-label-note {
+  font-weight: 400;
+  color: var(--color-ink-light);
+}
+.fig .fig-line-swatch {
+  display: inline-block;
+  width: 1.125rem;
+  margin-right: 0.375rem;
+  border-top: 2px solid var(--color-ink);
+  vertical-align: middle;
+}
+.fig .fig-line-swatch[data-tone='accent'] { border-top-color: var(--color-accent); }
+.fig .fig-line-swatch[data-tone='muted'] { border-top-color: var(--color-ink-light); }
+.fig .fig-line-swatch[data-dashed='true'] { border-top-style: dashed; }

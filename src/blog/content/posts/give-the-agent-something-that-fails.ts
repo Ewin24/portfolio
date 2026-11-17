@@ -49,7 +49,7 @@ El costo cambia de lugar. En el primer ciclo pago al final, leyendo, y pago en c
 
 No todo encargo llega al segundo ciclo. Para ubicar cada uno uso una escalera.
 
-![Escalera de cuatro peldaños, del menos al más comprobable: uno, descripción; dos, criterio escrito que una persona marca; tres, ejemplo con su resultado esperado; cuatro, comprobación que falla hoy y que juzga un comando. El cuarto peldaño está resaltado.](blog/figures/agent-contract-ladder-es.svg "Esquema conceptual, no datos medidos. La regla es subir el encargo un peldaño antes de entregarlo.")
+![Escalera de cuatro peldaños, del menos al más comprobable: uno, descripción; dos, criterio escrito que una persona marca; tres, ejemplo con su resultado esperado; cuatro, comprobación que falla hoy y que juzga un comando. El cuarto peldaño está resaltado.](figure/agent-contract-ladder "Esquema conceptual, no datos medidos. La regla es subir el encargo un peldaño antes de entregarlo.")
 
 De abajo hacia arriba: la descripción, un criterio escrito que una persona marca, un ejemplo con su resultado esperado y una comprobación que se ejecuta y hoy falla. La regla que uso es subir el encargo un peldaño antes de entregarlo. No hace falta llegar arriba cada vez.
 
@@ -126,7 +126,7 @@ The cost moves. In the first loop I pay at the end, by reading, and I pay on eve
 
 Not every request can reach the second loop. To place each one I use a ladder.
 
-![A ladder with four rungs, from least to most checkable: one, a description; two, a written criterion a person ticks; three, an example with its expected result; four, a check that fails today and is judged by a command. The fourth rung is highlighted.](blog/figures/agent-contract-ladder-en.svg "Conceptual sketch, not measured data. The rule is to move the request up one rung before handing it over.")
+![A ladder with four rungs, from least to most checkable: one, a description; two, a written criterion a person ticks; three, an example with its expected result; four, a check that fails today and is judged by a command. The fourth rung is highlighted.](figure/agent-contract-ladder "Conceptual sketch, not measured data. The rule is to move the request up one rung before handing it over.")
 
 From the bottom up: the description, a written criterion a person ticks, an example with its expected result, and a check that runs and fails today. My rule is to move the request up one rung before handing it over. It does not have to reach the top every time.
 

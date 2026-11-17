@@ -12,8 +12,12 @@ src/blog/figures/
   Figure.tsx        the shell: frame, player, narration, data table, fallback
   renderers/<type>.tsx   one file per figure type
   specs/<article>.ts     one file per article, descriptions keyed by figure id
-src/styles/figures.css   every figure style
-driver/figures.mjs       the checks (npm run test:figures)
+src/styles/figures.css         the shell, the reveal kinds, and bars, flow, matrix
+src/styles/figures-<batch>.css the styles of the renderers added later (line,
+                               ladder, layers + segments, compare + tracks);
+                               a new type gets its own file, imported from
+                               src/index.css after figures.css
+driver/figures*.mjs            the checks (npm run test:figures runs them all)
 ```
 
 ## Placing a figure in an article

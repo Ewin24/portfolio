@@ -45,7 +45,7 @@ Tres proyectos y el mismo patrón: un doble, un atajo o un fixture que se parece
 
 Propongo pensar en dos curvas. Una es el código que se escribe. La otra es el código cuyo comportamiento alguien comprobó contra algo capaz de decir que no. Mientras escribir es caro, las dos crecen despacio y más o menos juntas, porque la lentitud misma limita cuánto puedes producir sin mirar. Cuando escribir se abarata, la primera se dispara. La segunda no, porque depende de arneses, entornos y tiempo de ejecución contra sistemas reales, y nada de eso se abarata por el hecho de que el código salga más rápido.
 
-![Dos líneas a lo largo del tiempo. Crecen juntas hasta una marca rotulada AI; después el código escrito sube con fuerza y el código verificado mantiene su pendiente. El área entre las dos está rotulada sin verificar.](blog/figures/ai-bottleneck-gap-es.svg "Esquema conceptual, no datos medidos. La brecha entre lo escrito y lo verificado siempre existió; lo que cambia es su tamaño.")
+![Dos líneas a lo largo del tiempo. Crecen juntas hasta una marca rotulada AI; después el código escrito sube con fuerza y el código verificado mantiene su pendiente. El área entre las dos está rotulada sin verificar.](figure/ai-bottleneck-gap "Esquema conceptual, no datos medidos. La brecha entre lo escrito y lo verificado siempre existió; lo que cambia es su tamaño.")
 
 La brecha entre las dos es código que existe, compila, pasa revisión y nadie comprobó. Siempre hubo brecha. Lo nuevo es su tamaño, y que el tablero no la muestra: una suite sobre sustitutos pinta de verde las dos curvas por igual.
 
@@ -120,7 +120,7 @@ Three projects, one pattern: a double, a shortcut or a fixture that resembles re
 
 Think of two curves. One is the code that gets written. The other is the code whose behavior someone checked against something able to say no. While writing is expensive, both grow slowly and roughly together, because slowness itself caps how much you can produce without looking. When writing gets cheap, the first curve takes off. The second does not, because it depends on harnesses, environments and run time against real systems, and none of that gets cheaper just because code comes out faster.
 
-![Two lines over time. They grow together up to a marker labeled AI; after it, code written climbs steeply while code verified keeps its slope. The area between them is labeled unverified.](blog/figures/ai-bottleneck-gap-en.svg "Conceptual sketch, not measured data. The gap between written and verified was always there; what changes is its size.")
+![Two lines over time. They grow together up to a marker labeled AI; after it, code written climbs steeply while code verified keeps its slope. The area between them is labeled unverified.](figure/ai-bottleneck-gap "Conceptual sketch, not measured data. The gap between written and verified was always there; what changes is its size.")
 
 The gap between them is code that exists, compiles, passes review, and that nobody checked. There was always a gap. What is new is its size, and the fact that the dashboard does not show it: a suite built on stand-ins paints both curves the same green.
 

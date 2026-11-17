@@ -39,7 +39,7 @@ Lo que sí tengo es una regla que nació de chocar con ese tope. En otro proyect
 
 Pienso la ventana como una barra con cuatro renglones de gasto y un resto.
 
-![Dos barras del mismo ancho representan la misma ventana de contexto. En la de arriba, archivos leídos y salida de herramientas ocupan casi todo y casi no queda espacio libre. En la de abajo las instrucciones miden lo mismo, lo demás es mucho más corto y el espacio libre ocupa la mitad.](blog/figures/context-budget-window-es.svg "Esquema conceptual, no datos medidos. La misma ventana con todo adentro, y con solo lo que la tarea usa.")
+![Dos barras del mismo ancho representan la misma ventana de contexto. En la de arriba, archivos leídos y salida de herramientas ocupan casi todo y casi no queda espacio libre. En la de abajo las instrucciones miden lo mismo, lo demás es mucho más corto y el espacio libre ocupa la mitad.](figure/context-budget-window "Esquema conceptual, no datos medidos. La misma ventana con todo adentro, y con solo lo que la tarea usa.")
 
 Las instrucciones son lo estable: reglas y definiciones de herramientas, lo que se repite igual en cada turno. Los archivos leídos y la salida de herramientas son lo que crece sin que nadie lo escriba. La conversación es el historial. El resto es el espacio que le queda al modelo para trabajar en lo que le pedí. La barra de abajo es la misma tarea con las jugadas de la sección siguiente. El dibujo no tiene números porque no tengo mediciones de mis propias sesiones.
 
@@ -114,7 +114,7 @@ What I do have is a rule that came out of hitting that ceiling. On another proje
 
 I picture the window as a bar with four spending lines and a remainder.
 
-![Two bars of the same width stand for the same context window. In the top one, files read and tool output take almost everything and hardly any free space is left. In the bottom one the instructions are the same size, the rest is much shorter and free space takes half the bar.](blog/figures/context-budget-window-en.svg "Conceptual sketch, not measured data. The same window with everything in it, and with only what the task uses.")
+![Two bars of the same width stand for the same context window. In the top one, files read and tool output take almost everything and hardly any free space is left. In the bottom one the instructions are the same size, the rest is much shorter and free space takes half the bar.](figure/context-budget-window "Conceptual sketch, not measured data. The same window with everything in it, and with only what the task uses.")
 
 The instructions are the stable part: rules and tool definitions, the things repeated unchanged on every turn. Files read and tool output are what grows without anybody writing it. The conversation is the history. The remainder is the room the model has left to work on what I asked for. The bottom bar is the same task after the moves in the next section. The sketch has no numbers because I have no measurements of my own sessions.
 

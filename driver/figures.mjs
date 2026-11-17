@@ -143,8 +143,19 @@ async function run() {
             s.bodies === 1 && s.capFloat === 'left' && s.capSize > s.bodySize * 2, JSON.stringify(s))
         }
 
-        // (2) The hypotheses article also carries a figure that is still a static SVG.
+        // (2) A plain image path must still render as an image. No article keeps a
+        // static figure any more, so one figure path is rewritten to a real SVG
+        // file in whatever script carries the article, as check (3) does.
+        const asStatic = async (route) => {
+          if (route.request().resourceType() !== 'script') return route.continue()
+          const response = await route.fetch()
+          const body = await response.text()
+          if (!body.includes('figure/hypotheses-case-checks')) return route.fulfill({ response })
+          return route.fulfill({ response, body: body.replaceAll('figure/hypotheses-case-checks', 'favicon.svg') })
+        }
+        await page.route('**/*', asStatic)
         await openArticle(page, MATRIX[0])
+        await page.unroute('**/*', asStatic)
         const img = await page.evaluate(async () => {
           const el = document.querySelector('.blog-article-body figure:not([data-figure]) img')
           if (!el) return null

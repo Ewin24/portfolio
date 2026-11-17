@@ -45,7 +45,7 @@ Lo que la AI cambia es el precio, y con el precio, la tentación. Cuando una ron
 
 Lo pienso con este dibujo.
 
-![Una escalera de once peldaños que sube cada vez menos y se aplana bajo una línea punteada, el techo de ese tipo de revisión. Por encima del techo, fuera del alcance de leer el código, hay dos marcas cuadradas rotuladas otro observador.](blog/figures/review-rounds-ceiling-es.svg "Esquema conceptual, no datos medidos. Las rondas del mismo tipo se acercan a un techo y no lo cruzan; lo que encontró otro observador estaba por encima.")
+![Una escalera de once peldaños que sube cada vez menos y se aplana bajo una línea punteada, el techo de ese tipo de revisión. Por encima del techo, fuera del alcance de leer el código, hay dos marcas cuadradas rotuladas otro observador.](figure/review-rounds-ceiling "Esquema conceptual, no datos medidos. Las rondas del mismo tipo se acercan a un techo y no lo cruzan; lo que encontró otro observador estaba por encima.")
 
 Cada tipo de revisión tiene un techo: el conjunto de defectos que puede ver alguien con ese material, esos medios y esa pregunta. Las primeras rondas suben rápido hacia él. Las siguientes suben menos, porque encuentran lo que quedaba, que es cada vez más poco y más fino. Ninguna lo cruza. Y los defectos que están por encima no son más difíciles, son de otro tipo. Los dos míos eran evidentes para cualquiera que abriera la aplicación.
 
@@ -116,7 +116,7 @@ What AI changes is the price, and with the price, the temptation. When a round c
 
 This is the sketch I think with.
 
-![A staircase of eleven steps that rises less each time and flattens under a dashed line, the ceiling of that kind of review. Above the ceiling, out of reach of reading the code, two square marks are labelled another observer.](blog/figures/review-rounds-ceiling-en.svg "Conceptual sketch, not measured data. Rounds of the same kind approach a ceiling and do not cross it; what another observer found was above it.")
+![A staircase of eleven steps that rises less each time and flattens under a dashed line, the ceiling of that kind of review. Above the ceiling, out of reach of reading the code, two square marks are labelled another observer.](figure/review-rounds-ceiling "Conceptual sketch, not measured data. Rounds of the same kind approach a ceiling and do not cross it; what another observer found was above it.")
 
 Every kind of review has a ceiling: the set of defects visible to someone with that material, those means and that question. The first rounds climb toward it quickly. Later rounds climb less, because they find what was left, and what is left keeps getting smaller and finer. None of them crosses it. And the defects above it are not harder, they are of another kind. My two were obvious to anyone who opened the app.
 
