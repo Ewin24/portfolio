@@ -74,6 +74,8 @@ SELECT @earlier AS earlier_runs, @i AS total_runs;  -- 13339 / 20000
 
 El resultado: en 13,339 de 20,000 ejecuciones, GETDATE() leído después de SYSDATETIME() quedó como anterior. Dos de cada tres veces, el reloj "retrocede". El bucle no tiene concurrencia, ni dos servidores, ni zonas horarias: es la misma sesión leyendo el mismo reloj del sistema dos veces seguidas.
 
+![Barra dividida en dos: en 13,339 de 20,000 ejecuciones (66.7 %) GETDATE() comparó como anterior a SYSDATETIME(); en las 6,661 restantes (33.3 %) no.](blog/figures/getdate-earlier-runs.svg "Resultado del bucle de medición: 20,000 lecturas consecutivas de los dos relojes en la misma sesión.")
+
 La explicación está en los tipos. datetime no guarda milisegundos arbitrarios: guarda pasos de un trescientosavo de segundo, unos 3.33 ms, y por eso su parte fraccionaria siempre termina en .000, .003 o .007. Cualquier instante se redondea al paso más cercano. datetime2, en cambio, tiene una precisión de 100 nanosegundos.
 
 \`\`\`sql
@@ -187,6 +189,8 @@ SELECT @earlier AS earlier_runs, @i AS total_runs;  -- 13339 / 20000
 \`\`\`
 
 The result: in 13,339 of 20,000 runs, GETDATE() read after SYSDATETIME() came out as earlier. Two times out of three, the clock "runs backwards". The loop has no concurrency, no second server, no time zones: it is the same session reading the same system clock twice in a row.
+
+![One bar split in two: in 13,339 of 20,000 runs (66.7 %) GETDATE() compared as earlier than SYSDATETIME(); in the remaining 6,661 (33.3 %) it did not.](blog/figures/getdate-earlier-runs.svg "Result of the measurement loop: 20,000 back-to-back reads of both clocks in the same session.")
 
 The explanation lives in the types. datetime does not store arbitrary milliseconds: it stores steps of one three-hundredth of a second, about 3.33 ms, which is why its fractional part always ends in .000, .003 or .007. Any instant gets rounded to the nearest step. datetime2, on the other hand, has a precision of 100 nanoseconds.
 
