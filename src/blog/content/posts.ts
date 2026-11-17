@@ -5,6 +5,7 @@ import { characterizationTestsBeforeRefactor } from './posts/characterization-te
 import { getdateVsSysdatetime } from './posts/getdate-vs-sysdatetime'
 import { inMemoryTestsLieAboutTransactions } from './posts/inmemory-tests-lie-about-transactions'
 import { redactionGrepMissesCamelCase } from './posts/redaction-grep-misses-camelcase'
+import { workaroundThatWorks } from './posts/workaround-that-works'
 
 function calcReadingTime(text: string): number {
   const words = text.split(/\s+/).length
@@ -4679,6 +4680,8 @@ Before touching anything I ran the full suite as a baseline, and after restoring
   characterizationTestsBeforeRefactor,
   inMemoryTestsLieAboutTransactions,
   asyncLocalDoesNotFlowBack,
+  // Ensayos (category: ensayo): one file each under ./posts/
+  workaroundThatWorks,
 ].map((post) => ({
   ...post,
   readingTime: calcReadingTime(post.content),
