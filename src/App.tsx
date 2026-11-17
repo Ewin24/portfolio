@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft } from 'lucide-react'
 import { useTranslation } from './hooks/useTranslation'
 import { useTheme } from './theme/ThemeContext'
-import { Header } from './components/Header'
+import { DarkToggle, Header } from './components/Header'
 import { ReadingProgress } from './components/ui/ReadingProgress'
 import { XPShell } from './components/xp/XPShell'
 import { Taskbar } from './components/xp/Taskbar'
@@ -30,6 +30,10 @@ import { Footer } from './components/sections/Footer'
  */
 const BlogRoot = lazy(() =>
   import('./blog/BlogRoot').then((m) => ({ default: m.BlogRoot })),
+)
+/** Reads the same post bodies as the blog, so it rides the same lazy boundary. */
+const FeaturedEssays = lazy(() =>
+  import('./blog/components/FeaturedEssays').then((m) => ({ default: m.FeaturedEssays })),
 )
 
 /** Placeholder that reserves roughly the blog header height, so the
@@ -115,9 +119,13 @@ function App() {
                 <ArrowLeft size={14} />
                 {lang === 'es' ? 'Volver al portfolio' : 'Back to portfolio'}
               </button>
-              <span className="font-mono text-[10px] text-ink-muted uppercase tracking-widest">
-                Blog
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[10px] text-ink-muted uppercase tracking-widest">
+                  Blog
+                </span>
+                {/* The article view has no site header, so the theme switch lives here too. */}
+                {!xp && <DarkToggle />}
+              </div>
             </div>
             <ReadingProgress />
           </div>
@@ -155,6 +163,7 @@ function App() {
                   <Experience />
                   <Education />
                   <Suspense fallback={<BlogFallback minHeight="24rem" id="blog" />}>
+                    <FeaturedEssays />
                     <BlogRoot />
                   </Suspense>
                   <Contact />

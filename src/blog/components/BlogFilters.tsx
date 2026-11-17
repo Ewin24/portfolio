@@ -17,7 +17,10 @@ const BLOG_TAGS: BlogTag[] = [
   { name: 'design patterns', label: 'Design Patterns', labelEn: 'Design Patterns', color: 'green' },
 ]
 
-const CATEGORIES = ['arquitectura']
+/** The opinion essays' category; the quick filter below is a shortcut to it. */
+const ESSAY = 'ensayo'
+
+const CATEGORIES = ['arquitectura', ESSAY]
 
 // ─── Component ─────────────────────────────────────────────────────────────
 
@@ -151,6 +154,19 @@ export function BlogFilters() {
 
       {/* Filter controls row */}
       <div className="flex flex-wrap items-center gap-3">
+        {/* Essays quick filter: the category filter, one click away */}
+        <button
+          data-filter-essays
+          aria-pressed={filter.category === ESSAY}
+          onClick={() => handleCategorySelect(filter.category === ESSAY ? null : ESSAY)}
+          className={`
+            skill-tag text-[10px] font-bold uppercase cursor-pointer transition-all duration-75
+            ${filter.category === ESSAY ? 'bg-ink text-paper hover:bg-ink hover:text-paper' : ''}
+          `}
+        >
+          {lang === 'es' ? 'Ensayos' : 'Essays'}
+        </button>
+
         {/* Tag chips */}
         <div className="flex flex-wrap gap-1.5">
           {BLOG_TAGS.map((tag) => {

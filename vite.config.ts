@@ -21,7 +21,20 @@ for (const p of blogPosts) {
   for (const r of p.relatedIds ?? []) if (!postIds.has(r)) throw new Error(`${p.id}: relatedIds "${r}" matches no post`)
 }
 
+// A slug becomes a directory (blog/<slug>/index.html) and part of a script string, so it
+// must be URL-safe and must not collide with public/blog/figures/.
+for (const p of blogPosts) {
+  if (!/^[a-z0-9-]+$/.test(p.slug) || p.slug === 'figures') throw new Error(`${p.id}: slug "${p.slug}" cannot be a share-page path`)
+}
+
 const SITE_URL = 'https://portfolio.edwintrigos.workers.dev/'
+/** The image index.html already declares. Social networks do not render SVG, so not the essay figures. */
+const OG_IMAGE = 'https://avatars.githubusercontent.com/Ewin24'
+const FEED_TITLE = 'Edwin Trigos — Blog'
+/** The URL to share for a post: a static page with the post's own preview tags (see generateSharePage). */
+const shareUrl = (slug: string) => `${SITE_URL}blog/${slug}/`
+/** Same publication time the Article JSON-LD uses. */
+const publishedAt = (date: string) => `${date}T08:00:00-05:00`
 /** Newest post date — the content-derived "last modified" for the home page and its JSON-LD. */
 const latestPostDate = blogPosts.reduce((max, p) => (p.date > max ? p.date : max), '')
 
@@ -408,8 +421,91 @@ function generateSitemap(): string {
   )
   const sections = ['about', 'projects', 'skills', 'experience', 'blog', 'contact'].map((s) => entry(`${SITE_URL}#${s}`))
   const posts = blogPosts.map((p) => entry(`${SITE_URL}#blog/article/${p.slug}`, `    <lastmod>${p.date}</lastmod>\n`))
+  const sharePages = blogPosts.map((p) => entry(shareUrl(p.slug), `    <lastmod>${p.date}</lastmod>\n`))
   const llms = ['llms.txt', 'llms-full.txt'].map((f) => entry(`${SITE_URL}${f}`))
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${[home, ...sections, ...posts, ...llms].join('\n')}\n</urlset>\n`
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${[home, ...sections, ...posts, ...sharePages, ...llms].join('\n')}\n</urlset>\n`
+}
+
+/** feed.xml: RSS 2.0 over every post, newest first, each linking to its share page. */
+function generateFeed(): string {
+  const items = [...blogPosts]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map((p) =>
+      [
+        `    <item>`,
+        `      <title>${escapeHtml(p.title)}</title>`,
+        `      <link>${shareUrl(p.slug)}</link>`,
+        `      <guid isPermaLink="true">${shareUrl(p.slug)}</guid>`,
+        `      <pubDate>${new Date(publishedAt(p.date)).toUTCString()}</pubDate>`,
+        `      <description>${escapeHtml(p.excerpt)}</description>`,
+        ...(p.category ? [`      <category>${escapeHtml(p.category)}</category>`] : []),
+        `    </item>`,
+      ].join('\n'),
+    )
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>${escapeHtml(FEED_TITLE)}</title>
+    <link>${SITE_URL}</link>
+    <description>Arquitectura, patrones, decisiones de ingeniería y ensayos de opinión.</description>
+    <language>es</language>
+    <lastBuildDate>${new Date(publishedAt(latestPostDate)).toUTCString()}</lastBuildDate>
+    <atom:link href="${SITE_URL}feed.xml" rel="self" type="application/rss+xml" />
+${items.join('\n')}
+  </channel>
+</rss>
+`
+}
+
+/**
+ * The page a shared link points to. Routes are hash-based, and no server or crawler
+ * ever sees a hash, so `#blog/article/<slug>` always previews as the home page. This
+ * static page carries the post's own title, description and Open Graph / Twitter tags
+ * for the crawler, and sends a browser straight on to the article in the app.
+ * The redirect is script-only on purpose: a crawler that followed a meta refresh
+ * would land on the home page's tags again.
+ */
+function generateSharePage(post: (typeof blogPosts)[number], base: string): string {
+  const url = shareUrl(post.slug)
+  const title = escapeHtml(post.title)
+  const excerpt = escapeHtml(post.excerpt)
+  const article = `${base}#blog/article/${post.slug}`
+  return `<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>${title} | Edwin Trigos</title>
+    <meta name="description" content="${excerpt}" />
+    <meta name="author" content="Edwin Trigos" />
+    <link rel="canonical" href="${url}" />
+    <link rel="alternate" type="application/rss+xml" title="${escapeHtml(FEED_TITLE)}" href="${base}feed.xml" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Edwin Trigos" />
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${excerpt}" />
+    <meta property="og:url" content="${url}" />
+    <meta property="og:image" content="${OG_IMAGE}" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="article:published_time" content="${publishedAt(post.date)}" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="${title}" />
+    <meta name="twitter:description" content="${excerpt}" />
+    <meta name="twitter:image" content="${OG_IMAGE}" />
+    <script>location.replace(${JSON.stringify(article)})</script>
+  </head>
+  <body style="max-width:40rem;margin:4rem auto;padding:0 1.5rem;font-family:system-ui,sans-serif;line-height:1.6;">
+    <main>
+      <h1>${title}</h1>
+      <p lang="en"><em>In English: ${escapeHtml(post.titleEn)}</em></p>
+      <p>${excerpt}</p>
+      <p><time datetime="${post.date}">${post.date}</time> · ${post.readingTime} min · Edwin Trigos</p>
+      <p><a href="${escapeHtml(article)}">Leer el artículo / Read the article</a></p>
+    </main>
+  </body>
+</html>
+`
 }
 
 /**
@@ -430,10 +526,19 @@ function generateSitemap(): string {
  * ProfilePage, WebPage, ItemList) are injected into the <head>.
  */
 function preloadStaticContent(): import('vite').Plugin {
+  /** The deploy base (`/portfolio/` or `/`), known once the config resolves. */
+  let base = '/'
   return {
     name: 'preload-static-content',
+    configResolved(config) {
+      base = config.base
+    },
     generateBundle() {
       this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: generateSitemap() })
+      this.emitFile({ type: 'asset', fileName: 'feed.xml', source: generateFeed() })
+      for (const post of blogPosts) {
+        this.emitFile({ type: 'asset', fileName: `blog/${post.slug}/index.html`, source: generateSharePage(post, base) })
+      }
     },
     transformIndexHtml(html) {
       const content = generatePreloadedContent()
@@ -484,7 +589,9 @@ function preloadStaticContent(): import('vite').Plugin {
       )
 
       // 3. Inject JSON-LD schemas before </head>
-      result = result.replace('</head>', `${additionalSchemas}\n</head>`)
+      //    and the feed's autodiscovery link (index.html itself stays untouched).
+      const feedLink = `<link rel="alternate" type="application/rss+xml" title="${escapeHtml(FEED_TITLE)}" href="${base}feed.xml" />`
+      result = result.replace('</head>', `${feedLink}\n${additionalSchemas}\n</head>`)
 
       return result
     },
