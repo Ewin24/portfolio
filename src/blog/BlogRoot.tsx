@@ -8,6 +8,9 @@ import { BlogList } from './components/BlogList'
 import { BlogArticle } from './components/BlogArticle'
 import { BlogFilters } from './components/BlogFilters'
 import { BlogSearch } from './components/BlogSearch'
+import { BlogTabs } from './components/BlogTabs'
+import { rememberedTab } from './hooks/blogTab'
+import { TAB_CATEGORY } from './types'
 
 // ─── Inner Router ────────────────────────────────────────────────────────────
 
@@ -23,12 +26,14 @@ function BlogRouter() {
       ? posts.find((p) => p.slug === nav.selectedSlug) ?? null
       : null
 
-  // Sync hash → context for non-article routes (tag, list, search)
+  // Sync hash → context for non-article routes (tag, list, search). A route
+  // resets the filters and keeps the tab.
   useLayoutEffect(() => {
+    const category = TAB_CATEGORY[rememberedTab()]
     if (nav.currentRoute === 'tag' && nav.currentParams.tag) {
-      setFilter({ tags: [nav.currentParams.tag], category: null, dateRange: null })
+      setFilter({ tags: [nav.currentParams.tag], category, dateRange: null })
     } else if (nav.currentRoute === 'list' || nav.currentRoute === 'search') {
-      setFilter({ tags: [], category: null, dateRange: null })
+      setFilter({ tags: [], category, dateRange: null })
     }
     if (nav.currentRoute !== 'article') {
       setSelectedPost(null)
@@ -54,11 +59,11 @@ function BlogRouter() {
     }
 
     return (
-      <>
+      <BlogTabs>
         <BlogFilters />
         <BlogSearch defaultQuery={nav.currentRoute === 'search' ? nav.currentParams.q ?? '' : ''} />
         <BlogList />
-      </>
+      </BlogTabs>
     )
   }
 

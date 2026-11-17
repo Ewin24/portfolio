@@ -347,8 +347,8 @@ const translations: Record<Language, TranslationKeys> = {
     'experience.employment.bootcamp': 'Bootcamp',
 
     // Blog
-    'blog.title': 'Blog Técnico',
-    'blog.subtitle': 'Arquitectura, patrones y decisiones de ingeniería explicadas',
+    'blog.title': 'Blog',
+    'blog.subtitle': 'Ensayos de opinión y artículos técnicos sobre arquitectura, patrones y decisiones de ingeniería',
     'blog.empty': 'Próximamente — escribiendo el primer artículo',
     'blog.filterAll': 'Todos los artículos',
     'blog.filterByTag': 'Filtrar por tema',
@@ -551,8 +551,8 @@ const translations: Record<Language, TranslationKeys> = {
     'experience.employment.bootcamp': 'Bootcamp',
 
     // Blog
-    'blog.title': 'Technical Blog',
-    'blog.subtitle': 'Architecture, patterns, and engineering decisions explained',
+    'blog.title': 'Blog',
+    'blog.subtitle': 'Opinion essays and technical articles on architecture, patterns and engineering decisions',
     'blog.empty': 'Coming soon — writing the first article',
     'blog.filterAll': 'All articles',
     'blog.filterByTag': 'Filter by tag',

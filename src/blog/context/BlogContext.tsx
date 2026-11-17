@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useMemo, useCallback, type ReactNode } from 'react'
-import type { BlogPost, BlogFilter, BlogRoute } from '../types'
+import { createContext, useContext, useEffect, useState, useMemo, useCallback, type ReactNode } from 'react'
+import { TAB_CATEGORY, tabOf, type BlogPost, type BlogFilter, type BlogRoute } from '../types'
+import { onBlogTab, rememberTab, rememberedTab } from '../hooks/blogTab'
 import { blogPosts } from '../content/posts'
 import { applyBlogFilters } from '../hooks/useBlogFilters'
 import { useReadSnapshot } from '../readState'
@@ -56,7 +57,13 @@ const BlogContext = createContext<BlogContextType | null>(null)
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function BlogProvider({ children }: { children: ReactNode }) {
-  const [filter, setFilter] = useState<BlogFilter>(defaultFilter)
+  const [filter, setFilterState] = useState<BlogFilter>(() => ({ ...defaultFilter, category: TAB_CATEGORY[rememberedTab()] }))
+  const setFilter = useCallback((next: BlogFilter) => {
+    rememberTab(tabOf(next.category))
+    setFilterState(next)
+  }, [])
+  // A tab chosen from outside the blog (the series showcase's "all essays").
+  useEffect(() => onBlogTab((tab) => setFilterState((f) => ({ ...f, category: TAB_CATEGORY[tab] }))), [])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null)
   const [currentRoute, setCurrentRoute] = useState<BlogRoute>('list')
@@ -68,20 +75,24 @@ export function BlogProvider({ children }: { children: ReactNode }) {
   }, [])
   const readState = useReadSnapshot()
 
+  // Clears the filters, not the tab the reader is on, nor the search box,
+  // whose text is BlogSearch's own and only mirrored here.
   const clearFilters = useCallback(() => {
-    setFilter(defaultFilter)
-    setSearchQuery('')
+    setFilter({ ...defaultFilter, category: TAB_CATEGORY[rememberedTab()] })
     setPage(1)
     setUnreadOnly(false)
-  }, [setUnreadOnly])
+  }, [setFilter, setUnreadOnly])
 
   // Derive filteredPosts: sort newest first, then apply filter
   const matchingPosts = useMemo(() => {
     const sorted = [...blogPosts].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     )
-    return applyBlogFilters(sorted, filter)
-  }, [filter])
+    // The open article stays in whatever the filters say, so its
+    // previous/next exist when it was reached from outside the active tab.
+    const matching = new Set(applyBlogFilters(sorted, filter))
+    return sorted.filter((p) => matching.has(p) || p.id === selectedPost?.id)
+  }, [filter, selectedPost])
 
   // "Unread" composes with the filters above. The open article stays in, so
   // finishing it does not take its previous/next away under the reader.

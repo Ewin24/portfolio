@@ -3,6 +3,8 @@ import type { BlogPost } from '../../types'
 export const theHarnessDecides: Omit<BlogPost, 'readingTime'> = {
   id: 'the-harness-decides',
   slug: 'el-modelo-es-la-parte-facil-el-arnes-decide',
+  series: 'Working with AI',
+  seriesOrder: 1,
   title: 'El modelo es la parte fácil: el arnés decide el resultado',
   titleEn: 'The Model Is the Easy Part. The Harness Decides What You Get',
   date: '2026-11-17',

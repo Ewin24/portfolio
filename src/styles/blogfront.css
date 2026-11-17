@@ -1,1 +1,574 @@
 /* Imported unlayered from src/index.css. */
+
+/* ── The blog's front ──
+   Tabs, the lead and its grid (src/blog/components/BlogTabs.tsx, BlogList.tsx),
+   the series showcase of the home page (SeriesShowcase.tsx) and, inside an
+   article, its contents list and the end of its series (ArticleContents.tsx,
+   BlogArticle.tsx). Everything is scoped under `.blogfront`, colours are
+   tokens only, and no text here is set below 0.75rem. Layouts widen by the
+   width of their own container, so the XP window gets the narrow one. */
+
+.blogfront .kicker {
+  display: inline;
+  margin: 0;
+  font-size: 0.75rem;
+}
+
+/* "ENSAYO · Parte 3 de 8 · Trabajar con AI" */
+.blogfront-kind {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+}
+
+/* Inline, so a narrow card breaks the line between words, not before the dot. */
+.blogfront-kind .kicker + span::before {
+  content: ' · ';
+}
+
+/* A text link that leaves the block: ruled in the accent, not coloured alone. */
+.blogfront-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-bottom: 0.15rem;
+  border-bottom: 2px solid var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: color 75ms ease, border-color 75ms ease;
+}
+
+.blogfront-more:hover {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-ink);
+}
+
+/* ── Tabs ── */
+.blogfront-tabs {
+  display: flex;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--color-rule);
+}
+
+.blogfront-tab {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+  flex: 1 1 0;
+  min-width: 0;
+  margin-right: -2px;
+  padding: 0.6rem 0.5rem;
+  border: 2px solid var(--color-rule);
+  border-bottom: 0;
+  background: var(--color-paper);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background-color 75ms ease, color 75ms ease;
+}
+
+.blogfront-tab:hover {
+  background: var(--color-paper-dark);
+}
+
+/* The selected tab is the filled one, and says so to assistive technology. */
+.blogfront-tab[aria-selected='true'] {
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+}
+
+.blogfront-tab-count {
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+@media (min-width: 640px) {
+  .blogfront-tab {
+    flex: 0 0 auto;
+    padding-inline: 1.25rem;
+  }
+}
+
+/* ── The grid: as many columns as fit, every card of a row the same height ── */
+.blogfront-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: 1.25rem;
+}
+
+/* The animation wrappers pass the row's height down to the card. */
+.blogfront-cell {
+  display: flex;
+  min-width: 0;
+}
+
+.blogfront-cell > * {
+  flex: 1;
+}
+
+.blogfront-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* The corner read mark is placed against the text, not against the figure. */
+.blogfront-card-text {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 1.25rem;
+}
+
+.blogfront-card-title {
+  font-family: var(--font-headline);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+/* Shortened at the end of a line, with an ellipsis. */
+.blogfront-card-excerpt {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--color-ink-light);
+}
+
+.blogfront-card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-rule-light);
+}
+
+/* ── The lead ── */
+.blogfront-lead-wrap {
+  margin-bottom: 1.5rem;
+  container: blogfront-lead / inline-size;
+}
+
+.blogfront-lead .blogfront-card-text {
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.blogfront-lead .blogfront-card-title {
+  font-size: clamp(1.625rem, 4.2cqi, 2.75rem);
+  font-weight: 900;
+  line-height: 1.1;
+  overflow-wrap: break-word;
+}
+
+.blogfront-lead .blogfront-card-excerpt {
+  display: block;
+  overflow: visible;
+  max-width: 68ch;
+  font-size: 1rem;
+}
+
+.blogfront-lead-figure {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 1.25rem;
+  border-top: 2px solid var(--color-rule);
+  background: var(--color-paper-dark);
+}
+
+/* The card is the frame; the still needs none of its own. */
+.blogfront-lead-figure .fig {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+@container blogfront-lead (min-width: 56rem) {
+  .blogfront-lead:has(.blogfront-lead-figure) {
+    flex-direction: row;
+  }
+
+  .blogfront-lead:has(.blogfront-lead-figure) > * {
+    flex: 1 1 50%;
+  }
+
+  .blogfront-lead-figure {
+    border-top: 0;
+    border-left: 2px solid var(--color-rule);
+  }
+
+  .blogfront-lead .blogfront-card-text {
+    padding: 2rem;
+  }
+}
+
+/* ── The series showcase ── */
+.blogfront-series-wrap {
+  container: blogfront-series / inline-size;
+}
+
+.blogfront-series-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem 1.25rem;
+}
+
+.blogfront-series-intro > div {
+  align-self: stretch;
+}
+
+/* One cell per part: filled when read, outlined when started. */
+.blogfront-series-bar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 3px;
+  height: 0.6rem;
+  max-width: 22rem;
+  margin-top: 0.5rem;
+}
+
+.blogfront-series-bar > span {
+  background: var(--color-rule-light);
+}
+
+.blogfront-series-bar > [data-state='started'] {
+  box-shadow: inset 0 0 0 2px var(--color-ink);
+}
+
+.blogfront-series-bar > [data-state='read'] {
+  background: var(--color-ink);
+}
+
+.blogfront-series-parts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--color-rule);
+}
+
+.blogfront-series-part {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  min-height: 3.75rem;
+  padding: 0.7rem 1.25rem;
+  transition: background-color 75ms ease;
+}
+
+.blogfront-series-part + .blogfront-series-part {
+  border-top: 1px solid var(--color-rule-light);
+}
+
+.blogfront-series-part:hover {
+  background: var(--color-paper-dark);
+}
+
+.blogfront-series-num {
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-ink-muted);
+}
+
+.blogfront-series-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.blogfront-series-link {
+  font-family: var(--font-headline);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.blogfront-series-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.blogfront-series-part:hover .blogfront-series-link {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.blogfront-series-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+}
+
+.blogfront-series-state {
+  grid-column: 2;
+}
+
+.blogfront-series-state:empty {
+  display: none;
+}
+
+.blogfront-series-state .read-mark-inline {
+  margin-top: 0;
+}
+
+/* With room for it, the state has a column of its own, reserved whether or
+   not there is a mark, so a part is as tall read as it was unread. */
+@container blogfront-series (min-width: 34rem) {
+  .blogfront-series-part {
+    grid-template-columns: 2rem minmax(0, 1fr) 11rem;
+  }
+
+  .blogfront-series-state,
+  .blogfront-series-state:empty {
+    display: flex;
+    grid-column: 3;
+    justify-content: flex-end;
+  }
+}
+
+@container blogfront-series (min-width: 58rem) {
+  .blogfront-series {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+
+  .blogfront-series-intro {
+    padding: 2rem;
+  }
+
+  .blogfront-series-parts {
+    border-top: 0;
+    border-left: 2px solid var(--color-rule);
+  }
+}
+
+/* ── The end of a series, inside an article ── */
+.blogfront-series-end {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.blogfront-series-next {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+.blogfront-series-next-label {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+/* "Parte 4 de 8 →" stays together when the label wraps. */
+.blogfront-series-next-label > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.blogfront-series-closing {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  color: var(--color-ink-light);
+}
+
+/* ── Article contents ──
+   A collapsed disclosure above the body; beside the column where the window
+   has room for it next to the 56rem article. */
+.blog-article-body h2[id] {
+  scroll-margin-top: 5rem;
+}
+
+.blogfront-toc {
+  margin-bottom: 2rem;
+}
+
+.blogfront-toc-box {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--color-rule);
+  background: var(--color-paper);
+}
+
+.blogfront-toc-toggle,
+.blogfront-toc-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+.blogfront-toc-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  cursor: pointer;
+}
+
+.blogfront-toc-toggle svg {
+  transition: rotate 75ms ease;
+}
+
+.blogfront-toc-toggle[aria-expanded='true'] svg {
+  rotate: 180deg;
+}
+
+.blogfront-toc-title {
+  display: none;
+}
+
+.blogfront-toc-status {
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+}
+
+.blogfront-toc-bar {
+  position: relative;
+  height: 4px;
+  margin-top: 0.4rem;
+  background: var(--color-rule-light);
+}
+
+.blogfront-toc-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+}
+
+.blogfront-toc-list {
+  display: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blogfront-toc-list[data-open='true'] {
+  display: block;
+}
+
+.blogfront-toc-list button {
+  display: block;
+  width: 100%;
+  padding: 0.35rem 0 0.35rem 0.75rem;
+  border-left: 2px solid var(--color-rule-light);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  text-align: left;
+  color: var(--color-ink-light);
+  cursor: pointer;
+  transition: color 75ms ease, border-color 75ms ease;
+}
+
+.blogfront-toc-list button:hover {
+  color: var(--color-ink);
+  border-left-color: var(--color-ink);
+}
+
+/* The section in view: a heavier rule and a heavier weight, not colour alone. */
+.blogfront-toc-list button[aria-current] {
+  padding-left: calc(0.75rem - 2px);
+  border-left: 4px solid var(--color-accent);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+@media (min-width: 1400px) {
+  .blog-full article:has(> .blogfront-toc) {
+    position: relative;
+  }
+
+  .blog-full .blogfront-toc {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(100% + 2rem);
+    width: 13rem;
+    margin: 0;
+  }
+
+  .blog-full .blogfront-toc-box {
+    position: sticky;
+    top: 4.5rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+  }
+
+  .blog-full .blogfront-toc-toggle {
+    display: none;
+  }
+
+  .blog-full .blogfront-toc-title,
+  .blog-full .blogfront-toc-list {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blogfront-toc-toggle svg {
+    transition: none;
+  }
+}

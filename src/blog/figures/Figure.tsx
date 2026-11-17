@@ -168,21 +168,39 @@ function Player({ figure, renderer, alt }: ResolvedFigure & { alt: string }) {
   )
 }
 
-function Resolved({ id, alt, fallback }: { id: string; alt: string; fallback: ReactNode }) {
+/**
+ * The finished figure as a still, for a card that previews its article: the
+ * stage at its last step and nothing else. No player, no narration, nothing
+ * to focus; its alt text is its name.
+ */
+function Preview({ figure, renderer: Stage, alt }: ResolvedFigure & { alt: string }) {
+  const { lang } = useTranslation()
+  return (
+    <div className="fig fig-preview" role="img" aria-label={alt} data-fig-type={figure.type} data-fig-preview>
+      <div className="fig-stage" inert>
+        <Stage figure={figure} lang={lang} step={figure.steps.length} />
+      </div>
+    </div>
+  )
+}
+
+function Resolved({ id, alt, fallback, preview }: { id: string; alt: string; fallback: ReactNode; preview: boolean }) {
   const resolved = resolveFigure(id)
-  return resolved ? <Player {...resolved} alt={alt} /> : fallback
+  if (!resolved) return fallback
+  return preview ? <Preview {...resolved} alt={alt} /> : <Player {...resolved} alt={alt} />
 }
 
 /**
  * An article figure by id. Anything that keeps it from drawing (an unknown id,
  * a type with no renderer, a description that is not playable, a renderer that
  * throws) leaves the alt text in its place; the caption is the article's.
+ * `preview` draws the finished figure as a still instead of the player.
  */
-export function Figure({ id, alt }: { id: string; alt: string }) {
+export function Figure({ id, alt, preview = false }: { id: string; alt: string; preview?: boolean }) {
   const fallback = <p className="fig-fallback">{alt}</p>
   return (
     <Boundary fallback={fallback}>
-      <Resolved id={id} alt={alt} fallback={fallback} />
+      <Resolved id={id} alt={alt} fallback={fallback} preview={preview} />
     </Boundary>
   )
 }

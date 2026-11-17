@@ -4,7 +4,11 @@ import { motion } from 'motion/react'
 import { ArrowDown, ArrowLeft, ArrowRight, Calendar, Check, Clock } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useBlogContext } from '../context/BlogContext'
-import { parseMarkdown } from '../content/parser'
+import { articleSections, parseMarkdown } from '../content/parser'
+import { partLabel, progressLabel, seriesOf } from '../content/series'
+import { formatPostDate } from '../hooks/postDate'
+import { ESSAY_CATEGORY, type BlogPost } from '../types'
+import { ArticleContents } from './ArticleContents'
 import { Figure } from '../figures/Figure'
 import { finishReading, flushProgress, getSnapshot, readLabel, saveProgress, useReadSnapshot } from '../readState'
 import { ReadMark } from './ReadMark'
@@ -55,7 +59,7 @@ const SETTLE_MS = 1500
  */
 export function BlogArticle() {
   const { lang } = useTranslation()
-  const { filteredPosts, selectedPost, setSelectedPost } = useBlogContext()
+  const { posts, filteredPosts, selectedPost, setSelectedPost } = useBlogContext()
   const articleRef = useRef<HTMLDivElement>(null)
 
   const post = selectedPost
@@ -152,6 +156,7 @@ export function BlogArticle() {
 
   const content = post ? (lang === 'es' ? post.content : post.contentEn) : ''
   const html = useMemo(() => parseMarkdown(content), [content])
+  const sections = useMemo(() => articleSections(html), [html])
 
   const handleBack = () => {
     // Use pushState + manual hashchange to avoid browser's native scroll-to-anchor,
@@ -174,6 +179,12 @@ export function BlogArticle() {
     }
   }
 
+  // Another part of the series, opened the way previous/next open theirs.
+  const handlePart = (part: BlogPost) => {
+    setSelectedPost(part)
+    history.pushState(null, '', `#blog/article/${part.slug}`)
+  }
+
   if (!post) {
     return null
   }
@@ -184,6 +195,10 @@ export function BlogArticle() {
   // Gone once used, once the reader scrolls past that point, or once read.
   const resumePercent = Math.round((resume.at ?? 0) * 100)
   const canResume = resumePercent > 0 && (readState.progressOf(post.slug) ?? 1) <= (resume.at ?? 0) + 0.01
+  const es = lang === 'es'
+  const isEssay = post.category === ESSAY_CATEGORY
+  const inSeries = seriesOf(post, posts)
+  const nextPart = inSeries?.parts[inSeries.index + 1] ?? null
 
   return (
     <motion.div
@@ -214,6 +229,16 @@ export function BlogArticle() {
         <div className="border-t-4 border-rule mb-1" />
         <div className="border-t border-rule mb-6" />
 
+        {/* Kind of piece and place in its series */}
+        {(isEssay || inSeries) && (
+          <p className="blogfront blogfront-kind mb-3">
+            {isEssay && <span data-article-kicker className="kicker">{es ? 'Ensayo' : 'Essay'}</span>}
+            {inSeries && (
+              <span data-series-part>{partLabel(inSeries.index, inSeries.parts.length, inSeries.series, lang)}</span>
+            )}
+          </p>
+        )}
+
         {/* Headline */}
         <h1 className="font-headline text-3xl md:text-5xl lg:text-6xl font-black text-ink leading-[1.05] tracking-tight mb-4">
           {title}
@@ -223,7 +248,7 @@ export function BlogArticle() {
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-6 pb-4 border-b border-rule-light">
           <span className="font-mono text-xs text-ink-muted flex items-center gap-1.5">
             <Calendar size={12} />
-            {post.date}
+            <time dateTime={post.date}>{formatPostDate(post.date, lang)}</time>
           </span>
           <span className="font-mono text-xs text-ink-muted flex items-center gap-1.5">
             <Clock size={12} />
@@ -256,6 +281,9 @@ export function BlogArticle() {
           ))}
         </div>
 
+        {/* Sections, progress and time left; nothing for an article with fewer than two sections */}
+        <ArticleContents key={`contents-${post.id}-${lang}`} sections={sections} minutes={post.readingTime} />
+
         {/* Body — micromark HTML, styled by .blog-article-body in index.css */}
         <ArticleBody key={`${post.id}-${lang}`} html={html} />
         {/* Directly after the body: reaching it is reaching the end. */}
@@ -269,6 +297,47 @@ export function BlogArticle() {
         {/* Bottom rule */}
         <div className="border-t-4 border-rule mt-12 mb-1" />
         <div className="border-t border-rule mb-6" />
+
+        {/* The series this article belongs to: its next part, or its end */}
+        {inSeries && (
+          <section data-reading-hide data-series-end className="blogfront blogfront-series-end" aria-label={inSeries.series.name[lang]}>
+            <p className="blogfront-kind">
+              <span className="kicker">{inSeries.series.name[lang]}</span>
+              <span data-series-progress>
+                {progressLabel(inSeries.parts.filter((p) => readState.stateOf(p.slug) === 'read').length, inSeries.parts.length, lang)}
+              </span>
+            </p>
+            {nextPart ? (
+              <button
+                onClick={() => handlePart(nextPart)}
+                data-series-next={nextPart.slug}
+                data-read-state={readState.stateOf(nextPart.slug)}
+                className="blogfront-series-next px-card px-card-interactive bg-paper"
+              >
+                <span className="blogfront-series-next-label">
+                  {es ? 'Siguiente de la serie' : 'Next in the series'} ·
+                  <span>
+                    {es ? 'Parte' : 'Part'} {inSeries.index + 2} {es ? 'de' : 'of'} {inSeries.parts.length}
+                    <ArrowRight size={12} aria-hidden="true" />
+                  </span>
+                </span>
+                <span data-read-title className="font-headline text-xl md:text-2xl font-bold text-ink leading-tight">
+                  {es ? nextPart.title : nextPart.titleEn}
+                </span>
+                <ReadMark slug={nextPart.slug} variant="inline" />
+              </button>
+            ) : (
+              <p data-series-closing className="blogfront-series-closing">
+                {es
+                  ? `Esta es la última parte de la serie «${inSeries.series.name.es}».`
+                  : `This is the last part of the series "${inSeries.series.name.en}".`}{' '}
+                <button data-series-restart onClick={() => handlePart(inSeries.parts[0])} className="blogfront-more">
+                  {es ? 'Volver a la parte 1' : 'Back to part 1'} <ArrowRight size={12} aria-hidden="true" />
+                </button>
+              </p>
+            )}
+          </section>
+        )}
 
         {/* Prev / Next navigation (fixes bug #4) */}
         <nav data-reading-hide className="flex justify-between items-stretch gap-4 mb-10">

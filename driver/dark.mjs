@@ -78,9 +78,12 @@ async function settle(page) {
         await pause(150)
       }
     }
+    // A figure plays its steps by itself once it is in view, and an element in
+    // mid-fade measures as low contrast. Put every figure on its last step.
+    for (const mark of document.querySelectorAll('.fig .fig-marks [data-fig-mark]:last-child')) mark.click()
     window.scrollTo(0, 0)
   })
-  await page.waitForTimeout(900)
+  await page.waitForTimeout(1200)
 }
 
 /**
