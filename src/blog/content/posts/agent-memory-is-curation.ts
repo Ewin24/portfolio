@@ -3,6 +3,8 @@ import type { BlogPost } from '../../types'
 export const agentMemoryIsCuration: Omit<BlogPost, 'readingTime'> = {
   id: 'agent-memory-is-curation',
   slug: 'la-memoria-de-un-agente-es-curaduria',
+  series: 'Working with AI',
+  seriesOrder: 5,
   title: 'La memoria de un agente es un problema de curaduría, no de almacenamiento',
   titleEn: 'Agent Memory Is a Curation Problem, Not a Storage Problem',
   date: '2026-11-17',

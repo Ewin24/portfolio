@@ -3,6 +3,8 @@ import type { BlogPost } from '../../types'
 export const contextIsABudget: Omit<BlogPost, 'readingTime'> = {
   id: 'context-is-a-budget',
   slug: 'el-contexto-es-presupuesto',
+  series: 'Working with AI',
+  seriesOrder: 4,
   title: 'El contexto es presupuesto: lo que no entra importa más que lo que escribes',
   titleEn: 'Context Is a Budget: What You Keep Out Matters More Than What You Write',
   date: '2026-11-17',

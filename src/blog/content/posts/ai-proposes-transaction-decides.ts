@@ -3,6 +3,8 @@ import type { BlogPost } from '../../types'
 export const aiProposesTransactionDecides: Omit<BlogPost, 'readingTime'> = {
   id: 'ai-proposes-transaction-decides',
   slug: 'la-ai-propone-una-transaccion-decide',
+  series: 'Working with AI',
+  seriesOrder: 7,
   title: 'La AI propone; una transacción decide',
   titleEn: 'The Model Proposes. A Transaction Decides',
   date: '2026-11-17',

@@ -3,6 +3,8 @@ import type { BlogPost } from '../../types'
 export const toolsForAgents: Omit<BlogPost, 'readingTime'> = {
   id: 'tools-for-agents',
   slug: 'una-herramienta-para-un-agente-es-una-api',
+  series: 'Working with AI',
+  seriesOrder: 3,
   title: 'Una herramienta para un agente es una API cuyo usuario no lee la documentación dos veces',
   titleEn: 'A Tool for an Agent Is an API Whose User Reads the Docs Once',
   date: '2026-11-17',

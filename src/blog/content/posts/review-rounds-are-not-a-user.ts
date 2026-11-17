@@ -3,6 +3,8 @@ import type { BlogPost } from '../../types'
 export const reviewRoundsAreNotAUser: Omit<BlogPost, 'readingTime'> = {
   id: 'review-rounds-are-not-a-user',
   slug: 'once-rondas-de-revision-no-son-un-usuario',
+  series: 'Working with AI',
+  seriesOrder: 6,
   title: 'Once rondas de revisión con AI no reemplazan diez minutos de un usuario',
   titleEn: 'Eleven Rounds of AI Review Do Not Replace Ten Minutes of Real Use',
   date: '2026-11-17',

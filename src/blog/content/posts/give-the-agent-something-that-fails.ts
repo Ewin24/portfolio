@@ -3,6 +3,8 @@ import type { BlogPost } from '../../types'
 export const giveTheAgentSomethingThatFails: Omit<BlogPost, 'readingTime'> = {
   id: 'give-the-agent-something-that-fails',
   slug: 'dale-al-agente-algo-que-pueda-fallar',
+  series: 'Working with AI',
+  seriesOrder: 2,
   title: 'A un agente de AI no le des una descripción: dale algo que pueda fallar',
   titleEn: 'Stop Describing the Work to Your AI Agent. Give It Something That Can Fail',
   date: '2026-11-17',

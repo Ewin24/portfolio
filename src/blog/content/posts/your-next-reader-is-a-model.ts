@@ -3,6 +3,8 @@ import type { BlogPost } from '../../types'
 export const yourNextReaderIsAModel: Omit<BlogPost, 'readingTime'> = {
   id: 'your-next-reader-is-a-model',
   slug: 'tu-proximo-lector-es-un-modelo',
+  series: 'Working with AI',
+  seriesOrder: 8,
   title: 'Tu próximo lector es un modelo',
   titleEn: 'Your Next Reader Is a Model',
   date: '2026-11-17',
