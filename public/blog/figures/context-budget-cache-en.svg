@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 330" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>Multiples of the base input price by prompt cache use</title>
+  <desc>Horizontal bar chart with four values read in Anthropic's prompt caching documentation in November 2026, as multiples of the base price of an input token: normal input 1, cache write with a 5-minute lifetime 1.25, cache write with a 1-hour lifetime 2, cache read 0.1.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="330" fill="#FAFAF5" />
+
+  <!-- Scale: 220 px per 1x of the base input price. Every bar carries its value. -->
+  <text x="40" y="44" font-size="14" fill="#1A1A1A">normal input (base price)</text>
+  <rect x="40" y="52" width="220" height="22" fill="#4A4A4A" />
+  <text x="270" y="69" font-size="14" font-weight="700" fill="#1A1A1A">1×</text>
+
+  <text x="40" y="112" font-size="14" fill="#1A1A1A">cache write, 5 minutes</text>
+  <rect x="40" y="120" width="275" height="22" fill="#1A1A1A" />
+  <text x="325" y="137" font-size="14" font-weight="700" fill="#1A1A1A">1.25×</text>
+
+  <text x="40" y="180" font-size="14" fill="#1A1A1A">cache write, 1 hour</text>
+  <rect x="40" y="188" width="440" height="22" fill="#1A1A1A" />
+  <text x="490" y="205" font-size="14" font-weight="700" fill="#1A1A1A">2×</text>
+
+  <text x="40" y="248" font-size="14" font-weight="700" fill="#C41E1E">cache read</text>
+  <rect x="40" y="256" width="22" height="22" fill="#C41E1E" />
+  <text x="72" y="273" font-size="14" font-weight="700" fill="#C41E1E">0.1×</text>
+
+  <text x="40" y="312" font-size="14" fill="#6B6B6B">multiples of the base input price</text>
+</svg>

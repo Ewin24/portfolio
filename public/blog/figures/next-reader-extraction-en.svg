@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 372" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>What arrives whole when a page becomes a model's answer</title>
+  <desc>Conceptual sketch with no scale. Four kinds of sentence travel from the page to the answer through extraction. The sentence that names its subject and the number with its method arrive whole. The pronoun with no antecedent and the reference to the page arrive without their referent.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="372" fill="#FAFAF5" />
+
+  <!-- Stages of the path. No scale: this is a sketch, not measured data. -->
+  <text x="16" y="28" font-size="14" fill="#6B6B6B">PAGE</text>
+  <text x="300" y="28" text-anchor="middle" font-size="14" fill="#6B6B6B">EXTRACTION</text>
+  <text x="584" y="28" text-anchor="end" font-size="14" fill="#6B6B6B">THE MODEL'S ANSWER</text>
+  <line x1="16" y1="40" x2="584" y2="40" stroke="#D0CFC8" stroke-width="2" />
+
+  <!-- 1. Self-contained sentence: arrives whole. -->
+  <text x="16" y="72" font-size="14" font-weight="700" fill="#1A1A1A">1  Sentence that names its subject</text>
+  <text x="584" y="72" text-anchor="end" font-size="14" font-weight="700" fill="#1A1A1A">ARRIVES WHOLE</text>
+  <text x="16" y="92" font-size="14" fill="#4A4A4A">"A case-insensitive grep misses camelCase"</text>
+  <line x1="16" y1="110" x2="572" y2="110" stroke="#1A1A1A" stroke-width="2" />
+  <line x1="300" y1="102" x2="300" y2="118" stroke="#4A4A4A" stroke-width="2" />
+  <rect x="572" y="104" width="12" height="12" fill="#1A1A1A" />
+
+  <!-- 2. Number with its method: arrives whole. -->
+  <text x="16" y="148" font-size="14" font-weight="700" fill="#1A1A1A">2  Number with its method</text>
+  <text x="584" y="148" text-anchor="end" font-size="14" font-weight="700" fill="#1A1A1A">ARRIVES WHOLE</text>
+  <text x="16" y="168" font-size="14" fill="#4A4A4A">"earlier in 13,339 of 20,000 runs"</text>
+  <line x1="16" y1="186" x2="572" y2="186" stroke="#1A1A1A" stroke-width="2" />
+  <line x1="300" y1="178" x2="300" y2="194" stroke="#4A4A4A" stroke-width="2" />
+  <rect x="572" y="180" width="12" height="12" fill="#1A1A1A" />
+
+  <!-- 3. Pronoun without antecedent: the words arrive, the referent does not. -->
+  <text x="16" y="224" font-size="14" font-weight="700" fill="#1A1A1A">3  Pronoun with no antecedent</text>
+  <text x="584" y="224" text-anchor="end" font-size="14" font-weight="700" fill="#C41E1E">LOSES ITS REFERENT</text>
+  <text x="16" y="244" font-size="14" fill="#4A4A4A">"This is what I changed in the process"</text>
+  <line x1="16" y1="262" x2="300" y2="262" stroke="#C41E1E" stroke-width="2" />
+  <line x1="300" y1="262" x2="572" y2="262" stroke="#C41E1E" stroke-width="2" stroke-dasharray="4 8" />
+  <line x1="300" y1="254" x2="300" y2="270" stroke="#4A4A4A" stroke-width="2" />
+  <rect x="573" y="257" width="10" height="10" fill="#FAFAF5" stroke="#C41E1E" stroke-width="2" />
+
+  <!-- 4. Reference to a position on the page: same fate. -->
+  <text x="16" y="300" font-size="14" font-weight="700" fill="#1A1A1A">4  Reference to the page</text>
+  <text x="584" y="300" text-anchor="end" font-size="14" font-weight="700" fill="#C41E1E">LOSES ITS REFERENT</text>
+  <text x="16" y="320" font-size="14" fill="#4A4A4A">"As the table above shows"</text>
+  <line x1="16" y1="338" x2="300" y2="338" stroke="#C41E1E" stroke-width="2" />
+  <line x1="300" y1="338" x2="572" y2="338" stroke="#C41E1E" stroke-width="2" stroke-dasharray="4 8" />
+  <line x1="300" y1="330" x2="300" y2="346" stroke="#4A4A4A" stroke-width="2" />
+  <rect x="573" y="333" width="10" height="10" fill="#FAFAF5" stroke="#C41E1E" stroke-width="2" />
+</svg>

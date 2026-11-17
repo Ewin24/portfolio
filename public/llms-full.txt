@@ -8,6 +8,78 @@ Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, Typ
 
 ## Blog — Technical Architecture Articles
 
+### Una herramienta para un agente es una API cuyo usuario no lee la documentación dos veces
+https://portfolio.edwintrigos.workers.dev/#blog/article/una-herramienta-para-un-agente-es-una-api
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: A Tool for an Agent Is an API Whose User Reads the Docs Once
+
+When an agent picks the wrong function or invents a parameter, the model gets the blame. I argue the tool deserves the first look: the model decides from a name, a description and whatever you return, like a newcomer in a hurry. Four design moves you can apply this week, what I did in a product of my own, and what good tool design does not fix.
+
+---
+
+### El contexto es presupuesto: lo que no entra importa más que lo que escribes
+https://portfolio.edwintrigos.workers.dev/#blog/article/el-contexto-es-presupuesto
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Context Is a Budget: What You Keep Out Matters More Than What You Write
+
+When a session with a model turns out expensive or wrong, people review how the request was worded. I argue the lever is somewhere else: in what is allowed into the context window, because whatever goes in once is paid for again on every turn and also competes for the model's attention. Four moves for keeping things out, what each one risks, and which part of this is about cost and which is about quality.
+
+---
+
+### La memoria de un agente es un problema de curaduría, no de almacenamiento
+https://portfolio.edwintrigos.workers.dev/#blog/article/la-memoria-de-un-agente-es-curaduria
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Agent Memory Is a Curation Problem, Not a Storage Problem
+
+Giving an agent notes that survive between sessions is easy; keeping them true is the hard part. I went through a sample of 56 notes from my own agent memory: every one is listed as active, including one whose title says it was superseded, and every correction I found was written by hand. Four practices for storing less and trusting with a date, and what my sample cannot prove.
+
+---
+
+### El modelo es la parte fácil: el arnés decide el resultado
+https://portfolio.edwintrigos.workers.dev/#blog/article/el-modelo-es-la-parte-facil-el-arnes-decide
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: The Model Is the Easy Part. The Harness Decides What You Get
+
+With a coding agent, the outcome depends less on the model than on the harness around it: the rules it reads, what it may touch, how its work is checked, when it has to stop, and how the task is split. Four failures from my own work with agents, all fixed by changing something around the model, three pieces you can add this week, and two questions for telling which rule is dead weight.
+
+---
+
+### Tu próximo lector es un modelo
+https://portfolio.edwintrigos.workers.dev/#blog/article/tu-proximo-lector-es-un-modelo
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Your Next Reader Is a Model
+
+An assistant answering a question about a professional or a product does not hand over the page it read: it hands over two or three sentences taken from it. I argue that whoever publishes should write sentences that keep their meaning outside the page, with the number next to its method, and I show it with this site, where a reader that does not run JavaScript gets only the summary of each post. This is an argument from mechanism: I have no data showing that writing this way changes how often a model cites this site.
+
+---
+
+### La AI propone; una transacción decide
+https://portfolio.edwintrigos.workers.dev/#blog/article/la-ai-propone-una-transaccion-decide
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: The Model Proposes. A Transaction Decides
+
+In a product built on a language model, the model's output should be a proposal that changes nothing by itself. What changes the data is a deterministic step: a person confirms and a transaction with its own guards does the writing. In my case there was a human in the loop and the loop had a double-approval race; the transaction fixed it, not the prompt. I also say when the gate is unnecessary and what happens when nobody reads what they confirm.
+
+---
+
+### A un agente de AI no le des una descripción: dale algo que pueda fallar
+https://portfolio.edwintrigos.workers.dev/#blog/article/dale-al-agente-algo-que-pueda-fallar
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Stop Describing the Work to Your AI Agent. Give It Something That Can Fail
+
+What an AI agent produces is bounded by the check it works against, and not by how well the request is worded. A prompt describes the goal; a test that fails before the work starts defines it. How this site is built on that rule, a ladder for placing each request, and three cases of my own where a wrong check was satisfied to the letter.
+
+---
+
+### Once rondas de revisión con AI no reemplazan diez minutos de un usuario
+https://portfolio.edwintrigos.workers.dev/#blog/article/once-rondas-de-revision-no-son-un-usuario
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Eleven Rounds of AI Review Do Not Replace Ten Minutes of Real Use
+
+One more review round of the same kind finds less each time, and some defects it never finds, because every reviewer reads the same material with the same means. On a project of my own, 44 adversarial review passes applied 47 findings and missed the two defects that showed up in five minutes of use. More review is not a different view: before paying for a round, ask what is different about whoever runs it.
+
+---
+
 ### Publica lo que mediste, no lo que sabes
 https://portfolio.edwintrigos.workers.dev/#blog/article/publica-lo-que-mediste
 

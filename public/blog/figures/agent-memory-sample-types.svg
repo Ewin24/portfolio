@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 310" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>56 memory notes by type</title>
+  <desc>Horizontal bar chart of a hand-counted sample of 56 distinct memory notes, labelled with the store's own type names: architecture 24, session_summary 10, decision 7, discovery 6, bugfix 4, pattern 2, config 2, feedback 1.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="310" fill="#FAFAF5" />
+
+  <!-- Counted data: 14 px per note. Each bar carries its value as text. -->
+  <g font-size="14" fill="#1A1A1A">
+    <text x="188" y="45" text-anchor="end">architecture</text>
+    <rect x="200" y="30" width="336" height="20" />
+    <text x="544" y="45" font-weight="700">24</text>
+
+    <text x="188" y="79" text-anchor="end">session_summary</text>
+    <rect x="200" y="64" width="140" height="20" />
+    <text x="348" y="79" font-weight="700">10</text>
+
+    <text x="188" y="113" text-anchor="end">decision</text>
+    <rect x="200" y="98" width="98" height="20" />
+    <text x="306" y="113" font-weight="700">7</text>
+
+    <text x="188" y="147" text-anchor="end">discovery</text>
+    <rect x="200" y="132" width="84" height="20" />
+    <text x="292" y="147" font-weight="700">6</text>
+
+    <text x="188" y="181" text-anchor="end">bugfix</text>
+    <rect x="200" y="166" width="56" height="20" />
+    <text x="264" y="181" font-weight="700">4</text>
+
+    <text x="188" y="215" text-anchor="end">pattern</text>
+    <rect x="200" y="200" width="28" height="20" />
+    <text x="236" y="215" font-weight="700">2</text>
+
+    <text x="188" y="249" text-anchor="end">config</text>
+    <rect x="200" y="234" width="28" height="20" />
+    <text x="236" y="249" font-weight="700">2</text>
+
+    <text x="188" y="283" text-anchor="end">feedback</text>
+    <rect x="200" y="268" width="14" height="20" />
+    <text x="222" y="283" font-weight="700">1</text>
+  </g>
+
+  <!-- Baseline, drawn last so it stays visible and recessive. -->
+  <line x1="199" y1="22" x2="199" y2="296" stroke="#D0CFC8" stroke-width="2" />
+</svg>
