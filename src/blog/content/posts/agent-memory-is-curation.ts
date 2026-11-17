@@ -27,7 +27,7 @@ Comparto la mitad. Un agente sin memoria cuesta, y en este mismo repositorio hay
 
 Para este ensayo revisé la memoria como objeto, con un agente haciendo las búsquedas. El sistema informa 2,935 notas en 306 sesiones y 22 proyectos. No las leí todas. Tomé una muestra con tres búsquedas: una en este proyecto por la palabra memory, y dos en todos los proyectos con palabras como vencido, reemplazado, corregido y duplicado, en inglés y en español. Cada búsqueda devuelve como máximo 20 resultados. Salieron 56 notas distintas, y las conté a mano por tipo.
 
-![Gráfico de barras horizontales con los tipos de 56 notas: architecture 24, session_summary 10, decision 7, discovery 6, bugfix 4, pattern 2, config 2, feedback 1.](blog/figures/agent-memory-sample-types.svg "Tipos de las 56 notas distintas que devolvieron tres búsquedas en mi memoria de agentes, contadas a mano el 17 de noviembre de 2026. Es una muestra, no el total.")
+![Gráfico de barras horizontales con los tipos de 56 notas: architecture 24, session_summary 10, decision 7, discovery 6, bugfix 4, pattern 2, config 2, feedback 1.](figure/agent-memory-sample-types "Tipos de las 56 notas distintas que devolvieron tres búsquedas en mi memoria de agentes, contadas a mano el 17 de noviembre de 2026. Es una muestra, no el total.")
 
 Lo primero que enseña la muestra es de qué está hecha la memoria. De las 24 notas con la etiqueta architecture, 20 son documentos de trabajo de un cambio concreto: especificaciones, diseños, listas de tareas, informes de verificación. Otras 10 son resúmenes de sesión. Las decisiones son 7. Es decir, 30 de 56 son papeles de un trabajo que tuvo principio y fin, y su utilidad se acaba con ese trabajo aunque la nota quede.
 
@@ -45,7 +45,7 @@ Lo quinto es que el propio acto de guardar puede destruir. En una sesión larga,
 
 Pienso cada nota como algo que pasa por cuatro estados.
 
-![Cuatro estados en columna unidos por flechas: escrita, recordada, vencida y reemplazada. El estado vencida está resaltado y dice que nada la marca y sigue activa.](blog/figures/agent-memory-lifecycle-es.svg "Esquema conceptual, no datos medidos. El almacenamiento cubre el primer estado y la búsqueda el segundo; los otros dos dependen de que alguien los escriba.")
+![Cuatro estados en columna unidos por flechas: escrita, recordada, vencida y reemplazada. El estado vencida está resaltado y dice que nada la marca y sigue activa.](figure/agent-memory-lifecycle "Esquema conceptual, no datos medidos. El almacenamiento cubre el primer estado y la búsqueda el segundo; los otros dos dependen de que alguien los escriba.")
 
 Escrita, recordada, vencida, reemplazada. El almacenamiento se ocupa del primer estado y la búsqueda del segundo. De los otros dos no se ocupa nadie por defecto. Una nota pasa de recordada a vencida sin que ocurra nada dentro de la memoria: lo que cambia es el código, la configuración o la decisión, que viven en otro lado. Por eso ninguna de mis 56 notas figura como vencida. El paso a reemplazada sí deja rastro, pero solo cuando alguien lo escribe.
 
@@ -98,7 +98,7 @@ I hold half of that. An agent with no memory is expensive, and this repository h
 
 For this essay I examined the memory as an object, with an agent running the searches. The system reports 2,935 notes across 306 sessions and 22 projects. I did not read them all. I took a sample with three searches: one in this project for the word memory, and two across all projects for words like stale, superseded, corrected and duplicated, in English and Spanish. Each search returns at most 20 results. That gave 56 distinct notes, which I counted by hand, by type.
 
-![Horizontal bar chart of the types of 56 notes: architecture 24, session_summary 10, decision 7, discovery 6, bugfix 4, pattern 2, config 2, feedback 1.](blog/figures/agent-memory-sample-types.svg "Types of the 56 distinct notes returned by three searches of my agent memory, counted by hand on 17 November 2026. It is a sample, not the total.")
+![Horizontal bar chart of the types of 56 notes: architecture 24, session_summary 10, decision 7, discovery 6, bugfix 4, pattern 2, config 2, feedback 1.](figure/agent-memory-sample-types "Types of the 56 distinct notes returned by three searches of my agent memory, counted by hand on 17 November 2026. It is a sample, not the total.")
 
 The first thing the sample shows is what the memory is made of. Of the 24 notes labelled architecture, 20 are working documents for one specific change: specs, designs, task lists, verification reports. Another 10 are session summaries. Decisions number 7. So 30 of 56 are the paperwork of a job that had a beginning and an end, and their usefulness ends with the job even though the note stays.
 
@@ -116,7 +116,7 @@ The fifth is that the act of saving can destroy. In one long session an agent sa
 
 I think of every note as moving through four states.
 
-![Four states in a column joined by arrows: written, recalled, stale and replaced. The stale state is highlighted and says nothing flags it and it is still active.](blog/figures/agent-memory-lifecycle-en.svg "Conceptual sketch, not measured data. Storage covers the first state and search the second; the other two depend on someone writing them down.")
+![Four states in a column joined by arrows: written, recalled, stale and replaced. The stale state is highlighted and says nothing flags it and it is still active.](figure/agent-memory-lifecycle "Conceptual sketch, not measured data. Storage covers the first state and search the second; the other two depend on someone writing them down.")
 
 Written, recalled, stale, replaced. Storage takes care of the first state and search of the second. Nobody takes care of the other two by default. A note goes from recalled to stale without anything happening inside the memory: what changes is the code, the configuration or the decision, and those live somewhere else. That is why none of my 56 notes is listed as stale. The move to replaced does leave a trace, but only when someone writes it.
 

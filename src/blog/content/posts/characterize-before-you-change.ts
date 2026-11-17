@@ -51,7 +51,7 @@ No es mi único caso. Cuando hice el fork de un proyecto Flutter que su autor ha
 
 Hay dos caminos para cambiar algo heredado, y se diferencian en el momento en que descubres lo que hacía.
 
-![Diagrama de flujo con dos caminos. Camino A, cambiar primero: cambiar sin registro, algo falla días después, averiguar qué hacía antes, y una flecha punteada que vuelve al inicio marcada como otra vuelta. Camino B, caracterizar primero: escribir lo que hace hoy, cambiar un paso, comparar con lo escrito; si no coincide, se revierte ese paso.](blog/figures/characterize-paths-es.svg "Esquema conceptual, no datos medidos: los dos caminos para cambiar algo heredado.")
+![Diagrama de flujo con dos caminos. Camino A, cambiar primero: cambiar sin registro, algo falla días después, averiguar qué hacía antes, y una flecha punteada que vuelve al inicio marcada como otra vuelta. Camino B, caracterizar primero: escribir lo que hace hoy, cambiar un paso, comparar con lo escrito; si no coincide, se revierte ese paso.](figure/characterize-paths "Esquema conceptual, no datos medidos: los dos caminos para cambiar algo heredado.")
 
 En el camino A cambias primero. Lo que el sistema hacía lo descubres por sus ausencias: algo deja de pasar, alguien lo nota, y reconstruyes el comportamiento anterior a partir de la queja. Cada vuelta tiende a salir más cara que la anterior, porque ahora hay dos versiones del comportamiento, la vieja y la tuya, y la vieja ya no se puede observar.
 
@@ -126,7 +126,7 @@ It is not my only case. When I forked a Flutter project its author had marked as
 
 There are two paths for changing something inherited, and they differ in when you find out what it used to do.
 
-![Flow diagram with two paths. Path A, change first: change with no record, something breaks days later, find out what it used to do, and a dashed arrow back to the start labeled another round. Path B, characterize first: write what it does today, change one step, compare with the record; if it differs, that step is reverted.](blog/figures/characterize-paths-en.svg "Conceptual sketch, not measured data: the two paths for changing something you inherited.")
+![Flow diagram with two paths. Path A, change first: change with no record, something breaks days later, find out what it used to do, and a dashed arrow back to the start labeled another round. Path B, characterize first: write what it does today, change one step, compare with the record; if it differs, that step is reverted.](figure/characterize-paths "Conceptual sketch, not measured data: the two paths for changing something you inherited.")
 
 On path A you change first. You learn what the system did through its absences: something stops happening, someone notices, and you rebuild the previous behavior from the complaint. Each round tends to cost more than the last, because there are now two versions of the behavior, the old one and yours, and the old one can no longer be observed.
 

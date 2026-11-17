@@ -4,6 +4,7 @@ import { channelBackgroundWorkerWithoutBroker } from './posts/channel-background
 import { characterizationTestsBeforeRefactor } from './posts/characterization-tests-before-refactor'
 import { getdateVsSysdatetime } from './posts/getdate-vs-sysdatetime'
 import { inMemoryTestsLieAboutTransactions } from './posts/inmemory-tests-lie-about-transactions'
+import { interactiveFiguresInsteadOfSvg } from './posts/interactive-figures-instead-of-svg'
 import { redactionGrepMissesCamelCase } from './posts/redaction-grep-misses-camelcase'
 import { workaroundThatWorks } from './posts/workaround-that-works'
 import { aiBottleneckIsYourTests } from './posts/ai-bottleneck-is-your-tests'
@@ -4692,6 +4693,7 @@ Before touching anything I ran the full suite as a baseline, and after restoring
   characterizationTestsBeforeRefactor,
   inMemoryTestsLieAboutTransactions,
   asyncLocalDoesNotFlowBack,
+  interactiveFiguresInsteadOfSvg,
   // Ensayos (category: ensayo): one file each under ./posts/
   // Same-day posts keep array order after the date sort, so the newer batch goes first.
   reviewRoundsAreNotAUser,

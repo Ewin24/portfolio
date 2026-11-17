@@ -41,7 +41,7 @@ Otros artículos del sitio siguen el mismo patrón, y los números más útiles 
 
 El modelo que uso tiene tres escalones, ordenados por lo que el lector puede hacer con cada uno.
 
-![Tres bloques numerados y apilados. 1, afirmación: el lector solo puede creer o no creer. 2, número sin método: puede comparar y preguntar. 3, número con método: puede repetirlo y refutarlo. Una flecha indica que la verificabilidad crece del 1 al 3.](blog/figures/publish-measured-check-es.svg "Esquema conceptual, no datos medidos. Los tres ejemplos son textos de este sitio; el orden entre ellos es el argumento del ensayo.")
+![Tres bloques numerados y apilados. 1, afirmación: el lector solo puede creer o no creer. 2, número sin método: puede comparar y preguntar. 3, número con método: puede repetirlo y refutarlo. Una flecha indica que la verificabilidad crece del 1 al 3.](figure/publish-measured-check "Esquema conceptual, no datos medidos. Los tres ejemplos son textos de este sitio; el orden entre ellos es el argumento del ensayo.")
 
 El primer escalón es la afirmación: "SQL Server, Clean Architecture, Dapper". El lector solo puede creerla o no.
 
@@ -118,7 +118,7 @@ Other posts on the site follow the same pattern, and the most useful numbers are
 
 The model I use has three rungs, ordered by what the reader can do with each.
 
-![Three numbered, stacked blocks. 1, claim: the reader can only believe it or not. 2, number without method: they can compare and ask. 3, number with method: they can rerun it and refute it. An arrow shows checkability growing from 1 to 3.](blog/figures/publish-measured-check-en.svg "Conceptual sketch, not measured data. The three examples are text from this site; the order between them is the essay's argument.")
+![Three numbered, stacked blocks. 1, claim: the reader can only believe it or not. 2, number without method: they can compare and ask. 3, number with method: they can rerun it and refute it. An arrow shows checkability growing from 1 to 3.](figure/publish-measured-check "Conceptual sketch, not measured data. The three examples are text from this site; the order between them is the essay's argument.")
 
 The first rung is the claim: "SQL Server, Clean Architecture, Dapper". The reader can believe it or not, and that is all.
 

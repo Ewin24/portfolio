@@ -51,7 +51,7 @@ El tercero: las veinte reglas con nombre de robots.txt dicen lo mismo que la reg
 
 **El modelo**
 
-![Cuatro tipos de frase recorren el camino de la página a la respuesta del modelo pasando por la extracción. La frase que nombra su sujeto y el número con su método llegan enteros. El pronombre sin antecedente y la referencia a la página llegan sin su referente.](blog/figures/next-reader-extraction-es.svg "Esquema conceptual, no datos medidos. Qué conserva su significado cuando una frase sale de su página; los ejemplos 2 y 3 son texto de este sitio.")
+![Cuatro tipos de frase recorren el camino de la página a la respuesta del modelo pasando por la extracción. La frase que nombra su sujeto y el número con su método llegan enteros. El pronombre sin antecedente y la referencia a la página llegan sin su referente.](figure/next-reader-extraction "Esquema conceptual, no datos medidos. Qué conserva su significado cuando una frase sale de su página; los ejemplos 2 y 3 son texto de este sitio.")
 
 El dibujo sigue cuatro frases de la página a la respuesta. La extracción es el paso donde la frase pierde a sus vecinas.
 
@@ -136,7 +136,7 @@ Third: the twenty named rules in robots.txt say the same thing as the general ru
 
 **The model**
 
-![Four kinds of sentence travel from the page to the model's answer through extraction. The sentence that names its subject and the number with its method arrive whole. The pronoun with no antecedent and the reference to the page arrive without their referent.](blog/figures/next-reader-extraction-en.svg "Conceptual sketch, not measured data. What keeps its meaning when a sentence leaves its page; examples 2 and 3 are text from this site.")
+![Four kinds of sentence travel from the page to the model's answer through extraction. The sentence that names its subject and the number with its method arrive whole. The pronoun with no antecedent and the reference to the page arrive without their referent.](figure/next-reader-extraction "Conceptual sketch, not measured data. What keeps its meaning when a sentence leaves its page; examples 2 and 3 are text from this site.")
 
 The sketch follows four sentences from the page to the answer. Extraction is the step where a sentence loses its neighbours.
 

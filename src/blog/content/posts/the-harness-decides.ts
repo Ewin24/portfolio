@@ -47,7 +47,7 @@ Un modelo mejor quizá habría escrito menos certificaciones falsas. No lo sé, 
 
 Lo dibujo como capas.
 
-![Cinco rectángulos anidados alrededor de una caja pequeña rotulada modelo. De afuera hacia adentro: cómo se parte el trabajo, reglas que lee antes de escribir, archivos y comandos que puede tocar, comprobaciones que debe pasar, cuándo para y pregunta.](blog/figures/harness-layers-es.svg "Esquema conceptual, no datos medidos. Cinco capas que un equipo escribe, alrededor de la pieza que solo puede elegir.")
+![Cinco rectángulos anidados alrededor de una caja pequeña rotulada modelo. De afuera hacia adentro: cómo se parte el trabajo, reglas que lee antes de escribir, archivos y comandos que puede tocar, comprobaciones que debe pasar, cuándo para y pregunta.](figure/harness-layers "Esquema conceptual, no datos medidos. Cinco capas que un equipo escribe, alrededor de la pieza que solo puede elegir.")
 
 Cada capa responde una pregunta distinta, y el hueco de una no lo tapa otra. Las reglas le dicen al agente qué se espera, pero una regla no impide nada: mi norma de confidencialidad no existía y nada se quejó. La lista de lo que puede tocar limita el daño de un error, y no dice si lo que se escribió dentro es correcto. Las comprobaciones dicen si es correcto, siempre que puedan fallar; de eso trata [Con AI, el cuello de botella son tus pruebas, no tu código](#blog/article/con-ai-el-cuello-de-botella-son-tus-pruebas) y no lo repito aquí. Las condiciones de parada cubren lo que ninguna comprobación puede saber: que la pregunta estaba mal planteada, o que la decisión no le corresponde al agente. Y la partición del trabajo decide cuánto puede salir mal de una sola vez.
 
@@ -94,7 +94,7 @@ También es cierto que un modelo mejor vuelve innecesarias algunas reglas. Las q
 
 Para distinguir la regla que se gana su lugar de la que no, uso dos preguntas.
 
-![Cuadrícula de dos por dos. Filas: si la regla nació de un fallo real. Columnas: si algo puede comprobarla. Con fallo y comprobable, se queda. Con fallo y sin comprobación, hay que volverla prueba. Sin fallo y comprobable, queda a prueba. Sin fallo y sin comprobación, se borra.](blog/figures/harness-rule-test-es.svg "Esquema conceptual, no datos medidos. Dos preguntas para decidir qué hacer con cada regla del arnés.")
+![Cuadrícula de dos por dos. Filas: si la regla nació de un fallo real. Columnas: si algo puede comprobarla. Con fallo y comprobable, se queda. Con fallo y sin comprobación, hay que volverla prueba. Sin fallo y comprobable, queda a prueba. Sin fallo y sin comprobación, se borra.](figure/harness-rule-test "Esquema conceptual, no datos medidos. Dos preguntas para decidir qué hacer con cada regla del arnés.")
 
 La primera: ¿nació de un fallo real que puedo nombrar? La de exigir comando y salida nació de una certificación falsa. La de aprobar solo con cero píxeles distintos nació de una puerta que dejaba pasar un cambio de 5,755 píxeles. La segunda: ¿hay algo que pueda comprobar que se cumple?
 
@@ -139,7 +139,7 @@ A better model might have written fewer false certifications. I do not know, and
 
 I draw it as layers.
 
-![Five nested rectangles around a small box labelled model. From the outside in: how the work is split, rules it reads before writing, files and commands it may touch, checks its work must pass, when it stops and asks.](blog/figures/harness-layers-en.svg "Conceptual sketch, not measured data. Five layers a team writes, around the one piece it can only choose.")
+![Five nested rectangles around a small box labelled model. From the outside in: how the work is split, rules it reads before writing, files and commands it may touch, checks its work must pass, when it stops and asks.](figure/harness-layers "Conceptual sketch, not measured data. Five layers a team writes, around the one piece it can only choose.")
 
 Each layer answers a different question, and a hole in one is not covered by another. Rules tell the agent what is expected, but a rule prevents nothing: my confidentiality rule did not exist and nothing complained. The list of what it may touch limits the damage of a mistake, and says nothing about whether what was written inside it is correct. Checks say whether it is correct, provided they can fail; that is the subject of [AI Made Code Cheap. Your Tests Are Now the Bottleneck](#blog/article/con-ai-el-cuello-de-botella-son-tus-pruebas) and I will not argue it again here. Stop conditions cover what no check can know: that the question was badly posed, or that the decision is not the agent's to make. And the way the work is split decides how much can go wrong in one go.
 
@@ -186,7 +186,7 @@ It is also true that a better model makes some rules unnecessary. The ones that 
 
 To tell a rule that earns its place from one that does not, I ask two questions.
 
-![Two-by-two grid. Rows: whether the rule came from a real failure. Columns: whether something can check it. From a failure and checkable, keep it. From a failure with no check, make it a check. No failure but checkable, on probation. No failure and no check, delete it.](blog/figures/harness-rule-test-en.svg "Conceptual sketch, not measured data. Two questions for deciding what to do with each rule in the harness.")
+![Two-by-two grid. Rows: whether the rule came from a real failure. Columns: whether something can check it. From a failure and checkable, keep it. From a failure with no check, make it a check. No failure but checkable, on probation. No failure and no check, delete it.](figure/harness-rule-test "Conceptual sketch, not measured data. Two questions for deciding what to do with each rule in the harness.")
 
 The first: did it come from a real failure I can name? The rule demanding a command and its output came from a false certification. The rule of passing only at zero differing pixels came from a gate that let a 5,755-pixel change through. The second: is there something that can check it is being followed?
 

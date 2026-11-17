@@ -25,7 +25,7 @@ Los datos que pude leer apuntan en esa dirección. El [resumen que Google Cloud 
 
 Lo que baja es la entrega. Al aumentar la adopción, el informe estima una caída de 1.5 % en el rendimiento de entrega y de 7.2 % en su estabilidad. Y el 39 % de los encuestados declaró poca o ninguna confianza en el código generado por AI.
 
-![Barras a los dos lados de un eje cero. Suben la calidad de la documentación (+7.5 %), la calidad del código (+3.4 %) y la velocidad de revisión de código (+3.1 %). Bajan el rendimiento de entrega (-1.5 %) y la estabilidad de entrega (-7.2 %).](blog/figures/ai-bottleneck-dora-2024-es.svg "Fuente: resumen de Google Cloud del informe DORA 2024. Las tres mejoras se asocian a un aumento del 25 % en la adopción de AI; las dos caídas son las estimaciones que el resumen reporta al aumentar la adopción.")
+![Barras a los dos lados de un eje cero. Suben la calidad de la documentación (+7.5 %), la calidad del código (+3.4 %) y la velocidad de revisión de código (+3.1 %). Bajan el rendimiento de entrega (-1.5 %) y la estabilidad de entrega (-7.2 %).](figure/ai-bottleneck-dora-2024 "Fuente: resumen de Google Cloud del informe DORA 2024. Las tres mejoras se asocian a un aumento del 25 % en la adopción de AI; las dos caídas son las estimaciones que el resumen reporta al aumentar la adopción.")
 
 La lectura que hace el propio equipo de DORA es prudente: mejorar el proceso de desarrollo no mejora automáticamente la entrega si no se respeta lo básico, y nombra dos cosas, lotes pequeños y mecanismos de prueba robustos. La [página del informe en dora.dev](https://dora.dev/research/2024/dora-report/) repite las mismas dos.
 
@@ -45,7 +45,7 @@ Tres proyectos y el mismo patrón: un doble, un atajo o un fixture que se parece
 
 Propongo pensar en dos curvas. Una es el código que se escribe. La otra es el código cuyo comportamiento alguien comprobó contra algo capaz de decir que no. Mientras escribir es caro, las dos crecen despacio y más o menos juntas, porque la lentitud misma limita cuánto puedes producir sin mirar. Cuando escribir se abarata, la primera se dispara. La segunda no, porque depende de arneses, entornos y tiempo de ejecución contra sistemas reales, y nada de eso se abarata por el hecho de que el código salga más rápido.
 
-![Dos líneas a lo largo del tiempo. Crecen juntas hasta una marca rotulada AI; después el código escrito sube con fuerza y el código verificado mantiene su pendiente. El área entre las dos está rotulada sin verificar.](blog/figures/ai-bottleneck-gap-es.svg "Esquema conceptual, no datos medidos. La brecha entre lo escrito y lo verificado siempre existió; lo que cambia es su tamaño.")
+![Dos líneas a lo largo del tiempo. Crecen juntas hasta una marca rotulada AI; después el código escrito sube con fuerza y el código verificado mantiene su pendiente. El área entre las dos está rotulada sin verificar.](figure/ai-bottleneck-gap "Esquema conceptual, no datos medidos. La brecha entre lo escrito y lo verificado siempre existió; lo que cambia es su tamaño.")
 
 La brecha entre las dos es código que existe, compila, pasa revisión y nadie comprobó. Siempre hubo brecha. Lo nuevo es su tamaño, y que el tablero no la muestra: una suite sobre sustitutos pinta de verde las dos curvas por igual.
 
@@ -100,7 +100,7 @@ The data I was able to read points the same way. [Google Cloud's summary of the 
 
 What goes down is delivery. As AI adoption increased, the report estimates a 1.5% decrease in delivery throughput and a 7.2% reduction in delivery stability. And 39% of respondents reported little to no trust in AI-generated code.
 
-![Bars on both sides of a zero axis. Documentation quality (+7.5 %), code quality (+3.4 %) and code review speed (+3.1 %) go up. Delivery throughput (-1.5 %) and delivery stability (-7.2 %) go down.](blog/figures/ai-bottleneck-dora-2024-en.svg "Source: Google Cloud's summary of the 2024 DORA report. The three improvements are associated with a 25% increase in AI adoption; the two declines are the estimates the summary reports as adoption increased.")
+![Bars on both sides of a zero axis. Documentation quality (+7.5 %), code quality (+3.4 %) and code review speed (+3.1 %) go up. Delivery throughput (-1.5 %) and delivery stability (-7.2 %) go down.](figure/ai-bottleneck-dora-2024 "Source: Google Cloud's summary of the 2024 DORA report. The three improvements are associated with a 25% increase in AI adoption; the two declines are the estimates the summary reports as adoption increased.")
 
 The DORA team's own reading is careful: improving the development process does not automatically improve software delivery without the basics, and it names two of them, small batch sizes and robust testing mechanisms. The [report page on dora.dev](https://dora.dev/research/2024/dora-report/) repeats the same two.
 
@@ -120,7 +120,7 @@ Three projects, one pattern: a double, a shortcut or a fixture that resembles re
 
 Think of two curves. One is the code that gets written. The other is the code whose behavior someone checked against something able to say no. While writing is expensive, both grow slowly and roughly together, because slowness itself caps how much you can produce without looking. When writing gets cheap, the first curve takes off. The second does not, because it depends on harnesses, environments and run time against real systems, and none of that gets cheaper just because code comes out faster.
 
-![Two lines over time. They grow together up to a marker labeled AI; after it, code written climbs steeply while code verified keeps its slope. The area between them is labeled unverified.](blog/figures/ai-bottleneck-gap-en.svg "Conceptual sketch, not measured data. The gap between written and verified was always there; what changes is its size.")
+![Two lines over time. They grow together up to a marker labeled AI; after it, code written climbs steeply while code verified keeps its slope. The area between them is labeled unverified.](figure/ai-bottleneck-gap "Conceptual sketch, not measured data. The gap between written and verified was always there; what changes is its size.")
 
 The gap between them is code that exists, compiles, passes review, and that nobody checked. There was always a gap. What is new is its size, and the fact that the dashboard does not show it: a suite built on stand-ins paints both curves the same green.
 

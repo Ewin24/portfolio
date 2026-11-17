@@ -6,7 +6,8 @@ import { gfmTable, gfmTableHtml } from 'micromark-extension-gfm-table'
  * micromark is secure by default — no XSS risk.
  * Post-processing adds what micromark cannot emit: a `data-lang` on fenced
  * code blocks (the CSS label), a scroll box around tables, figures with a
- * caption for standalone images, and real headings for the posts'
+ * caption for standalone images (a mount node instead of the image when the
+ * path is `figure/<id>`), and real headings for the posts'
  * `**Section**` paragraphs (numbered ones become h3).
  *
  * @param content - Markdown string
@@ -27,8 +28,15 @@ export function parseMarkdown(content: string): string {
     .replace(
       /<p><img src="([^"]*)" alt="([^"]*)"(?: title="([^"]*)")? \/><\/p>/g,
       (_, src: string, alt: string, title?: string) => {
-        const url = /^(?:[a-z]+:)?\/\//i.test(src) ? src : import.meta.env.BASE_URL + src.replace(/^\//, '')
         const caption = title ? `<figcaption>${title}</figcaption>` : ''
+        // ![alt](figure/<id> "Caption") is an interactive figure: the article
+        // mounts it into this node (src/blog/figures). The alt rides along as
+        // the text shown when the figure cannot draw.
+        const figureId = /^figure\/([\w-]+)$/.exec(src)?.[1]
+        if (figureId) {
+          return `<figure data-figure="${figureId}"><div class="figure-mount" data-alt="${alt}"></div>${caption}</figure>`
+        }
+        const url = /^(?:[a-z]+:)?\/\//i.test(src) ? src : import.meta.env.BASE_URL + src.replace(/^\//, '')
         return `<figure><img src="${url}" alt="${alt}" loading="lazy" />${caption}</figure>`
       },
     )

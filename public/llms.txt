@@ -12,6 +12,7 @@ Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, Typ
 - [Tu próximo lector es un modelo](https://portfolio.edwintrigos.workers.dev/#blog/article/tu-proximo-lector-es-un-modelo): Published 2026-11-17 (ES/EN). Essay.
 - [La AI propone; una transacción decide](https://portfolio.edwintrigos.workers.dev/#blog/article/la-ai-propone-una-transaccion-decide): Published 2026-11-17 (ES/EN). Essay.
 - [A un agente de AI no le des una descripción: dale algo que pueda fallar](https://portfolio.edwintrigos.workers.dev/#blog/article/dale-al-agente-algo-que-pueda-fallar): Published 2026-11-17 (ES/EN). Essay.
+- [Reemplacé 40 archivos SVG por un componente propio: el blog pesa 22 kB más y aun así fue la decisión correcta](https://portfolio.edwintrigos.workers.dev/#blog/article/figuras-interactivas-en-lugar-de-svg): Published 2026-11-17 (ES/EN).
 - [Once rondas de revisión con AI no reemplazan diez minutos de un usuario](https://portfolio.edwintrigos.workers.dev/#blog/article/once-rondas-de-revision-no-son-un-usuario): Published 2026-11-17 (ES/EN). Essay.
 - [Publica lo que mediste, no lo que sabes](https://portfolio.edwintrigos.workers.dev/#blog/article/publica-lo-que-mediste): Published 2026-11-17 (ES/EN). Essay.
 - [Ordena las hipótesis por lo que cuesta refutarlas, no por lo probables que parecen](https://portfolio.edwintrigos.workers.dev/#blog/article/ordena-las-hipotesis-por-costo-de-refutar): Published 2026-11-17 (ES/EN). Essay.

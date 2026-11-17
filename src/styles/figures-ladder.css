@@ -1,0 +1,132 @@
+/* Styles of one batch of figure renderers. Imported unlayered from src/index.css, after figures.css. */
+
+/* ── ladder ──
+   An ordered stack of rungs. The first rung comes first in the document; a
+   ladder that climbs only reverses how the column is drawn. */
+.fig .fig-ladder {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 0.75rem;
+}
+.fig .fig-ladder:has(> .fig-ladder-axis) {
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 0.625rem;
+}
+.fig .fig-ladder-rungs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fig .fig-ladder[data-layout='stack'][data-direction='up'] .fig-ladder-rungs { flex-direction: column-reverse; }
+.fig .fig-ladder-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+}
+.fig .fig-ladder-item::before,
+.fig .fig-ladder-item::marker { content: none; }
+.fig .fig-ladder-xaxis,
+.fig .fig-ladder-note { grid-column: 1 / -1; }
+
+/* The arrow beside the stack: a shaft as tall as the rungs, drawn towards its head. */
+.fig .fig-ladder-axis {
+  display: flex;
+  align-items: stretch;
+  gap: 0.25rem;
+  color: var(--color-ink-muted);
+}
+.fig .fig-ladder-axis-label {
+  align-self: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+}
+.fig .fig-ladder-arrow {
+  display: flex;
+  flex-direction: column;
+  width: 12px;
+}
+.fig .fig-ladder[data-direction='down'] .fig-ladder-arrow { transform: rotate(180deg); }
+.fig .fig-ladder-arrow svg {
+  display: block;
+  flex: none;
+}
+.fig .fig-ladder-arrow .fig-ladder-shaft {
+  flex: 1 1 0;
+  min-height: 0;
+}
+.fig .fig-ladder-arrow line {
+  stroke: currentColor;
+  stroke-width: 2;
+}
+.fig .fig-ladder-arrow path { fill: currentColor; }
+
+/* A rung as a box. Emphasis is the outline and its thick edge; the text stays in ink. */
+.fig .fig-ladder-rung {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.625rem 0.75rem;
+  border: 2px solid var(--color-ink);
+  background: var(--color-paper);
+  overflow-wrap: anywhere;
+}
+.fig .fig-ladder-rung[data-style='dashed'] { border: 2px dashed var(--color-ink-muted); }
+.fig .fig-ladder-rung[data-style='filled'] { background: var(--color-paper-dark); }
+.fig .fig-ladder-rung[data-style='accent'] {
+  border-color: var(--color-accent);
+  border-left-width: 0.75rem;
+  background: var(--color-paper-dark);
+}
+.fig .fig-ladder-title { font-weight: 700; }
+.fig .fig-ladder-number { margin-right: 0.5ch; }
+.fig .fig-ladder-text { color: var(--color-ink-light); }
+.fig .fig-ladder-detail { color: var(--color-ink-muted); }
+.fig .fig-ladder-strong { font-weight: 700; }
+
+.fig .fig-ladder-group { font-weight: 700; }
+.fig .fig-ladder-item:has(> .fig-ladder-group):not(:first-child) { margin-top: 0.75rem; }
+.fig .fig-ladder-note { color: var(--color-ink-muted); }
+
+/* Ranked: the bar's length only says "more". Narrow, the label sits over its
+   bar; wide, beside it. */
+.fig .fig-ladder-ranked {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.25rem;
+}
+.fig .fig-ladder-bar {
+  flex: none;
+  width: calc(var(--v) * 100%);
+  height: 1.5rem;
+  background: var(--color-ink);
+}
+.fig .fig-ladder-bar[data-tone='accent'] { background: var(--color-accent); }
+.fig .fig-ladder-label { overflow-wrap: anywhere; }
+/* The axis under the bars: a rule as long as the longest bar may be, and what "longer" means. */
+.fig .fig-ladder-xaxis {
+  padding-top: 0.375rem;
+  border-top: 2px solid var(--color-ink);
+  color: var(--color-ink-muted);
+}
+@container fig (min-width: 30rem) {
+  .fig .fig-ladder-ranked {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .fig .fig-ladder-bar {
+    width: calc(var(--v) * 42%);
+    height: 2rem;
+  }
+  .fig .fig-ladder-label {
+    flex: 1;
+    min-width: 0;
+  }
+  .fig .fig-ladder-xaxis { width: 42%; }
+}

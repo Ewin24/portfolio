@@ -49,7 +49,7 @@ Cunningham dice que cada minuto gastado en código que no está del todo bien cu
 
 Para pensar el costo uso este dibujo.
 
-![Dos líneas de costo acumulado en el tiempo. La corrección de raíz sube una sola vez al inicio y queda plana. El arreglo que funciona empieza casi en cero y sube un escalón con cada copia, hasta superar a la corrección.](blog/figures/workaround-cost-es.svg "Esquema conceptual, no datos medidos. La corrección cuesta una vez; el arreglo cuesta poco y vuelve a costar con cada copia.")
+![Dos líneas de costo acumulado en el tiempo. La corrección de raíz sube una sola vez al inicio y queda plana. El arreglo que funciona empieza casi en cero y sube un escalón con cada copia, hasta superar a la corrección.](figure/workaround-cost "Esquema conceptual, no datos medidos. La corrección cuesta una vez; el arreglo cuesta poco y vuelve a costar con cada copia.")
 
 La corrección de raíz cuesta mucho una vez, porque hay que entender la causa y entender es la parte cara. Después su costo queda plano. El arreglo cuesta casi nada el primer día y sube un escalón con cada copia: una línea más que mantener, una persona más que la aprendió como norma, un lugar más donde el defecto quedó tapado.
 
@@ -124,7 +124,7 @@ Cunningham says the interest is counted in time: "Every minute spent on not-quit
 
 This is the sketch I use to think about the cost.
 
-![Two lines of cumulative cost over time. The root fix rises once at the start and stays flat. The workaround starts near zero and climbs one step with every copy, until it passes the fix.](blog/figures/workaround-cost-en.svg "Conceptual sketch, not measured data. The fix costs once; the workaround costs little and then costs again with every copy.")
+![Two lines of cumulative cost over time. The root fix rises once at the start and stays flat. The workaround starts near zero and climbs one step with every copy, until it passes the fix.](figure/workaround-cost "Conceptual sketch, not measured data. The fix costs once; the workaround costs little and then costs again with every copy.")
 
 The root fix costs a lot once, because you have to understand the cause, and understanding is the expensive part. After that its cost stays flat. The workaround costs almost nothing on day one and climbs a step with every copy: one more line to maintain, one more person who learned it as the norm, one more place where the defect is covered.
 

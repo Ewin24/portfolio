@@ -39,7 +39,7 @@ Lo que sí tengo es una regla que nació de chocar con ese tope. En otro proyect
 
 Pienso la ventana como una barra con cuatro renglones de gasto y un resto.
 
-![Dos barras del mismo ancho representan la misma ventana de contexto. En la de arriba, archivos leídos y salida de herramientas ocupan casi todo y casi no queda espacio libre. En la de abajo las instrucciones miden lo mismo, lo demás es mucho más corto y el espacio libre ocupa la mitad.](blog/figures/context-budget-window-es.svg "Esquema conceptual, no datos medidos. La misma ventana con todo adentro, y con solo lo que la tarea usa.")
+![Dos barras del mismo ancho representan la misma ventana de contexto. En la de arriba, archivos leídos y salida de herramientas ocupan casi todo y casi no queda espacio libre. En la de abajo las instrucciones miden lo mismo, lo demás es mucho más corto y el espacio libre ocupa la mitad.](figure/context-budget-window "Esquema conceptual, no datos medidos. La misma ventana con todo adentro, y con solo lo que la tarea usa.")
 
 Las instrucciones son lo estable: reglas y definiciones de herramientas, lo que se repite igual en cada turno. Los archivos leídos y la salida de herramientas son lo que crece sin que nadie lo escriba. La conversación es el historial. El resto es el espacio que le queda al modelo para trabajar en lo que le pedí. La barra de abajo es la misma tarea con las jugadas de la sección siguiente. El dibujo no tiene números porque no tengo mediciones de mis propias sesiones.
 
@@ -47,7 +47,7 @@ Ese presupuesto se cobra en dos monedas. Una es dinero: tokens de entrada en cad
 
 Para la primera moneda hay un dato del proveedor que ordena lo demás.
 
-![Cuatro barras horizontales con múltiplos del precio base de entrada: entrada normal 1, escritura en caché de 5 minutos 1.25, escritura en caché de 1 hora 2, lectura de caché 0.1.](blog/figures/context-budget-cache-es.svg "Múltiplos del precio base de entrada, leídos en la documentación de caché de prompts de Anthropic en noviembre de 2026. Algunos modelos tienen un múltiplo de lectura menor.")
+![Cuatro barras horizontales con múltiplos del precio base de entrada: entrada normal 1, escritura en caché de 5 minutos 1.25, escritura en caché de 1 hora 2, lectura de caché 0.1.](figure/context-budget-cache "Múltiplos del precio base de entrada, leídos en la documentación de caché de prompts de Anthropic en noviembre de 2026. Algunos modelos tienen un múltiplo de lectura menor.")
 
 A noviembre de 2026, la [documentación de caché de prompts](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) dice que leer de caché un prefijo ya enviado cuesta 0.1 veces el precio base de entrada (menos en algunos modelos) y que escribirlo cuesta 1.25 veces con vida de cinco minutos. También dice cómo se arma el prefijo: herramientas, después sistema, después mensajes, y un cambio en un nivel invalida ese nivel y los que siguen. La página trae su propio contraejemplo: una marca de hora dentro del bloque marcado para caché cambia en cada petición, la caché nunca acierta y se paga escritura todas las veces. Los números van a cambiar. La diferencia de tamaño entre leer y volver a enviar explica por qué lo estable va primero.
 
@@ -114,7 +114,7 @@ What I do have is a rule that came out of hitting that ceiling. On another proje
 
 I picture the window as a bar with four spending lines and a remainder.
 
-![Two bars of the same width stand for the same context window. In the top one, files read and tool output take almost everything and hardly any free space is left. In the bottom one the instructions are the same size, the rest is much shorter and free space takes half the bar.](blog/figures/context-budget-window-en.svg "Conceptual sketch, not measured data. The same window with everything in it, and with only what the task uses.")
+![Two bars of the same width stand for the same context window. In the top one, files read and tool output take almost everything and hardly any free space is left. In the bottom one the instructions are the same size, the rest is much shorter and free space takes half the bar.](figure/context-budget-window "Conceptual sketch, not measured data. The same window with everything in it, and with only what the task uses.")
 
 The instructions are the stable part: rules and tool definitions, the things repeated unchanged on every turn. Files read and tool output are what grows without anybody writing it. The conversation is the history. The remainder is the room the model has left to work on what I asked for. The bottom bar is the same task after the moves in the next section. The sketch has no numbers because I have no measurements of my own sessions.
 
@@ -122,7 +122,7 @@ That budget is charged in two currencies. One is money: input tokens on every tu
 
 For the first currency there is one piece of vendor data that puts the rest in order.
 
-![Four horizontal bars with multiples of the base input price: normal input 1, 5-minute cache write 1.25, 1-hour cache write 2, cache read 0.1.](blog/figures/context-budget-cache-en.svg "Multiples of the base input price, read in Anthropic's prompt caching documentation in November 2026. Some models have a lower cache read multiple.")
+![Four horizontal bars with multiples of the base input price: normal input 1, 5-minute cache write 1.25, 1-hour cache write 2, cache read 0.1.](figure/context-budget-cache "Multiples of the base input price, read in Anthropic's prompt caching documentation in November 2026. Some models have a lower cache read multiple.")
 
 As of November 2026, the [prompt caching documentation](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) says that reading an already-sent prefix from cache costs 0.1 times the base input price (less on some models) and that writing it costs 1.25 times with a five-minute lifetime. It also says how the prefix is assembled: tools, then system, then messages, and a change at one level invalidates that level and everything after it. The page carries its own counterexample: a timestamp inside the block marked for caching changes on every request, the cache never hits, and you pay for a write every time. The numbers will change. The size of the gap between reading and resending is why the stable material goes first.
 

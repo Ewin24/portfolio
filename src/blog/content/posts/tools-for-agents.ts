@@ -47,7 +47,7 @@ En DevManager, un producto propio que tiene un agente adentro, estas decisiones 
 
 Para saber dónde mirar divido una llamada en cuatro momentos.
 
-![Tabla de los cuatro pasos de una llamada a herramienta: elegir, llenar, leer y corregir. Para cada paso, el texto que lee el modelo y la forma en que falla.](blog/figures/agent-tools-steps-es.svg "Esquema conceptual, no datos medidos. En cada paso el modelo tiene un solo texto delante, y ese texto lo escribió quien diseñó la herramienta.")
+![Tabla de los cuatro pasos de una llamada a herramienta: elegir, llenar, leer y corregir. Para cada paso, el texto que lee el modelo y la forma en que falla.](figure/agent-tools-steps "Esquema conceptual, no datos medidos. En cada paso el modelo tiene un solo texto delante, y ese texto lo escribió quien diseñó la herramienta.")
 
 La utilidad del dibujo es que "el modelo falla con las herramientas" deja de ser un diagnóstico. Si llama a la herramienta equivocada, hay que mirar el nombre y la descripción. Si llama a la correcta con un valor inventado, el parámetro. Si llama bien y responde mal, lo que se le devolvió. Si repite la misma llamada fallida, el error. Los cuatro textos tienen autor, y no es el modelo.
 
@@ -55,7 +55,7 @@ La utilidad del dibujo es que "el modelo falla con las herramientas" deja de ser
 
 Estas son cuatro decisiones que se pueden tomar esta semana sobre una herramienta que ya existe. El dibujo las junta en un ejemplo inventado para ilustrar; no es código de ningún sistema.
 
-![Dos columnas comparan la misma herramienta en nombre, parámetros, resultado y error: get_tasks, que envuelve el endpoint, contra buscar_tareas_atrasadas, hecha para la tarea.](blog/figures/agent-tools-contrast-es.svg "Esquema conceptual, no datos medidos. La misma capacidad con dos interfaces: la izquierda describe el endpoint, la derecha describe la tarea.")
+![Dos columnas comparan la misma herramienta en nombre, parámetros, resultado y error: get_tasks, que envuelve el endpoint, contra buscar_tareas_atrasadas, hecha para la tarea.](figure/agent-tools-contrast "Esquema conceptual, no datos medidos. La misma capacidad con dos interfaces: la izquierda describe el endpoint, la derecha describe la tarea.")
 
 **1. Nombrar la herramienta por la tarea, no por el endpoint**
 
@@ -120,7 +120,7 @@ In DevManager, a product of my own with an agent inside it, I made these decisio
 
 To know where to look, I split a call into four moments.
 
-![Table of the four steps of a tool call: pick, fill, read and recover. For each step, the text the model reads and the way it fails.](blog/figures/agent-tools-steps-en.svg "Conceptual sketch, not measured data. At each step the model has one piece of text in front of it, and whoever designed the tool wrote that text.")
+![Table of the four steps of a tool call: pick, fill, read and recover. For each step, the text the model reads and the way it fails.](figure/agent-tools-steps "Conceptual sketch, not measured data. At each step the model has one piece of text in front of it, and whoever designed the tool wrote that text.")
 
 The sketch earns its place by making "the model is bad with tools" stop being a diagnosis. If it calls the wrong tool, look at the name and the description. If it calls the right one with a made-up value, look at the parameter. If it calls correctly and answers badly, look at what came back. If it repeats the same failed call, look at the error. All four texts have an author, and it is not the model.
 
@@ -128,7 +128,7 @@ The sketch earns its place by making "the model is bad with tools" stop being a 
 
 These are four decisions you can make this week about a tool that already exists. The figure puts them together in an example invented for illustration; it is not code from any system.
 
-![Two columns compare the same tool by name, parameters, result and error: get_tasks, which wraps the endpoint, against find_overdue_tasks, built for the task.](blog/figures/agent-tools-contrast-en.svg "Conceptual sketch, not measured data. The same capability behind two interfaces: the left one describes the endpoint, the right one describes the task.")
+![Two columns compare the same tool by name, parameters, result and error: get_tasks, which wraps the endpoint, against find_overdue_tasks, built for the task.](figure/agent-tools-contrast "Conceptual sketch, not measured data. The same capability behind two interfaces: the left one describes the endpoint, the right one describes the task.")
 
 **1. Name the tool for the task, not for the endpoint**
 

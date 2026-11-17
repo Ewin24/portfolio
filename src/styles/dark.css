@@ -101,9 +101,10 @@ html[data-theme='dark'] {
   color: color-mix(in srgb, var(--tech) 40%, #FFFFFF) !important;
 }
 
-/* ── Article figures ──
-   The figures are SVG files loaded through <img> with light paper baked in,
-   so they cannot follow the theme. They stay light framed cards; a paper
+/* ── Article images ──
+   Interactive figures (src/blog/figures) draw with the tokens and follow the
+   theme by themselves. This rule is for a plain image placed in an article:
+   it cannot follow the theme, so it stays a light framed card, and a paper
    backdrop keeps any transparent margin light as well. */
 [data-theme='dark'] .blog-article-body figure img {
   background-color: #FAFAF5;

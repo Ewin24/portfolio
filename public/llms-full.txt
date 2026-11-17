@@ -71,6 +71,15 @@ What an AI agent produces is bounded by the check it works against, and not by h
 
 ---
 
+### Reemplacé 40 archivos SVG por un componente propio: el blog pesa 22 kB más y aun así fue la decisión correcta
+https://portfolio.edwintrigos.workers.dev/#blog/article/figuras-interactivas-en-lugar-de-svg
+
+**Published**: 2026-11-17 | **Language**: ES/EN | **English title**: I Replaced 40 SVG Files With an In-House Component: the Blog Got 22 kB Heavier and It Was Still the Right Call
+
+The 21 figures on this blog were 40 hand-written SVG files: they ignored the dark theme, shrank on a phone, and nearly all of them existed twice, once per language. I replaced them with an in-house component that draws from a typed description and plays step by step. Total JavaScript and CSS after gzip went from 444,549 to 466,634 bytes. This case study covers what those 22,085 bytes bought, why a chart library was the wrong tool, and how the work was split among AI agents.
+
+---
+
 ### Once rondas de revisión con AI no reemplazan diez minutos de un usuario
 https://portfolio.edwintrigos.workers.dev/#blog/article/once-rondas-de-revision-no-son-un-usuario
 
