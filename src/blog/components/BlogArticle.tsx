@@ -1,13 +1,46 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { motion } from 'motion/react'
 import { ArrowLeft, ArrowRight, Calendar, Check, Clock } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useBlogContext } from '../context/BlogContext'
 import { parseMarkdown } from '../content/parser'
+import { Figure } from '../figures/Figure'
 import { markRead, readLabel } from '../readState'
 import { Recommendations } from './Recommendations'
 import { ReadingModeToggle } from './ReadingModeToggle'
 import { ShareLinks } from './ShareLinks'
+
+/**
+ * The article prose: one element whose children are the parser's HTML, which
+ * is what the prose styles select on. Interactive figures are portalled into
+ * the mount nodes the parser left, so they live in the app's React tree
+ * (language, theme) without becoming children of the prose in React's eyes.
+ *
+ * The parent keys this by article and language: new HTML means a new element
+ * and fresh mounts, never portals pointing at nodes innerHTML has replaced.
+ * The element is kept in state, not a ref, so the mounts are found on the
+ * render that follows its attachment.
+ */
+function ArticleBody({ html }: { html: string }) {
+  const [body, setBody] = useState<HTMLDivElement | null>(null)
+  // React 19 writes innerHTML again whenever this object changes identity,
+  // even with the same string, and that would replace the mount nodes under
+  // the portals. One object per HTML string keeps them.
+  const inner = useMemo(() => ({ __html: html }), [html])
+  const mounts = useMemo(
+    () => (body ? [...body.querySelectorAll<HTMLElement>('figure[data-figure] > .figure-mount')] : []),
+    [body],
+  )
+  return (
+    <>
+      <div ref={setBody} className="blog-article-body" dangerouslySetInnerHTML={inner} />
+      {mounts.map((mount, i) =>
+        createPortal(<Figure id={mount.parentElement?.dataset.figure ?? ''} alt={mount.dataset.alt ?? ''} />, mount, String(i)),
+      )}
+    </>
+  )
+}
 
 /**
  * Full article view with micromark rendering, prev/next navigation and
@@ -142,10 +175,7 @@ export function BlogArticle() {
         </div>
 
         {/* Body — micromark HTML, styled by .blog-article-body in index.css */}
-        <div
-          className="blog-article-body"
-          dangerouslySetInnerHTML={{ __html: parseMarkdown(content) }}
-        />
+        <ArticleBody key={`${post.id}-${lang}`} html={parseMarkdown(content)} />
 
         {/* Share — offered once the piece has been read, reading mode included. */}
         <div className="mt-10">
