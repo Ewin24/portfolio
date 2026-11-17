@@ -1,6 +1,6 @@
 /**
- * Essay promotion: the featured essays block, the Essays quick filter, and what
- * the build emits so a shared link carries its own preview (feed.xml, one share
+ * Essay promotion: the home essays block (the series showcase), the blog's
+ * Essays tab, and what the build emits so a shared link carries its own preview (feed.xml, one share
  * page per post, sitemap entries, the RSS <link>).
  *
  *   node driver/promo.mjs              page checks against BASE_URL
@@ -47,8 +47,12 @@ const TAG = 'testing'
 
 // ─── Page checks ─────────────────────────────────────────────────────────────
 
-const listTitles = (page) =>
-  page.evaluate(() => [...document.querySelectorAll('#blog article h3')].map((h) => h.textContent.trim()))
+/** The cards of the blog list, by slug, so they compare with the sources. */
+const listSlugs = (page) =>
+  page.evaluate(() => [...document.querySelectorAll('#blog article[data-slug]')].map((a) => a.dataset.slug))
+
+/** A tab of the blog (all, essays, technical). */
+const blogTab = (page, key) => page.locator(`#blog [role="tab"][data-blog-tab="${key}"]`)
 
 async function featuredCards(page) {
   return page.evaluate(() =>
@@ -56,9 +60,7 @@ async function featuredCards(page) {
       .filter((c) => c.offsetParent !== null)
       .map((c) => ({
         slug: c.dataset.essaySlug,
-        title: c.querySelector('h3')?.textContent.trim() ?? '',
-        excerpt: c.querySelector('p')?.textContent.trim() ?? '',
-        date: c.querySelector('time')?.getAttribute('datetime') ?? '',
+        title: c.querySelector('a')?.textContent.trim() ?? '',
         text: c.textContent,
         href: c.querySelector('a')?.getAttribute('href') ?? '',
       })),
@@ -91,44 +93,51 @@ async function pageChecks() {
         check(`[${lang}] featured block has a one-line description`, (block?.deck.length ?? 0) > 10)
         check(`[${lang}] featured block sits immediately before the blog list`, block?.nextId === 'blog', block?.nextId)
 
+        // The block is the series showcase: its eight parts, each an essay, each with title and reading time.
         const cards = await featuredCards(page)
-        check(`[${lang}] three featured cards on desktop`, cards.length === Math.min(3, ESSAY_SLUGS.size), String(cards.length))
+        check(`[${lang}] the block lists the eight parts of the series`, cards.length === 8, String(cards.length))
         check(`[${lang}] every featured card is an essay`, cards.length > 0 && cards.every((c) => ESSAY_SLUGS.has(c.slug)), JSON.stringify(cards.map((c) => c.slug)))
         check(
-          `[${lang}] every featured card has title, excerpt, date and reading time`,
-          cards.length > 0 && cards.every((c) => c.title && c.excerpt.length > 20 && /^\d{4}-\d{2}-\d{2}$/.test(c.date) && /\d+ min/.test(c.text)),
+          `[${lang}] every featured card has a title and a reading time`,
+          cards.length > 0 && cards.every((c) => c.title && /\d+ min/.test(c.text)),
         )
+        const essaySlugs = [...ESSAY_SLUGS].sort()
+        const showAll = async () => {
+          // The list pages its cards; expand it before comparing.
+          await page.getByRole('button', { name: lang === 'es' ? 'Mostrar todos' : 'Show all' }).click({ timeout: 1500 }).catch(() => {})
+          await page.waitForTimeout(400)
+        }
 
-        await page.click('#essays [data-essays-toggle]').catch(() => {})
-        const all = await featuredCards(page)
-        check(`[${lang}] every essay is reachable from the block`, all.length === ESSAY_SLUGS.size && all.every((c) => ESSAY_SLUGS.has(c.slug)), `${all.length}/${ESSAY_SLUGS.size}`)
-        const essayTitles = all.map((c) => c.title).sort()
-
-        // Essays quick filter
-        const initial = await listTitles(page)
-        const toggle = page.locator('#blog [data-filter-essays]')
-        check(`[${lang}] essays filter is labelled`, (await toggle.textContent().catch(() => ''))?.trim() === (lang === 'es' ? 'Ensayos' : 'Essays'))
+        // The Essays tab (it replaced the essays quick filter)
+        const initial = await listSlugs(page)
+        const toggle = blogTab(page, 'essays')
+        check(`[${lang}] essays filter is labelled`, (await toggle.evaluate((el) => el.firstChild.textContent.trim()).catch(() => '')) === (lang === 'es' ? 'Ensayos' : 'Essays'))
         await toggle.click({ timeout: 3000 }).catch(() => {})
         await page.waitForTimeout(400)
-        // The list pages at six cards; with more essays than that, expand it before comparing.
-        await page.getByRole('button', { name: lang === 'es' ? 'Mostrar todos' : 'Show all' }).click({ timeout: 1500 }).catch(() => {})
-        await page.waitForTimeout(400)
-        const filtered = await listTitles(page)
-        check(`[${lang}] essays filter leaves only essays`, filtered.length > 0 && JSON.stringify([...filtered].sort()) === JSON.stringify(essayTitles), JSON.stringify(filtered))
-        check(`[${lang}] essays filter reports its state`, (await toggle.getAttribute('aria-pressed').catch(() => null)) === 'true')
-        await toggle.click({ timeout: 3000 }).catch(() => {})
+        await showAll()
+        const filtered = await listSlugs(page)
+        check(`[${lang}] essays filter leaves only essays`, filtered.length > 0 && JSON.stringify([...filtered].sort()) === JSON.stringify(essaySlugs), JSON.stringify(filtered))
+        check(`[${lang}] essays filter reports its state`, (await toggle.getAttribute('aria-selected').catch(() => null)) === 'true')
+        await blogTab(page, 'all').click({ timeout: 3000 }).catch(() => {})
         await page.waitForTimeout(400)
         // "Show all" stays on, so the restored list is the unfiltered one in full: it starts
         // with the cards that were there before the filter and is no longer essays only.
-        const restored = await listTitles(page)
+        const restored = await listSlugs(page)
         check(
           `[${lang}] toggling the essays filter off restores the list`,
-          JSON.stringify(restored.slice(0, initial.length)) === JSON.stringify(initial) && restored.length > essayTitles.length,
+          JSON.stringify(restored.slice(0, initial.length)) === JSON.stringify(initial) && restored.length > essaySlugs.length,
           `${restored.length} cards`,
         )
 
+        // Every essay, in the series or not, is one link away from the block.
+        await page.click('#essays [data-all-essays]').catch(() => {})
+        await page.waitForTimeout(600)
+        await showAll()
+        const all = await listSlugs(page)
+        check(`[${lang}] every essay is reachable from the block`, JSON.stringify([...all].sort()) === JSON.stringify(essaySlugs), `${all.length}/${ESSAY_SLUGS.size}`)
+
         // Open an article from the block
-        const first = all[0]
+        const first = cards[0]
         await page.click(`#essays [data-essay-slug="${first?.slug}"] a`).catch(() => {})
         await page.waitForFunction((t) => document.querySelector('h1')?.textContent?.includes(t), first?.title, { timeout: 10_000 }).catch(() => {})
         const s = await page.evaluate(() => ({ h1: document.querySelector('h1')?.textContent ?? '', hash: location.hash }))
@@ -142,20 +151,20 @@ async function pageChecks() {
       const showAll = async () => {
         await page.getByRole('button', { name: 'Mostrar todos' }).click({ timeout: 1500 }).catch(() => {})
         await page.waitForTimeout(400)
-        return listTitles(page)
+        return listSlugs(page)
       }
       const withTag = POSTS.filter((p) => p.tags.includes(TAG))
       const both = withTag.filter((p) => p.category === 'ensayo')
       const tagOnly = await showAll()
       check('tag filter alone lists every post with the tag', tagOnly.length === withTag.length, `${tagOnly.length}/${withTag.length}`)
-      await page.click('#blog [data-filter-essays]', { timeout: 3000 }).catch(() => {})
+      await blogTab(page, 'essays').click({ timeout: 3000 }).catch(() => {})
       const composed = await showAll()
       check(
         'essays filter composes with the tag filter',
         both.length > 0 && both.length < withTag.length && composed.length === both.length && composed.every((t) => tagOnly.includes(t)),
         `${composed.length}/${both.length}`,
       )
-      await page.click('#blog [data-filter-essays]', { timeout: 3000 }).catch(() => {})
+      await blogTab(page, 'all').click({ timeout: 3000 }).catch(() => {})
       check('toggling essays off keeps the tag filter', (await showAll()).length === withTag.length)
     } finally { await ctx.close() }
   } finally {

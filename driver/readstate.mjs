@@ -81,7 +81,7 @@ async function openArticle(page, slug) {
 async function openList(page, lang) {
   await go(page, '#blog')
   // The outgoing view fades out next to the incoming one: wait until one set of filters is left.
-  await page.waitForFunction(() => document.querySelectorAll('#blog [data-filter-essays]').length === 1 && !document.querySelector('.blog-full'), null, { timeout: 10_000 })
+  await page.waitForFunction(() => document.querySelectorAll('#blog [role="tablist"]').length === 1 && !document.querySelector('.blog-full'), null, { timeout: 10_000 })
   await page.waitForTimeout(500)
   await showAll(page, lang)
 }
@@ -340,7 +340,7 @@ async function run() {
         let slugs = await listSlugs(page)
         check(`[${lang}] (6) Unread leaves only unread articles`, slugs.length === total - 2 && !slugs.includes(essay) && !slugs.includes(technical), `${slugs.length}/${total}`)
 
-        const essays = page.locator('#blog [data-filter-essays]')
+        const essays = page.locator('#blog [role="tab"][data-blog-tab="essays"]')
         await essays.click()
         await page.waitForTimeout(400)
         await showAll(page, lang)
@@ -351,7 +351,7 @@ async function run() {
         const allEssays = await listSlugs(page)
         check(`[${lang}] (6) Unread composes with the Essays filter`,
           allEssays.includes(essay) && unreadEssays.length < allEssays.length && j(unreadEssays) === j(allEssays.filter((s) => s !== essay && s !== technical)), `${unreadEssays.length} of ${allEssays.length}`)
-        await essays.click()
+        await page.locator('#blog [role="tab"][data-blog-tab="all"]').click()
         await toggle.click()
 
         await tagChip(page, lang).click()
@@ -404,7 +404,7 @@ async function run() {
     {
       const probe = await open(browser)
       const row = await probe.page.evaluate(() =>
-        [...document.querySelectorAll('#blog article[data-slug]')].slice(0, 3).map((el) => ({ slug: el.dataset.slug, h: el.getBoundingClientRect().height, top: Math.round(el.getBoundingClientRect().top) })))
+        [...document.querySelectorAll('#blog [data-blog-grid] article[data-slug]')].slice(0, 3).map((el) => ({ slug: el.dataset.slug, h: el.getBoundingClientRect().height, top: Math.round(el.getBoundingClientRect().top) })))
       const essay = await probe.page.evaluate(() => document.querySelector('#essays [data-essay-slug]')?.dataset.essaySlug)
       const essayRow = await probe.page.evaluate(() => [...document.querySelectorAll('#essays [data-essay-slug]')].slice(0, 3).map((el) => el.getBoundingClientRect().height))
       await probe.ctx.close()
@@ -417,10 +417,10 @@ async function run() {
         const { ctx, page, errors } = await open(browser, { seed: { ...seed, 'portfolio-theme': theme } })
         try {
           const now = await page.evaluate(() =>
-            [...document.querySelectorAll('#blog article[data-slug]')].slice(0, 3).map((el) => ({ slug: el.dataset.slug, state: el.dataset.readState, h: el.getBoundingClientRect().height, top: Math.round(el.getBoundingClientRect().top) })))
+            [...document.querySelectorAll('#blog [data-blog-grid] article[data-slug]')].slice(0, 3).map((el) => ({ slug: el.dataset.slug, state: el.dataset.readState, h: el.getBoundingClientRect().height, top: Math.round(el.getBoundingClientRect().top) })))
           check(`[${theme}] (8) one row holds a started, a read and an unread card`,
             j(now.map((c) => c.state)) === j(['started', 'read', 'unread']) && new Set(now.map((c) => c.top)).size === 1, j(now))
-          // The row is uneven before anything is read (titles of one or two lines), so compare the pair that was level.
+          // The row is level before anything is read; it must still be with a read card in it.
           check(`[${theme}] (8) a read card and the unread card beside it, level before, are the same height`,
             row[1].h === row[2].h && now[1].h === now[2].h, `before ${j(row.map((c) => c.h))}, now ${j(now.map((c) => c.h))}`)
           check(`[${theme}] (8) no card changed height by being read or started`, j(now.map((c) => c.h)) === j(row.map((c) => c.h)), `${j(row.map((c) => c.h))} → ${j(now.map((c) => c.h))}`)
