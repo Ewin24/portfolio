@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { X, ChevronDown } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useBlogContext } from '../context/BlogContext'
+import { useReadSnapshot } from '../readState'
 import type { BlogTag } from '../types'
 
 // ─── Tag definitions (themed) ──────────────────────────────────────────────
@@ -26,7 +27,9 @@ const CATEGORIES = ['arquitectura', ESSAY]
 
 export function BlogFilters() {
   const { lang } = useTranslation()
-  const { filter, setFilter, clearFilters } = useBlogContext()
+  const { posts, filter, setFilter, clearFilters, unreadOnly, setUnreadOnly } = useBlogContext()
+  const readState = useReadSnapshot()
+  const readCount = posts.filter((p) => readState.stateOf(p.slug) === 'read').length
   const [showCategory, setShowCategory] = useState(false)
   const [showDateRange, setShowDateRange] = useState(false)
 
@@ -167,6 +170,19 @@ export function BlogFilters() {
           {lang === 'es' ? 'Ensayos' : 'Essays'}
         </button>
 
+        {/* Unread: composes with every other filter */}
+        <button
+          data-filter-unread
+          aria-pressed={unreadOnly}
+          onClick={() => setUnreadOnly(!unreadOnly)}
+          className={`
+            skill-tag text-xs font-bold uppercase cursor-pointer transition-all duration-75
+            ${unreadOnly ? 'bg-ink text-paper hover:bg-ink hover:text-paper' : ''}
+          `}
+        >
+          {lang === 'es' ? 'No leídos' : 'Unread'}
+        </button>
+
         {/* Tag chips */}
         <div className="flex flex-wrap gap-1.5">
           {BLOG_TAGS.map((tag) => {
@@ -282,6 +298,17 @@ export function BlogFilters() {
             )}
           </AnimatePresence>
         </div>
+
+        {/* How much of the blog the reader has finished */}
+        <p data-read-counter role="status" className="read-counter md:ml-auto">
+          {readCount === 0
+            ? lang === 'es'
+              ? `Aún no has leído ninguno de ${posts.length}`
+              : `You have not read any of ${posts.length} yet`
+            : lang === 'es'
+              ? `Leíste ${readCount} de ${posts.length}`
+              : `You have read ${readCount} of ${posts.length}`}
+        </p>
       </div>
     </div>
   )

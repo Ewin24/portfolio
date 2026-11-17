@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion } from 'motion/react'
-import { ArrowLeft, ArrowRight, Calendar, Check, Clock } from 'lucide-react'
+import { ArrowDown, ArrowLeft, ArrowRight, Calendar, Check, Clock } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useBlogContext } from '../context/BlogContext'
 import { parseMarkdown } from '../content/parser'
 import { Figure } from '../figures/Figure'
-import { markRead, readLabel } from '../readState'
+import { finishReading, flushProgress, getSnapshot, readLabel, saveProgress, useReadSnapshot } from '../readState'
+import { ReadMark } from './ReadMark'
 import { Recommendations } from './Recommendations'
 import { ReadingModeToggle } from './ReadingModeToggle'
 import { ShareLinks } from './ShareLinks'
@@ -42,6 +43,12 @@ function ArticleBody({ html }: { html: string }) {
   )
 }
 
+/** How long the end of the body must stay reached before the article counts as read. */
+const DWELL_MS = 1500
+
+/** After this long the scroll position is the reader's own, wherever it is. */
+const SETTLE_MS = 1500
+
 /**
  * Full article view with micromark rendering, prev/next navigation and
  * scroll restoration (fixes bug #3). Prose styles live in index.css.
@@ -68,19 +75,83 @@ export function BlogArticle() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [post?.id])
 
-  // Opening an article is what marks it read, however the reader got here
-  // (list, direct link, prev/next, recommendations). `markRead` keeps the
-  // first date; the state bump only makes the read line below appear.
+  // Opening an article makes it STARTED, however the reader got here (list,
+  // direct link, prev/next, recommendations). It becomes READ when the end of
+  // its body is reached and stays reached for a moment: a sentinel after the
+  // body, which also covers an article shorter than the viewport. Until then
+  // the furthest point reached is saved, to offer it back on the next visit.
   const slug = post?.slug
-  const [, setMarked] = useState<string | null>(null)
+  const readState = useReadSnapshot()
+  const sentinelRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
-    if (!slug) return
-    markRead(slug)
-    // The read line is read from storage during render, so ask for one more
-    // render on the next frame, once the mark exists.
-    const frame = requestAnimationFrame(() => setMarked(slug))
-    return () => cancelAnimationFrame(frame)
+    const sentinel = sentinelRef.current
+    if (!slug || !sentinel || getSnapshot().stateOf(slug) === 'read') return
+    saveProgress(slug, 0)
+
+    // Arriving from another view, the window is still wherever that one was
+    // left while it scrolls back to the top. Nothing counts until it gets
+    // there, or until enough time has passed for the position to be the reader's.
+    let armed = false
+    let reached = false
+    let dwell: ReturnType<typeof setTimeout> | undefined
+
+    const evaluate = () => {
+      const rect = sentinel.previousElementSibling?.getBoundingClientRect()
+      if (!rect) return
+      armed ||= window.scrollY < 8
+      if (!armed) return
+
+      const span = rect.height - window.innerHeight
+      if (span > 0) saveProgress(slug, -rect.top / span)
+
+      if (!reached) {
+        clearTimeout(dwell)
+        dwell = undefined
+      } else {
+        dwell ??= setTimeout(() => finishReading(slug), DWELL_MS)
+      }
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      // On screen, or already scrolled past.
+      reached = entry.isIntersecting || entry.boundingClientRect.top < 0
+      evaluate()
+    })
+    observer.observe(sentinel)
+    window.addEventListener('scroll', evaluate, { passive: true })
+    evaluate()
+    const settle = setTimeout(() => {
+      armed = true
+      evaluate()
+    }, SETTLE_MS)
+
+    return () => {
+      clearTimeout(settle)
+      clearTimeout(dwell)
+      observer.disconnect()
+      window.removeEventListener('scroll', evaluate)
+      flushProgress()
+    }
   }, [slug])
+
+  // Where the reader left this article, as it was when it was opened. Offered,
+  // never applied: the reader decides whether to jump.
+  const [resume, setResume] = useState(() => ({ slug, at: slug ? getSnapshot().progressOf(slug) : null }))
+  if (resume.slug !== slug) setResume({ slug, at: slug ? readState.progressOf(slug) : null })
+
+  const handleResume = () => {
+    const rect = sentinelRef.current?.previousElementSibling?.getBoundingClientRect()
+    if (!rect || resume.at === null) return
+    window.scrollTo({
+      top: window.scrollY + rect.top + resume.at * Math.max(0, rect.height - window.innerHeight),
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    })
+    setResume({ slug, at: null })
+  }
+
+  const content = post ? (lang === 'es' ? post.content : post.contentEn) : ''
+  const html = useMemo(() => parseMarkdown(content), [content])
 
   const handleBack = () => {
     // Use pushState + manual hashchange to avoid browser's native scroll-to-anchor,
@@ -108,9 +179,11 @@ export function BlogArticle() {
   }
 
   const title = lang === 'es' ? post.title : post.titleEn
-  const content = lang === 'es' ? post.content : post.contentEn
   const backLabel = lang === 'es' ? 'Volver a artículos' : 'Back to articles'
-  const readMark = readLabel(post.slug, lang)
+  const readMark = readState.stateOf(post.slug) === 'read' ? readLabel(post.slug, lang) : null
+  // Gone once used, once the reader scrolls past that point, or once read.
+  const resumePercent = Math.round((resume.at ?? 0) * 100)
+  const canResume = resumePercent > 0 && (readState.progressOf(post.slug) ?? 1) <= (resume.at ?? 0) + 0.01
 
   return (
     <motion.div
@@ -167,6 +240,15 @@ export function BlogArticle() {
           )}
         </div>
 
+        {canResume && (
+          <div className="mb-6">
+            <button data-continue onClick={handleResume} className="px-btn px-btn-outline flex items-center gap-2">
+              <ArrowDown size={14} aria-hidden="true" />
+              {lang === 'es' ? 'Continuar donde quedaste' : 'Continue where you left off'} · {resumePercent} %
+            </button>
+          </div>
+        )}
+
         {/* Tags — hidden in reading mode. */}
         <div data-reading-hide className="flex flex-wrap gap-1.5 mb-8">
           {post.tags.map((tag) => (
@@ -175,7 +257,9 @@ export function BlogArticle() {
         </div>
 
         {/* Body — micromark HTML, styled by .blog-article-body in index.css */}
-        <ArticleBody key={`${post.id}-${lang}`} html={parseMarkdown(content)} />
+        <ArticleBody key={`${post.id}-${lang}`} html={html} />
+        {/* Directly after the body: reaching it is reaching the end. */}
+        <div ref={sentinelRef} data-read-sentinel aria-hidden="true" />
 
         {/* Share — offered once the piece has been read, reading mode included. */}
         <div className="mt-10">
@@ -191,14 +275,17 @@ export function BlogArticle() {
           {prevPost ? (
             <button
               onClick={handlePrev}
+              data-nav-slug={prevPost.slug}
+              data-read-state={readState.stateOf(prevPost.slug)}
               className="flex-1 flex flex-col items-start gap-1 px-card px-card-sm px-card-interactive bg-paper p-4 text-left cursor-pointer"
             >
               <span className="font-mono text-[10px] uppercase tracking-wider text-ink-muted flex items-center gap-1">
                 <ArrowLeft size={10} /> {lang === 'es' ? 'Anterior' : 'Previous'}
               </span>
-              <span className="font-headline text-sm font-bold text-ink leading-tight line-clamp-2">
+              <span data-read-title className="font-headline text-sm font-bold text-ink leading-tight line-clamp-2">
                 {lang === 'es' ? prevPost.title : prevPost.titleEn}
               </span>
+              <ReadMark slug={prevPost.slug} variant="inline" />
             </button>
           ) : (
             <div className="flex-1" />
@@ -207,14 +294,17 @@ export function BlogArticle() {
           {nextPost ? (
             <button
               onClick={handleNext}
+              data-nav-slug={nextPost.slug}
+              data-read-state={readState.stateOf(nextPost.slug)}
               className="flex-1 flex flex-col items-end gap-1 px-card px-card-sm px-card-interactive bg-paper p-4 text-right cursor-pointer"
             >
               <span className="font-mono text-[10px] uppercase tracking-wider text-ink-muted flex items-center gap-1">
                 {lang === 'es' ? 'Siguiente' : 'Next'} <ArrowRight size={10} />
               </span>
-              <span className="font-headline text-sm font-bold text-ink leading-tight line-clamp-2">
+              <span data-read-title className="font-headline text-sm font-bold text-ink leading-tight line-clamp-2">
                 {lang === 'es' ? nextPost.title : nextPost.titleEn}
               </span>
+              <ReadMark slug={nextPost.slug} variant="inline" />
             </button>
           ) : (
             <div className="flex-1" />

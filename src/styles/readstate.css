@@ -1,1 +1,115 @@
 /* Imported unlayered from src/index.css. */
+
+/* ── Reading state ──
+   A card that offers an article carries `data-read-state` (unread, started,
+   read) and holds a `.read-mark` (src/blog/components/ReadMark.tsx). Nothing
+   here applies to an unread card, so with nothing read the page is unchanged. */
+
+/* A read title steps back: muted ink, 5.09:1 on paper, 6.6:1 in the dark theme. */
+[data-read-state='read'] :is(h3, h4, [data-read-title]) {
+  color: var(--color-ink-muted);
+}
+
+.read-mark {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+/* The stamp is `.ink-stamp` from index.css, with the worn-ink filter that
+   ReadMark.tsx adds to the document (the original lives in the experience
+   section, which is not mounted next to an open article). */
+.read-mark .ink-stamp {
+  font-size: 0.75rem;
+  filter: url(#read-ink-wear);
+}
+
+/* Corner: stamped over the top right corner of the card, out of the flow, so
+   a read card is exactly as tall as the unread one beside it. */
+[data-read-state]:has(> .read-mark-corner, > * > .read-mark-corner) {
+  position: relative;
+}
+
+.read-mark-corner {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.5rem;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* The stamp sits on a patch of paper of its own, so it reads over the tags it
+   lands on. The patch is outside the worn-ink filter, which would pit it. */
+.read-mark-corner[data-read-mark] {
+  padding: 4px;
+  background: var(--color-paper);
+  rotate: -5deg;
+}
+
+.read-mark-corner .ink-stamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  line-height: 1.15;
+  rotate: none;
+  mix-blend-mode: normal;
+}
+
+.read-mark-corner .read-mark-date {
+  letter-spacing: 0.04em;
+}
+
+/* Inline: the stamp, then the date as secondary text. */
+.read-mark-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+  color: var(--color-ink-muted);
+}
+
+.read-mark-inline .ink-stamp {
+  padding: 0.1rem 0.4rem;
+  rotate: -4deg;
+}
+
+/* Started: a label and a hard-edged bar, never the stamp. */
+.read-mark-started {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.25rem;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.read-mark-corner.read-mark-started {
+  padding: 0.25rem 0.45rem;
+  background: var(--color-paper);
+  border: 2px solid var(--color-rule);
+}
+
+.read-mark-bar {
+  position: relative;
+  height: 4px;
+  min-width: 4rem;
+  background: var(--color-rule-light);
+}
+
+.read-mark-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+}
+
+/* ── Blog filters: the counter ── */
+.read-counter {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+}

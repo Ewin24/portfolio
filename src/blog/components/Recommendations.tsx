@@ -4,6 +4,8 @@ import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../../components/ui/FadeIn'
 import { useBlogContext } from '../context/BlogContext'
 import { useRecommendations } from '../hooks/useRecommendations'
+import { useReadSnapshot } from '../readState'
+import { ReadMark } from './ReadMark'
 import type { BlogPost } from '../types'
 
 interface Props {
@@ -19,6 +21,7 @@ export function Recommendations({ currentPost }: Props) {
   const { posts } = useBlogContext()
 
   const recommendations = useRecommendations(currentPost, posts, 3)
+  const readState = useReadSnapshot()
 
   // Don't render if fewer than 2 total posts (spec BR-5)
   if (posts.length < 2) return null
@@ -50,6 +53,8 @@ export function Recommendations({ currentPost }: Props) {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: i * 0.08 }}
+                data-rec-slug={post.slug}
+                data-read-state={readState.stateOf(post.slug)}
                 className="px-card px-card-sm px-card-interactive bg-paper flex flex-col"
               >
                 <button
@@ -74,6 +79,8 @@ export function Recommendations({ currentPost }: Props) {
                   <p className="font-sans text-[11px] text-ink-light leading-relaxed line-clamp-2 flex-1">
                     {excerpt}
                   </p>
+
+                  <ReadMark slug={post.slug} variant="inline" />
 
                   {/* Read link */}
                   <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-accent hover:text-accent-dark flex items-center gap-1 mt-auto pt-2 transition-colors">
