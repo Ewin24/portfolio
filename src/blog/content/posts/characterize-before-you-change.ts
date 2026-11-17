@@ -73,7 +73,7 @@ La analogía que propongo es esta. El procedimiento documentado dice lo que el p
 
 **3. Equipos**
 
-Aquí no tengo evidencia documentada y prefiero decirlo. Lo que sigue es argumento. [EDWIN: confirm si tienes un caso real de heredar o dirigir un equipo que ya existía; si no lo hay, esta sección se queda como argumento o se recorta.]
+Aquí no tengo evidencia documentada y prefiero decirlo. Lo que sigue es argumento.
 
 Un equipo heredado también tiene comportamiento actual: quién decide qué sin que nadie se lo haya asignado, a quién se le pregunta cuando algo se rompe, qué acuerdos se cumplen sin estar escritos. El organigrama cumple el papel de la documentación. La versión de la regla sería: antes de reorganizar, escribe cómo se toman hoy las decisiones y muéstraselo al equipo para que lo corrija. Esa última parte no tiene equivalente en el código, y ahí la analogía se debilita. Un método no cambia porque lo observes ni le importa lo que escribas sobre él. Una persona sí.
 
@@ -148,7 +148,7 @@ The analogy I propose is this. The documented procedure says what the process sh
 
 **3. Teams**
 
-Here I have no documented evidence and I would rather say so. What follows is argument. [EDWIN: confirm whether you have a real case of inheriting or leading a team that already existed; if there is none, this section stays as argument or gets cut.]
+Here I have no documented evidence and I would rather say so. What follows is argument.
 
 An inherited team also has current behavior: who decides what without anyone having assigned it, who gets asked when something breaks, which agreements are kept without being written anywhere. The org chart plays the role of the documentation. The rule would read: before reorganizing, write down how decisions get made today and show it to the team so they can correct it. That last part has no equivalent in code, and it is where the analogy weakens. A method does not change because you observe it, and it does not care what you write about it. A person does.
 

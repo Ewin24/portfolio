@@ -71,7 +71,7 @@ Mis cinco segundos simulan el tiempo que en producción separa los dos pasos. No
 
 **3. Darle dueño a la corrección**
 
-No apliqué la corrección de fondo en ese momento. El procedimiento tenía cambios sin publicar de otra persona, y editar encima habría mezclado dos trabajos en el mismo archivo. La dejé registrada como pendiente, con la medición y la línea exacta, para quien era dueño del archivo. Ese registro es lo que convierte el gasto en deuda en el sentido de Cunningham: ahora tiene monto y tiene a quién cobrársela. [EDWIN: confirm si la corrección de una línea se aplicó después, y cuánto tiempo pasó]
+No apliqué la corrección de fondo en ese momento. El procedimiento tenía cambios sin publicar de otra persona, y editar encima habría mezclado dos trabajos en el mismo archivo. La dejé registrada como pendiente, con la medición y la línea exacta, para quien era dueño del archivo. Ese registro es lo que convierte el gasto en deuda en el sentido de Cunningham: ahora tiene monto y tiene a quién cobrársela.
 
 **4. Preguntar qué tapa la línea que se repite**
 
@@ -146,7 +146,7 @@ My five seconds simulate the time that separates the two steps in production. Th
 
 **3. Give the fix an owner**
 
-I did not apply the root fix at the time. The procedure had someone else's unpublished changes in it, and editing on top would have mixed two pieces of work in one file. I recorded it as pending, with the measurement and the exact line, for the owner of that file. That record is what turns the spending into debt in Cunningham's sense: it now has an amount and someone to collect from. [EDWIN: confirm whether the one-line fix was applied later, and how long it took]
+I did not apply the root fix at the time. The procedure had someone else's unpublished changes in it, and editing on top would have mixed two pieces of work in one file. I recorded it as pending, with the measurement and the exact line, for the owner of that file. That record is what turns the spending into debt in Cunningham's sense: it now has an amount and someone to collect from.
 
 **4. Ask what the repeated line is covering**
 

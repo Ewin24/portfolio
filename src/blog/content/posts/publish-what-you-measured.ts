@@ -77,11 +77,9 @@ Lo que no sirve es el punto medio: una cifra redonda sin origen, puesta porque u
 
 **Dónde puedo estar equivocado**
 
-El punto más débil es el que anuncié al principio. La tesis dice que el caso medido gana más confianza, y la confianza se nota en lo que la gente hace después de leer: escribir, llamar, contratar. Sobre eso este ensayo no reporta nada. Aquí iría el dato:
+El punto más débil es el que anuncié al principio. La tesis dice que el caso medido gana más confianza, y la confianza se nota en lo que la gente hace después de leer: escribir, llamar, contratar. Sobre eso este ensayo no reporta nada.
 
-[EDWIN: confirmar si el portafolio ha traído contactos o clientes, y cuántos]
-
-Mientras ese espacio esté vacío, lo que hay es un argumento sobre verificabilidad y no un resultado sobre ventas. Son dos cosas distintas, y la segunda no se deduce de la primera.
+Lo que hay, entonces, es un argumento sobre verificabilidad y no un resultado sobre ventas. Son dos cosas distintas, y la segunda no se deduce de la primera.
 
 Hay otras tres objeciones que me tomo en serio.
 
@@ -156,11 +154,9 @@ What does not work is the middle ground: a round figure with no origin, added be
 
 **Where this could be wrong**
 
-The weakest point is the one I flagged at the start. The thesis says the measured case earns more trust, and trust shows up in what people do after reading: write, call, hire. This essay reports nothing about that. The data point would go here:
+The weakest point is the one I flagged at the start. The thesis says the measured case earns more trust, and trust shows up in what people do after reading: write, call, hire. This essay reports nothing about that.
 
-[EDWIN: confirm whether the portfolio has brought contacts or clients, and how many]
-
-As long as that slot is empty, what you have is an argument about checkability and not a result about sales. Those are different things, and the second does not follow from the first.
+What you have, then, is an argument about checkability and not a result about sales. Those are different things, and the second does not follow from the first.
 
 There are three more objections I take seriously.
 

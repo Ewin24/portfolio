@@ -35,8 +35,6 @@ Dicho así, "verificar es el cuello de botella" suena a problema de capacidad: f
 
 Tengo un caso propio para esa diferencia. En DevManager, un SaaS multi-tenant que sigo desarrollando, cerré un módulo con unas 400 pruebas en verde sobre el proveedor InMemory de EF Core. La pieza delicada era la confirmación de una propuesta: una sola transacción, y si dos aprobaciones llegan juntas, una gana y la otra recibe un 409. Las pruebas pasaban. Pero InMemory no implementa transacciones, bloqueos ni índices únicos como lo hace SQL Server, así que las tres garantías que el diseño prometía, atomicidad, exclusión mutua y unicidad, no se ejercitaban en ninguna prueba. Cuando un verificador independiente corrió sondas contra un SQL Server real, con conexiones separadas, encontró tres bloqueadores que la suite no podía ver: un problema de bloqueos, una carrera entre dos operaciones que escribían la misma fila y un hueco en el rollback. El detalle técnico está en [Las pruebas InMemory mienten sobre las transacciones](#blog/article/pruebas-inmemory-mienten-sobre-transacciones).
 
-[EDWIN: confirma si ese verificador independiente era un agente de AI o una persona, y si el módulo se escribió con un asistente. El borrador no afirma ninguna de las dos cosas.]
-
 Lo que me importa de ese caso no es EF Core. Es la forma del fallo. La suite no mentía sobre la lógica de negocio: la validaba bien. Mentía por omisión sobre todo lo que dependía del motor, y lo hacía con el mismo color verde que usaba para lo demás. Nada en el reporte separaba lo que se midió de lo que pasó porque el sustituto no sabe fallar.
 
 No es un caso aislado en mi trabajo. En otro proyecto escribí la prueba obvia para un atributo de autorización: instanciar el controlador, llamar al método, revisar el resultado. Pasó a la primera y no probaba nada, porque ese atributo solo lo evalúa el middleware y una llamada directa al método nunca lo atraviesa. Y en ReaderSS llegué a 426 pruebas, cerca del 95 % de cobertura y once rondas de revisión adversarial, para luego encontrar, en cinco minutos de usar la aplicación, dos defectos que la volvían inservible. El hallazgo más caro de ese proyecto fue que los fixtures de prueba omitían una cabecera que el servicio real escribe en sus respuestas: con esa omisión, toda una clase de fallo era imposible de probar.
@@ -68,8 +66,6 @@ Base de datos en memoria, cliente HTTP simulado, reloj falso, fixture escrito a 
 **2. Al cerrar una entrega, escribe qué no probaste**
 
 En DevManager, la nota de cierre del módulo decía que la concurrencia y el rollback contra el motor real seguían sin probar. Esa frase fue la que señaló dónde poner la siguiente verificación. Cuando el volumen de código crece, esa nota importa más, porque es el único lugar donde la brecha queda por escrito.
-
-[EDWIN: confirma si le exiges esa nota de lo no probado a los agentes de AI con los que trabajas.]
 
 **3. No silencies al sustituto cuando avisa**
 
@@ -114,8 +110,6 @@ Put that way, "verification is the bottleneck" sounds like a capacity problem: n
 
 I have a case of my own for that difference. In DevManager, a multi-tenant SaaS I keep building, I closed a module with about 400 green tests on the EF Core InMemory provider. The delicate piece was confirming a proposal: a single transaction, and if two approvals arrive together, one wins and the other gets a 409. The tests passed. But InMemory does not implement transactions, locks, or unique indexes the way SQL Server does, so the three guarantees the design promised, atomicity, mutual exclusion and uniqueness, were exercised by no test at all. When an independent verifier ran probes against a real SQL Server, on separate connections, it found three blockers the suite could not see: a locking problem, a race between two operations writing the same row, and a rollback gap. The technical detail is in [InMemory Tests Lie About Transactions](#blog/article/pruebas-inmemory-mienten-sobre-transacciones).
 
-[EDWIN: confirm whether that independent verifier was an AI agent or a person, and whether the module was written with an assistant. The draft claims neither.]
-
 What matters to me in that case is not EF Core. It is the shape of the failure. The suite did not lie about business logic: it validated that well. It lied by omission about everything that depended on the engine, and it did so in the same shade of green it used for everything else. Nothing in the report separated what was measured from what passed because the stand-in does not know how to fail.
 
 It is not a one-off in my work. On another project I wrote the obvious test for an authorization attribute: instantiate the controller, call the method, check the result. It passed on the first run and proved nothing, because that attribute is only ever evaluated by the middleware, and a direct method call never goes through it. And on ReaderSS I got to 426 tests, about 95% coverage and eleven rounds of adversarial review, and then found, in five minutes of using the app, two defects that made it unusable. The most expensive finding on that project was that the test fixtures left out a header the real service writes on its responses: with that omission, a whole class of failure was impossible to test.
@@ -147,8 +141,6 @@ In-memory database, mocked HTTP client, fake clock, hand-written fixture. For ea
 **2. When you close a delivery, write down what you did not test**
 
 In DevManager, the module's closing note said that concurrency and rollback against the real engine were still untested. That sentence is what pointed to where the next verification had to go. As code volume grows, the note matters more, because it is the only place where the gap exists in writing.
-
-[EDWIN: confirm whether you require that not-tested note from the AI agents you work with.]
 
 **3. Do not silence the stand-in when it warns you**
 

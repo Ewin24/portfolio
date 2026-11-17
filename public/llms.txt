@@ -5,6 +5,11 @@
 Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, LLM tool calling, SSE, Cloudflare Workers, IndexedDB, Playwright, Vitest.
 
 ## Blog — Technical Architecture Articles
+- [Publica lo que mediste, no lo que sabes](https://portfolio.edwintrigos.workers.dev/#blog/article/publica-lo-que-mediste): Published 2026-11-17 (ES/EN). Essay.
+- [Ordena las hipótesis por lo que cuesta refutarlas, no por lo probables que parecen](https://portfolio.edwintrigos.workers.dev/#blog/article/ordena-las-hipotesis-por-costo-de-refutar): Published 2026-11-17 (ES/EN). Essay.
+- [Antes de cambiar lo que heredaste, escribe lo que hace hoy](https://portfolio.edwintrigos.workers.dev/#blog/article/antes-de-cambiar-lo-que-heredaste): Published 2026-11-17 (ES/EN). Essay.
+- [Con AI, el cuello de botella son tus pruebas, no tu código](https://portfolio.edwintrigos.workers.dev/#blog/article/con-ai-el-cuello-de-botella-son-tus-pruebas): Published 2026-11-17 (ES/EN). Essay.
+- [El arreglo que funciona es la forma más cara de no decidir](https://portfolio.edwintrigos.workers.dev/#blog/article/el-arreglo-que-funciona-no-decide): Published 2026-11-17 (ES/EN). Essay.
 - [AsyncLocal<T> no sube al llamador: dos logs que no podían ser ciertos a la vez](https://portfolio.edwintrigos.workers.dev/#blog/article/asynclocal-no-sube-al-llamador): Published 2026-11-10 (ES/EN).
 - [Las pruebas InMemory mienten sobre las transacciones](https://portfolio.edwintrigos.workers.dev/#blog/article/pruebas-inmemory-mienten-sobre-transacciones): Published 2026-11-07 (ES/EN).
 - [Pruebas de caracterización antes de refactorizar: fijar lo que el código hace, no lo que debería hacer](https://portfolio.edwintrigos.workers.dev/#blog/article/pruebas-caracterizacion-antes-de-refactorizar): Published 2026-11-03 (ES/EN).
