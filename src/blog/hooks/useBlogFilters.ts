@@ -12,8 +12,11 @@ export function applyBlogFilters(posts: BlogPost[], filter: BlogFilter): BlogPos
       if (!filter.tags.every((tag) => post.tags.includes(tag))) return false
     }
 
-    // Category exact match
-    if (filter.category && post.category !== filter.category) return false
+    // Category exact match, or everything but it for `!category`
+    if (filter.category) {
+      const except = filter.category.startsWith('!')
+      if ((post.category === filter.category.slice(except ? 1 : 0)) === except) return false
+    }
 
     // Date range (inclusive)
     if (filter.dateRange) {

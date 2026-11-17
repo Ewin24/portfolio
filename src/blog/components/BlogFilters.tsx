@@ -4,7 +4,7 @@ import { X, ChevronDown } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useBlogContext } from '../context/BlogContext'
 import { useReadSnapshot } from '../readState'
-import type { BlogTag } from '../types'
+import { ESSAY_CATEGORY, TAB_CATEGORY, type BlogTag } from '../types'
 
 // ─── Tag definitions (themed) ──────────────────────────────────────────────
 
@@ -18,10 +18,7 @@ const BLOG_TAGS: BlogTag[] = [
   { name: 'design patterns', label: 'Design Patterns', labelEn: 'Design Patterns', color: 'green' },
 ]
 
-/** The opinion essays' category; the quick filter below is a shortcut to it. */
-const ESSAY = 'ensayo'
-
-const CATEGORIES = ['arquitectura', ESSAY]
+const CATEGORIES = ['arquitectura', ESSAY_CATEGORY]
 
 // ─── Component ─────────────────────────────────────────────────────────────
 
@@ -33,7 +30,9 @@ export function BlogFilters() {
   const [showCategory, setShowCategory] = useState(false)
   const [showDateRange, setShowDateRange] = useState(false)
 
-  const activeCount = (filter.tags?.length ?? 0) + (filter.category ? 1 : 0) + (filter.dateRange ? 1 : 0)
+  // A category that is exactly a tab is shown by the tab (BlogTabs), not as a filter chip.
+  const category = Object.values(TAB_CATEGORY).includes(filter.category) ? null : filter.category
+  const activeCount = (filter.tags?.length ?? 0) + (category ? 1 : 0) + (filter.dateRange ? 1 : 0)
 
   // ─── Tag toggle ──────────────────────────────────────────────────────────
   const handleTagToggle = (tagName: string) => {
@@ -107,7 +106,7 @@ export function BlogFilters() {
             )
           })}
 
-          {filter.category && (
+          {category && (
             <motion.span
               key="cat-chip"
               initial={{ opacity: 0, scale: 0.9 }}
@@ -115,7 +114,7 @@ export function BlogFilters() {
               exit={{ opacity: 0, scale: 0.9 }}
               className="skill-tag text-[10px] flex items-center gap-1.5 pr-1"
             >
-              {filter.category}
+              {category}
               <button
                 onClick={() => handleCategorySelect(null)}
                 className="hover:text-accent transition-colors cursor-pointer"
@@ -157,19 +156,6 @@ export function BlogFilters() {
 
       {/* Filter controls row */}
       <div className="flex flex-wrap items-center gap-3">
-        {/* Essays quick filter: the category filter, one click away */}
-        <button
-          data-filter-essays
-          aria-pressed={filter.category === ESSAY}
-          onClick={() => handleCategorySelect(filter.category === ESSAY ? null : ESSAY)}
-          className={`
-            skill-tag text-[10px] font-bold uppercase cursor-pointer transition-all duration-75
-            ${filter.category === ESSAY ? 'bg-ink text-paper hover:bg-ink hover:text-paper' : ''}
-          `}
-        >
-          {lang === 'es' ? 'Ensayos' : 'Essays'}
-        </button>
-
         {/* Unread: composes with every other filter */}
         <button
           data-filter-unread
@@ -209,8 +195,8 @@ export function BlogFilters() {
             onClick={() => { setShowCategory(!showCategory); setShowDateRange(false) }}
             className="skill-tag text-[10px] flex items-center gap-1 cursor-pointer"
           >
-            {filter.category
-              ? filter.category
+            {category
+              ? category
               : lang === 'es'
                 ? 'Categoría'
                 : 'Category'}

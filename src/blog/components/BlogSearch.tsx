@@ -5,6 +5,7 @@ import MiniSearch from 'minisearch'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useBlogContext } from '../context/BlogContext'
 import { EmptyState } from './EmptyState'
+import { formatPostDate } from '../hooks/postDate'
 import type { BlogPost } from '../types'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -42,7 +43,7 @@ function useDebounce<T>(value: T, delay: number): T {
 
 export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
   const { lang } = useTranslation()
-  const { posts } = useBlogContext()
+  const { posts, setSearchQuery } = useBlogContext()
   const [query, setQuery] = useState(defaultQuery)
   const [results, setResults] = useState<BlogPost[]>([])
   const [isIndexed, setIsIndexed] = useState(false)
@@ -55,6 +56,11 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
   }, [defaultQuery])
 
   const debouncedQuery = useDebounce(query, 200)
+
+  // The list reads the query from the context: while searching it has no lead.
+  useEffect(() => {
+    setSearchQuery(query)
+  }, [query, setSearchQuery])
 
   // Build MiniSearch index on mount
   useEffect(() => {
@@ -180,7 +186,7 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
                           {highlightText(excerpt, debouncedQuery)}
                         </p>
                         <div className="flex items-center gap-2 mt-1.5">
-                          <span className="font-mono text-[10px] text-ink-muted">{post.date}</span>
+                          <span className="font-mono text-[10px] text-ink-muted">{formatPostDate(post.date, lang)}</span>
                           <span className="font-mono text-[10px] text-ink-muted">{post.readingTime} min</span>
                         </div>
                       </button>
