@@ -3,6 +3,8 @@
    discover the font request, which delays the headline face and causes a
    visible swap on the Hero masthead. */
 @import "tailwindcss";
+@import "./styles/dark.css";
+@import "./styles/reading.css";
 
 /* ─── Design Tokens — Pixel Art Newspaper ─────────────────────────────── */
 @theme {

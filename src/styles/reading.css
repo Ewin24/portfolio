@@ -1,0 +1,71 @@
+/* Blog reading mode and read marks. Imported unlayered from src/index.css. */
+
+/* ─── Reading mode controls ───────────────────────────────────────────────
+   Hard-edged pixel buttons with the house press: the shadow goes and the
+   button moves into its place. Colours are tokens only, so a theme that
+   redefines them (dark) restyles these for free.                          */
+.reading-btn {
+  box-shadow: var(--shadow-pixel-sm);
+  transition: transform 75ms, box-shadow 75ms, background-color 75ms, color 75ms;
+}
+
+.reading-btn:is(:hover, :active) {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the affordance, drop the displacement. */
+  .reading-btn:is(:hover, :active) { transform: none; }
+}
+
+/* ─── Reading mode ────────────────────────────────────────────────────────
+   `data-reading="on"` is set on <html> by ReadingModeToggle, only while an
+   article is open. Everything below is scoped under it.                   */
+
+/* Site chrome on the article page: the "back to portfolio" row and the blog
+   section masthead. The bar itself stays as a 3px strip so the reading
+   progress it positions keeps showing. */
+[data-reading='on'] .blog-full .chrome-bar > :not(.reading-progress),
+[data-reading='on'] .blog-full #blog > [data-opening-rank],
+[data-reading='on'] .blog-full [data-reading-hide] {
+  display: none;
+}
+
+[data-reading='on'] .blog-full .chrome-bar {
+  height: 3px;
+  border: 0;
+}
+
+[data-reading='on'] .blog-full #blog {
+  padding-block: 1.5rem 4rem;
+}
+
+/* The narrower, centred column. */
+[data-reading='on'] .blog-full #blog article:has(> .blog-article-body) {
+  max-width: 42rem;
+}
+
+[data-reading='on'] .blog-full #blog article > h1 {
+  font-size: clamp(1.875rem, 5vw, 2.75rem);
+}
+
+/* The way out stays in view for the whole article. */
+[data-reading='on'] .blog-full .reading-toolbar {
+  position: sticky;
+  top: 3px;
+  z-index: 40;
+  padding-block: 0.5rem;
+  background: var(--color-paper);
+  border-bottom: 1px solid var(--color-rule-light);
+}
+
+/* Text size steps. */
+[data-reading='on'] .blog-full .blog-article-body {
+  max-width: none;
+  line-height: 1.8;
+}
+
+[data-reading='on'][data-reading-size='1'] .blog-full .blog-article-body { font-size: 1rem; }
+[data-reading='on'][data-reading-size='2'] .blog-full .blog-article-body { font-size: 1.1875rem; }
+[data-reading='on'][data-reading-size='3'] .blog-full .blog-article-body { font-size: 1.375rem; }

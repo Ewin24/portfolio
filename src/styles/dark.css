@@ -1,0 +1,110 @@
+/* Dark variant of the newspaper theme. Imported unlayered from src/index.css.
+
+   Same layout, same type, same hard edges: only the paper and the ink trade
+   places. Everything here is scoped to [data-theme='dark'], so the light
+   newspaper and the XP desktop never see a single declaration.
+
+   Unlayered rules beat every @layer, so restating the @theme tokens is enough
+   to repaint the shared components. The rules after the token block correct
+   the few colours the tokens do not reach. */
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Warm near-black paper and off-white ink. Ratios against paper / paper-dark:
+     ink 15.1 / 13.8, ink-light 10.6 / 9.7, ink-muted 6.4 / 5.9,
+     accent 6.3 / 5.8. */
+  --color-paper:       #1A1815;   /* keep in sync with THEME_COLOR.dark in ThemeContext.tsx */
+  --color-paper-dark:  #24211D;   /* alternating bands, code blocks */
+  --color-ink:         #F2EEE3;
+  --color-ink-light:   #CFCABD;
+  --color-ink-muted:   #A39D8F;
+  --color-rule:        #F2EEE3;
+  --color-rule-light:  #4D483F;
+  --color-accent:      #FF6B5C;   /* the newspaper red, lifted to read on dark paper */
+  --color-accent-dark: #FF988C;   /* link hover: moves away from the paper, like the light theme */
+
+  /* Text on an ink-filled surface: ink is now light, so this is dark paper. */
+  --color-on-ink:      #1A1815;
+
+  /* Hard-edged, no blur. A mid warm grey reads as a step on dark paper
+     without the glare a full-ink shadow would have (4.0:1 against paper). */
+  --shadow-pixel-sm:  2px 2px 0px #8C8577;
+  --shadow-pixel:     4px 4px 0px #8C8577;
+  --shadow-pixel-lg:  6px 6px 0px #8C8577;
+  --shadow-pixel-xl:  8px 8px 0px #8C8577;
+
+  /* Paper tooth, inverted: the same noise tile, with the cream specks turned
+     down to a faint grain and the warm-ink specks left as the deeper pits. */
+  --texture-body:     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 7 0 0 0 -4.3'/%3E%3C/filter%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 .96 0 7 0 0 -4.3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23d)' opacity='.35'/%3E%3Crect width='180' height='180' filter='url(%23c)' opacity='.045'/%3E%3C/svg%3E");
+}
+
+/* Painted behind the page so an overscroll bounce never flashes white. */
+html[data-theme='dark'] {
+  background-color: #1A1815;
+}
+
+/* ── Pre-rendered crawler content ──
+   Until React mounts, #root holds a plain-HTML summary with an inline
+   #1a1a1a text colour, which is the paper colour here. */
+[data-theme='dark'] #ssr-content {
+  color: var(--color-ink) !important;
+}
+
+[data-theme='dark'] #ssr-content a {
+  color: var(--color-accent);
+}
+
+/* ── Text on an accent fill ──
+   The light theme writes white on its dark red. The dark theme's red is
+   light, so the text on it flips to paper (6.3:1). */
+[data-theme='dark'] ::selection {
+  color: var(--color-on-ink);
+}
+
+[data-theme='dark'] .px-badge-accent {
+  color: var(--color-on-ink);
+}
+
+/* ── Ink stamp ──
+   `multiply` sinks the red into dark paper until it disappears. `screen` is
+   its mirror: the stamp lightens the paper the way ink darkened it. */
+[data-theme='dark'] .ink-stamp {
+  mix-blend-mode: screen;
+}
+
+/* ── Hero ghost columns ──
+   Hero.tsx draws them with an inline #1A1A1A gradient, which is the paper
+   colour here. Inline style, hence !important. */
+[data-theme='dark'] .hero-columns {
+  background-image: linear-gradient(90deg, var(--color-ink) 1px, transparent 1px) !important;
+}
+
+/* ── Third-party brand colours ──
+   Skills.tsx tuned each brand colour to clear 3:1 against light paper. On
+   dark paper the same hues are lifted towards white instead; the chip keeps
+   a tint of the original. The icon colour is an inline style, hence
+   !important; a selected chip carries a class instead and is left alone. */
+[data-theme='dark'] .tech-chip {
+  background-color: color-mix(in srgb, var(--tech) 22%, transparent);
+}
+
+[data-theme='dark'] .tech-chip-strong {
+  background-color: color-mix(in srgb, var(--tech) 30%, transparent);
+}
+
+[data-theme='dark'] .tech-dot {
+  background-color: color-mix(in srgb, var(--tech) 45%, #FFFFFF);
+}
+
+[data-theme='dark'] .tech-chip > svg[style] {
+  color: color-mix(in srgb, var(--tech) 40%, #FFFFFF) !important;
+}
+
+/* ── Article figures ──
+   The figures are SVG files loaded through <img> with light paper baked in,
+   so they cannot follow the theme. They stay light framed cards; a paper
+   backdrop keeps any transparent margin light as well. */
+[data-theme='dark'] .blog-article-body figure img {
+  background-color: #FAFAF5;
+}
