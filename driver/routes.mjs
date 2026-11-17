@@ -61,6 +61,32 @@ async function run() {
       check('hashchange to #/blog/… in an open tab opens the article', s.h1.includes(TITLE), JSON.stringify(s))
       check('hashchange to #/blog/… ends on the canonical hash', s.hash === `#blog/article/${SLUG}`, s.hash)
     } finally { await ctx.close() }
+
+    // Previous/next swap the article in place and push a history entry without
+    // an event. The browser's Back must bring the earlier article back, not
+    // only its address, and the article left behind must not end up read
+    // because Back restored a scroll position near the end of the page.
+    {
+      const { ctx, page } = await newPage(browser, VIEWPORTS[2], 'en')
+      try {
+        await page.goto(`${BASE_URL}#blog/article/${SLUG}`, { waitUntil: 'networkidle' })
+        await articleState(page)
+        const next = page.locator('.blog-full nav button').last()
+        await next.scrollIntoViewIfNeeded()
+        await page.waitForTimeout(400)
+        await next.click()
+        await page.waitForFunction((t) => !document.querySelector('.blog-full h1')?.textContent?.includes(t), TITLE, { timeout: 10_000 }).catch(() => {})
+        const moved = await page.evaluate(() => ({ h1: document.querySelector('.blog-full h1')?.textContent ?? '', slug: location.hash.replace('#blog/article/', '') }))
+        check('next opens another article in place', !moved.h1.includes(TITLE) && moved.slug !== SLUG, JSON.stringify(moved))
+        await page.waitForTimeout(1200)
+        await page.goBack()
+        const back = await articleState(page)
+        check('browser Back after next shows the earlier article again', back.h1.includes(TITLE) && back.hash === `#blog/article/${SLUG}`, JSON.stringify(back))
+        await page.waitForTimeout(4000)
+        const read = await page.evaluate(() => localStorage.getItem('portfolio-read-posts') ?? '')
+        check('the article left behind is not marked read by going Back', !read.includes(moved.slug), read)
+      } finally { await ctx.close() }
+    }
   } finally {
     await browser.close()
   }
