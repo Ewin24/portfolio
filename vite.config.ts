@@ -87,7 +87,7 @@ function generatePreloadedContent(): string {
   })
 
   // Blog Articles — full excerpts
-  lines.push(`<h2>Technical Blog</h2>`)
+  lines.push(`<h2>Blog</h2>`)
   blogPosts.forEach((post) => {
     lines.push(
       `<article itemscope itemtype="https://schema.org/Article">`,
@@ -386,7 +386,7 @@ function generatePageWrapperSchemas(): string {
   const blogList = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Technical Blog',
+    name: 'Blog',
     description:
       'Bilingual technical blog on architecture decisions, design patterns, and production tradeoffs.',
     numberOfItems: blogPosts.length,

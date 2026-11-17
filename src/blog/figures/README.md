@@ -38,6 +38,12 @@ Honesty rules, unchanged: a conceptual figure says so in its caption ("Esquema
 conceptual, no datos medidos" / "Conceptual sketch, not measured data") and
 shows no numeric scale; a data figure names its source in its caption.
 
+## A still preview
+
+`<Figure id="…" alt="…" preview />` draws the figure at its last step with no player,
+no narration and no auto-play, as one image with the alt text as its name. The
+blog front uses it for the lead article. A renderer needs nothing extra for it.
+
 ## A description
 
 One file per article in `specs/`, named like the article's post file. Its
