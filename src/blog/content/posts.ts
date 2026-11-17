@@ -10,6 +10,14 @@ import { aiBottleneckIsYourTests } from './posts/ai-bottleneck-is-your-tests'
 import { characterizeBeforeYouChange } from './posts/characterize-before-you-change'
 import { hypothesesByCostToRefute } from './posts/hypotheses-by-cost-to-refute'
 import { publishWhatYouMeasured } from './posts/publish-what-you-measured'
+import { reviewRoundsAreNotAUser } from './posts/review-rounds-are-not-a-user'
+import { giveTheAgentSomethingThatFails } from './posts/give-the-agent-something-that-fails'
+import { aiProposesTransactionDecides } from './posts/ai-proposes-transaction-decides'
+import { yourNextReaderIsAModel } from './posts/your-next-reader-is-a-model'
+import { theHarnessDecides } from './posts/the-harness-decides'
+import { agentMemoryIsCuration } from './posts/agent-memory-is-curation'
+import { contextIsABudget } from './posts/context-is-a-budget'
+import { toolsForAgents } from './posts/tools-for-agents'
 
 function calcReadingTime(text: string): number {
   const words = text.split(/\s+/).length
@@ -4685,6 +4693,15 @@ Before touching anything I ran the full suite as a baseline, and after restoring
   inMemoryTestsLieAboutTransactions,
   asyncLocalDoesNotFlowBack,
   // Ensayos (category: ensayo): one file each under ./posts/
+  // Same-day posts keep array order after the date sort, so the newer batch goes first.
+  reviewRoundsAreNotAUser,
+  giveTheAgentSomethingThatFails,
+  aiProposesTransactionDecides,
+  yourNextReaderIsAModel,
+  theHarnessDecides,
+  agentMemoryIsCuration,
+  contextIsABudget,
+  toolsForAgents,
   workaroundThatWorks,
   aiBottleneckIsYourTests,
   characterizeBeforeYouChange,

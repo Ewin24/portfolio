@@ -1,10 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { ArrowLeft, ArrowRight, Calendar, Clock } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Calendar, Check, Clock } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useBlogContext } from '../context/BlogContext'
 import { parseMarkdown } from '../content/parser'
+import { markRead, readLabel } from '../readState'
 import { Recommendations } from './Recommendations'
+import { ReadingModeToggle } from './ReadingModeToggle'
+import { ShareLinks } from './ShareLinks'
 
 /**
  * Full article view with micromark rendering, prev/next navigation and
@@ -31,6 +34,20 @@ export function BlogArticle() {
     }
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [post?.id])
+
+  // Opening an article is what marks it read, however the reader got here
+  // (list, direct link, prev/next, recommendations). `markRead` keeps the
+  // first date; the state bump only makes the read line below appear.
+  const slug = post?.slug
+  const [, setMarked] = useState<string | null>(null)
+  useEffect(() => {
+    if (!slug) return
+    markRead(slug)
+    // The read line is read from storage during render, so ask for one more
+    // render on the next frame, once the mark exists.
+    const frame = requestAnimationFrame(() => setMarked(slug))
+    return () => cancelAnimationFrame(frame)
+  }, [slug])
 
   const handleBack = () => {
     // Use pushState + manual hashchange to avoid browser's native scroll-to-anchor,
@@ -60,6 +77,7 @@ export function BlogArticle() {
   const title = lang === 'es' ? post.title : post.titleEn
   const content = lang === 'es' ? post.content : post.contentEn
   const backLabel = lang === 'es' ? 'Volver a artículos' : 'Back to articles'
+  const readMark = readLabel(post.slug, lang)
 
   return (
     <motion.div
@@ -71,14 +89,20 @@ export function BlogArticle() {
       ref={articleRef}
     >
       <article className="max-w-4xl mx-auto">
-        {/* Back link */}
-        <button
-          onClick={handleBack}
-          className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors mb-6 cursor-pointer"
-        >
-          <ArrowLeft size={14} />
-          {backLabel}
-        </button>
+        {/* Back link + reading mode controls. Elements marked
+            `data-reading-hide` are hidden by src/styles/reading.css while
+            reading mode is on. */}
+        <div className="reading-toolbar flex flex-wrap items-center justify-between gap-3 mb-6">
+          <button
+            data-reading-hide
+            onClick={handleBack}
+            className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors cursor-pointer"
+          >
+            <ArrowLeft size={14} />
+            {backLabel}
+          </button>
+          <ReadingModeToggle />
+        </div>
 
         {/* Masthead style header */}
         <div className="border-t-4 border-rule mb-1" />
@@ -102,10 +126,16 @@ export function BlogArticle() {
           <span className="hidden md:inline font-mono text-[10px] text-ink-muted uppercase tracking-wider">
             Por Edwin Trigos
           </span>
+          {readMark && (
+            <span data-read-mark className="font-mono text-xs text-ink-muted flex items-center gap-1.5">
+              <Check size={12} aria-hidden="true" />
+              {readMark}
+            </span>
+          )}
         </div>
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5 mb-8">
+        {/* Tags — hidden in reading mode. */}
+        <div data-reading-hide className="flex flex-wrap gap-1.5 mb-8">
           {post.tags.map((tag) => (
             <span key={tag} className="skill-tag text-[10px]">{tag}</span>
           ))}
@@ -117,12 +147,17 @@ export function BlogArticle() {
           dangerouslySetInnerHTML={{ __html: parseMarkdown(content) }}
         />
 
+        {/* Share — offered once the piece has been read, reading mode included. */}
+        <div className="mt-10">
+          <ShareLinks post={post} />
+        </div>
+
         {/* Bottom rule */}
         <div className="border-t-4 border-rule mt-12 mb-1" />
         <div className="border-t border-rule mb-6" />
 
         {/* Prev / Next navigation (fixes bug #4) */}
-        <nav className="flex justify-between items-stretch gap-4 mb-10">
+        <nav data-reading-hide className="flex justify-between items-stretch gap-4 mb-10">
           {prevPost ? (
             <button
               onClick={handlePrev}
@@ -166,7 +201,9 @@ export function BlogArticle() {
         </button>
 
         {/* Recommendations */}
-        {post && <Recommendations currentPost={post} />}
+        <div data-reading-hide>
+          <Recommendations currentPost={post} />
+        </div>
       </article>
     </motion.div>
   )

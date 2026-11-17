@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>The layers of the harness around the model</title>
+  <desc>Conceptual sketch with no scale. Five nested rectangles surround a small box labelled model. From the outside in: how the work is split, rules it reads before writing, files and commands it may touch, checks its work must pass, when it stops and asks.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="420" fill="#FAFAF5" />
+
+  <!-- Five harness layers, outermost first. Each label sits in the band its layer leaves free. -->
+  <rect x="20" y="20" width="560" height="380" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <text x="34" y="44" font-size="14" fill="#1A1A1A">1 how the work is split</text>
+
+  <rect x="48" y="56" width="504" height="330" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <text x="62" y="80" font-size="14" fill="#1A1A1A">2 rules it reads before writing</text>
+
+  <rect x="76" y="92" width="448" height="280" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <text x="90" y="116" font-size="14" fill="#1A1A1A">3 files and commands it may touch</text>
+
+  <rect x="104" y="128" width="392" height="230" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <text x="118" y="152" font-size="14" fill="#1A1A1A">4 checks its work must pass</text>
+
+  <rect x="132" y="164" width="336" height="180" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <text x="146" y="188" font-size="14" fill="#1A1A1A">5 when it stops and asks</text>
+
+  <!-- The model: the small box in the middle, identified by its label and not only by color. -->
+  <rect x="210" y="212" width="180" height="96" fill="#F0EFE8" stroke="#C41E1E" stroke-width="2" />
+  <text x="300" y="256" text-anchor="middle" font-size="16" font-weight="700" fill="#1A1A1A">model</text>
+  <text x="300" y="282" text-anchor="middle" font-size="14" fill="#4A4A4A">what gets compared</text>
+</svg>

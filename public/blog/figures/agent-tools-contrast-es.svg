@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 406" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>La misma herramienta diseñada de dos maneras</title>
+  <desc>Dos columnas con cuatro filas cada una: nombre, parámetros, resultado y error. Columna izquierda, envuelve el endpoint: se llama get_tasks, recibe id, f y n sin decir de qué, devuelve todas las filas con ids internos y su error es 400 Bad Request. Columna derecha, hecha para la tarea: se llama buscar_tareas_atrasadas, recibe proyecto_id y dias_atraso con unidad y ejemplo, devuelve 20 filas, el total y cómo pedir las siguientes, y su error dice que proyecto_id no existe y que se use buscar_proyectos. Ejemplo ilustrativo, no datos medidos.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="406" fill="#FAFAF5" />
+  <rect x="20" y="20" width="275" height="38" fill="#F0EFE8" />
+  <rect x="305" y="20" width="275" height="38" fill="#F0EFE8" />
+
+  <!-- Row separators, recessive -->
+  <line x1="20" y1="140" x2="295" y2="140" stroke="#D0CFC8" stroke-width="2" />
+  <line x1="20" y1="222" x2="295" y2="222" stroke="#D0CFC8" stroke-width="2" />
+  <line x1="20" y1="304" x2="295" y2="304" stroke="#D0CFC8" stroke-width="2" />
+  <line x1="305" y1="140" x2="580" y2="140" stroke="#D0CFC8" stroke-width="2" />
+  <line x1="305" y1="222" x2="580" y2="222" stroke="#D0CFC8" stroke-width="2" />
+  <line x1="305" y1="304" x2="580" y2="304" stroke="#D0CFC8" stroke-width="2" />
+
+  <rect x="20" y="20" width="275" height="366" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <line x1="20" y1="58" x2="295" y2="58" stroke="#1A1A1A" stroke-width="2" />
+  <!-- Right column is identified by its header text, not only by the accent border. -->
+  <rect x="305" y="20" width="275" height="366" fill="none" stroke="#C41E1E" stroke-width="2" />
+  <line x1="305" y1="58" x2="580" y2="58" stroke="#C41E1E" stroke-width="2" />
+
+  <text x="32" y="44" font-size="14" font-weight="700" fill="#1A1A1A">ENVUELVE EL ENDPOINT</text>
+  <text x="317" y="44" font-size="14" font-weight="700" fill="#C41E1E">HECHA PARA LA TAREA</text>
+
+  <!-- Name -->
+  <text x="32" y="82" font-size="14" font-weight="700" fill="#6B6B6B">NOMBRE</text>
+  <text x="32" y="106" font-size="14" fill="#1A1A1A">get_tasks</text>
+  <text x="317" y="82" font-size="14" font-weight="700" fill="#6B6B6B">NOMBRE</text>
+  <text x="317" y="106" font-size="14" fill="#1A1A1A">buscar_tareas_atrasadas</text>
+
+  <!-- Parameters -->
+  <text x="32" y="164" font-size="14" font-weight="700" fill="#6B6B6B">PARÁMETROS</text>
+  <text x="32" y="188" font-size="14" fill="#1A1A1A">id, f, n</text>
+  <text x="32" y="208" font-size="14" fill="#4A4A4A">¿id de qué?</text>
+  <text x="317" y="164" font-size="14" font-weight="700" fill="#6B6B6B">PARÁMETROS</text>
+  <text x="317" y="188" font-size="14" fill="#1A1A1A">proyecto_id, dias_atraso</text>
+  <text x="317" y="208" font-size="14" fill="#4A4A4A">con unidad y ejemplo</text>
+
+  <!-- Result -->
+  <text x="32" y="246" font-size="14" font-weight="700" fill="#6B6B6B">RESULTADO</text>
+  <text x="32" y="270" font-size="14" fill="#1A1A1A">todas las filas,</text>
+  <text x="32" y="290" font-size="14" fill="#1A1A1A">ids internos</text>
+  <text x="317" y="246" font-size="14" font-weight="700" fill="#6B6B6B">RESULTADO</text>
+  <text x="317" y="270" font-size="14" fill="#1A1A1A">20 filas, el total y cómo</text>
+  <text x="317" y="290" font-size="14" fill="#1A1A1A">pedir las siguientes</text>
+
+  <!-- Error -->
+  <text x="32" y="328" font-size="14" font-weight="700" fill="#6B6B6B">ERROR</text>
+  <text x="32" y="352" font-size="14" fill="#1A1A1A">400 Bad Request</text>
+  <text x="317" y="328" font-size="14" font-weight="700" fill="#6B6B6B">ERROR</text>
+  <text x="317" y="352" font-size="14" fill="#1A1A1A">proyecto_id no existe;</text>
+  <text x="317" y="372" font-size="14" fill="#1A1A1A">usa buscar_proyectos</text>
+</svg>

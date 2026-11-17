@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>Dos ciclos de trabajo con un agente: con una descripción y con algo que falla</title>
+  <desc>Esquema conceptual, no datos medidos. Ciclo A: describir, generar, leer; se repite mientras alguien juzga si se parece y sale cuando alguien opina que ya está. Ciclo B: prueba en rojo, generar, ejecutar; se repite mientras siga en rojo y sale cuando el comando pasa.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="400" fill="#FAFAF5" />
+
+  <!-- Loop A: description -->
+  <text x="40" y="36" font-size="16" font-weight="700" fill="#1A1A1A">A. CON UNA DESCRIPCIÓN</text>
+  <rect x="40" y="56" width="130" height="44" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <rect x="235" y="56" width="130" height="44" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <rect x="430" y="56" width="130" height="44" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <text x="105" y="83" text-anchor="middle" font-size="14" fill="#1A1A1A">describir</text>
+  <text x="300" y="83" text-anchor="middle" font-size="14" fill="#1A1A1A">generar</text>
+  <text x="495" y="83" text-anchor="middle" font-size="14" fill="#1A1A1A">leer</text>
+  <line x1="170" y1="78" x2="226" y2="78" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="235,78 225,73 225,83" fill="#1A1A1A" />
+  <line x1="365" y1="78" x2="421" y2="78" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="430,78 420,73 420,83" fill="#1A1A1A" />
+  <!-- Back edge: read -> generate -->
+  <polyline points="495,100 495,130 300,130 300,109" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="300,100 295,110 305,110" fill="#1A1A1A" />
+  <text x="397" y="152" text-anchor="middle" font-size="14" fill="#4A4A4A">¿se parece? otra vuelta</text>
+  <text x="40" y="180" font-size="14" fill="#4A4A4A">Sale cuando alguien opina que ya está.</text>
+
+  <line x1="40" y1="202" x2="560" y2="202" stroke="#D0CFC8" stroke-width="2" />
+
+  <!-- Loop B: something that fails. The first box is marked by its text, not only by color. -->
+  <text x="40" y="238" font-size="16" font-weight="700" fill="#1A1A1A">B. CON ALGO QUE FALLA</text>
+  <rect x="40" y="258" width="130" height="44" fill="#F0EFE8" stroke="#C41E1E" stroke-width="2" />
+  <rect x="235" y="258" width="130" height="44" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <rect x="430" y="258" width="130" height="44" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <text x="105" y="285" text-anchor="middle" font-size="14" font-weight="700" fill="#C41E1E">prueba en rojo</text>
+  <text x="300" y="285" text-anchor="middle" font-size="14" fill="#1A1A1A">generar</text>
+  <text x="495" y="285" text-anchor="middle" font-size="14" fill="#1A1A1A">ejecutar</text>
+  <line x1="170" y1="280" x2="226" y2="280" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="235,280 225,275 225,285" fill="#1A1A1A" />
+  <line x1="365" y1="280" x2="421" y2="280" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="430,280 420,275 420,285" fill="#1A1A1A" />
+  <!-- Back edge: run -> generate -->
+  <polyline points="495,302 495,332 300,332 300,311" fill="none" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="300,302 295,312 305,312" fill="#1A1A1A" />
+  <text x="397" y="354" text-anchor="middle" font-size="14" fill="#4A4A4A">sigue en rojo: otra vuelta</text>
+  <text x="40" y="382" font-size="14" font-weight="700" fill="#1A1A1A">Sale cuando el comando pasa.</text>
+</svg>

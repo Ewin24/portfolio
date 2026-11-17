@@ -5,6 +5,14 @@
 Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, LLM tool calling, SSE, Cloudflare Workers, IndexedDB, Playwright, Vitest.
 
 ## Blog — Technical Architecture Articles
+- [Una herramienta para un agente es una API cuyo usuario no lee la documentación dos veces](https://portfolio.edwintrigos.workers.dev/#blog/article/una-herramienta-para-un-agente-es-una-api): Published 2026-11-17 (ES/EN). Essay.
+- [El contexto es presupuesto: lo que no entra importa más que lo que escribes](https://portfolio.edwintrigos.workers.dev/#blog/article/el-contexto-es-presupuesto): Published 2026-11-17 (ES/EN). Essay.
+- [La memoria de un agente es un problema de curaduría, no de almacenamiento](https://portfolio.edwintrigos.workers.dev/#blog/article/la-memoria-de-un-agente-es-curaduria): Published 2026-11-17 (ES/EN). Essay.
+- [El modelo es la parte fácil: el arnés decide el resultado](https://portfolio.edwintrigos.workers.dev/#blog/article/el-modelo-es-la-parte-facil-el-arnes-decide): Published 2026-11-17 (ES/EN). Essay.
+- [Tu próximo lector es un modelo](https://portfolio.edwintrigos.workers.dev/#blog/article/tu-proximo-lector-es-un-modelo): Published 2026-11-17 (ES/EN). Essay.
+- [La AI propone; una transacción decide](https://portfolio.edwintrigos.workers.dev/#blog/article/la-ai-propone-una-transaccion-decide): Published 2026-11-17 (ES/EN). Essay.
+- [A un agente de AI no le des una descripción: dale algo que pueda fallar](https://portfolio.edwintrigos.workers.dev/#blog/article/dale-al-agente-algo-que-pueda-fallar): Published 2026-11-17 (ES/EN). Essay.
+- [Once rondas de revisión con AI no reemplazan diez minutos de un usuario](https://portfolio.edwintrigos.workers.dev/#blog/article/once-rondas-de-revision-no-son-un-usuario): Published 2026-11-17 (ES/EN). Essay.
 - [Publica lo que mediste, no lo que sabes](https://portfolio.edwintrigos.workers.dev/#blog/article/publica-lo-que-mediste): Published 2026-11-17 (ES/EN). Essay.
 - [Ordena las hipótesis por lo que cuesta refutarlas, no por lo probables que parecen](https://portfolio.edwintrigos.workers.dev/#blog/article/ordena-las-hipotesis-por-costo-de-refutar): Published 2026-11-17 (ES/EN). Essay.
 - [Antes de cambiar lo que heredaste, escribe lo que hace hoy](https://portfolio.edwintrigos.workers.dev/#blog/article/antes-de-cambiar-lo-que-heredaste): Published 2026-11-17 (ES/EN). Essay.

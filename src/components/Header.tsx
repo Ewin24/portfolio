@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { Menu, X, Globe } from 'lucide-react'
+import { Menu, X, Globe, Moon, Sun } from 'lucide-react'
 import { useTranslation } from '../hooks/useTranslation'
 import { GithubIcon } from './ui/GithubIcon'
 import { ThemeToggle } from './xp/ThemeToggle'
 import { ReadingProgress } from './ui/ReadingProgress'
+import { useTheme } from '../theme/ThemeContext'
 
 const NAV_ITEMS = [
   { key: 'nav.about'      as const, href: '#about' },
@@ -15,6 +16,32 @@ const NAV_ITEMS = [
   { key: 'nav.blog'       as const, href: '#blog' },
   { key: 'nav.contact'    as const, href: '#contact' },
 ]
+
+/**
+ * Light ⇄ dark newspaper. Separate from the XP toggle on purpose: that one
+ * changes the whole design language, this one only the paper and the ink.
+ * The name states what the switch is, and aria-pressed says whether it is on.
+ */
+export function DarkToggle({ withLabel = false }: { withLabel?: boolean }) {
+  const { theme, toggleDark } = useTheme()
+  const { lang } = useTranslation()
+  const dark = theme === 'dark'
+  const label = lang === 'es' ? 'Modo oscuro' : 'Dark mode'
+
+  return (
+    <button
+      type="button"
+      onClick={toggleDark}
+      aria-pressed={dark}
+      aria-label={label}
+      title={label}
+      className="dark-toggle flex items-center gap-1.5 border-2 border-rule px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-ink shadow-pixel-sm hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] transition-all duration-75 cursor-pointer"
+    >
+      {dark ? <Sun size={12} /> : <Moon size={12} />}
+      {withLabel && <span>{label}</span>}
+    </button>
+  )
+}
 
 export function Header() {
   const { t, lang, toggleLang } = useTranslation()
@@ -61,6 +88,7 @@ export function Header() {
 
         {/* Acciones */}
         <div className="hidden md:flex items-center gap-2">
+          <DarkToggle />
           <ThemeToggle />
           <button
             onClick={toggleLang}
@@ -111,7 +139,8 @@ export function Header() {
                   {t(item.key)}
                 </a>
               ))}
-              <div className="flex items-center gap-2 pt-2">
+              <div className="flex flex-wrap items-center gap-2 pt-2">
+                <DarkToggle withLabel />
                 <ThemeToggle withLabel />
                 <button
                   onClick={toggleLang}

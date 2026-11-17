@@ -32,25 +32,38 @@
     <meta name="twitter:creator" content="@Ewin24" />
 
     <!-- Theme — must match --color-paper in src/index.css.
-         ThemeProvider rewrites this to the XP desktop value while that
-         theme is active. -->
+         ThemeProvider rewrites this to the XP desktop or dark paper value
+         while one of those themes is active. -->
     <meta name="theme-color" content="#FAFAF5" />
 
     <!-- Theme boot.
-         Runs before first paint so a returning XP visitor never sees the
-         newspaper flash first. Deliberately inline and dependency-free: the
-         React bundle resolves far too late to prevent that flash. The storage
-         key is mirrored from THEME_STORAGE_KEY in src/theme/ThemeContext.tsx.
-         Only an explicit 'xp' is honoured; every other value (including a
-         stale 'book') leaves the default newspaper untouched. -->
+         Runs before first paint so a returning XP or dark visitor never sees
+         the light newspaper flash first. Deliberately inline and
+         dependency-free: the React bundle resolves far too late to prevent
+         that flash. The storage key and the rules are mirrored from
+         src/theme/ThemeContext.tsx: a stored 'xp', 'dark' or 'newspaper' is
+         the visitor's choice and always wins; with any other value (nothing
+         stored, or a stale 'book') the dark variant follows
+         prefers-color-scheme. The light newspaper is the bare document. -->
     <script>
       (function () {
+        var stored = null
         try {
-          if (localStorage.getItem('portfolio-theme') === 'xp') {
-            document.documentElement.dataset.theme = 'xp'
+          stored = localStorage.getItem('portfolio-theme')
+        } catch (e) {
+          /* Blocked storage — fall through to the system preference. */
+        }
+        try {
+          if (stored === 'xp' || stored === 'dark') {
+            document.documentElement.dataset.theme = stored
+          } else if (
+            stored !== 'newspaper' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches
+          ) {
+            document.documentElement.dataset.theme = 'dark'
           }
         } catch (e) {
-          /* Blocked storage — the newspaper theme is the safe default. */
+          /* No matchMedia — the light newspaper is the safe default. */
         }
       })()
     </script>

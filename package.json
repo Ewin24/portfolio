@@ -14,6 +14,9 @@
     "test:routes": "node driver/routes.mjs",
     "test:404": "node driver/redirect-404.mjs",
     "test:disclosures": "node driver/disclosures.mjs",
+    "test:dark": "node driver/dark.mjs",
+    "test:reading": "node driver/reading.mjs",
+    "test:promo": "node driver/promo.mjs && node driver/promo.mjs dist",
     "cv": "node driver/cv.mjs"
   },
   "dependencies": {

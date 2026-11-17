@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Clock, Tag, ArrowRight } from 'lucide-react'
+import { Check, Clock, Tag, ArrowRight } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../../components/ui/FadeIn'
 import { useBlogContext } from '../context/BlogContext'
 import { EmptyState } from './EmptyState'
-import { markRead } from '../readState'
+import { markRead, readLabel } from '../readState'
 import type { BlogPost } from '../types'
 
 const PAGE_SIZE = 6
@@ -17,10 +17,11 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
 
   const title = lang === 'es' ? post.title : post.titleEn
   const excerpt = lang === 'es' ? post.excerpt : post.excerptEn
+  const readMark = readLabel(post.slug, lang)
 
   return (
     <FadeIn delay={index * 0.08}>
-      <article className="px-card px-card-sm px-card-interactive bg-paper flex flex-col h-full">
+      <article data-slug={post.slug} className="px-card px-card-sm px-card-interactive bg-paper flex flex-col h-full">
         <div className="p-5 flex-1 flex flex-col gap-3">
           {/* Tags row */}
           <div className="flex flex-wrap gap-1">
@@ -40,6 +41,14 @@ function BlogCard({ post, index, onRead }: { post: BlogPost; index: number; onRe
           <p className="font-sans text-xs text-ink-light leading-relaxed line-clamp-3 flex-1">
             {excerpt}
           </p>
+
+          {/* Read mark — only on posts the reader has already opened */}
+          {readMark && (
+            <p data-read-mark className="font-mono text-[10px] text-ink-muted flex items-center gap-1">
+              <Check size={10} aria-hidden="true" />
+              {readMark}
+            </p>
+          )}
 
           {/* Footer: date + reading time + read button */}
           <div className="flex items-center justify-between pt-3 border-t border-rule-light mt-auto">

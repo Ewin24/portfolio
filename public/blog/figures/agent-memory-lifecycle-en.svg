@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 374" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace">
+  <title>Life of a memory note: written, recalled, stale, replaced</title>
+  <desc>Conceptual sketch, not measured data. Four states in a column, joined by downward arrows. Written: dated, with its reason, one topic. Recalled: a search brings it back into use, it is a lead and not yet a fact. Stale, highlighted: the code changed and the note did not, nothing flags it and it is still active. Replaced: a newer note says which one wins and the old one points to the new one.</desc>
+
+  <!-- Colors are the newspaper tokens from src/index.css; an <img> cannot read CSS variables. -->
+  <rect width="600" height="374" fill="#FAFAF5" />
+
+  <!-- Arrows between states -->
+  <line x1="105" y1="80" x2="105" y2="104" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="105,114 99,102 111,102" fill="#1A1A1A" />
+  <line x1="105" y1="170" x2="105" y2="194" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="105,204 99,192 111,192" fill="#1A1A1A" />
+  <line x1="105" y1="260" x2="105" y2="284" stroke="#1A1A1A" stroke-width="2" />
+  <polygon points="105,294 99,282 111,282" fill="#1A1A1A" />
+
+  <!-- 1. Written -->
+  <rect x="30" y="24" width="150" height="56" fill="#FAFAF5" stroke="#1A1A1A" stroke-width="2" />
+  <text x="105" y="58" text-anchor="middle" font-size="16" font-weight="700" fill="#1A1A1A">WRITTEN</text>
+  <text x="200" y="46" font-size="14" fill="#4A4A4A">Dated, with its reason, one topic.</text>
+  <text x="200" y="68" font-size="14" fill="#4A4A4A">Here you decide it should exist.</text>
+
+  <!-- 2. Recalled -->
+  <rect x="30" y="114" width="150" height="56" fill="#FAFAF5" stroke="#1A1A1A" stroke-width="2" />
+  <text x="105" y="148" text-anchor="middle" font-size="16" font-weight="700" fill="#1A1A1A">RECALLED</text>
+  <text x="200" y="136" font-size="14" fill="#4A4A4A">A search brings it back into use.</text>
+  <text x="200" y="158" font-size="14" fill="#4A4A4A">It is a lead, not yet a fact.</text>
+
+  <!-- 3. Stale: highlighted by fill, border and its own wording, not only by color. -->
+  <rect x="30" y="204" width="150" height="56" fill="#F0EFE8" stroke="#C41E1E" stroke-width="2" />
+  <text x="105" y="238" text-anchor="middle" font-size="16" font-weight="700" fill="#C41E1E">STALE</text>
+  <text x="200" y="226" font-size="14" fill="#4A4A4A">The code changed; the note did not.</text>
+  <text x="200" y="248" font-size="14" font-weight="700" fill="#C41E1E">Nothing flags it: still active.</text>
+
+  <!-- 4. Replaced -->
+  <rect x="30" y="294" width="150" height="56" fill="#FAFAF5" stroke="#1A1A1A" stroke-width="2" />
+  <text x="105" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#1A1A1A">REPLACED</text>
+  <text x="200" y="316" font-size="14" fill="#4A4A4A">A newer note says which one wins.</text>
+  <text x="200" y="338" font-size="14" fill="#4A4A4A">The old one points to the new one.</text>
+</svg>
