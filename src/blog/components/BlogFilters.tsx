@@ -82,7 +82,7 @@ export function BlogFilters() {
     <div className="mb-8">
       {/* Active filter chips */}
       {activeCount > 0 && (
-        <div className="flex flex-wrap items-center gap-2 mb-4">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-4 mb-4">
           {filter.tags?.map((tag) => {
             const info = getTagInfo(tag)
             const label = lang === 'es' ? info.label : info.labelEn
@@ -92,12 +92,12 @@ export function BlogFilters() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="skill-tag text-[10px] flex items-center gap-1.5 pr-1"
+                className="skill-tag flex items-center gap-1.5 pr-1"
               >
                 {label}
                 <button
                   onClick={() => handleTagToggle(tag)}
-                  className="hover:text-accent transition-colors cursor-pointer"
+                  className="hit-44 px-1.5 -mx-0.5 hover:text-accent transition-colors cursor-pointer"
                   aria-label={`Remove ${label} filter`}
                 >
                   <X size={10} />
@@ -112,12 +112,12 @@ export function BlogFilters() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="skill-tag text-[10px] flex items-center gap-1.5 pr-1"
+              className="skill-tag flex items-center gap-1.5 pr-1"
             >
               {category}
               <button
                 onClick={() => handleCategorySelect(null)}
-                className="hover:text-accent transition-colors cursor-pointer"
+                className="hit-44 px-1.5 -mx-0.5 hover:text-accent transition-colors cursor-pointer"
                 aria-label="Remove category filter"
               >
                 <X size={10} />
@@ -131,12 +131,12 @@ export function BlogFilters() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="skill-tag text-[10px] flex items-center gap-1.5 pr-1"
+              className="skill-tag flex items-center gap-1.5 pr-1"
             >
               {filter.dateRange.start} – {filter.dateRange.end}
               <button
                 onClick={clearDateRange}
-                className="hover:text-accent transition-colors cursor-pointer"
+                className="hit-44 px-1.5 -mx-0.5 hover:text-accent transition-colors cursor-pointer"
                 aria-label="Remove date range filter"
               >
                 <X size={10} />
@@ -147,22 +147,23 @@ export function BlogFilters() {
           {/* Clear all */}
           <button
             onClick={clearFilters}
-            className="font-mono text-[10px] uppercase tracking-wider text-accent hover:text-accent-dark underline transition-colors cursor-pointer"
+            className="hit-44 font-mono text-[11px] uppercase tracking-wider text-accent hover:text-accent-dark underline transition-colors cursor-pointer"
           >
             {lang === 'es' ? 'Limpiar todo' : 'Clear all'}
           </button>
         </div>
       )}
 
-      {/* Filter controls row */}
-      <div className="flex flex-wrap items-center gap-3">
+      {/* Filter controls row. Rows sit 44px apart so the hit areas of the
+          chips (.hit-44 in index.css) never overlap. */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-4">
         {/* Unread: composes with every other filter */}
         <button
           data-filter-unread
           aria-pressed={unreadOnly}
           onClick={() => setUnreadOnly(!unreadOnly)}
           className={`
-            skill-tag text-xs font-bold uppercase cursor-pointer transition-all duration-75
+            skill-tag font-bold uppercase cursor-pointer transition-all duration-75
             ${unreadOnly ? 'bg-ink text-paper hover:bg-ink hover:text-paper' : ''}
           `}
         >
@@ -170,7 +171,7 @@ export function BlogFilters() {
         </button>
 
         {/* Tag chips */}
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-x-1.5 gap-y-4">
           {BLOG_TAGS.map((tag) => {
             const isActive = filter.tags?.includes(tag.name) ?? false
             const label = lang === 'es' ? tag.label : tag.labelEn
@@ -179,7 +180,7 @@ export function BlogFilters() {
                 key={tag.name}
                 onClick={() => handleTagToggle(tag.name)}
                 className={`
-                  skill-tag text-[10px] cursor-pointer transition-all duration-75
+                  skill-tag cursor-pointer transition-all duration-75
                   ${isActive ? 'bg-ink text-paper hover:bg-ink hover:text-paper' : ''}
                 `}
               >
@@ -193,7 +194,7 @@ export function BlogFilters() {
         <div className="relative">
           <button
             onClick={() => { setShowCategory(!showCategory); setShowDateRange(false) }}
-            className="skill-tag text-[10px] flex items-center gap-1 cursor-pointer"
+            className="skill-tag flex items-center gap-1 cursor-pointer"
           >
             {category
               ? category
@@ -214,7 +215,7 @@ export function BlogFilters() {
               >
                 <button
                   onClick={() => handleCategorySelect(null)}
-                  className="block w-full text-left font-mono text-[10px] px-3 py-2 hover:bg-paper-dark transition-colors cursor-pointer"
+                  className="block w-full min-h-11 text-left font-mono text-xs px-3 py-2 hover:bg-paper-dark transition-colors cursor-pointer"
                 >
                   {lang === 'es' ? 'Todas' : 'All'}
                 </button>
@@ -222,7 +223,7 @@ export function BlogFilters() {
                   <button
                     key={cat}
                     onClick={() => handleCategorySelect(cat)}
-                    className={`block w-full text-left font-mono text-[10px] px-3 py-2 hover:bg-paper-dark transition-colors cursor-pointer ${filter.category === cat ? 'bg-ink text-paper' : ''}`}
+                    className={`block w-full min-h-11 text-left font-mono text-xs px-3 py-2 hover:bg-paper-dark transition-colors cursor-pointer ${filter.category === cat ? 'bg-ink text-paper' : ''}`}
                   >
                     {cat}
                   </button>
@@ -236,7 +237,7 @@ export function BlogFilters() {
         <div className="relative">
           <button
             onClick={() => { setShowDateRange(!showDateRange); setShowCategory(false) }}
-            className="skill-tag text-[10px] flex items-center gap-1 cursor-pointer"
+            className="skill-tag flex items-center gap-1 cursor-pointer"
           >
             {filter.dateRange
               ? `${filter.dateRange.start} – ${filter.dateRange.end}`
@@ -254,28 +255,28 @@ export function BlogFilters() {
                 transition={{ duration: 0.15 }}
                 className="absolute top-full left-0 mt-1 z-20 border-2 border-rule bg-paper shadow-pixel-sm p-3 flex flex-col gap-2"
               >
-                <label className="font-mono text-[10px] uppercase tracking-wider text-ink-muted">
+                <label className="font-mono text-[11px] uppercase tracking-wider text-ink-muted">
                   {lang === 'es' ? 'Desde' : 'From'}
                 </label>
                 <input
                   type="date"
                   value={filter.dateRange?.start ?? ''}
                   onChange={(e) => handleDateStart(e.target.value)}
-                  className="border-2 border-rule bg-paper-dark font-mono text-[10px] px-2 py-1"
+                  className="border-2 border-rule bg-paper-dark font-mono text-xs px-2 py-1"
                 />
-                <label className="font-mono text-[10px] uppercase tracking-wider text-ink-muted">
+                <label className="font-mono text-[11px] uppercase tracking-wider text-ink-muted">
                   {lang === 'es' ? 'Hasta' : 'To'}
                 </label>
                 <input
                   type="date"
                   value={filter.dateRange?.end ?? ''}
                   onChange={(e) => handleDateEnd(e.target.value)}
-                  className="border-2 border-rule bg-paper-dark font-mono text-[10px] px-2 py-1"
+                  className="border-2 border-rule bg-paper-dark font-mono text-xs px-2 py-1"
                 />
                 {filter.dateRange && (
                   <button
                     onClick={clearDateRange}
-                    className="font-mono text-[10px] text-accent hover:text-accent-dark underline mt-1 cursor-pointer"
+                    className="font-mono text-xs text-accent hover:text-accent-dark underline min-h-11 cursor-pointer"
                   >
                     {lang === 'es' ? 'Limpiar' : 'Clear'}
                   </button>

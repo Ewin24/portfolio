@@ -20,6 +20,7 @@
     "test:blogfront": "node driver/blogfront.mjs",
     "test:readstate": "node driver/readstate.mjs",
     "test:stack": "node driver/stack.mjs",
+    "test:typography": "node driver/typography.mjs",
     "test:promo": "node driver/promo.mjs && node driver/promo.mjs dist",
     "cv": "node driver/cv.mjs"
   },

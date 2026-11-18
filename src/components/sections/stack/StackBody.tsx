@@ -20,7 +20,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { Figure } from '../../../blog/figures/Figure'
-import { STACK, type Evidence, type StackEntry } from '../../../content/stack'
+import { COPY, STACK, type Evidence, type StackEntry } from '../../../content/stack'
 import { useTranslation } from '../../../hooks/useTranslation'
 import type { TranslationKeys } from '../../../i18n/translations'
 import { periodLabel } from '../../../lib/text'
@@ -88,11 +88,11 @@ function Chip({ tech, size }: { tech: StackEntry; size: number }) {
 }
 
 function Status({ tech }: { tech: StackEntry }) {
-  const { t } = useTranslation()
+  const { t, lang } = useTranslation()
   if (!tech.status) return null
   return (
     <span className="stack-status" data-stack-status={tech.status}>
-      {t(`stack.status.${tech.status}`)}
+      {tech.status === 'active' ? COPY.active[lang] : t(`stack.status.${tech.status}`)}
     </span>
   )
 }
@@ -101,9 +101,10 @@ function Status({ tech }: { tech: StackEntry }) {
 function Detail({ tech }: { tech: StackEntry }) {
   const { t, lang } = useTranslation()
   const key = (suffix: string) => `skills.${tech.id}.${suffix}` as keyof TranslationKeys
+  // The title is its own span: the whole row is the link, only the title is underlined.
   const postLink = (post: StackEntry['posts'][number]) => (
     <li key={post.slug}>
-      <a href={`#blog/article/${post.slug}`}>{lang === 'es' ? post.title : post.titleEn}</a>
+      <a href={`#blog/article/${post.slug}`}><span>{lang === 'es' ? post.title : post.titleEn}</span></a>
     </li>
   )
   const more = tech.posts.slice(POSTS_SHOWN)
@@ -119,7 +120,19 @@ function Detail({ tech }: { tech: StackEntry }) {
       </div>
 
       <h4 className="stack-label">{t('stack.evidence')}</h4>
-      {KINDS.every((kind) => tech[kind].length === 0) && <p className="stack-none">{t('stack.evidence.none')}</p>}
+      {KINDS.every((kind) => tech[kind].length === 0) && !tech.site && <p className="stack-none">{t('stack.evidence.none')}</p>}
+
+      {/* A file this site serves, under the app's base path. */}
+      {tech.site && (
+        <div className="stack-evidence" data-stack-evidence="site">
+          <h5>{COPY.site[lang]}</h5>
+          <ul>
+            <li>
+              <a href={`${import.meta.env.BASE_URL}${tech.site}`}><span>{tech.site}</span></a>
+            </li>
+          </ul>
+        </div>
+      )}
 
       {tech.cases.length > 0 && (
         <div className="stack-evidence" data-stack-evidence="cases">
@@ -127,7 +140,7 @@ function Detail({ tech }: { tech: StackEntry }) {
           <ul>
             {tech.cases.map((study) => (
               <li key={study.id}>
-                <a href={`#case-${study.id}`}>{lang === 'es' ? study.title : study.titleEn}</a>
+                <a href={`#case-${study.id}`}><span>{lang === 'es' ? study.title : study.titleEn}</span></a>
               </li>
             ))}
           </ul>
@@ -140,11 +153,13 @@ function Detail({ tech }: { tech: StackEntry }) {
           <ul>
             {tech.roles.map((role) => (
               <li key={role.id}>
-                <a href="#experience">{lang === 'es' ? role.role : role.roleEn}</a>
-                <span className="stack-meta">
-                  {role.company} · {periodLabel(role.period, lang)}
-                  {role.current && ` · ${t('experience.stamp')}`}
-                </span>
+                <a href="#experience">
+                  <span>{lang === 'es' ? role.role : role.roleEn}</span>
+                  <span className="stack-meta">
+                    {role.company} · {periodLabel(role.period, lang)}
+                    {role.current && ` · ${t('experience.stamp')}`}
+                  </span>
+                </a>
               </li>
             ))}
           </ul>
@@ -191,7 +206,9 @@ export default function StackBody() {
     <div className="stack">
       <FadeIn>
         <div className="stack-notes">
-          <p data-stack-rule>{t('stack.rule')}</p>
+          <div data-stack-rule>
+            <p>{t('stack.rule')}</p>
+          </div>
           <p>{t('stack.counts.note')}</p>
         </div>
 
@@ -220,6 +237,7 @@ export default function StackBody() {
                           <span className="stack-tech-text">
                             <span className="stack-tech-name" data-stack-name>{tech.name}</span>
                             <Counts evidence={tech} className="stack-tech-counts" data-stack-counts />
+                            {tech.site && <span className="stack-tech-counts" data-stack-site>{COPY.site[lang]}: {tech.site}</span>}
                             <Status tech={tech} />
                           </span>
                           {/* The selected state has a shape of its own, not only the inverted fill. */}

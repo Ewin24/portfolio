@@ -41,9 +41,10 @@
   padding-block: 1.5rem 4rem;
 }
 
-/* The narrower, centred column. */
+/* The narrower, centred column: wide enough for the measure of the prose
+   (--measure in index.css) at the default text size. */
 [data-reading='on'] .blog-full #blog article:has(> .blog-article-body) {
-  max-width: 42rem;
+  max-width: 44rem;
 }
 
 [data-reading='on'] .blog-full #blog article > h1 {

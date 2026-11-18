@@ -38,13 +38,13 @@ function BlogCard({ post, lead = false, onRead }: { post: BlogPost; lead?: boole
       data-slug={post.slug}
       data-read-state={readState}
       data-lead={lead || undefined}
-      className={`blogfront-card px-card px-card-interactive bg-paper ${lead ? 'blogfront-lead' : 'px-card-sm'}`}
+      className={`blogfront-card px-card px-card-interactive bg-paper ${lead ? 'blogfront-lead' : 'px-card-quiet'}`}
     >
       <div className="blogfront-card-text">
         {/* Tags row */}
         <div className="flex flex-wrap gap-1">
           {post.tags.slice(0, lead ? 5 : 3).map((tag) => (
-            <span key={tag} className="skill-tag text-xs flex items-center gap-1">
+            <span key={tag} className="skill-tag flex items-center gap-1">
               <Tag size={8} aria-hidden="true" /> {tag}
             </span>
           ))}
@@ -79,7 +79,7 @@ function BlogCard({ post, lead = false, onRead }: { post: BlogPost; lead?: boole
           </div>
           <button
             onClick={onRead}
-            className="font-mono text-xs font-bold uppercase tracking-wider text-accent hover:text-accent-dark flex items-center gap-1 transition-colors cursor-pointer"
+            className="hit-44 font-mono text-xs font-bold uppercase tracking-wider text-accent hover:text-accent-dark flex items-center gap-1 transition-colors cursor-pointer"
           >
             {lang === 'es' ? 'Leer' : 'Read'} <ArrowRight size={10} aria-hidden="true" />
           </button>

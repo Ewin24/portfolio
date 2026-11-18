@@ -217,7 +217,7 @@ export function BlogArticle() {
           <button
             data-reading-hide
             onClick={handleBack}
-            className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors min-h-11 cursor-pointer"
           >
             <ArrowLeft size={14} />
             {backLabel}
@@ -254,7 +254,7 @@ export function BlogArticle() {
             <Clock size={12} />
             {post.readingTime} min {lang === 'es' ? 'de lectura' : 'read'}
           </span>
-          <span className="hidden md:inline font-mono text-[10px] text-ink-muted uppercase tracking-wider">
+          <span className="hidden md:inline font-mono text-[11px] text-ink-muted uppercase tracking-wider">
             Por Edwin Trigos
           </span>
           {readMark && (
@@ -277,7 +277,7 @@ export function BlogArticle() {
         {/* Tags — hidden in reading mode. */}
         <div data-reading-hide className="flex flex-wrap gap-1.5 mb-8">
           {post.tags.map((tag) => (
-            <span key={tag} className="skill-tag text-[10px]">{tag}</span>
+            <span key={tag} className="skill-tag">{tag}</span>
           ))}
         </div>
 
@@ -340,24 +340,24 @@ export function BlogArticle() {
         )}
 
         {/* Prev / Next navigation (fixes bug #4) */}
-        <nav data-reading-hide className="flex justify-between items-stretch gap-4 mb-10">
+        <nav data-reading-hide className="flex flex-col sm:flex-row justify-between items-stretch gap-4 mb-10">
           {prevPost ? (
             <button
               onClick={handlePrev}
               data-nav-slug={prevPost.slug}
               data-read-state={readState.stateOf(prevPost.slug)}
-              className="flex-1 flex flex-col items-start gap-1 px-card px-card-sm px-card-interactive bg-paper p-4 text-left cursor-pointer"
+              className="flex-1 flex flex-col items-start gap-1 px-card px-card-quiet px-card-interactive bg-paper p-4 text-left cursor-pointer"
             >
-              <span className="font-mono text-[10px] uppercase tracking-wider text-ink-muted flex items-center gap-1">
+              <span className="font-mono text-[11px] uppercase tracking-wider text-ink-muted flex items-center gap-1">
                 <ArrowLeft size={10} /> {lang === 'es' ? 'Anterior' : 'Previous'}
               </span>
-              <span data-read-title className="font-headline text-sm font-bold text-ink leading-tight line-clamp-2">
+              <span data-read-title className="font-headline text-sm font-bold text-ink leading-tight">
                 {lang === 'es' ? prevPost.title : prevPost.titleEn}
               </span>
               <ReadMark slug={prevPost.slug} variant="inline" />
             </button>
           ) : (
-            <div className="flex-1" />
+            <div className="hidden sm:block flex-1" />
           )}
 
           {nextPost ? (
@@ -365,25 +365,25 @@ export function BlogArticle() {
               onClick={handleNext}
               data-nav-slug={nextPost.slug}
               data-read-state={readState.stateOf(nextPost.slug)}
-              className="flex-1 flex flex-col items-end gap-1 px-card px-card-sm px-card-interactive bg-paper p-4 text-right cursor-pointer"
+              className="flex-1 flex flex-col items-end gap-1 px-card px-card-quiet px-card-interactive bg-paper p-4 text-right cursor-pointer"
             >
-              <span className="font-mono text-[10px] uppercase tracking-wider text-ink-muted flex items-center gap-1">
+              <span className="font-mono text-[11px] uppercase tracking-wider text-ink-muted flex items-center gap-1">
                 {lang === 'es' ? 'Siguiente' : 'Next'} <ArrowRight size={10} />
               </span>
-              <span data-read-title className="font-headline text-sm font-bold text-ink leading-tight line-clamp-2">
+              <span data-read-title className="font-headline text-sm font-bold text-ink leading-tight">
                 {lang === 'es' ? nextPost.title : nextPost.titleEn}
               </span>
               <ReadMark slug={nextPost.slug} variant="inline" />
             </button>
           ) : (
-            <div className="flex-1" />
+            <div className="hidden sm:block flex-1" />
           )}
         </nav>
 
         {/* Back link at bottom */}
         <button
           onClick={handleBack}
-          className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors mb-6 cursor-pointer"
+          className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors min-h-11 mb-6 cursor-pointer"
         >
           <ArrowLeft size={14} />
           {backLabel}

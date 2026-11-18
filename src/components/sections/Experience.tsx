@@ -43,15 +43,16 @@ function ExperienceCard({ job, index }: CardProps) {
 
   return (
     <FadeIn delay={index * 0.1}>
-      <div className="grid md:grid-cols-[200px_1fr] gap-0 px-card">
+      {/* The current role is the section's lead and keeps the pixel shadow. */}
+      <div className={`grid md:grid-cols-[220px_1fr] gap-0 px-card${index === 0 ? '' : ' px-card-quiet'}`}>
 
         {/* Columna izquierda — metadata */}
         <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-5 bg-paper-dark flex flex-col gap-3">
           <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-1">
+            <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-muted mb-1">
               {periodLabel(job.period, lang)}
             </p>
-            <p className="font-mono text-[10px] text-ink-muted">
+            <p className="font-mono text-xs text-ink-muted">
               {t(`experience.employment.${job.employment}`)}
             </p>
             {/* Decorative: the period above already reads Presente/Present. */}
@@ -74,7 +75,7 @@ function ExperienceCard({ job, index }: CardProps) {
               <a
                 href={job.companyUrl}
                 target="_blank" rel="noopener noreferrer"
-                className="font-headline text-lg font-bold text-ink hover:text-accent transition-colors leading-tight block"
+                className="hit-44 font-headline text-lg font-bold text-ink hover:text-accent transition-colors leading-tight block"
               >
                 {job.company}
               </a>
@@ -83,13 +84,13 @@ function ExperienceCard({ job, index }: CardProps) {
                 {job.company}
               </p>
             )}
-            <p className="font-mono text-[10px] text-ink-muted mt-1">{location}</p>
+            <p className="font-mono text-xs text-ink-muted mt-1">{location}</p>
           </div>
 
           {/* Stack tags */}
           <div className="flex flex-wrap gap-1.5 mt-auto pt-2 border-t border-rule-light">
             {job.stack.map((tech) => (
-              <span key={tech} className="skill-tag text-[10px]">{tech}</span>
+              <span key={tech} className="skill-tag">{tech}</span>
             ))}
           </div>
         </div>
@@ -100,7 +101,7 @@ function ExperienceCard({ job, index }: CardProps) {
             {role}
           </p>
 
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted mb-3">
+          <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-muted mb-3">
             {t('experience.achievements')}
           </p>
 

@@ -40,6 +40,8 @@ export interface Technology {
   stack: string[]
   /** Exact blog tags that point to this technology. */
   tags: string[]
+  /** A file this site itself serves that is the technology at work: its path under the site root. */
+  site?: string
 }
 
 /**
@@ -74,7 +76,8 @@ export const TECHNOLOGIES: Technology[] = [
   { id: 'vitest', name: 'Vitest', area: 'quality', stack: ['Vitest'], tags: [] },
 
   { id: 'ai', name: 'LLM / AI Agents', area: 'ai', stack: ['LLM tool calling'], tags: ['AI', 'agentes', 'agentes-ia'] },
-  { id: 'geo', name: 'AI Discoverability', area: 'ai', stack: [], tags: [] },
+  // No case study, role or post names it: the evidence is the `llms.txt` this site publishes (public/llms.txt).
+  { id: 'geo', name: 'AI Discoverability', area: 'ai', stack: [], tags: [], site: 'llms.txt' },
 ]
 
 export interface Evidence {
@@ -83,8 +86,8 @@ export interface Evidence {
   posts: BlogPost[]
 }
 
-/** `current`: in production today. `past`: used before. `null`: the data does not decide. */
-export type Status = 'current' | 'past' | null
+/** `current`: in production today. `active`: in use today. `past`: used before. `null`: the data does not decide. */
+export type Status = 'current' | 'active' | 'past' | null
 
 const named = (aliases: string[], values: string[]) => values.some((value) => aliases.includes(value))
 
@@ -102,17 +105,44 @@ export function evidenceOf(tech: Technology): Evidence {
   }
 }
 
+/** How far back a post still says "today", in months. */
+export const ACTIVE_MONTHS = 6
+
+/** The day `months` months before `today`, as the YYYY-MM-DD a post's `date` is written in. */
+export function monthsBefore(today: Date, months: number): string {
+  const day = new Date(today)
+  day.setUTCMonth(day.getUTCMonth() - months)
+  return day.toISOString().slice(0, 10)
+}
+
+/** The only place this file reads the clock; `statusOf` takes another day as its second argument. */
+const TODAY = new Date()
+
 /**
- * THE STATUS RULE
- * In the stack of a role marked `current` in `experience.ts`: in production
- * today. Only in past roles or in case studies: used before. In neither: no
- * status, because nothing in the data says which one it is.
+ * THE STATUS RULE, first match wins
+ * 1. In the stack of a role marked `current` in `experience.ts`: in
+ *    production today.
+ * 2. Otherwise, named by a blog post dated within the last six months: in use
+ *    today. The work is recent and written down, but no current role lists it.
+ * 3. Otherwise, in a past role or in a case study: used before.
+ * 4. In none: no status, because nothing in the data says which one it is.
  */
-export function statusOf(evidence: Evidence): Status {
+export function statusOf(evidence: Evidence, today: Date = TODAY): Status {
   if (evidence.roles.some((role) => role.current)) return 'current'
+  const since = monthsBefore(today, ACTIVE_MONTHS)
+  if (evidence.posts.some((post) => post.date >= since)) return 'active'
   if (evidence.roles.length > 0 || evidence.cases.length > 0) return 'past'
   return null
 }
+
+/**
+ * The copy this file adds to the section: the label of the second status, its
+ * sentence in the rule line and the heading of the site's own evidence.
+ */
+export const COPY = {
+  active: { es: 'En uso hoy', en: 'In use today' },
+  site: { es: 'Este sitio', en: 'This site' },
+} satisfies Record<string, L>
 
 export interface StackEntry extends Technology, Evidence {
   status: Status

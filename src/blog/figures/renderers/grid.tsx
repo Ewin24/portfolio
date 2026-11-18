@@ -22,6 +22,10 @@ export interface GridGroup {
 /**
  * Rows against columns, a mark where they meet. Data: every mark is a fact,
  * and the table lists them all.
+ *
+ * Every row is drawn from the first step, so the frame never holds a blank
+ * block waiting for a later one: a step brings its group's marks and count,
+ * and a group whose step has not come is `data-pending`, which only mutes it.
  *  - wide: a grid with numbered columns and a key that names each number.
  *  - narrow: the columns would not fit, so each row lists the columns it is
  *    marked in by name instead of the grid shrinking.
@@ -44,7 +48,7 @@ function GroupHead({ group, lang, step }: { group: GridGroup; lang: Language; st
   return (
     <>
       <span className="fig-grid-group-label">{group.label[lang]}</span>
-      {group.note && <span className="fig-grid-note">{group.note[lang]}</span>}
+      {group.note && <span className="fig-grid-note" {...reveal(group.step, step, 'label')}>{group.note[lang]}</span>}
       {group.tag && <span className="fig-grid-tag" {...reveal(group.tag.step, step, 'label')}>{group.tag.label[lang]}</span>}
     </>
   )
@@ -60,13 +64,13 @@ function Grid({ figure, lang, step }: RendererProps<GridFigure>) {
           <span key={c} className="fig-grid-col" title={column[lang]}>{c + 1}</span>
         ))}
         {groups.map((group, g) => (
-          // Fragment-free on purpose: every cell is a grid item, so each carries its own reveal.
+          // Fragment-free on purpose: every cell is a grid item.
           [
-            <div key={`g${g}`} className="fig-grid-group" {...reveal(group.step, step, 'label')}>
+            <div key={`g${g}`} className="fig-grid-group" data-pending={group.step > step}>
               <GroupHead group={group} lang={lang} step={step} />
             </div>,
             ...group.rows.flatMap((row, r) => [
-              <span key={`g${g}r${r}`} className="fig-grid-row" {...reveal(group.step, step, 'label')}>{row.label}</span>,
+              <span key={`g${g}r${r}`} className="fig-grid-row" data-pending={group.step > step}>{row.label}</span>,
               ...row.marks.map((marked, c) => (
                 <span key={`g${g}r${r}c${c}`} className="fig-grid-cell">
                   {marked && (
@@ -93,8 +97,8 @@ function Grid({ figure, lang, step }: RendererProps<GridFigure>) {
 
       <div className="fig-grid-list">
         {groups.map((group, g) => (
-          <div key={g} className="fig-grid-list-group" {...reveal(group.step, step)}>
-            <div className="fig-grid-group">
+          <div key={g} className="fig-grid-list-group" data-pending={group.step > step}>
+            <div className="fig-grid-group" data-pending={group.step > step}>
               <GroupHead group={group} lang={lang} step={step} />
             </div>
             <dl>

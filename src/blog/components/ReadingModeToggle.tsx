@@ -21,7 +21,7 @@ const SIZES = ['1', '2', '3'] as const
 type Size = (typeof SIZES)[number]
 
 const SIZE_LABELS: Record<Size, { es: string; en: string; glyph: string }> = {
-  '1': { es: 'Texto pequeño', en: 'Small text', glyph: 'text-[11px]' },
+  '1': { es: 'Texto pequeño', en: 'Small text', glyph: 'text-xs' },
   '2': { es: 'Texto mediano', en: 'Medium text', glyph: 'text-sm' },
   '3': { es: 'Texto grande', en: 'Large text', glyph: 'text-lg' },
 }
@@ -45,7 +45,7 @@ function store(key: string, value: string): void {
 const onArticle = () => /^#\/?blog\/article\//.test(window.location.hash)
 
 const BUTTON =
-  'reading-btn bg-paper border-2 border-rule font-mono font-bold text-ink hover:bg-ink hover:text-paper aria-pressed:bg-ink aria-pressed:text-paper cursor-pointer'
+  'reading-btn hit-44 bg-paper border-2 border-rule font-mono font-bold text-ink hover:bg-ink hover:text-paper aria-pressed:bg-ink aria-pressed:text-paper cursor-pointer'
 
 export function ReadingModeToggle() {
   const { lang } = useTranslation()
@@ -135,14 +135,14 @@ export function ReadingModeToggle() {
         data-reading-toggle
         aria-pressed={on}
         onClick={() => setMode(!on)}
-        className={`${BUTTON} h-8 px-3 flex items-center gap-1.5 text-[10px] uppercase tracking-widest`}
+        className={`${BUTTON} h-8 px-3 flex items-center gap-1.5 text-[11px] uppercase tracking-widest`}
       >
         <BookOpen size={12} aria-hidden="true" />
         {es ? 'Modo lectura' : 'Reading mode'}
       </button>
 
       {on && (
-        <span className="font-mono text-[10px] text-ink-muted uppercase tracking-wider">
+        <span className="font-mono text-[11px] text-ink-muted uppercase tracking-wider">
           {es ? 'Esc para salir' : 'Esc to exit'}
         </span>
       )}

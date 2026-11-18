@@ -13,6 +13,7 @@
 @import "./styles/readstate.css";
 @import "./styles/stack.css";
 @import "./styles/blogfront.css";
+@import "./styles/cases.css";
 
 /* ─── Design Tokens — Pixel Art Newspaper ─────────────────────────────── */
 @theme {
@@ -143,6 +144,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    min-height: 2.75rem;
     padding: 0.625rem 1.25rem;
     background: var(--color-ink);
     color: var(--color-on-ink);
@@ -200,6 +202,45 @@
     translate: var(--card-press) var(--card-press);
   }
 
+  /* Quiet card — a ruled cell, not a lifted block. A section keeps the pixel
+     shadow on its one lead item; every other block is set like a newspaper
+     column: an ink rule on top, hairlines around, no shadow. An interactive
+     one answers by inking its frame and turning the top rule accent, since
+     there is no shadow to press. XP restyles .px-card itself and is left to. */
+  :root:not([data-theme='xp']) .px-card-quiet {
+    --card-press: 0px;
+    border: 1px solid var(--color-rule-light);
+    border-top: 2px solid var(--color-rule);
+    box-shadow: none;
+  }
+
+  :root:not([data-theme='xp']) .px-card-quiet.px-card-interactive {
+    transition: border-color 75ms ease;
+  }
+
+  :root:not([data-theme='xp']) .px-card-quiet.px-card-interactive:is(:hover, :active) {
+    border-color: var(--color-rule);
+    border-top-color: var(--color-accent);
+  }
+
+  /* Hit area — a compact control keeps its look and answers over 44px of
+     height. Rows of these need a 44px pitch, or the areas overlap. */
+  .hit-44,
+  :is(a, button).skill-tag {
+    position: relative;
+  }
+
+  .hit-44::after,
+  :is(a, button).skill-tag::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    height: 2.75rem;
+    translate: 0 -50%;
+  }
+
   /* Pixel Badge / Tag */
   .px-badge {
     display: inline-block;
@@ -207,7 +248,7 @@
     background: var(--color-ink);
     color: var(--color-on-ink);
     font-family: var(--font-mono);
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -223,7 +264,7 @@
   /* Kicker — pequeño label encima del headline */
   .kicker {
     font-family: var(--font-mono);
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -281,7 +322,13 @@
      tables apply in every theme; the newspaper ornaments (drop cap, ruled
      h2, square bullets, pull-quote blockquote) are scoped to it. */
   .blog-article-body {
+    /* The column: figures, code blocks and tables fill it. `ch` is the width
+       of the digit 0, which Space Grotesk draws about a third wider than its
+       average letter, so 70ch of column holds some 90 characters of prose. */
     max-width: 70ch;
+    /* The measure of running text, in em so it follows the text size (reading
+       mode changes it): about 70 characters per line. */
+    --measure: 36em;
     font-family: var(--font-sans);
     font-size: 1rem;
     line-height: 1.7;
@@ -293,6 +340,7 @@
   }
 
   .blog-article-body > * + * { margin-top: 1.25rem; }
+  .blog-article-body > :is(p, ul, ol) { max-width: var(--measure); }
   .blog-article-body h2 {
     margin-top: 3rem;
     font-family: var(--font-headline);
@@ -350,7 +398,7 @@
     left: 0;
     display: block;
     padding: 0.3rem 1.25rem;
-    font-size: 0.625rem;
+    font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -461,7 +509,7 @@
     padding: 0.25rem 0.625rem;
     border: 2px solid var(--color-ink);
     font-family: var(--font-mono);
-    font-size: 0.625rem;
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.05em;
     background: var(--color-paper);
@@ -515,6 +563,13 @@
 
   .nav-link:hover {
     color: var(--color-accent);
+  }
+
+  /* The section in view: ink text over an accent rule, so it does not rely
+     on colour alone and stays apart from the accent hover. */
+  .nav-link[aria-current] {
+    color: var(--color-ink);
+    box-shadow: 0 2px 0 var(--color-accent);
   }
 }
 
@@ -1891,6 +1946,16 @@ html[data-theme='xp'] {
   color: var(--color-ink);
   border-bottom: 2px solid var(--color-rule);
   padding-bottom: 2px;
+  position: relative;
+}
+.disclosure::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 2.75rem;
+  translate: 0 -50%;
 }
 .disclosure::-webkit-details-marker { display: none; }
 .disclosure::before { content: '+'; color: var(--color-accent); }

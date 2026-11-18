@@ -108,19 +108,19 @@ function App() {
         <motion.div key="blog-full" {...fade} className="blog-full min-h-screen bg-paper paper-grain">
           {/* Back to portfolio bar */}
           <div className="chrome-bar sticky top-0 z-50 bg-paper border-b-2 border-rule">
-            <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between">
+            <div className="max-w-7xl mx-auto px-6 py-2.5 flex items-center justify-between">
               <button
                 onClick={() => {
                   history.pushState(null, '', '#blog')
                   window.dispatchEvent(new HashChangeEvent('hashchange'))
                 }}
-                className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors cursor-pointer"
+                className="hit-44 flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted hover:text-accent transition-colors cursor-pointer"
               >
                 <ArrowLeft size={14} />
                 {lang === 'es' ? 'Volver al portfolio' : 'Back to portfolio'}
               </button>
               <div className="flex items-center gap-3">
-                <span className="font-mono text-[10px] text-ink-muted uppercase tracking-widest">
+                <span className="font-mono text-[11px] text-ink-muted uppercase tracking-widest">
                   Blog
                 </span>
                 {/* The article view has no site header, so the theme switch lives here too. */}

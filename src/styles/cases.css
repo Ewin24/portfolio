@@ -1,0 +1,317 @@
+/* ─── Case studies: lead, two secondaries, briefs ──────────────────────────
+   A newspaper page instead of a wall of equal cards. The lead is the only
+   boxed, shadowed story; the secondaries share a row split by a hairline, and
+   the rest are ruled one-line briefs that open in place. Nothing is clamped.
+
+   Every breakpoint is a container query on `.cases`, so the same rules hold in
+   the newspaper column and inside an XP window of any width. Colours are the
+   theme's tokens only. Type floor: 12px, 11px for uppercase letterspaced
+   labels. Every link and summary is at least 44px tall. */
+
+.cases {
+  container: cases / inline-size;
+  display: grid;
+  gap: 2.5rem;
+  margin-bottom: 4rem;
+}
+
+/* Hit area for everything pressable in the section, the GitHub list included. */
+#projects :is(a, summary, button) { min-height: 44px; }
+
+/* ── Shared parts ── */
+.case {
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.case-title {
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+
+.case-meta,
+.case-role,
+.case-stack,
+.case-nda {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--color-ink-muted);
+}
+.case-meta { color: var(--color-ink-light); }
+.case-title + .case-meta { margin-top: 0.625rem; }
+.case-role { font-style: italic; }
+
+.case-outcome {
+  max-width: 62ch;
+  margin-top: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--color-ink);
+  text-wrap: pretty;
+}
+
+/* The figures: one per row, number then label, ruled like a results table.
+   The label has the row's remaining width, so it never stacks to three lines. */
+.case-stats {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-content: start;
+  border-block: 1px solid var(--color-rule);
+}
+.case-stat {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: 6.5rem minmax(0, 1fr); /* without subgrid */
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  padding-block: 0.625rem;
+}
+.case-stat + .case-stat { border-top: 1px solid var(--color-rule-light); }
+.case-stat dd {
+  grid-area: 1 / 1;
+  padding-right: 1rem;
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-ink);
+}
+.case-stat dt {
+  grid-area: 1 / 2;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+}
+
+/* "Read the full case": a text control with its own marker. */
+.case-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+.case-more::-webkit-details-marker,
+.case-brief-line::-webkit-details-marker { display: none; }
+.case-more::before {
+  content: '+';
+  font-size: 0.875rem;
+  color: var(--color-accent);
+}
+details[open] > .case-more::before { content: '−'; }
+.case-more:hover { color: var(--color-accent); }
+
+:is(.case-more, .case-brief-line, .case-link):focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* The whole case, in as many newspaper columns as the measure allows. */
+.case-text {
+  columns: 3 22rem;
+  column-gap: 2rem;
+  column-rule: 1px solid var(--color-rule-light);
+  padding-top: 0.5rem;
+}
+.case-text section + section { margin-top: 1.25rem; }
+.case-label {
+  margin-bottom: 0.375rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  break-after: avoid;
+}
+.case-text p {
+  max-width: 68ch;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--color-ink-light);
+  overflow-wrap: break-word;
+  orphans: 2;
+  widows: 2;
+}
+.case-arch p {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+/* Stack as a plain line; links and the confidentiality note beside it. */
+.case-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.5rem;
+  border-top: 1px solid var(--color-rule-light);
+  padding-top: 0.75rem;
+}
+.case-stack { flex: 1 1 16rem; }
+.case-nda {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-style: italic;
+}
+.case-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.case-link:hover { color: var(--color-accent); }
+
+/* ── Lead: the one boxed story. The border comes from .px-card; the shadow is
+   read from the token here so the dark theme's redefinition reaches it. ── */
+.case-lead {
+  box-shadow: var(--shadow-pixel-lg);
+  padding: clamp(1.25rem, 3cqi, 2.5rem);
+  gap: 1.5rem;
+}
+.case-lead .case-title {
+  font-size: clamp(1.875rem, 1.25rem + 2.6cqi, 3rem);
+  font-weight: 900;
+  line-height: 1.08;
+}
+.case-lead .case-outcome {
+  margin-top: 1rem;
+  font-family: var(--font-headline);
+  font-size: clamp(1.0625rem, 0.9rem + 0.9cqi, 1.25rem);
+  line-height: 1.4;
+}
+.case-lead .case-stat dd { font-size: 2rem; }
+
+/* ── Secondaries: stacked and ruled; side by side when there is room ── */
+.case-secondaries {
+  display: grid;
+  row-gap: 0;
+}
+.case-secondary {
+  grid-row: span 4;
+  grid-template-rows: subgrid;
+  row-gap: 1.25rem;
+}
+.case-secondary + .case-secondary {
+  margin-top: 2rem;
+  border-top: 1px solid var(--color-rule);
+  padding-top: 2rem;
+}
+
+/* ── Briefs: title, role, one figure; the rest opens in place ── */
+.case-briefs { border-top: 2px solid var(--color-rule); }
+.case-brief { border-bottom: 1px solid var(--color-rule-light); }
+.case-brief-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1rem;
+  gap: 0.25rem 1rem;
+  align-items: baseline;
+  padding-block: 0.875rem;
+  cursor: pointer;
+  list-style: none;
+}
+.case-brief-line > * { grid-column: 1; }
+.case-brief-line::after {
+  content: '+';
+  grid-area: 1 / 2;
+  justify-self: end;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-accent);
+}
+.case-brief[open] > .case-brief-line::after { content: '−'; }
+.case-brief-title {
+  font-family: var(--font-headline);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-ink);
+}
+.case-brief-line:hover .case-brief-title { color: var(--color-accent); }
+.case-brief-role,
+.case-brief-figure {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+}
+.case-brief-role { font-style: italic; }
+/* Number, then its label in a column of its own: a wrapped label stays beside it. */
+.case-brief-figure {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 0.5rem;
+  align-items: baseline;
+}
+.case-brief-figure b {
+  font-family: var(--font-headline);
+  font-size: 1.125rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-ink);
+}
+/* Open, the body lists every figure; the line does not repeat the first. */
+.case-brief[open] .case-brief-figure { display: none; }
+.case-brief-body {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+  padding-block: 0.25rem 2rem;
+}
+.case-brief-body .case-outcome { margin-top: 0.5rem; }
+
+@container cases (min-width: 46rem) {
+  .case-secondaries { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .case-secondary { padding-right: 2rem; }
+  .case-secondary + .case-secondary {
+    margin-top: 0;
+    border-top: 0;
+    padding: 0 0 0 2rem;
+    border-left: 1px solid var(--color-rule);
+  }
+
+  /* One line: title | role | figure | marker. */
+  .case-brief-line {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 3fr) minmax(0, 3fr) 1rem;
+    column-gap: 1.5rem;
+  }
+  .case-brief-title { grid-area: 1 / 1; }
+  .case-brief-role { grid-area: 1 / 2; }
+  .case-brief-figure { grid-area: 1 / 3; }
+  .case-brief-line::after { grid-area: 1 / 4; }
+}
+
+@container cases (min-width: 58rem) {
+  /* Headline and outcome on the left, the figures in their own column. */
+  .case-lead {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    column-gap: clamp(2rem, 4cqi, 3.5rem);
+  }
+  .case-lead > :is(.case-full, .case-foot) { grid-column: 1 / -1; }
+  .case-lead .case-stats { align-self: end; }
+}

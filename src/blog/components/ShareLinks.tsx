@@ -3,7 +3,7 @@ import { Check, Link as LinkIcon } from 'lucide-react'
 import { useTranslation } from '../../hooks/useTranslation'
 import type { BlogPost } from '../types'
 
-const CONTROL = 'skill-tag text-[10px] inline-flex items-center gap-1.5 cursor-pointer'
+const CONTROL = 'skill-tag inline-flex items-center gap-1.5 cursor-pointer'
 
 /**
  * Share controls for one article. They share the static page the build emits at
@@ -31,8 +31,8 @@ export function ShareLinks({ post }: { post: BlogPost }) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2" data-share-links>
-      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-ink-muted">
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-4" data-share-links>
+      <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-ink-muted">
         {es ? 'Compartir' : 'Share'}
       </span>
       <button type="button" onClick={copy} className={CONTROL}>

@@ -130,7 +130,9 @@ export function Hero() {
 
         {/* Stats — valores de negocio, no GitHub metrics */}
         <FadeIn delay={0.4}>
-          <div className="grid grid-cols-3 border-2 border-t-8 border-rule shadow-pixel-sm">
+          {/* Three columns need room for their labels: on a phone each stat
+              is a row, the label beside its number. */}
+          <div className="grid sm:grid-cols-3 border-2 border-t-8 border-rule shadow-pixel-sm">
             {stats.map((stat, i) => (
               /*
                * The founding: a world so recent that many things had no name
@@ -147,17 +149,17 @@ export function Hero() {
                */
               <div
                 key={stat.label}
-                className={`p-5 text-center${i < stats.length - 1 ? ' border-r-2 border-rule' : ''}`}
+                className={`flex items-baseline gap-4 px-5 py-4 sm:block sm:p-5 sm:text-center${i < stats.length - 1 ? ' border-b-2 sm:border-b-0 sm:border-r-2 border-rule' : ''}`}
               >
                 <motion.p
-                  className="font-headline text-3xl md:text-4xl font-black text-ink leading-none"
+                  className="shrink-0 min-w-[5.5rem] sm:min-w-0 font-headline text-3xl md:text-4xl font-black text-ink leading-none"
                   initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: reduceMotion ? 0 : 0.5 + i * 0.1 }}
                 >
                   {stat.value}
                 </motion.p>
-                <p className="font-mono text-[11px] text-ink-muted mt-1 uppercase tracking-wide">
+                <p className="font-mono text-[11px] text-ink-muted sm:mt-1 uppercase tracking-wide">
                   {stat.label}
                 </p>
               </div>
