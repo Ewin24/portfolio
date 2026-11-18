@@ -72,7 +72,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'sovi-identity-verification',
     slug: 'sistema-orquestador-validacion-identidad',
     featured: true,
-    order: 4,
+    order: 5,
 
     title: 'SOVI — Sistema Orquestador de Validación de Identidad',
     titleEn: 'SOVI — Identity Validation Orchestrator System',
@@ -119,7 +119,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'datacredito-api',
     slug: 'api-buro-credito-datacredito',
     featured: true,
-    order: 3,
+    order: 4,
 
     title: 'API de Integración con Burós de Crédito — Datacredito',
     titleEn: 'Credit Bureau Integration API — Datacredito',
@@ -167,7 +167,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'nominas-franquicias',
     slug: 'extension-plantillas-nomina-franquicias',
     featured: true,
-    order: 9,
+    order: 10,
 
     title: 'Sistema de Nómina — Generación de Documentos para Franquicias',
     titleEn: 'Payroll System — Document Generation for Franchise Chain',
@@ -213,7 +213,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'apiquac-admin-ui',
     slug: 'admin-module-realignment-los',
     featured: true,
-    order: 10,
+    order: 11,
 
     title: 'Arquitectura UI para Módulo Administrativo de LOS',
     titleEn: 'UI Architecture for LOS Admin Module',
@@ -258,7 +258,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'portfolio-hybrid',
     slug: 'portfolio-arquitectura-hibrida',
     featured: true,
-    order: 11,
+    order: 13,
 
     title: 'Portfolio con Arquitectura Híbrida (React 19 + Vite)',
     titleEn: 'Hybrid Architecture Portfolio (React 19 + Vite)',
@@ -305,7 +305,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'infobip-email-api',
     slug: 'api-centralizada-comunicaciones-infobip',
     featured: true,
-    order: 6,
+    order: 7,
 
     title: 'API Centralizada de Comunicaciones por Email — Infobip como Proveedor Único',
     titleEn: 'Centralized Email Communications API — Infobip as Single Provider',
@@ -353,7 +353,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'harmony-music-oss',
     slug: 'harmony-music-flutter-open-source-maintainer',
     featured: true,
-    order: 8,
+    order: 9,
 
     title: 'Harmony-Music — Mantenedor de App Flutter Open Source de Música Multiplataforma',
     titleEn: 'Harmony-Music — Maintainer of Cross-Platform Flutter Open Source Music App',
@@ -401,7 +401,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'starsol-saas',
     slug: 'starsol-saas-riesgos-financieros',
     featured: true,
-    order: 5,
+    order: 6,
 
     title: 'STARSOL — Plataforma SaaS para Gestión Integral de Riesgos',
     titleEn: 'STARSOL — SaaS Platform for Integrated Risk Management',
@@ -447,7 +447,7 @@ export const caseStudies: CaseStudy[] = [
     id: 'readerss',
     slug: 'readerss-lector-rss-offline',
     featured: true,
-    order: 7,
+    order: 8,
 
     title: 'ReaderSS — Lector RSS con lectura offline y relay en el borde',
     titleEn: 'ReaderSS — RSS Reader with Offline Reading and an Edge Relay',
@@ -533,6 +533,103 @@ export const caseStudies: CaseStudy[] = [
     hasNDA: false,
     tags: ['ai', 'llm', 'human-in-the-loop', 'saas', 'multi-tenant', 'dotnet', 'react', 'testing'],
   },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // PROYECTO 10 — How I build software with AI agents (own practice)
+  // Authorship rule: Gentle AI, Engram and CodeGraph are other people's
+  // open-source tools ("uso", "configuré"). "Escribí" only for the feature
+  // documents, the skills and the browser drivers. Every figure comes from an
+  // Engram note read in full or from a file in this repository.
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'ai-agent-workflow',
+    slug: 'como-construyo-software-con-agentes-de-ai',
+    featured: true,
+    order: 3,
+
+    title: 'Cómo construyo software con agentes de AI y qué se les escapó',
+    titleEn: 'How I build software with AI agents and what they missed',
+
+    company: 'Práctica propia',
+    companyAnon: false,
+    industry: 'Desarrollo con agentes de AI',
+
+    period: '2026 – Presente',
+    role: 'Arquitecto y Desarrollador',
+    roleEn: 'Architect & Developer',
+
+    problem:
+      'Un agente de AI escribe código rápido y también afirma cosas que nadie comprobó. En ReaderSS, mi lector RSS, encontré 11 casos en que un comentario, el nombre de una prueba o una casilla marcada decían algo que el código no hacía. Uno de esos comentarios hablaba de "seis resultados" cuando eran ocho, y la sesión que coordinaba el trabajo lo leyó, lo creyó y lo copió en sus propias instrucciones sin contar. Además, cada conversación con un agente empieza sin recordar la anterior, y yo trabajo en varios proyectos desde dos computadores. Necesitaba una forma de trabajar que dejara por escrito qué pedí, qué archivos podía tocar cada agente y qué comprobación respalda cada resultado.',
+    problemEn:
+      'An AI agent writes code fast and also states things nobody checked. On ReaderSS, my RSS reader, I found 11 cases where a comment, a test name or a ticked checkbox said something the code did not do. One of those comments spoke of "six outcomes" when there were eight, and the session coordinating the work read it, believed it and copied it into its own instructions without counting. On top of that, every conversation with an agent starts with no memory of the previous one, and I work on several projects from two computers. I needed a way of working that left in writing what I asked for, which files each agent could touch and which check backs each result.',
+
+    solution:
+      'Trabajo con una sesión principal que coordina y con agentes auxiliares que reciben una tarea acotada y la lista exacta de archivos que pueden editar. Esas reglas de coordinación y la revisión por cuatro lentes independientes (riesgo, resiliencia, legibilidad y confiabilidad) vienen de Gentle AI, un proyecto de código abierto que instalé y configuré. Para la memoria entre sesiones uso Engram, y para consultar la estructura del código uso CodeGraph. Las dos son herramientas abiertas hechas por otras personas. Lo que escribí yo es lo que cada proyecto necesita encima de eso. Siguiendo esas reglas, cada funcionalidad grande tiene un documento con mis frases citadas tal cual, la lista de tareas y una bitácora con la evidencia de cada resultado. Este portfolio tiene 11 de esos documentos. Escribí nueve habilidades, que son instrucciones que el agente carga cuando la tarea lo pide: cinco viven en este repositorio (una de ellas protege los datos confidenciales de clientes antes de publicar) y cuatro en otros proyectos. Y este portfolio tiene 17 drivers de Playwright, construidos con esos mismos agentes, que abren el sitio en un navegador real y comprueban lo que se ve. Cuando rehíce la sección de casos de estudio de este sitio, el driver nuevo pasaba 21 de sus 48 comprobaciones antes del cambio y las 48 después.',
+    solutionEn:
+      'I work with a main session that coordinates and with helper agents that each get a bounded task and the exact list of files they may edit. Those coordination rules and the review through four independent lenses (risk, resilience, readability and reliability) come from Gentle AI, an open-source project I installed and configured. For memory between sessions I use Engram, and to query the structure of the code I use CodeGraph. Both are open tools made by other people. What I wrote is what each project needs on top of that. Following those rules, every large feature has a document with my own sentences quoted as I wrote them, the task list and a log with the evidence for each result. This portfolio has 11 of those documents. I wrote nine skills, which are instructions the agent loads when the task calls for them: five live in this repository (one of them protects confidential client data before anything is published) and four in other projects. And this portfolio has 17 Playwright drivers, built with those same agents, that open the site in a real browser and check what is on screen. When I rebuilt the case studies section of this site, the new driver passed 21 of its 48 checks before the change and all 48 after it.',
+
+    impact:
+      'En ReaderSS pasé el código por 11 rondas de revisión con cuatro lentes, 44 pasadas en total. Apliqué 47 hallazgos, entre ellos 1 bloqueante y 4 críticos. Ninguna de las 44 pasadas vio los dos defectos que dejaban la aplicación sin poder usarse, y yo los encontré a los pocos minutos de abrirla en el navegador. El comando de desarrollo no arrancaba el servicio que trae los feeds, así que todos fallaban con un mensaje que culpaba al feed. Y un cuarto elemento en una rejilla de tres columnas dejaba el panel de lectura fuera de la pantalla. La suite tenía 423 pruebas. No podía ver el segundo defecto porque el entorno de pruebas no calcula la disposición de la página, ni el primero porque los datos de prueba omitían una cabecera que el servicio real siempre envía. De ahí adopté una regla: entregarle pronto a una persona algo que pueda abrir. La memoria también falló. Al sincronizarla entre mis dos computadores, cada importación le cambiaba el número a las notas y la exportación nunca borraba los archivos viejos. Una carpeta que debía tener 473 notas tenía 1.369 archivos, cerca de 900 de sobra. Encontré la causa comparando dos copias de una nota: solo cambiaba la línea del número. De los 11 casos de afirmaciones falsas salió otra regla que sigo usando: no escribo una cifra que no conté.',
+    impactEn:
+      'On ReaderSS I put the code through 11 review rounds with four lenses, 44 passes in total. I applied 47 findings, among them 1 blocker and 4 critical ones. None of the 44 passes saw the two defects that left the application unusable, and I found both within minutes of opening it in the browser. The development command did not start the service that fetches the feeds, so every feed failed with a message that blamed the feed. And a fourth element in a three-column grid pushed the reading pane off the screen. The suite had 423 tests. It could not see the second defect because the test environment does not compute page layout, and it could not see the first because the test data left out a header the real service always sends. From that I adopted a rule: give a person something they can open early. Memory failed too. When I synced it between my two computers, every import changed the number of each note and the export never deleted the old files. A folder that should have held 473 notes held 1,369 files, about 900 too many. I found the cause by comparing two copies of one note: only the line with the number differed. The 11 cases of false claims gave me another rule I still use: I do not write a figure I did not count.',
+
+    highlights: [
+      { value: '44', label: 'pasadas de revisión en ReaderSS', labelEn: 'review passes on ReaderSS' },
+      { value: '11', label: 'afirmaciones falsas catalogadas', labelEn: 'false claims catalogued' },
+      { value: '17', label: 'drivers de navegador', labelEn: 'browser drivers' },
+    ],
+    stack: ['Claude Code', 'Gentle AI', 'Engram', 'CodeGraph', 'Playwright'],
+    architectureDiagram: 'Sesión principal que coordina → agentes auxiliares con una tarea acotada y sus archivos declarados → pruebas y drivers de navegador → revisión por cuatro lentes → documento de la funcionalidad con la evidencia de cada resultado.',
+    hasNDA: false,
+    tags: ['ai', 'agents', 'workflow', 'review', 'testing', 'playwright', 'memory'],
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // PROYECTO 11 — Visibility to AI engines for this portfolio
+  // Figures from the audit of 2026-06-19 and from vite.config.ts, index.html
+  // and public/llms*.txt in this repository.
+  // ═════════════════════════════════════════════════════════════════════════
+  {
+    id: 'portfolio-ai-visibility',
+    slug: 'visibilidad-ante-motores-de-ai-portfolio',
+    featured: true,
+    order: 12,
+
+    title: 'Hice que los asistentes de AI puedan leer este portfolio',
+    titleEn: 'I made this portfolio readable by AI assistants',
+
+    company: 'Proyecto Personal',
+    companyAnon: false,
+    industry: 'Desarrollo Web',
+
+    period: '2026',
+    role: 'Desarrollador Frontend',
+    roleEn: 'Frontend Developer',
+
+    problem:
+      'Este portfolio es una aplicación de una sola página: el servidor entrega un HTML casi vacío y el contenido aparece cuando el navegador ejecuta JavaScript. Un programa que lee la página sin ejecutar JavaScript no encontraba casos de estudio ni artículos. Una auditoría automatizada de visibilidad ante motores de AI le dio 58 puntos sobre 100. El contenido se podía citar bien (94 de 100). La parte técnica sacó 66 porque no había `llms.txt`, mapa del sitio ni URL canónica. Los datos estructurados sacaron 0 porque no existía ninguno. La presencia en otros sitios sacó 48.',
+    problemEn:
+      'This portfolio is a single-page application: the server sends an almost empty HTML file and the content appears once the browser runs JavaScript. A program that reads the page without running JavaScript found no case studies and no articles. An automated audit of visibility to AI engines gave it 58 points out of 100. The content was easy to cite (94 out of 100). The technical side scored 66 because there was no `llms.txt`, no sitemap and no canonical URL. Structured data scored 0 because none existed. Presence on other sites scored 48.',
+
+    solution:
+      'Hice cuatro cosas. Primero, escribí un plugin de Vite que al compilar importa los mismos archivos de contenido que usa la aplicación y deja los casos de estudio, los artículos y la experiencia escritos en el HTML. Ese archivo pasó de 10,6 kB a 68,3 kB. React reemplaza ese contenido al cargar, así que una persona no lo ve repetido. Segundo, el mismo plugin genera datos estructurados JSON-LD de Schema.org: la persona, el sitio, un artículo por cada entrada del blog, una obra por cada caso de estudio, preguntas frecuentes y listas. Tercero, publiqué `llms.txt` y `llms-full.txt`, dos archivos de texto que le resumen el sitio a un modelo, junto con `robots.txt`, la URL canónica y el mapa del sitio. Cuarto, más adelante le di a cada artículo una página estática para compartir, porque las rutas del sitio van después de un `#` y un servidor nunca ve esa parte de la dirección.',
+    solutionEn:
+      'I did four things. First, I wrote a Vite plugin that, at build time, imports the same content files the application uses and leaves the case studies, the articles and the work experience written in the HTML. That file went from 10.6 kB to 68.3 kB. React replaces that content on load, so a person does not see it twice. Second, the same plugin generates Schema.org structured data as JSON-LD: the person, the site, one article per blog post, one work per case study, frequent questions and lists. Third, I published `llms.txt` and `llms-full.txt`, two text files that summarize the site for a model, along with `robots.txt`, the canonical URL and the sitemap. Fourth, later on I gave every article a static page for sharing, because the routes of the site come after a `#` and a server never sees that part of the address.',
+
+    impact:
+      'La misma auditoría subió de 58 a 83 sobre 100 el mismo día, con los 14 problemas que había encontrado resueltos. La parte técnica pasó de 66 a 92. Los datos estructurados pasaron de 0 a 99, con 26 tipos de Schema.org. La facilidad para citar el contenido ya estaba en 94 y se quedó igual. La presencia en otros sitios siguió en 48, porque depende de trabajo fuera del código, como perfiles y publicaciones en otras plataformas. Según la auditoría, renderizar en el servidor sumaría 7 puntos a la parte técnica y dejaría el total en 86. Hoy el mapa del sitio, el feed RSS y las páginas para compartir salen de los mismos archivos de contenido, así que publicar un artículo los actualiza sin tocar nada más.',
+    impactEn:
+      'The same audit went from 58 to 83 out of 100 on the same day, with the 14 problems it had found resolved. The technical side went from 66 to 92. Structured data went from 0 to 99, with 26 Schema.org types. How easy the content is to cite was already at 94 and stayed there. Presence on other sites stayed at 48, because it depends on work outside the code, such as profiles and posts on other platforms. According to the audit, rendering on the server would add 7 points to the technical side and take the total to 86. Today the sitemap, the RSS feed and the share pages come from the same content files, so publishing an article updates them with nothing else to touch.',
+
+    highlights: [
+      { value: '58 → 83', label: 'en la auditoría, sobre 100', labelEn: 'on the audit, out of 100' },
+      { value: '0 → 99', label: 'en datos estructurados', labelEn: 'on structured data' },
+      { value: '66 → 92', label: 'en la parte técnica', labelEn: 'on the technical side' },
+    ],
+    stack: ['Vite', 'TypeScript', 'JSON-LD', 'Schema.org', 'llms.txt', 'RSS'],
+    hasNDA: false,
+    tags: ['ai', 'geo', 'structured-data', 'json-ld', 'llms-txt', 'vite', 'seo'],
+  },
 ]
 
 /**
@@ -586,6 +683,14 @@ export const caseOutcomes: Record<string, { es: string; en: string }> = {
   'portfolio-hybrid': {
     es: 'El escritorio XP se construyó con TDD estricto y 100/100 verificaciones, y un segundo driver exige 0 píxeles de diferencia en el tema periódico.',
     en: 'The XP desktop was built with strict TDD and 100/100 checks, and a second driver demands 0 differing pixels in the newspaper theme.',
+  },
+  'ai-agent-workflow': {
+    es: 'En ReaderSS, 44 pasadas de revisión con AI aplicaron 47 hallazgos y no vieron los dos defectos que encontré a los pocos minutos de abrir la aplicación, y en este portfolio 17 drivers comprueban el sitio en un navegador real.',
+    en: 'On ReaderSS, 44 AI review passes applied 47 findings and did not see the two defects I found within minutes of opening the application, and on this portfolio 17 drivers check the site in a real browser.',
+  },
+  'portfolio-ai-visibility': {
+    es: 'Una auditoría automatizada de visibilidad ante motores de AI pasó de 58 a 83 sobre 100 el mismo día, con los datos estructurados de 0 a 99 y la parte técnica de 66 a 92.',
+    en: 'An automated audit of visibility to AI engines went from 58 to 83 out of 100 on the same day, with structured data from 0 to 99 and the technical side from 66 to 92.',
   },
 }
 

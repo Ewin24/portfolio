@@ -50,7 +50,7 @@ const ORACLE = {
   sqlserver: { name: 'SQL Server', stack: ['SQL Server'], tags: ['SQL Server', 'T-SQL'] },
   playwright: { name: 'Playwright', stack: ['Playwright'], tags: ['playwright'] },
   flutter: { name: 'Flutter', stack: ['Flutter', 'Flutter 3.44+', 'Dart'], tags: ['flutter'] },
-  ai: { name: 'LLM / AI Agents', stack: ['LLM tool calling'], tags: ['AI', 'agentes', 'agentes-ia'] },
+  ai: { name: 'LLM / AI Agents', stack: ['LLM tool calling', 'Claude Code'], tags: ['AI', 'agentes', 'agentes-ia'] },
   geo: { name: 'AI Discoverability', stack: [], tags: [] },
 }
 /** Six months before today as YYYY-MM-DD: the driver's own clock, read once. */

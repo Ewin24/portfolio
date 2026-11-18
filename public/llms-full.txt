@@ -438,6 +438,28 @@ https://portfolio.edwintrigos.workers.dev/#projects
 
 **Impact**: 787 tests with lint and typecheck clean, and an enforced 70% coverage gate (the last measurement, at 426 tests, gave ~95% statement coverage and a 248 kB raw bundle, 88 kB gzipped). GitHub Actions runs lint, typecheck and tests before deploying to Cloudflare Workers. Public MIT-licensed repository.
 
+### How I build software with AI agents and what they missed
+https://portfolio.edwintrigos.workers.dev/#projects
+**Period**: 2026-Present | **Role**: Architect & Developer
+**Stack**: Claude Code, Gentle AI, Engram, CodeGraph, LLM tool calling, Playwright
+
+**Problem**: An AI agent writes code fast and also states things nobody checked. On ReaderSS, 11 catalogued cases where a comment, a test name or a ticked checkbox said something the code did not do. One comment spoke of "six outcomes" when there were eight, and the coordinating session copied it into its own instructions without counting. Every conversation with an agent starts with no memory of the previous one, across several projects and two computers.
+
+**Solution**: A main session that coordinates and helper agents that each get a bounded task and the exact list of files they may edit. The coordination rules and the review through four independent lenses come from Gentle AI, an open-source project Edwin installed and configured. Engram (memory between sessions) and CodeGraph (code structure) are open tools made by other people. What Edwin wrote: a feature document per large feature with his own sentences quoted, the task list and a log with the evidence (11 of them in this portfolio), nine skills (five in this repository, four in other projects) and 17 Playwright drivers that open the site in a real browser. When the case studies section was rebuilt, the new driver passed 21 of its 48 checks before the change and all 48 after it.
+
+**Impact**: On ReaderSS, 11 review rounds with four lenses (44 passes, 47 findings applied, among them 1 blocker and 4 critical ones) did not see the two defects that left the application unusable. Both were found within minutes of opening it in the browser: the development command did not start the service that fetches the feeds, and a fourth element in a three-column grid pushed the reading pane off the screen. The 423-test suite could not see either. Memory failed too: syncing it between two computers changed the number of each note on every import and the export never deleted old files, so a folder that should have held 473 notes held 1,369 files, about 900 too many. Rules adopted: give a person something they can open early, and never write a figure that was not counted.
+
+### I made this portfolio readable by AI assistants
+https://portfolio.edwintrigos.workers.dev/#projects
+**Period**: 2026 | **Role**: Frontend Developer
+**Stack**: Vite, TypeScript, JSON-LD, Schema.org, llms.txt, RSS
+
+**Problem**: The portfolio is a single-page application: the server sends an almost empty HTML file and the content appears once the browser runs JavaScript. An automated audit of visibility to AI engines gave it 58/100: citability 94, technical 66 (no llms.txt, no sitemap, no canonical URL), structured data 0, presence on other sites 48.
+
+**Solution**: A Vite plugin that, at build time, imports the same content files the application uses and writes the case studies, the articles and the work experience into the HTML (10.6 kB to 68.3 kB). The same plugin generates Schema.org JSON-LD. llms.txt and llms-full.txt, robots.txt, canonical URL and sitemap. Later, one static share page per article, because the routes come after a `#` that a server never sees.
+
+**Impact**: The same audit went from 58 to 83/100 on the same day, with the 14 problems it had found resolved. Technical 66 to 92. Structured data 0 to 99, with 26 Schema.org types. Citability stayed at 94. Presence on other sites stayed at 48 because it depends on work outside the code. According to the audit, server rendering would add 7 technical points and take the total to 86.
+
 ---
 
 ## Skills & Technologies
