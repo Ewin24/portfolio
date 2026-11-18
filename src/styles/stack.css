@@ -11,6 +11,10 @@
 
 .stack-fallback { min-height: 60rem; }
 
+/* Where an evidence link lands: one case study card (`#case-<id>` in
+   Projects.tsx), clear of the fixed header. */
+[id^='case-'] { scroll-margin-top: 6rem; }
+
 .stack {
   container: stack / inline-size;
   color: var(--color-ink);

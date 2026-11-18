@@ -127,7 +127,7 @@ function Detail({ tech }: { tech: StackEntry }) {
           <ul>
             {tech.cases.map((study) => (
               <li key={study.id}>
-                <a href="#projects">{lang === 'es' ? study.title : study.titleEn}</a>
+                <a href={`#case-${study.id}`}>{lang === 'es' ? study.title : study.titleEn}</a>
               </li>
             ))}
           </ul>
