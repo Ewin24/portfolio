@@ -5,6 +5,7 @@ import MiniSearch from 'minisearch'
 import { useTranslation } from '../../hooks/useTranslation'
 import { useBlogContext } from '../context/BlogContext'
 import { EmptyState } from './EmptyState'
+import { useReadSnapshot } from '../readState'
 import { formatPostDate } from '../hooks/postDate'
 import type { BlogPost } from '../types'
 
@@ -43,7 +44,8 @@ function useDebounce<T>(value: T, delay: number): T {
 
 export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
   const { lang } = useTranslation()
-  const { posts, setSearchQuery } = useBlogContext()
+  const { posts, setSearchQuery, unreadOnly } = useBlogContext()
+  const readState = useReadSnapshot()
   const [query, setQuery] = useState(defaultQuery)
   const [results, setResults] = useState<BlogPost[]>([])
   const [isIndexed, setIsIndexed] = useState(false)
@@ -114,7 +116,9 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
   )
 
   const hasQuery = query.trim().length > 0
-  const hasResults = results.length > 0
+  // The Unread toggle of the filters hides read articles here too, as it does in the list.
+  const shown = unreadOnly ? results.filter((post) => readState.stateOf(post.slug) !== 'read') : results
+  const hasResults = shown.length > 0
 
   return (
     <div className="mb-8">
@@ -170,11 +174,11 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
               </div>
             ) : (
               <ul className="divide-y divide-rule-light">
-                {results.map((post) => {
+                {shown.map((post) => {
                   const title = lang === 'es' ? post.title : post.titleEn
                   const excerpt = lang === 'es' ? post.excerpt : post.excerptEn
                   return (
-                    <li key={post.id}>
+                    <li key={post.id} data-search-slug={post.slug}>
                       <button
                         onClick={() => handleSelect(post)}
                         className="w-full text-left px-4 py-3 hover:bg-paper-dark transition-colors cursor-pointer"

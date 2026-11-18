@@ -15,8 +15,8 @@ const ceiling: LineFigure = {
       en: 'The first rounds climb toward it quickly. Later rounds climb less, and none of them crosses it.',
     },
     {
-      es: 'Los defectos que están por encima no son más difíciles: son de otro tipo, fuera del alcance de leer el código.',
-      en: 'The defects above it are not harder: they are of another kind, out of reach of reading the code.',
+      es: 'Los defectos que quedan por encima pueden ser fáciles de ver para otro observador. Leyendo el código no se llega a ellos.',
+      en: 'The defects above it can be easy for another observer to see. Reading the code does not reach them.',
     },
     {
       es: 'Lo que encontró otro observador estaba por encima del techo.',

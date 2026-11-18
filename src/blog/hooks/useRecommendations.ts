@@ -27,7 +27,8 @@ export function getRecommendations(
 
   const scored = others.map((post) => {
     const tagOverlap = post.tags.filter((t) => currentPost.tags.includes(t)).length
-    const daysSince = (Date.now() - new Date(post.date).getTime()) / (1000 * 60 * 60 * 24)
+    // Whole days: a fractional boost made exact ties (one tag = ten days) flip order between renders.
+    const daysSince = Math.floor((Date.now() - new Date(post.date).getTime()) / (1000 * 60 * 60 * 24))
     const recencyBoost = Math.max(0, 14 - daysSince) * 0.1
 
     return { ...post, score: tagOverlap + recencyBoost }

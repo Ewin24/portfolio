@@ -7,16 +7,16 @@ const matrix: MatrixFigure = {
   axesStep: 1,
   steps: [
     {
-      es: 'Dos preguntas por hipótesis: cuánto cuesta refutarla y qué tan probable parece.',
-      en: 'Two questions per hypothesis: what it costs to refute and how likely it seems.',
+      es: 'Dos preguntas por cada explicación: cuánto cuesta descartarla y qué tan probable parece.',
+      en: 'Two questions for each explanation: what it costs to rule out and how likely it seems.',
     },
     { es: 'Probable y barata: probar ya.', en: 'Likely and cheap: test now.' },
     {
-      es: 'Probable y cara: probar después, cuando las baratas se agoten.',
-      en: 'Likely and expensive: test later, once the cheap ones are exhausted.',
+      es: 'Probable y cara: probar después, cuando se acaben las baratas.',
+      en: 'Likely and expensive: test later, once the cheap ones run out.',
     },
     {
-      es: 'Improbable y cara: aparcar hasta que algo la vuelva probable.',
+      es: 'Improbable y cara: dejar en espera hasta que algo la vuelva probable.',
       en: 'Unlikely and expensive: park it until something makes it likely.',
     },
     {
@@ -25,7 +25,7 @@ const matrix: MatrixFigure = {
     },
   ],
   x: {
-    label: { es: 'costo de refutar →', en: 'cost to refute →' },
+    label: { es: 'costo de descartar →', en: 'cost to rule out →' },
     ticks: [{ es: 'bajo', en: 'low' }, { es: 'alto', en: 'high' }],
   },
   y: {
@@ -35,12 +35,12 @@ const matrix: MatrixFigure = {
   cells: [
     {
       title: { es: '1. PROBAR YA', en: '1. TEST NOW' },
-      text: { es: 'Parece probable y cuesta poco.', en: 'Seems likely and cheap to refute.' },
+      text: { es: 'Parece probable y cuesta poco.', en: 'Seems likely and costs little to rule out.' },
       step: 2,
     },
     {
       title: { es: '3. PROBAR DESPUÉS', en: '3. TEST LATER' },
-      text: { es: 'Cuando las baratas se agoten.', en: 'Once the cheap ones are exhausted.' },
+      text: { es: 'Cuando se acaben las baratas.', en: 'Once the cheap ones run out.' },
       step: 3,
     },
     {
@@ -51,7 +51,7 @@ const matrix: MatrixFigure = {
       step: 5,
     },
     {
-      title: { es: '4. APARCAR', en: '4. PARK' },
+      title: { es: '4. DEJAR EN ESPERA', en: '4. PARK' },
       text: { es: 'Hasta que algo la vuelva probable.', en: 'Until something makes it likely.' },
       step: 4,
     },

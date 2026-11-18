@@ -43,7 +43,7 @@ const lifecycle: FlowFigure = {
     },
     {
       es: 'Recordada: vuelve en una búsqueda y se usa. Es una pista, falta comprobarla.',
-      en: 'Recalled: a search brings it back into use. It is a lead, not yet a fact.',
+      en: 'Recalled: a search brings it back into use. It is a lead you still have to check.',
     },
     {
       es: 'Vencida: el código cambió y la nota no. Nada la marca y sigue activa.',
@@ -72,7 +72,7 @@ const lifecycle: FlowFigure = {
           step: 2,
           aside: [
             { text: { es: 'Vuelve en una búsqueda y se usa.', en: 'A search brings it back into use.' } },
-            { text: { es: 'Es una pista, falta comprobarla.', en: 'It is a lead, not yet a fact.' } },
+            { text: { es: 'Es una pista, falta comprobarla.', en: 'A lead you still have to check.' } },
           ],
         },
         {

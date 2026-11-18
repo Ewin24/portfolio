@@ -2,26 +2,26 @@ import type { TracksFigure } from '../renderers/tracks'
 import type { FigureSet } from '../types'
 
 const whole = { es: 'LLEGA ENTERA', en: 'ARRIVES WHOLE' }
-const lost = { es: 'PIERDE EL REFERENTE', en: 'LOSES ITS REFERENT' }
+const lost = { es: 'PIERDE SU SENTIDO', en: 'LOSES ITS MEANING' }
 
 const extraction: TracksFigure = {
   type: 'tracks',
   steps: [
     {
-      es: 'La frase que nombra su sujeto llega entera: no dependía de la anterior.',
-      en: 'The sentence that names its subject arrives whole: it never depended on the one before.',
+      es: 'La frase que nombra su sujeto llega entera, porque no dependía de la anterior.',
+      en: 'The sentence that names its subject arrives whole, because it never depended on the one before.',
     },
     {
-      es: 'El número con su método también llega entero, siempre que el método esté en la misma frase.',
-      en: 'The number with its method arrives whole too, provided the method is in the same sentence.',
+      es: 'El número también llega entero cuando su método está en la misma frase.',
+      en: 'The number also arrives whole when its method is in the same sentence.',
     },
     {
-      es: 'El pronombre sin antecedente llega como palabras y sin referente: «esto» señala algo que se quedó atrás.',
-      en: 'The pronoun with no antecedent arrives as words, minus the referent: "this" points at something left behind.',
+      es: 'El pronombre que apunta a otra frase llega como una palabra suelta: «esto» señala algo que se quedó en la página.',
+      en: 'The pronoun that points to another sentence arrives as a loose word: "this" points at something that stayed on the page.',
     },
     {
-      es: 'La referencia a la página corre la misma suerte: «la tabla de arriba» se quedó atrás.',
-      en: 'The reference to the page meets the same fate: "the table above" was left behind.',
+      es: 'A la referencia a la página le pasa lo mismo: «la tabla de arriba» se quedó en la página.',
+      en: 'The same happens to the reference to the page: "the table above" stayed on the page.',
     },
   ],
   stages: [
@@ -43,7 +43,7 @@ const extraction: TracksFigure = {
       step: 2,
     },
     {
-      title: { es: 'Pronombre sin antecedente', en: 'Pronoun with no antecedent' },
+      title: { es: 'Pronombre que apunta afuera', en: 'Pronoun that points outside' },
       example: { es: '«Esto es lo que cambié en el proceso»', en: '"This is what I changed in the process"' },
       outcome: lost,
       lost: true,

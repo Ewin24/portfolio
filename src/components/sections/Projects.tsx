@@ -93,6 +93,7 @@ function CaseStudyCard({ study, index }: { study: CaseStudy; index: number }) {
   return (
     <FadeIn delay={index * 0.1} className={isLead ? 'card-shell-outer lead-track' : 'card-shell-outer'}>
       <article
+        id={`case-${study.id}`}
         data-card={isLead ? 'lead' : 'secondary'}
         className={`px-card bg-paper card-shell${
           isLead ? ' shadow-pixel-lg' : ''

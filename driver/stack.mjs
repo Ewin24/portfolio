@@ -236,8 +236,9 @@ async function run() {
         check('selecting React presses it and only it', JSON.stringify(pressed) === '["react"]', JSON.stringify(pressed))
         const d = await readDetail(page)
         check('the detail panel is about React', d?.tech === 'react' && d.title === 'React', JSON.stringify(d))
-        check('it lists the case studies whose stack includes React', d?.cases.length === want.cases.length && d.cases.every((h) => h === '#projects'),
-          `${JSON.stringify(d?.cases)} vs ${want.cases.length}`)
+        check('it lists the case studies whose stack includes React, each linked to its own study',
+          want.cases.length > 1 && JSON.stringify(d?.cases) === JSON.stringify(want.cases.map((s) => `#case-${s.id}`)),
+          `${JSON.stringify(d?.cases)} vs ${JSON.stringify(want.cases.map((s) => s.id))}`)
         check('it lists the roles whose stack includes React', d?.roles.length === want.roles.length && d.roles.every((h) => h === '#experience'),
           `${JSON.stringify(d?.roles)} vs ${want.roles.length}`)
         check('it lists the posts tagged React',
@@ -252,18 +253,34 @@ async function run() {
         const wantGroups = ['cases', 'roles', 'posts'].filter((k) => wantP[k].length > 0)
         check('a source with no evidence shows no line', JSON.stringify(p?.groups) === JSON.stringify(wantGroups), `${JSON.stringify(p?.groups)} vs ${JSON.stringify(wantGroups)}`)
 
-        // A case-study link reaches the case studies section.
+        // A case-study link lands on the study it names: the last one, which is never the top of the section.
         await page.locator('#skills button[data-stack-tech="react"]').click()
         await page.waitForTimeout(400)
         const visibleDetail = page.locator('#skills [data-stack-detail]:visible')
-        await visibleDetail.locator('[data-stack-evidence="cases"] a').first().click()
-        await page.waitForTimeout(1200)
-        const reached = await page.evaluate(() => {
-          const r = document.querySelector('#projects')?.getBoundingClientRect()
-          return { hash: location.hash, top: r?.top ?? null, bottom: r?.bottom ?? null, vh: window.innerHeight }
-        })
-        check('a case-study link reaches the case studies section',
-          reached.hash === '#projects' && reached.top !== null && reached.top < reached.vh && reached.bottom > 0, JSON.stringify(reached))
+        const study = want.cases[want.cases.length - 1]
+        await visibleDetail.locator('[data-stack-evidence="cases"] a').last().click()
+        const landed = (id) => {
+          const r = document.getElementById(id)?.getBoundingClientRect()
+          const bar = document.querySelector('header')?.getBoundingClientRect().bottom ?? 0
+          return !!r && r.top >= bar - 1 && r.top < window.innerHeight / 2
+        }
+        await page.waitForFunction(landed, `case-${study.id}`, { timeout: 5_000 }).catch(() => {})
+        await page.waitForTimeout(300)
+        const reached = await page.evaluate((id) => {
+          const el = document.getElementById(id)
+          return {
+            hash: location.hash,
+            title: el?.querySelector('h3')?.textContent.trim() ?? null,
+            top: el?.getBoundingClientRect().top ?? null,
+            inProjects: !!el?.closest('#projects'),
+            article: !!document.querySelector('.blog-full'),
+          }
+        }, `case-${study.id}`)
+        check('a case-study link lands on that study, clear of the header',
+          reached.hash === `#case-${study.id}` && reached.title === study.titleEn && reached.inProjects && (await page.evaluate(landed, `case-${study.id}`)), JSON.stringify(reached))
+        check('a case-study address does not open the blog article view', reached.article === false)
+        const targets = await page.evaluate((ids) => ids.map((id) => document.querySelectorAll(`[id="case-${id}"]`).length), featuredCaseStudies.map((s) => s.id))
+        check('every case study on the page can be addressed, once', targets.every((n) => n === 1), JSON.stringify(targets))
 
         // A post link opens that article.
         const slug = want.posts[0].slug
@@ -443,6 +460,21 @@ async function run() {
         })
         check('XP: selecting a technology shows its evidence, still without horizontal scroll',
           d?.tech === 'flutter' && d.cases.length === expected('flutter').cases.length && after !== null && after <= 0, JSON.stringify({ d, after }))
+        // XP keeps each section in its own window. With the projects window open the link scrolls
+        // that window to the study; it does not open or raise the window (nor did the section link).
+        await page.evaluate(() => { window.__XPMANAGER__.open('projects'); window.__XPMANAGER__.focus('skills-experience') })
+        const xpStudy = expected('flutter').cases.at(-1)
+        await page.waitForSelector(`.xp-window [id="case-${xpStudy.id}"]`, { timeout: 5_000 }).catch(() => {})
+        await page.locator('.xp-window #skills [data-stack-detail]:visible [data-stack-evidence="cases"] a').last().click()
+        const inWindow = (id) => {
+          const el = document.getElementById(id)
+          const body = el?.closest('.xp-window-body')?.getBoundingClientRect()
+          const top = el?.getBoundingClientRect().top
+          return !!body && top >= body.top - 1 && top < body.bottom
+        }
+        await page.waitForFunction(inWindow, `case-${xpStudy.id}`, { timeout: 5_000 }).catch(() => {})
+        check('XP: with the projects window open, a case-study link scrolls it to that study',
+          !!xpStudy && (await page.evaluate(inWindow, `case-${xpStudy.id}`)) && (await page.evaluate(() => location.hash)) === `#case-${xpStudy.id}`)
         check('XP: no page or console errors', errors.length === 0, errors.join(' | '))
       } finally { await ctx.close() }
     }

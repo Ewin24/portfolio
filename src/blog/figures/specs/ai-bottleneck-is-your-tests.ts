@@ -46,8 +46,8 @@ const gap: LineFigure = {
       en: 'When writing gets cheap, code written takes off.',
     },
     {
-      es: 'El código verificado no: depende de arneses, entornos y tiempo de ejecución contra sistemas reales.',
-      en: 'Code verified does not: it depends on harnesses, environments and run time against real systems.',
+      es: 'El código verificado no se dispara, porque depende de herramientas de prueba, entornos y tiempo de ejecución contra sistemas reales.',
+      en: 'Code verified does not take off, because it depends on test tooling, environments and run time against real systems.',
     },
     {
       es: 'La brecha entre las dos es código que existe, compila, pasa revisión y nadie comprobó.',

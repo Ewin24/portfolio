@@ -5,20 +5,20 @@
 Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, TypeScript, PHP/Laravel, AWS, Flutter, Docker, LLM tool calling, SSE, Cloudflare Workers, IndexedDB, Playwright, Vitest.
 
 ## Blog — Technical Architecture Articles
-- [Una herramienta para un agente es una API cuyo usuario no lee la documentación dos veces](https://portfolio.edwintrigos.workers.dev/#blog/article/una-herramienta-para-un-agente-es-una-api): Published 2026-11-17 (ES/EN). Essay.
-- [El contexto es presupuesto: lo que no entra importa más que lo que escribes](https://portfolio.edwintrigos.workers.dev/#blog/article/el-contexto-es-presupuesto): Published 2026-11-17 (ES/EN). Essay.
-- [La memoria de un agente es un problema de curaduría, no de almacenamiento](https://portfolio.edwintrigos.workers.dev/#blog/article/la-memoria-de-un-agente-es-curaduria): Published 2026-11-17 (ES/EN). Essay.
-- [El modelo es la parte fácil: el arnés decide el resultado](https://portfolio.edwintrigos.workers.dev/#blog/article/el-modelo-es-la-parte-facil-el-arnes-decide): Published 2026-11-17 (ES/EN). Essay.
-- [Tu próximo lector es un modelo](https://portfolio.edwintrigos.workers.dev/#blog/article/tu-proximo-lector-es-un-modelo): Published 2026-11-17 (ES/EN). Essay.
-- [La AI propone; una transacción decide](https://portfolio.edwintrigos.workers.dev/#blog/article/la-ai-propone-una-transaccion-decide): Published 2026-11-17 (ES/EN). Essay.
-- [A un agente de AI no le des una descripción: dale algo que pueda fallar](https://portfolio.edwintrigos.workers.dev/#blog/article/dale-al-agente-algo-que-pueda-fallar): Published 2026-11-17 (ES/EN). Essay.
+- [Si tu agente usa mal una herramienta, revisa primero el nombre, la descripción y lo que le devuelves](https://portfolio.edwintrigos.workers.dev/#blog/article/una-herramienta-para-un-agente-es-una-api): Published 2026-11-17 (ES/EN). Essay.
+- [Por qué importa más lo que le dejas leer al modelo que la forma en que redactas la petición](https://portfolio.edwintrigos.workers.dev/#blog/article/el-contexto-es-presupuesto): Published 2026-11-17 (ES/EN). Essay.
+- [Revisé 56 notas de la memoria de mis agentes y todas figuraban como activas, incluso una que decía estar reemplazada](https://portfolio.edwintrigos.workers.dev/#blog/article/la-memoria-de-un-agente-es-curaduria): Published 2026-11-17 (ES/EN). Essay.
+- [Antes de cambiar de modelo, revisa las reglas y las comprobaciones que le pusiste a tu agente](https://portfolio.edwintrigos.workers.dev/#blog/article/el-modelo-es-la-parte-facil-el-arnes-decide): Published 2026-11-17 (ES/EN). Essay.
+- [Escribe frases que se entiendan solas, porque un asistente de AI las va a sacar de tu página](https://portfolio.edwintrigos.workers.dev/#blog/article/tu-proximo-lector-es-un-modelo): Published 2026-11-17 (ES/EN). Essay.
+- [Por qué un botón de aprobar no basta cuando la AI propone cambios en tus datos](https://portfolio.edwintrigos.workers.dev/#blog/article/la-ai-propone-una-transaccion-decide): Published 2026-11-17 (ES/EN). Essay.
+- [Por qué a un agente de AI le entrego una prueba que falla antes que una buena descripción](https://portfolio.edwintrigos.workers.dev/#blog/article/dale-al-agente-algo-que-pueda-fallar): Published 2026-11-17 (ES/EN). Essay.
 - [Reemplacé 40 archivos SVG por un componente propio: el blog pesa 22 kB más y aun así fue la decisión correcta](https://portfolio.edwintrigos.workers.dev/#blog/article/figuras-interactivas-en-lugar-de-svg): Published 2026-11-17 (ES/EN).
-- [Once rondas de revisión con AI no reemplazan diez minutos de un usuario](https://portfolio.edwintrigos.workers.dev/#blog/article/once-rondas-de-revision-no-son-un-usuario): Published 2026-11-17 (ES/EN). Essay.
-- [Publica lo que mediste, no lo que sabes](https://portfolio.edwintrigos.workers.dev/#blog/article/publica-lo-que-mediste): Published 2026-11-17 (ES/EN). Essay.
-- [Ordena las hipótesis por lo que cuesta refutarlas, no por lo probables que parecen](https://portfolio.edwintrigos.workers.dev/#blog/article/ordena-las-hipotesis-por-costo-de-refutar): Published 2026-11-17 (ES/EN). Essay.
-- [Antes de cambiar lo que heredaste, escribe lo que hace hoy](https://portfolio.edwintrigos.workers.dev/#blog/article/antes-de-cambiar-lo-que-heredaste): Published 2026-11-17 (ES/EN). Essay.
-- [Con AI, el cuello de botella son tus pruebas, no tu código](https://portfolio.edwintrigos.workers.dev/#blog/article/con-ai-el-cuello-de-botella-son-tus-pruebas): Published 2026-11-17 (ES/EN). Essay.
-- [El arreglo que funciona es la forma más cara de no decidir](https://portfolio.edwintrigos.workers.dev/#blog/article/el-arreglo-que-funciona-no-decide): Published 2026-11-17 (ES/EN). Essay.
+- [Puedes pedirle once rondas de revisión a la AI, pero nada reemplaza diez minutos usando el producto como un usuario de verdad](https://portfolio.edwintrigos.workers.dev/#blog/article/once-rondas-de-revision-no-son-un-usuario): Published 2026-11-17 (ES/EN). Essay.
+- [Por qué un caso que mediste le sirve más al lector que tu lista de habilidades](https://portfolio.edwintrigos.workers.dev/#blog/article/publica-lo-que-mediste): Published 2026-11-17 (ES/EN). Essay.
+- [Cuando algo falla, empieza por la explicación más barata de descartar, aunque no sea la que parece más probable](https://portfolio.edwintrigos.workers.dev/#blog/article/ordena-las-hipotesis-por-costo-de-refutar): Published 2026-11-17 (ES/EN). Essay.
+- [Antes de cambiar algo que heredaste, escribe qué hace hoy para saber después qué rompiste](https://portfolio.edwintrigos.workers.dev/#blog/article/antes-de-cambiar-lo-que-heredaste): Published 2026-11-17 (ES/EN). Essay.
+- [Ahora que la AI escribe código rápido, lo que te frena es cuánto puedes confiar en tus pruebas](https://portfolio.edwintrigos.workers.dev/#blog/article/con-ai-el-cuello-de-botella-son-tus-pruebas): Published 2026-11-17 (ES/EN). Essay.
+- [Si un arreglo hace pasar la prueba, deja escrito qué problema tapa](https://portfolio.edwintrigos.workers.dev/#blog/article/el-arreglo-que-funciona-no-decide): Published 2026-11-17 (ES/EN). Essay.
 - [AsyncLocal<T> no sube al llamador: dos logs que no podían ser ciertos a la vez](https://portfolio.edwintrigos.workers.dev/#blog/article/asynclocal-no-sube-al-llamador): Published 2026-11-10 (ES/EN).
 - [Las pruebas InMemory mienten sobre las transacciones](https://portfolio.edwintrigos.workers.dev/#blog/article/pruebas-inmemory-mienten-sobre-transacciones): Published 2026-11-07 (ES/EN).
 - [Pruebas de caracterización antes de refactorizar: fijar lo que el código hace, no lo que debería hacer](https://portfolio.edwintrigos.workers.dev/#blog/article/pruebas-caracterizacion-antes-de-refactorizar): Published 2026-11-03 (ES/EN).

@@ -68,12 +68,12 @@ const contrast: CompareFigure = {
   layout: 'side',
   steps: [
     {
-      es: 'El nombre: get_tasks describe el endpoint; buscar_tareas_atrasadas describe la tarea.',
-      en: 'The name: get_tasks describes the endpoint; find_overdue_tasks describes the task.',
+      es: 'El nombre: get_tasks describe el endpoint. buscar_tareas_atrasadas describe la tarea.',
+      en: 'The name: get_tasks describes the endpoint. find_overdue_tasks describes the task.',
     },
     {
-      es: 'Los parámetros: id, f y n no dicen de qué; proyecto_id y dias_atraso llevan unidad y ejemplo.',
-      en: 'The parameters: id, f and n do not say of what; project_id and days_overdue come with a unit and an example.',
+      es: 'Los parámetros: id, f y n no dicen de qué son. proyecto_id y dias_atraso llevan unidad y ejemplo.',
+      en: 'The parameters: id, f and n do not say what they refer to. project_id and days_overdue come with a unit and an example.',
     },
     {
       es: 'El resultado: todas las filas con ids internos, o 20 filas, el total y cómo pedir las siguientes.',
@@ -126,7 +126,7 @@ const contrast: CompareFigure = {
       title: { es: 'ERROR', en: 'ERROR' },
       cells: [
         { text: '400 Bad Request' },
-        { text: { es: 'proyecto_id no existe; usa buscar_proyectos', en: 'project_id not found; use find_projects' } },
+        { text: { es: 'proyecto_id no existe. Usa buscar_proyectos', en: 'project_id not found. Use find_projects' } },
       ],
       step: 4,
     },

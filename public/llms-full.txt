@@ -8,64 +8,64 @@ Technologies: .NET 8+, C#, SQL Server, Dapper, Clean Architecture, React 19, Typ
 
 ## Blog — Technical Architecture Articles
 
-### Una herramienta para un agente es una API cuyo usuario no lee la documentación dos veces
+### Si tu agente usa mal una herramienta, revisa primero el nombre, la descripción y lo que le devuelves
 https://portfolio.edwintrigos.workers.dev/#blog/article/una-herramienta-para-un-agente-es-una-api
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: A Tool for an Agent Is an API Whose User Reads the Docs Once
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: If Your Agent Misuses a Tool, Look First at Its Name, Its Description and What It Returns
 
 When an agent picks the wrong function or invents a parameter, the model gets the blame. I argue the tool deserves the first look: the model decides from a name, a description and whatever you return, like a newcomer in a hurry. Four design moves you can apply this week, what I did in a product of my own, and what good tool design does not fix.
 
 ---
 
-### El contexto es presupuesto: lo que no entra importa más que lo que escribes
+### Por qué importa más lo que le dejas leer al modelo que la forma en que redactas la petición
 https://portfolio.edwintrigos.workers.dev/#blog/article/el-contexto-es-presupuesto
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Context Is a Budget: What You Keep Out Matters More Than What You Write
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Why What You Let the Model Read Matters More Than How You Word the Request
 
 When a session with a model turns out expensive or wrong, people review how the request was worded. I argue the lever is somewhere else: in what is allowed into the context window, because whatever goes in once is paid for again on every turn and also competes for the model's attention. Four moves for keeping things out, what each one risks, and which part of this is about cost and which is about quality.
 
 ---
 
-### La memoria de un agente es un problema de curaduría, no de almacenamiento
+### Revisé 56 notas de la memoria de mis agentes y todas figuraban como activas, incluso una que decía estar reemplazada
 https://portfolio.edwintrigos.workers.dev/#blog/article/la-memoria-de-un-agente-es-curaduria
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Agent Memory Is a Curation Problem, Not a Storage Problem
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: I Checked 56 Notes in My Agents' Memory and Every One Was Listed as Active, Even One That Said It Had Been Replaced
 
 Giving an agent notes that survive between sessions is easy; keeping them true is the hard part. I went through a sample of 56 notes from my own agent memory: every one is listed as active, including one whose title says it was superseded, and every correction I found was written by hand. Four practices for storing less and trusting with a date, and what my sample cannot prove.
 
 ---
 
-### El modelo es la parte fácil: el arnés decide el resultado
+### Antes de cambiar de modelo, revisa las reglas y las comprobaciones que le pusiste a tu agente
 https://portfolio.edwintrigos.workers.dev/#blog/article/el-modelo-es-la-parte-facil-el-arnes-decide
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: The Model Is the Easy Part. The Harness Decides What You Get
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Before You Switch Models, Look at the Rules and Checks You Put Around Your Agent
 
 With a coding agent, the outcome depends less on the model than on the harness around it: the rules it reads, what it may touch, how its work is checked, when it has to stop, and how the task is split. Four failures from my own work with agents, all fixed by changing something around the model, three pieces you can add this week, and two questions for telling which rule is dead weight.
 
 ---
 
-### Tu próximo lector es un modelo
+### Escribe frases que se entiendan solas, porque un asistente de AI las va a sacar de tu página
 https://portfolio.edwintrigos.workers.dev/#blog/article/tu-proximo-lector-es-un-modelo
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Your Next Reader Is a Model
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Write Sentences That Make Sense on Their Own, Because an AI Assistant Will Lift Them Out of Your Page
 
 An assistant answering a question about a professional or a product does not hand over the page it read: it hands over two or three sentences taken from it. I argue that whoever publishes should write sentences that keep their meaning outside the page, with the number next to its method, and I show it with this site, where a reader that does not run JavaScript gets only the summary of each post. This is an argument from mechanism: I have no data showing that writing this way changes how often a model cites this site.
 
 ---
 
-### La AI propone; una transacción decide
+### Por qué un botón de aprobar no basta cuando la AI propone cambios en tus datos
 https://portfolio.edwintrigos.workers.dev/#blog/article/la-ai-propone-una-transaccion-decide
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: The Model Proposes. A Transaction Decides
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Why an Approve Button Is Not Enough When AI Proposes Changes to Your Data
 
 In a product built on a language model, the model's output should be a proposal that changes nothing by itself. What changes the data is a deterministic step: a person confirms and a transaction with its own guards does the writing. In my case there was a human in the loop and the loop had a double-approval race; the transaction fixed it, not the prompt. I also say when the gate is unnecessary and what happens when nobody reads what they confirm.
 
 ---
 
-### A un agente de AI no le des una descripción: dale algo que pueda fallar
+### Por qué a un agente de AI le entrego una prueba que falla antes que una buena descripción
 https://portfolio.edwintrigos.workers.dev/#blog/article/dale-al-agente-algo-que-pueda-fallar
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Stop Describing the Work to Your AI Agent. Give It Something That Can Fail
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Why I Hand an AI Agent a Failing Test Before a Good Description
 
 What an AI agent produces is bounded by the check it works against, and not by how well the request is worded. A prompt describes the goal; a test that fails before the work starts defines it. How this site is built on that rule, a ladder for placing each request, and three cases of my own where a wrong check was satisfied to the letter.
 
@@ -80,55 +80,55 @@ The 21 figures on this blog were 40 hand-written SVG files: they ignored the dar
 
 ---
 
-### Once rondas de revisión con AI no reemplazan diez minutos de un usuario
+### Puedes pedirle once rondas de revisión a la AI, pero nada reemplaza diez minutos usando el producto como un usuario de verdad
 https://portfolio.edwintrigos.workers.dev/#blog/article/once-rondas-de-revision-no-son-un-usuario
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Eleven Rounds of AI Review Do Not Replace Ten Minutes of Real Use
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: You Can Ask AI for Eleven Rounds of Review, but Nothing Replaces Ten Minutes of Using the Product Like a Real User
 
 One more review round of the same kind finds less each time, and some defects it never finds, because every reviewer reads the same material with the same means. On a project of my own, 44 adversarial review passes applied 47 findings and missed the two defects that showed up in five minutes of use. More review is not a different view: before paying for a round, ask what is different about whoever runs it.
 
 ---
 
-### Publica lo que mediste, no lo que sabes
+### Por qué un caso que mediste le sirve más al lector que tu lista de habilidades
 https://portfolio.edwintrigos.workers.dev/#blog/article/publica-lo-que-mediste
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: A Number the Reader Can Check Beats a Skill You Claim
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Why a Case You Measured Gives a Reader More to Go On Than Your Skills List
 
 A skills list reads the same whether it was written by someone who masters the tool, someone who used it for a week, or someone who is lying. A case with a measurement and its method gives the reader something to rerun. This essay argues for the second using this site as its only evidence, and says plainly what it lacks: any data on whether publishing this way brings work.
 
 ---
 
-### Ordena las hipótesis por lo que cuesta refutarlas, no por lo probables que parecen
+### Cuando algo falla, empieza por la explicación más barata de descartar, aunque no sea la que parece más probable
 https://portfolio.edwintrigos.workers.dev/#blog/article/ordena-las-hipotesis-por-costo-de-refutar
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Rank Your Hypotheses by What It Costs to Kill Them, Not by How Likely They Feel
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: When Something Breaks, Start With the Explanation That Is Cheapest to Rule Out, Even if It Is Not the Likeliest
 
 When something breaks, the usual move is to test the explanation that seems most likely. I argue the order should also weigh what each one costs to rule out, and that the explanation the symptom hands you is the one nobody tests, because it does not feel like a hypothesis. A log saying a provider was not answering could be refuted with one reading; what it invited me to do cost far more.
 
 ---
 
-### Antes de cambiar lo que heredaste, escribe lo que hace hoy
+### Antes de cambiar algo que heredaste, escribe qué hace hoy para saber después qué rompiste
 https://portfolio.edwintrigos.workers.dev/#blog/article/antes-de-cambiar-lo-que-heredaste
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Write Down What It Does Before You Change What You Inherited
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Before You Change Something You Inherited, Write Down What It Does Today So You Can Tell Later What You Broke
 
 Chesterton's fence asks you to understand why something is there before you remove it. With inherited things that reason is rarely available; the behavior is. I argue that recording what something does today, in a form that can contradict you later, is a rule for leading change more than a testing technique. For systems I have my own evidence; for processes and teams it is an extension by analogy, and I say so.
 
 ---
 
-### Con AI, el cuello de botella son tus pruebas, no tu código
+### Ahora que la AI escribe código rápido, lo que te frena es cuánto puedes confiar en tus pruebas
 https://portfolio.edwintrigos.workers.dev/#blog/article/con-ai-el-cuello-de-botella-son-tus-pruebas
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: AI Made Code Cheap. Your Tests Are Now the Bottleneck
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: Now That AI Writes Code Fast, What Slows You Down Is How Much You Can Trust Your Tests
 
 When writing code gets cheap, the scarce thing is being able to trust what verifies it. A suite that runs against stand-ins for reality approves what it does not understand, and every line an assistant writes amplifies that error. Three cases of my own, the DORA 2024 figures, and four rules for knowing what your tests actually ran against.
 
 ---
 
-### El arreglo que funciona es la forma más cara de no decidir
+### Si un arreglo hace pasar la prueba, deja escrito qué problema tapa
 https://portfolio.edwintrigos.workers.dev/#blog/article/el-arreglo-que-funciona-no-decide
 
-**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: A Workaround That Works Is a Decision Nobody Made
+**Published**: 2026-11-17 | **Language**: ES/EN | **Type**: Essay | **English title**: If a Workaround Makes the Test Pass, Write Down What It Is Hiding
 
 A workaround that makes the test pass feels like a decision, and it rarely is one: it switches off the only signal of the defect and leaves behind an example ready to be copied. I saw it in a test suite where every case pushed a timestamp five seconds back, a convention that covered a defect showing up in 13,339 of 20,000 runs. The workaround is sometimes the right call; what gets expensive is leaving it with no note and no owner.
 
