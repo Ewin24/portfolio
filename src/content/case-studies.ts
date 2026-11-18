@@ -535,6 +535,60 @@ export const caseStudies: CaseStudy[] = [
   },
 ]
 
+/**
+ * One outcome sentence per case, keyed by `id`: what a reader takes away
+ * without opening the case. Each is composed only of facts already stated in
+ * that case's `impact` or `solution` — a summary of the text, never a second
+ * source (same rule as `highlights`). Kept beside the data rather than as a
+ * `CaseStudy` field so the shared type stays untouched.
+ */
+export const caseOutcomes: Record<string, { es: string; en: string }> = {
+  'fabricas-credit-los': {
+    es: 'La API pasó de 8 archivos de prueba a 3.009 pruebas automatizadas en verde en ~10 semanas, y sobre el mismo motor de flujo entregué un segundo canal de venta con 0 regresiones en el canal presencial.',
+    en: 'The API went from 8 test files to 3,009 passing automated tests in ~10 weeks, and on the same workflow engine I shipped a second sales channel with 0 regressions in the in-store channel.',
+  },
+  'devmanager-ai-saas': {
+    es: 'La suite de API creció de 66 a 862 pruebas en menos de tres semanas, y nada de lo que propone el agente se crea hasta que una persona confirma.',
+    en: 'The API suite grew from 66 to 862 tests in under three weeks, and nothing the agent proposes is created until a person confirms.',
+  },
+  'datacredito-api': {
+    es: 'Las consultas pasaron de 3+ segundos a menos de un segundo, y cada una queda registrada con la respuesta real del proveedor.',
+    en: 'Queries went from 3+ seconds to under a second, and every one is logged with the provider\'s real response.',
+  },
+  'sovi-identity-verification': {
+    es: 'La identidad se valida en tiempo real sin intervención humana en el flujo estándar, y cuando el bot agota sus intentos sin respuesta el caso escala a soporte humano.',
+    en: 'Identity is validated in real time without human intervention in the standard flow, and when the bot exhausts its attempts with no answer the case escalates to human support.',
+  },
+  'starsol-saas': {
+    es: 'Tres workers simultáneos eliminaron los cuellos de botella del servidor web, y el validador de estructura acepta 12 archivos reales de cliente sin errores bloqueantes.',
+    en: 'Three simultaneous workers eliminated the web server bottlenecks, and the structure validator accepts 12 real client files with no blocking errors.',
+  },
+  'infobip-email-api': {
+    es: 'El tiempo medio de diagnóstico de un email no entregado pasó de 30 minutos a 5 segundos, con una búsqueda por GUID en la tabla de auditoría.',
+    en: 'Average diagnosis time for an undelivered email went from 30 minutes to 5 seconds, with a GUID search in the audit table.',
+  },
+  'readerss': {
+    es: 'Tiene 787 pruebas con lint y typecheck limpios y una puerta de cobertura exigida del 70%, y GitHub Actions ejecuta lint, typecheck y pruebas antes de desplegar.',
+    en: 'It has 787 tests with lint and typecheck clean and an enforced 70% coverage gate, and GitHub Actions runs lint, typecheck and tests before deploying.',
+  },
+  'harmony-music-oss': {
+    es: '~36 commits en 3 días llevaron la app de "no compila" a "release v1.12.2", con audio funcional en 3 plataformas.',
+    en: '~36 commits in 3 days took the app from "does not compile" to "release v1.12.2", with working audio on 3 platforms.',
+  },
+  'nominas-franquicias': {
+    es: 'Sumé 3 nuevos tipos de nómina y 21 plantillas Crystal Reports con 0 breaks en las nóminas legacy.',
+    en: 'I added 3 new payroll types and 21 Crystal Reports templates with zero breaks in legacy payroll types.',
+  },
+  'apiquac-admin-ui': {
+    es: 'Diseñé la separación del módulo Admin en monitoreo y configuración: agregar una capacidad nueva solo requiere crear un tab en el macro-módulo correspondiente.',
+    en: 'I designed the split of the Admin module into monitoring and configuration: adding a new capability only requires creating a tab in the corresponding macro-module.',
+  },
+  'portfolio-hybrid': {
+    es: 'El escritorio XP se construyó con TDD estricto y 100/100 verificaciones, y un segundo driver exige 0 píxeles de diferencia en el tema periódico.',
+    en: 'The XP desktop was built with strict TDD and 100/100 checks, and a second driver demands 0 differing pixels in the newspaper theme.',
+  },
+}
+
 /** Solo proyectos destacados, ordenados por prioridad */
 export const featuredCaseStudies = [...caseStudies].sort(
   (a, b) => a.order - b.order
