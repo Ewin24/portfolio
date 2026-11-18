@@ -75,7 +75,7 @@ export const TECHNOLOGIES: Technology[] = [
   { id: 'playwright', name: 'Playwright', area: 'quality', stack: ['Playwright'], tags: ['playwright'] },
   { id: 'vitest', name: 'Vitest', area: 'quality', stack: ['Vitest'], tags: [] },
 
-  { id: 'ai', name: 'LLM / AI Agents', area: 'ai', stack: ['LLM tool calling'], tags: ['AI', 'agentes', 'agentes-ia'] },
+  { id: 'ai', name: 'LLM / AI Agents', area: 'ai', stack: ['LLM tool calling', 'Claude Code'], tags: ['AI', 'agentes', 'agentes-ia'] },
   // No case study, role or post names it: the evidence is the `llms.txt` this site publishes (public/llms.txt).
   { id: 'geo', name: 'AI Discoverability', area: 'ai', stack: [], tags: [], site: 'llms.txt' },
 ]

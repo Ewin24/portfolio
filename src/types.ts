@@ -70,7 +70,7 @@ export interface CaseStudy {
   /**
    * Marca el caso de estudio líder de la sección Proyectos (newspaper only).
    * Debe haber exactamente uno en `caseStudies`. `featured` es `true` en
-   * las 9 entradas y no puede discriminar por sí solo.
+   * todas las entradas y no puede discriminar por sí solo.
    */
   lead?: true
 
