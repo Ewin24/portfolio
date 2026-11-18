@@ -144,7 +144,7 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
         {hasQuery && (
           <button
             onClick={handleClear}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted hover:text-accent transition-colors cursor-pointer"
+            className="hit-44 absolute right-1 top-1/2 -translate-y-1/2 px-2 text-ink-muted hover:text-accent transition-colors cursor-pointer"
             aria-label="Clear search"
           >
             <X size={14} />
@@ -164,7 +164,7 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
           >
             {!isIndexed ? (
               <div className="p-4 text-center">
-                <p className="font-mono text-[10px] text-ink-muted">
+                <p className="font-mono text-xs text-ink-muted">
                   {lang === 'es' ? 'Indexando…' : 'Indexing…'}
                 </p>
               </div>
@@ -186,12 +186,12 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
                         <h4 className="font-headline text-sm font-bold text-ink leading-tight mb-1">
                           {highlightText(title, debouncedQuery)}
                         </h4>
-                        <p className="font-sans text-[11px] text-ink-light leading-relaxed line-clamp-2">
+                        <p className="font-sans text-xs text-ink-light leading-relaxed line-clamp-2">
                           {highlightText(excerpt, debouncedQuery)}
                         </p>
                         <div className="flex items-center gap-2 mt-1.5">
-                          <span className="font-mono text-[10px] text-ink-muted">{formatPostDate(post.date, lang)}</span>
-                          <span className="font-mono text-[10px] text-ink-muted">{post.readingTime} min</span>
+                          <span className="font-mono text-xs text-ink-muted">{formatPostDate(post.date, lang)}</span>
+                          <span className="font-mono text-xs text-ink-muted">{post.readingTime} min</span>
                         </div>
                       </button>
                     </li>

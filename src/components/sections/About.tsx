@@ -17,7 +17,7 @@ export function About() {
           {/* Columna foto */}
           <div className="border-b-2 md:border-b-0 md:border-r-2 border-rule p-8 bg-paper-dark flex flex-col items-center justify-start gap-4">
             {user?.avatar_url ? (
-              <div className="border-4 border-rule shadow-pixel overflow-hidden">
+              <div className="border-4 border-rule overflow-hidden">
                 {/* width/height match w-36 h-36 (144px) so the box is
                     reserved before the remote avatar arrives — no layout shift */}
                 <img
@@ -41,7 +41,7 @@ export function About() {
               <p className="font-headline text-xl font-bold text-ink">
                 {user?.name || 'Edwin Trigos'}
               </p>
-              <p className="font-mono text-[10px] text-accent font-bold uppercase tracking-widest mt-1">
+              <p className="font-mono text-[11px] text-accent font-bold uppercase tracking-widest mt-1">
                 @{user?.login || 'Ewin24'}
               </p>
               {user?.location && (

@@ -16,14 +16,15 @@ function EducationCard({ item, index }: { item: EducationType; index: number }) 
   return (
     <FadeIn delay={index * 0.1} className="h-full">
       {/* Stacked, two to a row: half the entries have no description, and a
-          wide two-column card left their right side empty. */}
-      <div className="px-card h-full flex flex-col">
+          wide two-column card left their right side empty. The most recent
+          entry is the section's lead and keeps the pixel shadow. */}
+      <div className={`px-card h-full flex flex-col${index === 0 ? '' : ' px-card-quiet'}`}>
         <div className="border-b-2 border-rule px-5 py-3 bg-paper-dark flex items-center justify-between gap-3">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-ink-muted">
+          <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-muted">
             {periodLabel(item.period, lang)}
           </p>
           {item.current && (
-            <span className="px-badge px-badge-accent text-[10px]">
+            <span className="px-badge px-badge-accent">
               {lang === 'es' ? 'En curso' : 'In progress'}
             </span>
           )}

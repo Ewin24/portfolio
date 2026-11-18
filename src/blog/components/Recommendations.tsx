@@ -55,7 +55,7 @@ export function Recommendations({ currentPost }: Props) {
                 transition={{ duration: 0.25, delay: i * 0.08 }}
                 data-rec-slug={post.slug}
                 data-read-state={readState.stateOf(post.slug)}
-                className="px-card px-card-sm px-card-interactive bg-paper flex flex-col"
+                className="px-card px-card-quiet px-card-interactive bg-paper flex flex-col"
               >
                 <button
                   onClick={() => handleSelect(post)}
@@ -64,26 +64,26 @@ export function Recommendations({ currentPost }: Props) {
                   {/* Tags */}
                   <div className="flex flex-wrap gap-1">
                     {post.tags.slice(0, 2).map((tag) => (
-                      <span key={tag} className="skill-tag text-[10px] flex items-center gap-1">
+                      <span key={tag} className="skill-tag flex items-center gap-1">
                         <Tag size={6} /> {tag}
                       </span>
                     ))}
                   </div>
 
                   {/* Title */}
-                  <h4 className="font-headline text-sm font-bold text-ink leading-tight line-clamp-2">
+                  <h4 className="font-headline text-sm font-bold text-ink leading-tight">
                     {title}
                   </h4>
 
                   {/* Excerpt */}
-                  <p className="font-sans text-[11px] text-ink-light leading-relaxed line-clamp-2 flex-1">
+                  <p className="font-sans text-xs text-ink-light leading-relaxed line-clamp-2 flex-1">
                     {excerpt}
                   </p>
 
                   <ReadMark slug={post.slug} variant="inline" />
 
                   {/* Read link */}
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-accent hover:text-accent-dark flex items-center gap-1 mt-auto pt-2 transition-colors">
+                  <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-accent hover:text-accent-dark flex items-center gap-1 mt-auto pt-2 transition-colors">
                     {lang === 'es' ? 'Leer' : 'Read'} <ArrowRight size={9} />
                   </span>
                 </button>

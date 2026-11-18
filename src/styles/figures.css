@@ -110,8 +110,25 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  /* Rows sit 44px apart, so the hit areas below never overlap. */
+  gap: 0.75rem 0.5rem;
   margin-top: 0.625rem;
+}
+
+/* The controls keep their 32px look and answer over 44px of height. */
+.fig-btn,
+.fig-mark {
+  position: relative;
+}
+.fig-btn::after,
+.fig-mark::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 2.75rem;
+  translate: 0 -50%;
 }
 
 .fig-btn {

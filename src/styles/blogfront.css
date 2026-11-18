@@ -42,6 +42,18 @@
   color: var(--color-ink);
   cursor: pointer;
   transition: color 75ms ease, border-color 75ms ease;
+  position: relative;
+}
+
+/* The link stays a line of text; it answers over 44px of height. */
+.blogfront-more::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 2.75rem;
+  translate: 0 -50%;
 }
 
 .blogfront-more:hover {
@@ -63,6 +75,7 @@
   gap: 0.5rem;
   flex: 1 1 0;
   min-width: 0;
+  min-height: 2.75rem;
   margin-right: -2px;
   padding: 0.6rem 0.5rem;
   border: 2px solid var(--color-rule);
@@ -460,6 +473,11 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  /* A 44px control that takes no more room in the box than its label. */
+  position: relative;
+  z-index: 1;
+  min-height: 2.75rem;
+  margin-block: -0.5rem;
   cursor: pointer;
 }
 
@@ -510,8 +528,10 @@
 }
 
 .blogfront-toc-list button {
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
+  min-height: 2.75rem;
   padding: 0.35rem 0 0.35rem 0.75rem;
   border-left: 2px solid var(--color-rule-light);
   font-family: var(--font-sans);
