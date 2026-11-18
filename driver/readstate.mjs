@@ -344,6 +344,8 @@ async function run() {
         check(`[${lang}] (6) the counter counts what is read`, (await counterText(page)) === t.counter(2, total), (await counterText(page)) ?? 'null')
         const mark = (await places(page)).list[technical]
         check(`[${lang}] (6) the read card is labelled in the active language`, (mark?.mark ?? '').startsWith(`${t.readOn} `), j(mark))
+        // The title of a read article: a query that is sure to find it.
+        const readTitle = await page.evaluate((s) => document.querySelector(`#blog article[data-slug="${s}"] h3`)?.textContent ?? '', technical)
 
         const toggle = page.locator('#blog [data-filter-unread]')
         await toggle.click()
@@ -379,6 +381,19 @@ async function run() {
         await input.fill('sql')
         await page.waitForTimeout(700)
         check(`[${lang}] (6) search still answers with Unread on`, (await page.evaluate(() => document.querySelectorAll('#blog article[data-slug]').length)) > 0 && errors.length === 0, errors.join(' | '))
+
+        // Search results obey the toggle: what the query finds with it off, minus what is read.
+        const found = async () => {
+          await page.waitForTimeout(700)
+          return page.evaluate(() => [...document.querySelectorAll('#blog [data-search-slug]')].map((el) => el.dataset.searchSlug))
+        }
+        await toggle.click()
+        await input.fill(readTitle)
+        const foundAll = await found()
+        await toggle.click()
+        const foundUnread = await found()
+        check(`[${lang}] (6) search results leave out read articles while Unread is on`,
+          foundAll.includes(technical) && j(foundUnread) === j(foundAll.filter((s) => s !== essay && s !== technical)), `${foundUnread.length} of ${foundAll.length}, the read one found: ${foundAll.includes(technical)}`)
         await input.fill('')
 
         const next = slugs[0]
