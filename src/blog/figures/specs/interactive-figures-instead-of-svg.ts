@@ -17,8 +17,8 @@ const costBytes: BarsFigure = {
       en: 'With the 40 SVG files, total JavaScript and CSS after gzip was 444,549 bytes.',
     },
     {
-      es: 'Con el componente es de 466,634 bytes: 22,085 más. El sitio pesa más, no menos.',
-      en: 'With the component it is 466,634 bytes: 22,085 more. The site is heavier, not lighter.',
+      es: 'Con el componente es de 466,634 bytes: 22,085 más. El sitio ahora pesa más.',
+      en: 'With the component it is 466,634 bytes: 22,085 more. The site is heavier now.',
     },
   ],
   bars: [

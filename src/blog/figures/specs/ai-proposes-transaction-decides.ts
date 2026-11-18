@@ -19,8 +19,8 @@ const lanes: FlowFigure = {
       en: 'The proposal moves to the deterministic lane, where a person confirms.',
     },
     {
-      es: 'Las guardas comprueban permiso, estado y plazo; el commit escribe todo o nada y queda un registro de la decisión.',
-      en: 'Guards check permission, state and expiry; the commit writes all or nothing and a record of the decision is kept.',
+      es: 'Las guardas comprueban permiso, estado y plazo. El commit escribe todo o nada y queda un registro de la decisión.',
+      en: 'Guards check permission, state and expiry. The commit writes all or nothing and a record of the decision is kept.',
     },
     { es: 'Solo entonces se llega a los datos del producto.', en: 'Only then is the product data reached.' },
   ],
