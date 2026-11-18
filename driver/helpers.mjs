@@ -112,9 +112,36 @@ export async function capturePage(page, filePath) {
       await new Promise((r) => setTimeout(r, 60))
     }
     window.scrollTo(0, 0)
+    // A font weight first used far down the page starts loading only when that
+    // text is laid out. Capturing before it arrives draws a synthesized weight
+    // with the same metrics, so the page keeps its height and differs in text pixels.
+    await document.fonts.ready
   })
+  await page.waitForFunction(() => [...document.fonts].every((f) => f.status !== 'loading'))
   await page.waitForTimeout(600)
   await page.screenshot({ path: filePath, fullPage: true })
+}
+
+/**
+ * Chromium does not always rasterise text the same way on a very tall
+ * full-page capture: with an identical layout (the same fractional positions
+ * on every load) roughly one load in six differs in glyph edge pixels, about
+ * 0.1 % of the page. Load the page until two loads give the same bytes and
+ * keep that capture, so the baseline and the comparison both use the common
+ * raster. A real content change shows in every load and still fails the
+ * zero-pixel gate.
+ */
+export async function captureStable(open, filePath, maxLoads = 6) {
+  const seen = []
+  for (let i = 0; i < maxLoads; i++) {
+    const { ctx, page } = await open()
+    try {
+      await capturePage(page, filePath)
+    } finally { await ctx.close() }
+    const buf = fs.readFileSync(filePath)
+    if (seen.some((s) => s.equals(buf))) return
+    seen.push(buf)
+  }
 }
 
 export function shotPath(lang, viewportName) {

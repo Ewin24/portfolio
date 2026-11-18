@@ -1,5 +1,5 @@
 import {
-  newPage, openBrowser, capturePage, shotPath, pixelDiff, ensureBaselineDir,
+  newPage, openBrowser, captureStable, shotPath, pixelDiff, ensureBaselineDir,
   VIEWPORTS, LOCALES, BASE_URL,
 } from './helpers.mjs'
 
@@ -59,11 +59,13 @@ async function run() {
       for (const vp of VIEWPORTS) {
         // `newPage` also stubs `api.github.com` from the committed fixture, so
         // the capture no longer depends on live third-party data.
-        const { ctx, page } = await newPage(browser, vp, lang, { reducedMotion: 'reduce' })
-        try {
-          await page.goto(BASE_URL, { waitUntil: 'networkidle' })
+        {
           const cur = `${shotPath(lang, vp.name)}`.replace('baseline-', 'current-')
-          await capturePage(page, cur)
+          await captureStable(async () => {
+            const opened = await newPage(browser, vp, lang, { reducedMotion: 'reduce' })
+            await opened.page.goto(BASE_URL, { waitUntil: 'networkidle' })
+            return opened
+          }, cur)
           const base = shotPath(lang, vp.name)
           if (!existsSync(base)) {
             check(`[${lang}] baseline exists @ ${vp.name}`, false, `missing ${base}`)
@@ -93,7 +95,7 @@ async function run() {
             recut.push(base)
             console.log(`    RE-CUT ${base}`)
           }
-        } finally { await ctx.close() }
+        }
       }
     }
     console.log(`\nPixel coverage: ${diffPixels}/${totalPixels} differing pixels across ${LOCALES.length * VIEWPORTS.length} captures`)
