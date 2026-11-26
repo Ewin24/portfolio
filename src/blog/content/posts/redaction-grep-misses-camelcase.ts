@@ -10,10 +10,10 @@ export const redactionGrepMissesCamelCase: Omit<BlogPost, 'readingTime'> = {
   category: 'arquitectura',
   featured: false,
   excerpt:
-    'Publicando el blog de este mismo portafolio con agentes de IA, un barrido de redacción sobre una lista de tokens prohibidos devolvió cero coincidencias mientras un artículo publicaba nombres de propiedad reales en camelCase. Peor: un informe certificaba que todos los fragmentos usaban identificadores inventados, y nadie lo revisó porque parecía una verificación ya hecha. Esto es lo que cambié en el proceso.',
+    'Publicando el blog de este mismo portafolio con agentes de AI, un barrido de redacción sobre una lista de tokens prohibidos devolvió cero coincidencias mientras un artículo publicaba nombres de propiedad reales en camelCase. Peor: un informe certificaba que todos los fragmentos usaban identificadores inventados, y nadie lo revisó porque parecía una verificación ya hecha. Esto es lo que cambié en el proceso.',
   excerptEn:
     'While publishing this very portfolio\'s blog with AI agents, a redaction sweep over a list of forbidden tokens returned zero hits while an article was publishing real camelCased property names. Worse: a report certified that every snippet used invented identifiers, and nobody reviewed it because it read like a finished check. This is what I changed in the process.',
-  content: `Este blog lo escribo yo, pero buena parte del trabajo mecánico de publicarlo lo hacen agentes de IA: uno investiga en mis notas, otro redacta, otro aplica el cambio y otro revisa. Muchos artículos nacen de trabajo para clientes, así que hay una regla que no se negocia: nada que identifique al cliente o a su código llega a una página pública. Ni nombres de host, ni nombres de tablas, ni nombres de tipos, ni nombres de propiedades.
+  content: `Este blog lo escribo yo, pero buena parte del trabajo mecánico de publicarlo lo hacen agentes de AI: uno investiga en mis notas, otro redacta, otro aplica el cambio y otro revisa. Muchos artículos nacen de trabajo para clientes, así que hay una regla que no se negocia: nada que identifique al cliente o a su código llega a una página pública. Ni nombres de host, ni nombres de tablas, ni nombres de tipos, ni nombres de propiedades.
 
 Para hacer cumplir esa regla construí lo que cualquiera construiría primero: una lista de tokens prohibidos, armada a mano a partir de mis notas de ese trabajo, y un barrido con grep sin distinguir mayúsculas sobre el diff antes de publicar. Si el barrido daba cero coincidencias, el artículo avanzaba.
 
@@ -104,7 +104,7 @@ git diff main...HEAD | grep -i -F -f forbidden.txt
 git log main..HEAD --format='%an %ae %cn %ce%n%B' | grep -i -F -f forbidden.txt
 \`\`\`
 
-La primera línea mira solo lo añadido: de eso respondo directamente, y una coincidencia ahí bloquea el cambio. La segunda mira el diff completo con contexto: una coincidencia en una línea preexistente se reporta, pero no se reescribe por iniciativa propia, porque cambiar texto que ya estaba publicado es otra decisión, con su propio alcance. La tercera mira los mensajes de commit y los metadatos de autor y committer, que también terminan públicos y que nadie suele leer con este cuidado. En esa misma pasada busco también atribución de IA que no debería estar ahí.
+La primera línea mira solo lo añadido: de eso respondo directamente, y una coincidencia ahí bloquea el cambio. La segunda mira el diff completo con contexto: una coincidencia en una línea preexistente se reporta, pero no se reescribe por iniciativa propia, porque cambiar texto que ya estaba publicado es otra decisión, con su propio alcance. La tercera mira los mensajes de commit y los metadatos de autor y committer, que también terminan públicos y que nadie suele leer con este cuidado. En esa misma pasada busco también atribución de AI que no debería estar ahí.
 
 La cuarta es la regla que ordena todas las demás: el valor por defecto es cerrado. Mantengo dos listas enumeradas, una de lo publicable y otra de lo prohibido. Lo que no está en ninguna de las dos no se publica: se describe de forma genérica o se omite. Si me sorprendo argumentando que algo no está explícitamente prohibido, ese argumento es justamente lo que activa la regla, no una excepción a ella.
 

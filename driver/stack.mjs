@@ -36,7 +36,7 @@ function sourcePosts() {
 const POSTS = sourcePosts()
 
 const AREAS = {
-  es: ['Backend', 'Datos', 'Frontend', 'Nube y entrega', 'Calidad', 'IA'],
+  es: ['Backend', 'Datos', 'Frontend', 'Nube y entrega', 'Calidad', 'AI'],
   en: ['Backend', 'Data', 'Frontend', 'Cloud and delivery', 'Quality', 'AI'],
 }
 const NAMES = [
@@ -51,7 +51,7 @@ const ORACLE = {
   playwright: { name: 'Playwright', stack: ['Playwright'], tags: ['playwright'] },
   flutter: { name: 'Flutter', stack: ['Flutter', 'Flutter 3.44+', 'Dart'], tags: ['flutter'] },
   ai: { name: 'LLM / AI Agents', stack: ['LLM tool calling', 'Claude Code'], tags: ['AI', 'agentes', 'agentes-ia'] },
-  geo: { name: 'AI Discoverability', stack: [], tags: [] },
+  geo: { name: 'AI Discoverability', stack: ['llms.txt', 'JSON-LD', 'Schema.org'], tags: [], site: true },
 }
 /** Six months before today as YYYY-MM-DD: the driver's own clock, read once. */
 const SINCE = (() => {
@@ -67,6 +67,7 @@ function expected(id) {
   const posts = POSTS.filter((p) => any(o.tags, p.tags))
   const status = roles.some((r) => r.current) ? 'current'
     : posts.some((p) => p.date >= SINCE) ? 'active'
+    : o.site ? 'active' // the site serves it today: no date to lapse
     : roles.length || cases.length ? 'past' : null
   return { cases, roles, posts, status }
 }
@@ -257,11 +258,13 @@ async function run() {
           check(`[${lang}] ${id} shows the counts the driver computes`, t?.counts === want, `${JSON.stringify(t?.counts)} vs ${JSON.stringify(want)}`)
         }
         const geo = techs.find((x) => x.id === 'geo')
-        check(`[${lang}] AI Discoverability shows no count and no zero, only this site's llms.txt`,
-          !!geo && !geo.counts && /llms\.txt$/.test(geo.site ?? ''), JSON.stringify(geo))
+        check(`[${lang}] AI Discoverability shows its case study and this site's llms.txt, in use today because the site serves it`,
+          !!geo && expected('geo').cases.length > 0 && geo.counts === countsLine(expected('geo'), lang) && /llms\.txt$/.test(geo.site ?? '') && geo.status === 'active', JSON.stringify(geo))
         const ai = techs.find((x) => x.id === 'ai')
-        check(`[${lang}] LLM / AI Agents is in use today: no current role names it, a post of the last six months does`,
-          expected('ai').status === 'active' && ai?.status === 'active' && ai.statusText === STATUS[lang].active, JSON.stringify(ai))
+        // The status follows the clock: `active` lapses to `past` six months after the last post, and the page must follow.
+        const wantAi = expected('ai').status
+        check(`[${lang}] LLM / AI Agents shows the status the rule gives today (${wantAi})`,
+          ai?.status === wantAi && ai.statusText === STATUS[lang][wantAi], JSON.stringify(ai))
         check(`[${lang}] no technology shows two statuses`, techs.every((t) => t.statuses <= 1), JSON.stringify(techs.filter((t) => t.statuses > 1)))
         check(`[${lang}] area counts are shown and carry no zero`,
           s.areas.length === 6 && s.areas.every((a) => a.counts && !/(^|\D)0 /.test(a.counts)), JSON.stringify(s.areas.map((a) => a.counts)))
@@ -310,12 +313,12 @@ async function run() {
         const wantGroups = ['cases', 'roles', 'posts'].filter((k) => wantP[k].length > 0)
         check('a source with no evidence shows no line', JSON.stringify(p?.groups) === JSON.stringify(wantGroups), `${JSON.stringify(p?.groups)} vs ${JSON.stringify(wantGroups)}`)
 
-        // AI Discoverability: one evidence line, this site's own llms.txt; no status, nothing else claimed.
+        // AI Discoverability: this site's own llms.txt and the case study about it, with one status.
         await page.locator('#skills button[data-stack-tech="geo"]').click()
         await page.waitForTimeout(400)
         const g = await readDetail(page)
-        check('AI Discoverability lists one evidence line, a link, and no status',
-          g?.tech === 'geo' && JSON.stringify(g.groups) === '["site"]' && g.site.length === 1 && g.statuses === 0 && !g.none, JSON.stringify(g))
+        check('AI Discoverability lists the site file and its case study, with one status',
+          g?.tech === 'geo' && JSON.stringify(g.groups) === '["site","cases"]' && g.site.length === 1 && g.statuses === 1 && !g.none, JSON.stringify(g))
         const llms = g?.site?.[0] ? await page.request.get(new URL(g.site[0], page.url()).href) : null
         const llmsBody = llms?.ok() ? await llms.text() : ''
         check('its link resolves to the llms.txt this site serves',

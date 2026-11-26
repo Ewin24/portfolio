@@ -140,6 +140,7 @@ export type TranslationKeys = {
   'experience.title': string
   'experience.subtitle': string
   'experience.stamp': string
+  'education.stamp': string
   'experience.achievements': string
   'experience.employment.full-time': string
   'experience.employment.contract': string
@@ -205,7 +206,7 @@ const translations: Record<Language, TranslationKeys> = {
     'hero.greeting': 'Edición digital · Colombia',
     'hero.role': 'Líder Técnico · Desarrollador .NET',
     'hero.subtitle':
-      'Dirijo el desarrollo del área de crédito de una fintech colombiana: originación de crédito, cálculo de cupos y riesgo crediticio, validación de identidad e integración con burós. .NET 8/10 con Clean Architecture, SQL Server con Dapper y stored procedures, APIs resilientes y entrega con TDD y revisión adversarial asistida por agentes de IA.',
+      'Dirijo el desarrollo del área de crédito de una fintech colombiana: originación de crédito, cálculo de cupos y riesgo crediticio, validación de identidad e integración con burós. .NET 8/10 con Clean Architecture, SQL Server con Dapper y stored procedures, APIs resilientes y entrega con TDD y revisión adversarial asistida por agentes de AI.',
     'hero.cta.projects': 'Ver Casos de Estudio',
     'hero.cta.contact': 'Hablemos',
     'hero.cta.cv': 'Descargar CV',
@@ -268,8 +269,8 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.docker.milestone3': 'Despliegue en entornos productivos',
     'skills.docker.reference': 'Ver Casos de Estudio',
     'skills.ai.milestone1': 'Agente LLM con tool calling por permisos, streaming SSE y presupuesto de tokens por organización',
-    'skills.ai.milestone2': 'Acciones de IA con aprobación humana: la confirmación es una transacción idempotente, no un botón',
-    'skills.ai.milestone3': 'Entrega con agentes de IA: specs, verificadores independientes y PRs de menos de 400 líneas',
+    'skills.ai.milestone2': 'Acciones de AI con aprobación humana: la confirmación es una transacción idempotente, no un botón',
+    'skills.ai.milestone3': 'Entrega con agentes de AI: specs, verificadores independientes y PRs de menos de 400 líneas',
     'skills.ai.reference': 'Ver Casos de Estudio',
     'skills.cfworkers.milestone1': 'Relay de feeds en el borde con CORS y GET condicional',
     'skills.cfworkers.milestone2': 'Guarda SSRF reaplicada en cada salto de redirección',
@@ -288,7 +289,7 @@ const translations: Record<Language, TranslationKeys> = {
     'skills.vitest.milestone3': 'Cobertura exigida en CI antes del despliegue',
     'skills.vitest.reference': 'Ver Casos de Estudio',
     'skills.geo.milestone1': 'JSON-LD: Person, WebSite, Article, CreativeWork, ItemList, FAQPage, HowTo, BreadcrumbList y Service',
-    'skills.geo.milestone2': 'llms.txt y llms-full.txt para rastreadores de IA, con robots.txt y sitemap',
+    'skills.geo.milestone2': 'llms.txt y llms-full.txt para rastreadores de AI, con robots.txt y sitemap',
     'skills.geo.milestone3': 'Auditoría GEO automatizada de 58 a 83/100, 14 de 14 hallazgos resueltos',
     'skills.geo.reference': 'Ver Casos de Estudio',
     'stack.rule': '«En producción hoy»: está en el stack de un rol en curso. «En uso hoy»: ningún rol en curso la nombra, pero sí un artículo de este blog de los últimos seis meses. «Usado antes»: solo aparece en roles anteriores o en casos de estudio. Sin etiqueta: los datos de este sitio no lo deciden.',
@@ -339,6 +340,7 @@ const translations: Record<Language, TranslationKeys> = {
     'experience.title': 'Trayectoria',
     'experience.subtitle': 'Experiencia profesional con impacto medible',
     'experience.stamp': 'En curso',
+    'education.stamp': 'En curso',
     'experience.achievements': 'Logros clave',
     'experience.more': 'logros más',
     'experience.employment.full-time': 'Tiempo completo',
@@ -543,6 +545,7 @@ const translations: Record<Language, TranslationKeys> = {
     'experience.title': 'Experience',
     'experience.subtitle': 'Professional track record with measurable impact',
     'experience.stamp': 'Current',
+    'education.stamp': 'In progress',
     'experience.achievements': 'Key achievements',
     'experience.more': 'more achievements',
     'experience.employment.full-time': 'Full-time',

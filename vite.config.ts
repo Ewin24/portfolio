@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
+import { readFileSync } from 'node:fs'
 import { caseStudies } from './src/content/case-studies'
 import { workExperience } from './src/content/experience'
 import { education } from './src/content/education'
@@ -25,6 +26,14 @@ for (const p of blogPosts) {
 // must be URL-safe and must not collide with public/blog/figures/.
 for (const p of blogPosts) {
   if (!/^[a-z0-9-]+$/.test(p.slug) || p.slug === 'figures') throw new Error(`${p.id}: slug "${p.slug}" cannot be a share-page path`)
+}
+
+// public/llms-full.txt is written by hand. The build fails when a post is missing from it
+// or its summary no longer matches the post's English excerpt, so the file cannot go stale.
+const llmsFull = readFileSync(path.resolve(__dirname, 'public/llms-full.txt'), 'utf8')
+for (const p of blogPosts) {
+  if (!llmsFull.includes(`#blog/article/${p.slug}`)) throw new Error(`public/llms-full.txt: no entry for the post "${p.slug}"`)
+  if (!llmsFull.includes(p.excerptEn)) throw new Error(`public/llms-full.txt: the summary of "${p.slug}" is not the post's excerptEn`)
 }
 
 const SITE_URL = 'https://portfolio.edwintrigos.workers.dev/'

@@ -29,7 +29,7 @@ export const AREAS: { id: AreaId; label: L }[] = [
   { id: 'frontend', label: { es: 'Frontend', en: 'Frontend' } },
   { id: 'cloud', label: { es: 'Nube y entrega', en: 'Cloud and delivery' } },
   { id: 'quality', label: { es: 'Calidad', en: 'Quality' } },
-  { id: 'ai', label: { es: 'IA', en: 'AI' } },
+  { id: 'ai', label: { es: 'AI', en: 'AI' } },
 ]
 
 export interface Technology {
@@ -76,8 +76,8 @@ export const TECHNOLOGIES: Technology[] = [
   { id: 'vitest', name: 'Vitest', area: 'quality', stack: ['Vitest'], tags: [] },
 
   { id: 'ai', name: 'LLM / AI Agents', area: 'ai', stack: ['LLM tool calling', 'Claude Code'], tags: ['AI', 'agentes', 'agentes-ia'] },
-  // No case study, role or post names it: the evidence is the `llms.txt` this site publishes (public/llms.txt).
-  { id: 'geo', name: 'AI Discoverability', area: 'ai', stack: [], tags: [], site: 'llms.txt' },
+  // The site itself is the technology at work: the `llms.txt` it publishes (public/llms.txt), plus the case study about it.
+  { id: 'geo', name: 'AI Discoverability', area: 'ai', stack: ['llms.txt', 'JSON-LD', 'Schema.org'], tags: [], site: 'llms.txt' },
 ]
 
 export interface Evidence {
@@ -124,6 +124,8 @@ const TODAY = new Date()
  *    production today.
  * 2. Otherwise, named by a blog post dated within the last six months: in use
  *    today. The work is recent and written down, but no current role lists it.
+ *    A technology with a `site` file is in use today as well, with no date:
+ *    this site is serving it (STACK applies this, not `statusOf`).
  * 3. Otherwise, in a past role or in a case study: used before.
  * 4. In none: no status, because nothing in the data says which one it is.
  */
@@ -160,7 +162,8 @@ const distinct = <T>(items: T[]) => [...new Set(items)]
 export const STACK: StackArea[] = AREAS.map((area) => {
   const technologies = TECHNOLOGIES.filter((tech) => tech.area === area.id).map((tech) => {
     const evidence = evidenceOf(tech)
-    return { ...tech, ...evidence, status: statusOf(evidence) }
+    const status = statusOf(evidence)
+    return { ...tech, ...evidence, status: tech.site && status !== 'current' ? ('active' as const) : status }
   })
   return {
     ...area,
