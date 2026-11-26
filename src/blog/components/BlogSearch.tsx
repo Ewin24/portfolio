@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Search, X } from 'lucide-react'
 import MiniSearch from 'minisearch'
@@ -47,15 +47,15 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
   const { posts, setSearchQuery, unreadOnly } = useBlogContext()
   const readState = useReadSnapshot()
   const [query, setQuery] = useState(defaultQuery)
-  const [results, setResults] = useState<BlogPost[]>([])
-  const [isIndexed, setIsIndexed] = useState(false)
-  const miniSearchRef = useRef<MiniSearch | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Sync external defaultQuery changes (e.g., from hash route)
-  useEffect(() => {
+  // Follow a new defaultQuery (e.g., from the hash route), adjusted during
+  // render; an empty one leaves what the reader typed.
+  const [seenDefault, setSeenDefault] = useState(defaultQuery)
+  if (defaultQuery !== seenDefault) {
+    setSeenDefault(defaultQuery)
     if (defaultQuery) setQuery(defaultQuery)
-  }, [defaultQuery])
+  }
 
   const debouncedQuery = useDebounce(query, 200)
 
@@ -64,9 +64,8 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
     setSearchQuery(query)
   }, [query, setSearchQuery])
 
-  // Build MiniSearch index on mount
-  useEffect(() => {
-    const miniSearch = new MiniSearch({
+  const miniSearch = useMemo(() => {
+    const index = new MiniSearch({
       fields: ['title', 'titleEn', 'tags', 'excerpt', 'excerptEn'],
       storeFields: ['id', 'slug', 'title', 'titleEn', 'excerpt', 'excerptEn', 'tags', 'date', 'readingTime'],
       searchOptions: {
@@ -75,45 +74,29 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
         prefix: true,
       },
     })
-
-    miniSearch.addAll(posts)
-    miniSearchRef.current = miniSearch
-    setIsIndexed(true)
-
-    return () => {
-      miniSearchRef.current = null
-    }
+    index.addAll(posts)
+    return index
   }, [posts])
 
-  // Search when debounced query changes
-  useEffect(() => {
-    if (!debouncedQuery.trim() || !miniSearchRef.current) {
-      setResults([])
-      return
-    }
-
-    const rawResults = miniSearchRef.current.search(debouncedQuery)
-    const matchedPosts = rawResults
+  // The debounced query drives the search; clearing the input empties the
+  // results at once, without waiting for the debounce.
+  const results = useMemo(() => {
+    if (!query.trim() || !debouncedQuery.trim()) return []
+    return miniSearch
+      .search(debouncedQuery)
       .map((r) => posts.find((p) => p.id === r.id))
       .filter((p): p is BlogPost => p !== undefined)
-
-    setResults(matchedPosts)
-  }, [debouncedQuery, posts])
+  }, [query, debouncedQuery, miniSearch, posts])
 
   const handleClear = useCallback(() => {
     setQuery('')
-    setResults([])
     inputRef.current?.focus()
   }, [])
 
-  const handleSelect = useCallback(
-    (post: BlogPost) => {
-      window.location.hash = `#blog/article/${post.slug}`
-      setQuery('')
-      setResults([])
-    },
-    [],
-  )
+  const handleSelect = useCallback((post: BlogPost) => {
+    window.location.hash = `#blog/article/${post.slug}`
+    setQuery('')
+  }, [])
 
   const hasQuery = query.trim().length > 0
   // The Unread toggle of the filters hides read articles here too, as it does in the list.
@@ -162,13 +145,7 @@ export function BlogSearch({ defaultQuery = '' }: { defaultQuery?: string }) {
             transition={{ duration: 0.15 }}
             className="border-x-2 border-b-2 border-rule bg-paper shadow-pixel-sm mt-0"
           >
-            {!isIndexed ? (
-              <div className="p-4 text-center">
-                <p className="font-mono text-xs text-ink-muted">
-                  {lang === 'es' ? 'Indexando…' : 'Indexing…'}
-                </p>
-              </div>
-            ) : !hasResults ? (
+            {!hasResults ? (
               <div className="p-4">
                 <EmptyState context="search" searchQuery={debouncedQuery} />
               </div>

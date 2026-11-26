@@ -18,7 +18,7 @@ interface Props {
  */
 export function Recommendations({ currentPost }: Props) {
   const { lang } = useTranslation()
-  const { posts } = useBlogContext()
+  const { posts, setSelectedPost } = useBlogContext()
 
   const recommendations = useRecommendations(currentPost, posts, 3)
   const readState = useReadSnapshot()
@@ -27,8 +27,6 @@ export function Recommendations({ currentPost }: Props) {
   if (posts.length < 2) return null
 
   if (recommendations.length === 0) return null
-
-  const { setSelectedPost } = useBlogContext()
 
   const handleSelect = (post: BlogPost) => {
     setSelectedPost(post)

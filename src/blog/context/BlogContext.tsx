@@ -131,6 +131,7 @@ export function BlogProvider({ children }: { children: ReactNode }) {
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
+// eslint-disable-next-line react-refresh/only-export-components -- the hook lives next to its provider
 export function useBlogContext() {
   const ctx = useContext(BlogContext)
   if (!ctx) throw new Error('useBlogContext must be used within BlogProvider')
