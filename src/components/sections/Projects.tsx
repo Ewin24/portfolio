@@ -1,8 +1,9 @@
 import { useEffect, type CSSProperties } from 'react'
-import { ExternalLink, Lock, GitFork, Star, Code2 } from 'lucide-react'
+import { ExternalLink, Lock } from 'lucide-react'
 import { useApp } from '../../context/AppContext'
 import { useTranslation } from '../../hooks/useTranslation'
-import { getFeaturedRepos } from '../../services/github'
+import { getLanguageStats, getRecentRepos } from '../../services/github'
+import { formatPostDate } from '../../blog/hooks/postDate'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
 import { caseOutcomes, featuredCaseStudies } from '../../content/case-studies'
@@ -171,68 +172,81 @@ function CaseBrief({ study }: CaseProps) {
 }
 
 // ─── GitHub Activity Widget (secundario) ────────────────────────────────────
+const tech = (language: string) => ({ '--tech': LANG_COLORS[language] || '#888' }) as CSSProperties
+
+/** How many languages get a segment of their own; the rest share one. */
+const NAMED_LANGUAGES = 5
+
+/**
+ * What the public account shows today: the repositories that changed last,
+ * each with the day of its last push, and how the public repositories split
+ * by main language. Dates are absolute, so the block reads the same tomorrow.
+ * Layout in src/styles/cases.css (`.gh`), on a container of its own.
+ */
 function GitHubActivityWidget() {
   const { repos } = useApp()
-  const { t } = useTranslation()
-  const recent = getFeaturedRepos(repos).slice(0, 4)
+  const { t, lang } = useTranslation()
+  const es = lang === 'es'
 
   // Before the fetch lands — and forever, if GitHub rate-limits us — there is
   // nothing to list. An empty framed card with a heading and a "view all" link
   // reads as broken; no card at all reads as a page that never had one.
-  if (recent.length === 0) return null
+  if (repos.length === 0) return null
+
+  const recent = getRecentRepos(repos).slice(0, 5)
+  const languages = getLanguageStats(repos)
+  const named = languages.slice(0, NAMED_LANGUAGES)
+  const others = languages.slice(NAMED_LANGUAGES).reduce((sum, [, count]) => sum + count, 0)
+  const split: [string, number][] = others > 0 ? [...named, [es ? 'Otros' : 'Other', others]] : named
 
   return (
-    <div className="border-2 border-rule p-6 bg-paper">
-      <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-rule">
-        <h3 className="font-headline text-lg font-bold">{t('projects.github')}</h3>
-        <a
-          href="https://github.com/Ewin24"
-          target="_blank" rel="noopener noreferrer"
-          className="font-mono text-xs font-bold uppercase tracking-wide text-ink-light hover:text-ink flex items-center gap-1 transition-colors"
-        >
+    <div className="gh">
+      <div className="gh-head">
+        <h3 className="gh-title">{t('projects.github')}</h3>
+        <a href="https://github.com/Ewin24" target="_blank" rel="noopener noreferrer" className="case-link">
           {t('projects.viewAll')} <ExternalLink size={12} aria-hidden="true" />
         </a>
       </div>
 
-      <div className="space-y-3">
-        {recent.map((repo) => (
-          <a
-            key={repo.id}
-            href={repo.html_url}
-            target="_blank" rel="noopener noreferrer"
-            className="flex items-start gap-3 group py-2 border-b border-rule-light last:border-0"
-          >
-            <Code2 size={14} className="text-ink-muted mt-0.5 shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="font-mono text-xs font-bold text-ink group-hover:text-accent transition-colors break-words">
-                {repo.name}
-              </p>
-              {repo.description && (
-                <p className="font-sans text-xs text-ink-muted mt-0.5">
-                  {repo.description}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center gap-2 shrink-0 text-ink-muted">
-              {repo.language && (
-                <span className="flex items-center gap-1">
-                  <span className="tech-dot w-2 h-2 inline-block" style={{ '--tech': LANG_COLORS[repo.language] || '#888' } as CSSProperties} />
-                  <span className="font-mono text-xs">{repo.language}</span>
-                </span>
-              )}
-              {repo.stargazers_count > 0 && (
-                <span className="flex items-center gap-0.5 font-mono text-xs">
-                  <Star size={9} /> {repo.stargazers_count}
-                </span>
-              )}
-              {repo.forks_count > 0 && (
-                <span className="flex items-center gap-0.5 font-mono text-xs">
-                  <GitFork size={9} /> {repo.forks_count}
-                </span>
-              )}
-            </div>
-          </a>
-        ))}
+      <div className="gh-body">
+        <div className="gh-col">
+          <h4 className="case-label">{es ? 'Últimos repositorios con cambios' : 'Repositories changed last'}</h4>
+          <ul>
+            {recent.map((repo) => (
+              <li key={repo.id}>
+                <a href={repo.html_url} target="_blank" rel="noopener noreferrer" className="gh-repo">
+                  <span className="gh-repo-name">{repo.name}</span>
+                  <time dateTime={repo.pushed_at} className="gh-repo-date">{formatPostDate(repo.pushed_at, lang)}</time>
+                  {repo.description && <span className="gh-repo-desc">{repo.description}</span>}
+                  {repo.language && (
+                    <span className="gh-repo-lang">
+                      <span className="tech-dot" style={tech(repo.language)} aria-hidden="true" /> {repo.language}
+                    </span>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="gh-col">
+          <p className="gh-count">
+            <b>{repos.length}</b> {es ? 'repositorios públicos propios' : 'public repositories of my own'}
+          </p>
+          <h4 className="case-label">{es ? 'Lenguaje principal de cada uno' : 'Main language of each'}</h4>
+          <div className="gh-bar" aria-hidden="true">
+            {split.map(([language, count]) => (
+              <span key={language} className="tech-dot" style={{ ...tech(language), flexGrow: count }} />
+            ))}
+          </div>
+          <ul className="gh-legend">
+            {split.map(([language, count]) => (
+              <li key={language}>
+                <span className="tech-dot" style={tech(language)} aria-hidden="true" /> {language} <b>{count}</b>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   )
@@ -296,12 +310,8 @@ export function Projects() {
       </div>
 
       {/* GitHub Activity — sección secundaria */}
-      <FadeIn delay={0.2}>
-        <div className="border-t-2 border-rule-light pt-10">
-          <div className="max-w-2xl">
-            <GitHubActivityWidget />
-          </div>
-        </div>
+      <FadeIn delay={0.2} className="gh-wrap">
+        <GitHubActivityWidget />
       </FadeIn>
     </section>
   )

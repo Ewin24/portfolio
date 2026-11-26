@@ -33,8 +33,9 @@ export const APP_IDS = [
  * Committed snapshot of the two `api.github.com` responses the app consumes
  * (`src/services/github.ts`: `/users/:login` and `/users/:login/repos`),
  * trimmed to the fields declared by `GitHubUser` / `GitHubRepo` in
- * `src/types.ts` and to the 6 non-fork repositories that can reach
- * `getFeaturedRepos`' top slice.
+ * `src/types.ts`. It holds every public repository as of 2026-11-26, forks
+ * included, because the page counts them by language and lists the ones
+ * pushed last.
  *
  * `avatar_url` is deliberately empty: the real value points at a second
  * third-party host (`avatars.githubusercontent.com`), and a pixel baseline that

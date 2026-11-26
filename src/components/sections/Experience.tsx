@@ -1,7 +1,7 @@
-import { motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
+import { CurrentStamp } from '../ui/CurrentStamp'
 import { sortedExperience } from '../../content'
 import { periodLabel } from '../../lib/text'
 import type { WorkExperience } from '../../types'
@@ -17,7 +17,7 @@ const VISIBLE_ACHIEVEMENTS = 4
 
 function AchievementList({ items }: { items: string[] }) {
   return (
-    <ul className="space-y-3">
+    <ul className="grid gap-x-10 gap-y-3 @2xl:grid-cols-2">
       {items.map((achievement, i) => (
         <li key={i} className="flex items-start gap-3">
           {/* Bullet cuadrado — pixel style */}
@@ -33,7 +33,6 @@ function AchievementList({ items }: { items: string[] }) {
 
 function ExperienceCard({ job, index }: CardProps) {
   const { lang, t } = useTranslation()
-  const reduceMotion = useReducedMotion()
 
   const role         = lang === 'es' ? job.role         : job.roleEn
   const achievements = lang === 'es' ? job.achievements : job.achievementsEn
@@ -56,18 +55,7 @@ function ExperienceCard({ job, index }: CardProps) {
               {t(`experience.employment.${job.employment}`)}
             </p>
             {/* Decorative: the period above already reads Presente/Present. */}
-            {job.current && (
-              <motion.span
-                aria-hidden="true"
-                className="ink-stamp mt-2"
-                initial={reduceMotion ? false : { scale: 1.8, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.22, ease: [0.5, 0, 0.75, 0] }}
-              >
-                {t('experience.stamp')}
-              </motion.span>
-            )}
+            {job.current && <CurrentStamp className="mt-2" />}
           </div>
 
           <div>
@@ -95,8 +83,9 @@ function ExperienceCard({ job, index }: CardProps) {
           </div>
         </div>
 
-        {/* Columna derecha — rol + logros */}
-        <div className="p-5">
+        {/* Columna derecha — rol + logros. A container: with room, the logros
+            set in two columns instead of one line of 130 characters. */}
+        <div className="p-5 @container">
           <p className="font-headline text-base font-bold italic text-ink-light mb-4 pb-3 border-b border-rule-light">
             {role}
           </p>

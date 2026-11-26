@@ -315,3 +315,124 @@ details[open] > .case-more::before { content: '−'; }
   .case-lead > :is(.case-full, .case-foot) { grid-column: 1 / -1; }
   .case-lead .case-stats { align-self: end; }
 }
+
+/* ── Public code: what the GitHub account shows today (Projects.tsx,
+   GitHubActivityWidget). A container of its own, since it sits after `.cases`. ── */
+.gh-wrap {
+  container: gh / inline-size;
+  padding-top: 2.5rem;
+  border-top: 2px solid var(--color-rule-light);
+}
+.gh {
+  border: 2px solid var(--color-rule);
+  background: var(--color-paper);
+}
+.gh-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+  padding: 0.5rem 1.25rem;
+  border-bottom: 2px solid var(--color-rule);
+}
+.gh-head .case-link { min-height: 44px; }
+.gh-title {
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.gh-col {
+  min-width: 0;
+  padding: 1.25rem;
+}
+.gh-col + .gh-col { border-top: 2px solid var(--color-rule); }
+.gh .tech-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+/* One repository: its name and the day of its last push, then what it is. */
+.gh-repo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: center;
+  gap: 0.125rem 1rem;
+  min-height: 44px;
+  padding: 0.625rem 0;
+  border-top: 1px solid var(--color-rule-light);
+}
+.gh-repo-name {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+.gh-repo:hover .gh-repo-name { color: var(--color-accent); }
+.gh-repo-date,
+.gh-repo-lang {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+  text-align: right;
+  white-space: nowrap;
+}
+.gh-repo-desc {
+  grid-column: 1;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-ink-light);
+}
+.gh-repo-lang { grid-column: 2; }
+
+.gh-count {
+  margin-bottom: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-muted);
+}
+.gh-count b {
+  display: block;
+  font-family: var(--font-headline);
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--color-ink);
+}
+/* One segment per language, as wide as its share (flex-grow is the count). */
+.gh-bar {
+  display: flex;
+  gap: 2px;
+  height: 1.25rem;
+  margin-bottom: 0.75rem;
+  border: 2px solid var(--color-rule);
+  background: var(--color-rule);
+}
+.gh .gh-bar .tech-dot {
+  flex: 0 0 0;
+  width: auto;
+  height: auto;
+}
+.gh-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: 0.375rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-ink-light);
+}
+.gh-legend b { color: var(--color-ink); }
+
+@container gh (min-width: 46rem) {
+  .gh-body {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  }
+  .gh-col { padding: 1.5rem; }
+  .gh-col + .gh-col {
+    border-top: 0;
+    border-left: 2px solid var(--color-rule);
+  }
+}

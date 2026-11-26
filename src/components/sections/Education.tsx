@@ -1,6 +1,7 @@
 import { useTranslation } from '../../hooks/useTranslation'
 import { FadeIn } from '../ui/FadeIn'
 import { SectionOpening } from '../ui/SectionOpening'
+import { CurrentStamp } from '../ui/CurrentStamp'
 import { education } from '../../content'
 import { periodLabel } from '../../lib/text'
 import type { Education as EducationType } from '../../types'
@@ -23,11 +24,7 @@ function EducationCard({ item, index }: { item: EducationType; index: number }) 
           <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-muted">
             {periodLabel(item.period, lang)}
           </p>
-          {item.current && (
-            <span className="px-badge px-badge-accent">
-              {lang === 'es' ? 'En curso' : 'In progress'}
-            </span>
-          )}
+          {item.current && <CurrentStamp />}
         </div>
 
         <div className="p-5">

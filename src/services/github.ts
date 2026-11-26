@@ -34,7 +34,8 @@ export async function getRepos(): Promise<GitHubRepo[]> {
   return allRepos.filter((r) => !r.fork)
 }
 
-export async function getLanguageStats(repos: GitHubRepo[]): Promise<Map<string, number>> {
+/** How many repositories have each main language, most common first. */
+export function getLanguageStats(repos: GitHubRepo[]): [string, number][] {
   const langMap = new Map<string, number>()
 
   for (const repo of repos) {
@@ -43,15 +44,15 @@ export async function getLanguageStats(repos: GitHubRepo[]): Promise<Map<string,
     }
   }
 
-  return new Map([...langMap.entries()].sort((a, b) => b[1] - a[1]))
+  return [...langMap.entries()].sort((a, b) => b[1] - a[1])
 }
 
-export function getFeaturedRepos(repos: GitHubRepo[]): GitHubRepo[] {
+/**
+ * The repositories by last push, newest first. The profile repository (named
+ * after the account) holds a README, not a project, and is left out.
+ */
+export function getRecentRepos(repos: GitHubRepo[]): GitHubRepo[] {
   return repos
-    .sort((a, b) => {
-      const scoreA = a.stargazers_count * 3 + a.forks_count * 2 + a.size
-      const scoreB = b.stargazers_count * 3 + b.forks_count * 2 + b.size
-      return scoreB - scoreA
-    })
-    .slice(0, 6)
+    .filter((repo) => repo.name !== GITHUB_USERNAME)
+    .sort((a, b) => b.pushed_at.localeCompare(a.pushed_at))
 }

@@ -241,26 +241,6 @@
     translate: 0 -50%;
   }
 
-  /* Pixel Badge / Tag */
-  .px-badge {
-    display: inline-block;
-    padding: 0.125rem 0.5rem;
-    background: var(--color-ink);
-    color: var(--color-on-ink);
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border: 2px solid var(--color-ink);
-  }
-
-  .px-badge-accent {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-    color: white;
-  }
-
   /* Kicker — pequeño label encima del headline */
   .kicker {
     font-family: var(--font-mono);
@@ -874,7 +854,6 @@ html[data-theme='xp'] {
   box-shadow: var(--xp-bevel-field);
 }
 
-[data-theme='xp'] .px-badge,
 [data-theme='xp'] .skill-tag {
   background: #ECE9D8;
   color: #000;
