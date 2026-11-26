@@ -44,12 +44,14 @@ export function About() {
               <p className="font-mono text-[11px] text-accent font-bold uppercase tracking-widest mt-1">
                 @{user?.login || 'Ewin24'}
               </p>
-              {user?.location && (
-                <p className="font-mono text-xs text-ink-muted mt-2">
-                  {user.location}
-                </p>
-              )}
             </div>
+
+            {/* The availability line of the hero, one fact per row. */}
+            <ul className="w-full max-w-64 border-t-2 border-rule-light font-mono text-xs text-ink-light" data-about-facts>
+              {t('hero.availability').split(' · ').map((fact) => (
+                <li key={fact} className="border-b-2 border-rule-light py-2 text-center">{fact}</li>
+              ))}
+            </ul>
           </div>
 
           {/* Columna texto */}

@@ -1604,7 +1604,7 @@ Icon(Ionicons.logo_youtube)
 Icon(Icons.smart_display)
 \`\`\`
 
-\`grep -r "Ionicons\." lib/\` devolvió 47 ocurrencias. La migración fue mecánica pero tediosa. Lo importante: un commit por categoría para que el reviewer (yo en 6 meses) pueda hacer rollback de una deprecación sin tocar las demás.
+\`grep -r "Ionicons\\." lib/\` devolvió 47 ocurrencias. La migración fue mecánica pero tediosa. Lo importante: un commit por categoría para que el reviewer (yo en 6 meses) pueda hacer rollback de una deprecación sin tocar las demás.
 
 Criterio de salida: \`flutter analyze\` devuelve 0 errores y 0 warnings.
 
@@ -1703,7 +1703,7 @@ Icon(Ionicons.logo_youtube)
 Icon(Icons.smart_display)
 \`\`\`
 
-\`grep -r "Ionicons\." lib/\` returned 47 matches. The migration was mechanical but tedious. The important thing: one commit per category so the reviewer (me in 6 months) can roll back one deprecation without touching the rest.
+\`grep -r "Ionicons\\." lib/\` returned 47 matches. The migration was mechanical but tedious. The important thing: one commit per category so the reviewer (me in 6 months) can roll back one deprecation without touching the rest.
 
 Exit criterion: \`flutter analyze\` returns 0 errors and 0 warnings.
 
@@ -2571,7 +2571,7 @@ Cada commit fue:
 \`\`\`bash
 # Ejemplo: commit 2064daa
 git checkout -b refactor/with-opacity-migration
-grep -rln "withOpacity" lib/ | xargs sed -i 's/withOpacity(\([^)]*\))/withValues(alpha: \\1)/g'
+grep -rln "withOpacity" lib/ | xargs sed -i 's/withOpacity(\\([^)]*\\))/withValues(alpha: \\1)/g'
 flutter analyze  # esperar 0 errores de este tipo
 git add -A
 git commit -m "refactor: replace withOpacity with withValues(alpha:)"
@@ -2748,7 +2748,7 @@ Each commit was:
 \`\`\`bash
 # Example: commit 2064daa
 git checkout -b refactor/with-opacity-migration
-grep -rln "withOpacity" lib/ | xargs sed -i 's/withOpacity(\([^)]*\))/withValues(alpha: \\1)/g'
+grep -rln "withOpacity" lib/ | xargs sed -i 's/withOpacity(\\([^)]*\\))/withValues(alpha: \\1)/g'
 flutter analyze  # expect 0 errors of this type
 git add -A
 git commit -m "refactor: replace withOpacity with withValues(alpha:)"

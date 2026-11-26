@@ -9,7 +9,7 @@ import type { Education as EducationType } from '../../types'
 const sorted = [...education].sort((a, b) => b.order - a.order)
 
 function EducationCard({ item, index }: { item: EducationType; index: number }) {
-  const { lang } = useTranslation()
+  const { lang, t } = useTranslation()
 
   const degree = lang === 'es' ? item.degree : item.degreeEn
   const description = lang === 'es' ? item.description : item.descriptionEn
@@ -24,7 +24,7 @@ function EducationCard({ item, index }: { item: EducationType; index: number }) 
           <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-ink-muted">
             {periodLabel(item.period, lang)}
           </p>
-          {item.current && <CurrentStamp />}
+          {item.current && <CurrentStamp label={t('education.stamp')} />}
         </div>
 
         <div className="p-5">

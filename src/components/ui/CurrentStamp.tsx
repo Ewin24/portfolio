@@ -6,7 +6,7 @@ import { useTranslation } from '../../hooks/useTranslation'
  * the card the first time it comes into view. Decorative, because the period
  * beside it already reads Presente/Present.
  */
-export function CurrentStamp({ className = '' }: { className?: string }) {
+export function CurrentStamp({ className = '', label }: { className?: string; label?: string }) {
   const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
   return (
@@ -18,7 +18,7 @@ export function CurrentStamp({ className = '' }: { className?: string }) {
       viewport={{ once: true }}
       transition={{ duration: 0.22, ease: [0.5, 0, 0.75, 0] }}
     >
-      {t('experience.stamp')}
+      {label ?? t('experience.stamp')}
     </motion.span>
   )
 }

@@ -38,7 +38,7 @@ function BlogRouter() {
     if (nav.currentRoute !== 'article') {
       setSelectedPost(null)
     }
-  }, [nav.currentRoute, nav.selectedSlug, nav.currentParams.tag])
+  }, [nav.currentRoute, nav.selectedSlug, nav.currentParams.tag, setFilter, setSelectedPost])
 
   // Sync selectedPost for article route (useLayoutEffect = before paint)
   // nav.tick: after an in-place swap (previous/next, next in the series) the
@@ -48,6 +48,9 @@ function BlogRouter() {
     if (targetPost && targetPost !== selectedPost) {
       setSelectedPost(targetPost)
     }
+    // selectedPost is left out on purpose: an in-place swap changes it without
+    // changing the route, and this effect must not undo that swap.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetPost, nav.tick])
 
   // AnimatePresence key: unique per route so transitions work

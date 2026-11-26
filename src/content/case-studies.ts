@@ -277,7 +277,7 @@ export const caseStudies: CaseStudy[] = [
       'Developer portfolios show code but not business impact. Relying exclusively on the GitHub API to showcase projects hides the most valuable work: private enterprise systems under NDA. I needed a platform that sells engineering, not just public repositories.',
 
     solution:
-      'Diseñé una arquitectura híbrida: capa de contenido curado (casos de estudio en TypeScript con formato STAR, experiencia laboral, blog) como fuente principal de verdad, y API de GitHub como widget secundario de actividad. Implementé i18n nativo (ES/EN), design system editorial pixel-art con sombras pixeladas y tipografía de periódico, y animaciones con Framer Motion. Construido con React 19 + Vite + TypeScript + Tailwind CSS v4. Sobre esa base sumé un segundo tema seleccionable por `data-theme` —del periódico editorial a un escritorio interactivo estilo XP— con un WindowManager que es dueño de cada rectángulo, clamp y orden Z: ventanas arrastrables, redimensionado por 8 asas, menú de inicio, barra de tareas con bandeja de utilidades, pestañas dentro de una misma ventana y una ventana de ayuda fuera del registro visible. También traté la visibilidad ante motores de IA como ingeniería medible: datos estructurados JSON-LD, `llms.txt` y `llms-full.txt`, con los que una auditoría GEO automatizada pasó de 58 a 83/100.',
+      'Diseñé una arquitectura híbrida: capa de contenido curado (casos de estudio en TypeScript con formato STAR, experiencia laboral, blog) como fuente principal de verdad, y API de GitHub como widget secundario de actividad. Implementé i18n nativo (ES/EN), design system editorial pixel-art con sombras pixeladas y tipografía de periódico, y animaciones con Framer Motion. Construido con React 19 + Vite + TypeScript + Tailwind CSS v4. Sobre esa base sumé un segundo tema seleccionable por `data-theme` —del periódico editorial a un escritorio interactivo estilo XP— con un WindowManager que es dueño de cada rectángulo, clamp y orden Z: ventanas arrastrables, redimensionado por 8 asas, menú de inicio, barra de tareas con bandeja de utilidades, pestañas dentro de una misma ventana y una ventana de ayuda fuera del registro visible. También traté la visibilidad ante motores de AI como ingeniería medible: datos estructurados JSON-LD, `llms.txt` y `llms-full.txt`, con los que una auditoría GEO automatizada pasó de 58 a 83/100.',
     solutionEn:
       'Designed a hybrid architecture: curated content layer (STAR-format case studies in TypeScript, work experience, blog) as the primary source of truth, and GitHub API as a secondary activity widget. Implemented native i18n (ES/EN), pixel-art editorial design system with pixel shadows and newspaper typography, and Framer Motion animations. Built with React 19 + Vite + TypeScript + Tailwind CSS v4. On top of that I added a second theme selected through `data-theme` —from the editorial newspaper to an interactive XP-style desktop— driven by a WindowManager that owns every rect, clamp and z-order: draggable windows, 8-handle resizing, a Start menu, a taskbar with a utilities tray, tabs inside a single window, and a Help window kept out of the visible registry. I also treated visibility to AI engines as measurable engineering: JSON-LD structured data plus `llms.txt` and `llms-full.txt`, which took an automated GEO audit from 58 to 83/100.',
 
@@ -489,7 +489,7 @@ export const caseStudies: CaseStudy[] = [
 
   // ═════════════════════════════════════════════════════════════════════════
   // PROYECTO 9 — DevManager (proyecto de grado → producto propio)
-  // Agente de IA con aprobación humana sobre un SaaS multi-tenant
+  // Agente de AI con aprobación humana sobre un SaaS multi-tenant
   // ═════════════════════════════════════════════════════════════════════════
   {
     id: 'devmanager-ai-saas',
@@ -497,39 +497,39 @@ export const caseStudies: CaseStudy[] = [
     featured: true,
     order: 2,
 
-    title: 'DevManager — SaaS multi-tenant de proyectos y talento humano con agente de IA',
+    title: 'DevManager — SaaS multi-tenant de proyectos y talento humano con agente de AI',
     titleEn: 'DevManager — Multi-tenant Project and HR SaaS with an AI Agent',
 
     company: 'Producto propio (proyecto de grado)',
     companyAnon: false,
-    industry: 'SaaS / IA aplicada',
+    industry: 'SaaS / AI aplicada',
 
     period: 'Proyecto de grado – Presente',
     role: 'Fundador, Arquitecto y Desarrollador Full Stack',
     roleEn: 'Founder, Architect & Full Stack Developer',
 
     problem:
-      'Los equipos pequeños gestionan proyectos, tiempos y talento humano en herramientas separadas, y los asistentes de IA que prometen ayudar actúan sin control: crean registros por su cuenta, ignoran los permisos del usuario y consumen tokens sin límite. Un agente útil en una empresa necesita respetar quién puede ver qué, no inventar datos y no ejecutar nada crítico sin que una persona lo confirme.',
+      'Los equipos pequeños gestionan proyectos, tiempos y talento humano en herramientas separadas, y los asistentes de AI que prometen ayudar actúan sin control: crean registros por su cuenta, ignoran los permisos del usuario y consumen tokens sin límite. Un agente útil en una empresa necesita respetar quién puede ver qué, no inventar datos y no ejecutar nada crítico sin que una persona lo confirme.',
     problemEn:
       'Small teams manage projects, time and HR in separate tools, and the AI assistants that promise to help act without control: they create records on their own, ignore user permissions and burn tokens without limit. A useful agent inside a company has to respect who can see what, avoid inventing data, and execute nothing critical without a person confirming it.',
 
     solution:
-      'Empezó como mi proyecto de grado y lo seguí desarrollando como producto independiente. API en .NET 8 con Clean Architecture sobre SQL Server y frontend en React. El orquestador de IA usa tool calling filtrado por los permisos del usuario, transmite eventos tipados por SSE (meta, tool, delta, refusal, done, error) y responde una negativa sin llamar al LLM cuando todos los módulos que pide están denegados. El agente convierte un requerimiento escrito en tareas propuestas: la entrada se trata como no confiable, la salida se valida contra un esquema y nada se crea hasta que una persona confirma. La confirmación es una única transacción con cambio de estado condicional, así que aprobar dos veces no duplica nada (quien pierde la carrera recibe HTTP 409). Cada llamada a la IA descuenta de una cuota diaria de tokens por organización, la sugerencia de responsables usa una regla de puntuación determinística para no enviar datos personales al modelo, y cada módulo (sprints, tiempos, dependencias) se activa por organización. Desde entonces sumé reporte de horas y burndown por sprint, carga masiva por CSV, recuperación de contraseña y control documental, con una habilidad del agente dedicada a documentos.',
+      'Empezó como mi proyecto de grado y lo seguí desarrollando como producto independiente. API en .NET 8 con Clean Architecture sobre SQL Server y frontend en React. El orquestador de AI usa tool calling filtrado por los permisos del usuario, transmite eventos tipados por SSE (meta, tool, delta, refusal, done, error) y responde una negativa sin llamar al LLM cuando todos los módulos que pide están denegados. El agente convierte un requerimiento escrito en tareas propuestas: la entrada se trata como no confiable, la salida se valida contra un esquema y nada se crea hasta que una persona confirma. La confirmación es una única transacción con cambio de estado condicional, así que aprobar dos veces no duplica nada (quien pierde la carrera recibe HTTP 409). Cada llamada a la AI descuenta de una cuota de tokens por organización, con tope diario y cupo mensual, y avisa a los administradores al cruzar un umbral. Si el proveedor del modelo limita las peticiones, el cliente pasa una sola vez a un proveedor alterno y, si ese también las limita, responde un 429 tipado en lugar de un error genérico. La sugerencia de responsables usa una regla de puntuación determinística para no enviar datos personales al modelo, y cada módulo (sprints, tiempos, dependencias) se activa por organización. Desde entonces sumé reporte de horas y burndown por sprint, carga masiva por CSV, recuperación de contraseña y control documental, con una habilidad del agente dedicada a documentos.',
     solutionEn:
-      'It started as my degree project and I kept building it as an independent product. A .NET 8 API with Clean Architecture on SQL Server and a React frontend. The AI orchestrator uses tool calling filtered by the user\'s permissions, streams typed events over SSE (meta, tool, delta, refusal, done, error), and answers a refusal without calling the LLM when every module requested is denied. The agent turns a written requirement into proposed tasks: the input is treated as untrusted, the output is validated against a schema, and nothing is created until a person confirms. Confirmation is a single transaction with a conditional state change, so approving twice duplicates nothing (the loser of the race gets HTTP 409). Every AI call is charged against a daily per-organization token quota, assignee suggestions use a deterministic scoring rule so no personal data reaches the model, and each module (sprints, time tracking, dependencies) is switched on per organization. Since then I added an hours report and sprint burndown, CSV bulk load, password recovery and document control, with an agent skill dedicated to documents.',
+      'It started as my degree project and I kept building it as an independent product. A .NET 8 API with Clean Architecture on SQL Server and a React frontend. The AI orchestrator uses tool calling filtered by the user\'s permissions, streams typed events over SSE (meta, tool, delta, refusal, done, error), and answers a refusal without calling the LLM when every module requested is denied. The agent turns a written requirement into proposed tasks: the input is treated as untrusted, the output is validated against a schema, and nothing is created until a person confirms. Confirmation is a single transaction with a conditional state change, so approving twice duplicates nothing (the loser of the race gets HTTP 409). Every AI call is charged against a per-organization token quota with a daily cap and a monthly allowance, and administrators are alerted when a threshold is crossed. When the model provider rate-limits a request, the client falls back once to an alternate provider and, if that one is limited too, answers a typed 429 instead of a generic error. Assignee suggestions use a deterministic scoring rule so no personal data reaches the model, and each module (sprints, time tracking, dependencies) is switched on per organization. Since then I added an hours report and sprint burndown, CSV bulk load, password recovery and document control, with an agent skill dedicated to documents.',
 
     impact:
-      '862 pruebas de API y 52 pruebas end-to-end con Playwright, construidas entrega a entrega en slices de menos de 400 líneas: la suite de API creció de 66 a 862 pruebas en menos de tres semanas. La verificación contra un SQL Server real encontró bloqueadores que la suite InMemory no podía ver (un bloqueo, una carrera entre dos escrituras y un hueco de rollback), y se corrigieron antes de entregar. Llevar la confirmación a una transacción condicional también cerró una carrera de doble aprobación en el flujo general de aprobaciones del agente.',
+      '1.183 pruebas de API y 141 pruebas end-to-end con Playwright (conteo de noviembre de 2026), construidas entrega a entrega en slices de menos de 400 líneas: la suite de API pasó de menos de 70 pruebas a 1.183 en poco más de cinco semanas. La verificación contra un SQL Server real encontró bloqueadores que la suite InMemory no podía ver (un bloqueo, una carrera entre dos escrituras y un hueco de rollback), y se corrigieron antes de entregar. Llevar la confirmación a una transacción condicional también cerró una carrera de doble aprobación en el flujo general de aprobaciones del agente.',
     impactEn:
-      '862 API tests and 52 Playwright end-to-end tests, built delivery by delivery in slices under 400 lines: the API suite grew from 66 to 862 tests in under three weeks. Verification against a real SQL Server found blockers the InMemory suite could not see (a lock, a race between two writes, and a rollback gap), fixed before delivery. Moving confirmation into a conditional transaction also closed a double-approval race in the agent\'s general approval flow.',
+      '1,183 API tests and 141 Playwright end-to-end tests (counted in November 2026), built delivery by delivery in slices under 400 lines: the API suite grew from fewer than 70 tests to 1,183 in just over five weeks. Verification against a real SQL Server found blockers the InMemory suite could not see (a lock, a race between two writes, and a rollback gap), fixed before delivery. Moving confirmation into a conditional transaction also closed a double-approval race in the agent\'s general approval flow.',
 
     highlights: [
-      { value: '862', label: 'pruebas de API', labelEn: 'API tests' },
-      { value: '52', label: 'pruebas end-to-end', labelEn: 'end-to-end tests' },
+      { value: '1.183', valueEn: '1,183', label: 'pruebas de API', labelEn: 'API tests' },
+      { value: '141', label: 'pruebas end-to-end', labelEn: 'end-to-end tests' },
       { value: '<400', label: 'líneas por entrega', labelEn: 'lines per delivery' },
     ],
     stack: ['.NET 8', 'C#', 'Clean Architecture', 'SQL Server', 'React', 'TypeScript', 'LLM tool calling', 'SSE', 'xUnit', 'Playwright'],
-    architectureDiagram: 'React → API .NET 8 (Clean Architecture) → orquestador de IA (tool calling filtrado por permisos, cuota de tokens por organización) → propuestas pendientes → confirmación humana en una transacción condicional → SQL Server. Streaming de eventos tipados por SSE hacia el chat.',
+    architectureDiagram: 'React → API .NET 8 (Clean Architecture) → orquestador de AI (tool calling filtrado por permisos, cuota de tokens por organización) → propuestas pendientes → confirmación humana en una transacción condicional → SQL Server. Streaming de eventos tipados por SSE hacia el chat.',
     hasNDA: false,
     tags: ['ai', 'llm', 'human-in-the-loop', 'saas', 'multi-tenant', 'dotnet', 'react', 'testing'],
   },
@@ -645,8 +645,8 @@ export const caseOutcomes: Record<string, { es: string; en: string }> = {
     en: 'The API went from 8 test files to 3,009 passing automated tests in ~10 weeks, and on the same workflow engine I shipped a second sales channel with 0 regressions in the in-store channel.',
   },
   'devmanager-ai-saas': {
-    es: 'La suite de API creció de 66 a 862 pruebas en menos de tres semanas, y nada de lo que propone el agente se crea hasta que una persona confirma.',
-    en: 'The API suite grew from 66 to 862 tests in under three weeks, and nothing the agent proposes is created until a person confirms.',
+    es: 'La suite de API pasó de menos de 70 pruebas a 1.183 en poco más de cinco semanas, y nada de lo que propone el agente se crea hasta que una persona confirma.',
+    en: 'The API suite grew from fewer than 70 tests to 1,183 in just over five weeks, and nothing the agent proposes is created until a person confirms.',
   },
   'datacredito-api': {
     es: 'Las consultas pasaron de 3+ segundos a menos de un segundo, y cada una queda registrada con la respuesta real del proveedor.',
