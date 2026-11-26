@@ -221,8 +221,8 @@ const translations: Record<Language, TranslationKeys> = {
     'projects.subtitle':
       'Problemas de negocio reales que he resuelto. Cada proyecto describe el contexto, la arquitectura y el impacto medible.',
     'projects.featured': 'Destacado',
-    'projects.github': 'Actividad en GitHub',
-    'projects.viewAll': 'Ver actividad completa',
+    'projects.github': 'Código público en GitHub',
+    'projects.viewAll': 'Ver perfil en GitHub',
     'projects.viewRepo': 'Ver código',
     'projects.viewDemo': 'Ver demo',
     'projects.nda': 'Código confidencial · Arquitectura de mi autoría',
@@ -425,8 +425,8 @@ const translations: Record<Language, TranslationKeys> = {
     'projects.subtitle':
       'Real business problems I have solved. Each project describes the context, architecture, and measurable impact.',
     'projects.featured': 'Featured',
-    'projects.github': 'GitHub Activity',
-    'projects.viewAll': 'View full activity',
+    'projects.github': 'Public code on GitHub',
+    'projects.viewAll': 'View GitHub profile',
     'projects.viewRepo': 'View code',
     'projects.viewDemo': 'View demo',
     'projects.nda': 'Confidential code · Architecture of my own design',

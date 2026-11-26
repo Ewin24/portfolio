@@ -25,25 +25,23 @@
   filter: url(#read-ink-wear);
 }
 
-/* Corner: stamped over the top right corner of the card, out of the flow, so
-   a read card is exactly as tall as the unread one beside it. */
-[data-read-state]:has(> .read-mark-corner, > * > .read-mark-corner) {
-  position: relative;
+/* Corner: the mark has the second column of the card's head, so the tags wrap
+   before it and nothing runs under it. The negative margins push it out into
+   the card's padding, towards the corner, and keep a one-row head from
+   growing: the stamp is taller than a row of tags. */
+.blogfront-card-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 0.75rem;
 }
 
 .read-mark-corner {
-  position: absolute;
-  top: 0.45rem;
-  right: 0.5rem;
-  z-index: 1;
+  margin: -0.7rem -0.6rem -0.55rem 0;
   pointer-events: none;
 }
 
-/* The stamp sits on a patch of paper of its own, so it reads over the tags it
-   lands on. The patch is outside the worn-ink filter, which would pit it. */
 .read-mark-corner[data-read-mark] {
-  padding: 4px;
-  background: var(--color-paper);
   rotate: -5deg;
 }
 

@@ -427,6 +427,42 @@ async function run() {
       } finally { await ctx.close() }
     }
 
+    // ── (12) the mark of a card covers none of that card's text, at every width.
+    // The mark used to be stamped out of the flow, over the tags; a card may
+    // now grow a row of tags when it is read, which is the price of that.
+    {
+      const probe = await open(browser)
+      const slugs = await probe.page.evaluate(() => [...document.querySelectorAll('#blog article[data-slug]')].map((el) => el.dataset.slug))
+      await probe.ctx.close()
+      const seed = {
+        [READ]: JSON.stringify(slugs.slice(1).map((s) => [s, '2026-11-17T15:00:00.000Z'])),
+        [PROGRESS]: JSON.stringify({ [slugs[0]]: [0.4, '2026-11-17T15:00:00.000Z'] }),
+      }
+      for (const viewport of VIEWPORTS) {
+        for (const lang of ['es', 'en']) {
+          const { ctx, page } = await open(browser, { lang, viewport, seed })
+          try {
+            const found = await page.evaluate(() => {
+              const shared = (a, b) => Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top))
+              const range = document.createRange()
+              const marks = [...document.querySelectorAll('#blog article[data-slug] :is([data-read-mark], [data-continue-mark])')]
+              const covered = marks.flatMap((mark) => {
+                const box = mark.getBoundingClientRect()
+                return [...mark.closest('article').querySelectorAll('.skill-tag, p, h3, time, button')]
+                  .filter((el) => !mark.contains(el) && !el.contains(mark))
+                  // The boxes of the text, not of the element: a paragraph is as wide as its column.
+                  .filter((el) => { range.selectNodeContents(el); return [...range.getClientRects()].some((r) => shared(box, r) > 4) })
+                  .map((el) => `${mark.closest('article').dataset.slug}: ${el.textContent.trim().slice(0, 24)}`)
+              })
+              return { marks: marks.length, covered }
+            })
+            check(`[${lang}] (12) ${viewport.name} px: no reading mark covers text of its card`,
+              found.marks === slugs.length && found.covered.length === 0, j(found))
+          } finally { await ctx.close() }
+        }
+      }
+    }
+
     // ── (8) (9) (10) same height, contrast in both themes, nothing overflows at 375
     {
       const probe = await open(browser)
@@ -450,7 +486,6 @@ async function run() {
           // The row is level before anything is read; it must still be with a read card in it.
           check(`[${theme}] (8) a read card and the unread card beside it, level before, are the same height`,
             row[1].h === row[2].h && now[1].h === now[2].h, `before ${j(row.map((c) => c.h))}, now ${j(now.map((c) => c.h))}`)
-          check(`[${theme}] (8) no card changed height by being read or started`, j(now.map((c) => c.h)) === j(row.map((c) => c.h)), `${j(row.map((c) => c.h))} → ${j(now.map((c) => c.h))}`)
           const essaysNow = await page.evaluate(() => [...document.querySelectorAll('#essays [data-essay-slug]')].slice(0, 3).map((el) => el.getBoundingClientRect().height))
           check(`[${theme}] (8) the essays block keeps its card heights with a read essay`, j(essaysNow) === j(essayRow), `${j(essayRow)} → ${j(essaysNow)}`)
 

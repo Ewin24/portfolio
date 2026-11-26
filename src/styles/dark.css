@@ -62,10 +62,6 @@ html[data-theme='dark'] {
   color: var(--color-on-ink);
 }
 
-[data-theme='dark'] .px-badge-accent {
-  color: var(--color-on-ink);
-}
-
 /* ── Ink stamp ──
    `multiply` sinks the red into dark paper until it disappears. `screen` is
    its mirror: the stamp lightens the paper the way ink darkened it. */

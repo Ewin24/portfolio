@@ -41,13 +41,18 @@ function BlogCard({ post, lead = false, onRead }: { post: BlogPost; lead?: boole
       className={`blogfront-card px-card px-card-interactive bg-paper ${lead ? 'blogfront-lead' : 'px-card-quiet'}`}
     >
       <div className="blogfront-card-text">
-        {/* Tags row */}
-        <div className="flex flex-wrap gap-1">
-          {post.tags.slice(0, lead ? 5 : 3).map((tag) => (
-            <span key={tag} className="skill-tag flex items-center gap-1">
-              <Tag size={8} aria-hidden="true" /> {tag}
-            </span>
-          ))}
+        {/* Tags, and beside them the reading state: a stamp once read,
+            "continue" once started. The mark has a column of its own, so the
+            tags wrap before it instead of running under it. */}
+        <div className="blogfront-card-head">
+          <div className="flex flex-wrap gap-1">
+            {post.tags.slice(0, lead ? 5 : 3).map((tag) => (
+              <span key={tag} className="skill-tag flex items-center gap-1">
+                <Tag size={8} aria-hidden="true" /> {tag}
+              </span>
+            ))}
+          </div>
+          <ReadMark slug={post.slug} />
         </div>
 
         {/* Kind of piece and place in its series */}
@@ -63,9 +68,6 @@ function BlogCard({ post, lead = false, onRead }: { post: BlogPost; lead?: boole
         <h3 className="blogfront-card-title">{title}</h3>
 
         <p className="blogfront-card-excerpt">{excerpt}</p>
-
-        {/* Reading state — a stamp once read, "continue" once started; out of the flow */}
-        <ReadMark slug={post.slug} />
 
         {/* Footer: date + reading time + read button */}
         <div className="blogfront-card-foot">
